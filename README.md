@@ -10,8 +10,11 @@ We will approach many kind of approaches to develop Cloud Native DBMSs as belows
 Directory structure
 
 1) BMT: Bench Mark Test Program
-2) 1RW_NRead: 1 Read/Many Read Architecture
+2) 1RW_NRead: 1 Read/Write & Many Read Architecture
 3) DMES: Big memory virtualizaion technology 
+4) Sharding: N Node Read/Write Architecuture
+
+
 
 
 
