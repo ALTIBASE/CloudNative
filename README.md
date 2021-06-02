@@ -7,6 +7,12 @@ We will approach many kind of approaches to develop Cloud Native DBMSs as belows
 2) Sharding architecture
 3) Scalable In-Memory DBMS based Big memory virtualization technology powered by 3rd party    
 
+Directory structure
+
+1) BMT: Bench Mark Test Program
+2) 1RW_NRead: 1 Read/Many Read Architecture
+3) DMES: Big memory virtualizaion technology 
+
 
 
 
