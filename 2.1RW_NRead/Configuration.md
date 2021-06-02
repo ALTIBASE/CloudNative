@@ -8,9 +8,9 @@
 	Instance: C1(20300)
 3. nR 
 	host : C1, C2, C3
-	Instance: C1(20301, 20302, 20303, 20304)
-	Instance: C2(20301, 20302, 20303, 20304)
-	Instance: C3(20301, 20302, 20303, 20304)
+	Instance: C1(20301, 20302, 20303)
+	Instance: C2(20301, 20302, 20303)
+	Instance: C3(20301, 20302, 20303)
 
 4. Replication
 	1RW/C1(20300) -> nR(C1,C2,C3(20301,20302,20303)
@@ -18,4 +18,5 @@
 5. Test case
 	Standard BMT
 	TPCH
+	
 
