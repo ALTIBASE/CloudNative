@@ -1,0 +1,63 @@
+본 테스트는 클라우드 환경의 분산 DBMS와 비교를 위한 싱글 DBMS 테스트  환경 구축이 목적입니다.
+
+본 테스트 결과물은 클라우드 환경의 복제방식을 통한 분산 시스템, 샤딩 시스템, 차세대하드웨어 기술 기반 테스트와 비교를 
+
+하기 위한 테스트 입니다.
+
+ 
+
+1. Server info
+
+ip: 192.168.1.103
+
+id/pwd: tpch/tpch
+
+2. Standalone Altibase
+
+version: 6.5x
+
+port: any 
+
+ALTIBASE_HOME: /home/tpch/CloudNative/ABS
+
+* dbs/logs directory: /home/tpch/CloudStorage/ABS
+
+ 
+
+3. BMT 
+
+standard bmt 
+
+directory: /home/tpch/CloudNative/1.BMT/Test4Single
+
+test case: 1,000,000 records insert/update/delete/select 
+
+Theads수를 조정해서 최대 성능 나오는 Threads 수 확인 
+
+ 
+
+4. Test Result:
+
+Directory: /home/tpch/CloudNative/1.BMT/Test4Single/
+
+filename: yyyymmdd_HHMMSS.xls 
+
+결과파일은 아래와 같은 형태 
+
+# of Threads  Insert  Update Delete Select  (단위 TPS)
+
+1                  8000   7800 
+
+4                 14000 
+
+8               
+
+16
+
+32
+
+64               35000
+
+128             100000
+
+256
