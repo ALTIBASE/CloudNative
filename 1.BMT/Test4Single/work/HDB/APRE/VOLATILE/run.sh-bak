@@ -1,0 +1,179 @@
+#!/bin/sh
+
+if [ "$STANDARD_IP" ];
+then
+    HOST=$STANDARD_IP
+else
+    HOST="localhost"
+fi
+
+
+if [ "$ALTIBASE_PORT_NO" ];
+then
+    PORT=$ALTIBASE_PORT_NO
+else
+    PORT="20300"
+fi
+
+
+THRESHOLD="1000000"
+UNIT="1000"
+USER="SYS"
+PASSWORD="MANAGER"
+OPTION="DSN=$HOST;PORT_NO=$PORT;CONNTYPE=$CONNTYPE"
+RECORDS="100000"
+
+
+if [ "$SCALE" ];
+then
+    RECORDS="$SCALE"
+fi
+
+
+./configure.sh
+make clean
+make
+echo
+
+
+case $CONNTYPE in
+    "1" )
+        export ISQL_CONNECTION="TCP"
+        ;;
+    "2" )
+        export ISQL_CONNECTION="UNIX"
+        ;;
+    "3" )
+        export ISQL_CONNECTION="IPC"
+        ;;
+esac
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f schema.sql
+echo
+
+
+TEST_MODE="Insert"
+START="0"
+for THREAD in $THREADS
+do
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_insert $THREAD $START $RECORDS $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION
+START=`expr $START + $RECORDS`
+done
+
+
+TEST_MODE="Select"
+START="0"
+for THREAD in $THREADS
+do
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_select $THREAD $START $RECORDS $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION
+START=`expr $START + $RECORDS`
+done
+
+
+TEST_MODE="Update"
+START="0"
+for THREAD in $THREADS
+do
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_update $THREAD $START $RECORDS $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION
+START=`expr $START + $RECORDS`
+done
+
+
+TEST_MODE="Insert+Select"
+let START1=$RECORDS*$THREADS_COUNT
+START2="0"
+for THREAD in $THREADS
+do
+if [ $THREAD -eq 1 ]
+then
+echo "Thread Count is 1"
+else
+export STANDARD_REVISION=$THREAD
+let THREAD1=$THREAD*$ISR_INSERT_RATIO/100
+let THREAD2=$THREAD*$ISR_SELECT_RATIO/100
+let RECORDS1=$RECORDS*$ISR_INSERT_RATIO/100
+let RECORDS2=$RECORDS*$ISR_SELECT_RATIO/100
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_insert $THREAD1 $START1 $RECORDS1 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+./bmt_select $THREAD1 $START2 $RECORDS2 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+wait
+START1=`expr $START1 + $RECORDS1`
+START2=`expr $START2 + $RECORDS2`
+fi
+done
+
+
+TEST_MODE="Select+Update"
+START1="0"
+let START2=$RECORDS*$THREADS_COUNT
+for THREAD in $THREADS
+do
+if [ $THREAD -eq 1 ]
+then
+echo "Thread Count is 1"
+else
+export STANDARD_REVISION=$THREAD
+let THREAD1=$THREAD*$SUR_SELECT_RATIO/100
+let THREAD2=$THREAD*$SUR_UPDATE_RATIO/100
+let RECORDS1=$RECORDS*$SUR_SELECT_RATIO/100
+let RECORDS2=$RECORDS*$SUR_UPDATE_RATIO/100
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_select $THREAD1 $START1 $RECORDS1 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+./bmt_update $THREAD2 $START2 $RECORDS2 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+wait
+START1=`expr $START1 + $RECORDS1`
+START2=`expr $START2 + $RECORDS1`
+fi
+done
+
+
+TEST_MODE="Insert+Select+Update"
+let START1=$RECORDS*$THREADS_COUNT*2
+let START2=$RECORDS*$THREADS_COUNT
+START3="0"
+for THREAD in $THREADS
+do
+if [ $THREAD -eq 1 ]
+then
+echo "Thread Count is 1"
+else
+export STANDARD_REVISION=$THREAD
+let THREAD1=$THREAD*$ISUR_INSERT_RATIO/100
+let THREAD2=$THREAD*$ISUR_SELECT_RATIO/100
+let THREAD3=$THREAD*$ISUR_UPDATE_RATIO/100
+let RECORDS1=$RECORDS*$ISUR_INSERT_RATIO/100
+let RECORDS2=$RECORDS*$ISUR_SELECT_RATIO/100
+let RECORDS3=$RECORDS*$ISUR_UPDATE_RATIO/100
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_insert $THREAD1 $START1 $RECORDS1 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+./bmt_select $THREAD2 $START2 $RECORDS2 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+./bmt_update $THREAD3 $START3 $RECORDS3 $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION &
+wait
+START1=`expr $START1 + $RECORDS1`
+START2=`expr $START2 + $RECORDS2`
+START3=`expr $START3 + $RECORDS3`
+fi
+done
+
+
+TEST_MODE="Delete"
+START="0"
+for THREAD in $THREADS
+do
+export STANDARD_REVISION="0"
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f checkpoint.sql
+sleep 10
+./bmt_delete $THREAD $START $RECORDS $UNIT $THRESHOLD $TEST_MODE $USER $PASSWORD $OPTION
+START=`expr $START + $RECORDS`
+done
+
+
+isql -s $HOST -u $USER -p $PASSWORD -port $PORT -f drop.sql

@@ -1,0 +1,2463 @@
+run samesize
+rm -f bmt_insert bmt_insert.o bmt_insert_merged.c bmt_insert_merged.sc
+rm -f bmt_select bmt_select.o bmt_select_merged.c bmt_select_merged.sc
+rm -f bmt_update bmt_update.o bmt_update_merged.c bmt_update_merged.sc
+rm -f bmt_delete bmt_delete.o bmt_delete_merged.c bmt_delete_merged.sc
+cat bmt_header.sc bmt_insert.sc bmt_footer.sc >bmt_insert_merged.sc
+apre -mt bmt_insert_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_insert.o bmt_insert_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_insert bmt_insert.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_select.sc bmt_footer.sc >bmt_select_merged.sc
+apre -mt bmt_select_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_select.o bmt_select_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_select bmt_select.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_update.sc bmt_footer.sc >bmt_update_merged.sc
+apre -mt bmt_update_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_update.o bmt_update_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_update bmt_update.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_delete.sc bmt_footer.sc >bmt_delete_merged.sc
+apre -mt bmt_delete_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_delete.o bmt_delete_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_delete bmt_delete.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+Ok..Shutdown Proceeding....
+
+
+TRANSITION TO PHASE : Shutdown Altibase
+  [RP] Finalization : PASS
+shutdown immediate success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+
+	Creating MMDB FILES     [SUCCESS]
+
+	Creating Catalog Tables [SUCCESS]
+
+	Creating DRDB FILES     [SUCCESS]
+
+  [SM] Rebuilding Indices [Total Count:0]  [SUCCESS]
+
+DB Writing Completed. All Done.
+
+Create success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+
+TRANSITION TO PHASE : PROCESS
+
+
+TRANSITION TO PHASE : CONTROL
+
+
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version => Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database 
+  [SM] Recovery Phase - 3 : Skipping Recovery & Starting Threads...
+                            Refining Disk Table 
+  [SM] Refine Memory Table : ........................................................................................................................................... [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:137] ......................................................................................................................................... [SUCCESS]
+
+
+TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : [PASS]
+
+--- STARTUP Process SUCCESS ---
+Command executed successfully.
+
+
+THREADS=1 4 8 16 32 64
+START=
+RECORED=968
+UNIT=1000
+THRESHOLD=10000
+TESTMODE=
+SYS MANAGER DSN=localhost;PORT_NO=20300;CONNTYPE=1
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :        1
+Start Value                       :        0
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.009845 second
+Start Time                        : 2021/06/07 18:05:55.253242
+End   Time                        : 2021/06/07 18:05:55.286620
+Elapsed                           : 0.033378 second
+Transactions per Second           :  29001.14 TPS
+Minimum                           :     30 microseconds
+Maximum                           :    676 microseconds
+Average                           :     34 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :        1
+Start Value                       :        0
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.006750 second
+Start Time                        : 2021/06/07 18:06:05.538436
+End   Time                        : 2021/06/07 18:06:05.559545
+Elapsed                           : 0.021109 second
+Transactions per Second           :  45857.22 TPS
+Minimum                           :     19 microseconds
+Maximum                           :    597 microseconds
+Average                           :     21 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :        1
+Start Value                       :        0
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.007002 second
+Start Time                        : 2021/06/07 18:06:15.807179
+End   Time                        : 2021/06/07 18:06:15.833015
+Elapsed                           : 0.025836 second
+Transactions per Second           :  37467.10 TPS
+Minimum                           :     22 microseconds
+Maximum                           :    542 microseconds
+Average                           :     26 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+Thread Count is 1
+Thread Count is 1
+Thread Count is 1
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :        1
+Start Value                       :        0
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.007235 second
+Start Time                        : 2021/06/07 18:06:26.087162
+End   Time                        : 2021/06/07 18:06:26.109161
+Elapsed                           : 0.021999 second
+Transactions per Second           :  44002.00 TPS
+Minimum                           :     19 microseconds
+Maximum                           :    602 microseconds
+Average                           :     22 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.029790 second
+Start Time                        : 2021/06/07 18:06:36.436762
+End   Time                        : 2021/06/07 18:06:36.488188
+Elapsed                           : 0.051426 second
+Transactions per Second           :  75292.65 TPS
+Minimum                           :     32 microseconds
+Maximum                           :   1528 microseconds
+Average                           :     47 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.028317 second
+Start Time                        : 2021/06/07 18:06:46.770119
+End   Time                        : 2021/06/07 18:06:46.795452
+Elapsed                           : 0.025333 second
+Transactions per Second           : 152844.12 TPS
+Minimum                           :     20 microseconds
+Maximum                           :   1104 microseconds
+Average                           :     24 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.028964 second
+Start Time                        : 2021/06/07 18:06:57.063470
+End   Time                        : 2021/06/07 18:06:57.103745
+Elapsed                           : 0.040275 second
+Transactions per Second           :  96139.04 TPS
+Minimum                           :     23 microseconds
+Maximum                           :    732 microseconds
+Average                           :     36 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        2
+Start Value                       :     3872
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        2
+Start Value                       :        0
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.019995 second
+Start Time                        : 2021/06/07 18:07:07.382293
+Connection Elapsed                : 0.020226 second
+Start Time                        : 2021/06/07 18:07:07.382591
+End   Time                        : 2021/06/07 18:07:07.407370
+Elapsed                           : 0.024779 second
+Transactions per Second           :  78130.68 TPS
+Minimum                           :     21 microseconds
+Maximum                           :    394 microseconds
+Average                           :     24 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+End   Time                        : 2021/06/07 18:07:07.425428
+Elapsed                           : 0.043135 second
+Transactions per Second           :  44882.35 TPS
+Minimum                           :     33 microseconds
+Maximum                           :    392 microseconds
+Average                           :     43 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        2
+Start Value                       :        0
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        2
+Start Value                       :     3872
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.013726 second
+Start Time                        : 2021/06/07 18:07:17.689066
+Connection Elapsed                : 0.014429 second
+Start Time                        : 2021/06/07 18:07:17.689854
+End   Time                        : 2021/06/07 18:07:17.714175
+Elapsed                           : 0.025109 second
+Transactions per Second           :  77103.83 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    286 microseconds
+Average                           :     24 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+End   Time                        : 2021/06/07 18:07:17.726903
+Elapsed                           : 0.037049 second
+Transactions per Second           :  52255.12 TPS
+Minimum                           :     24 microseconds
+Maximum                           :    349 microseconds
+Average                           :     37 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        1
+Start Value                       :     7744
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        2
+Start Value                       :     3872
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        1
+Start Value                       :        0
+Number of Transactions            :      968
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.001557 second
+Start Time                        : 2021/06/07 18:07:27.975542
+Connection Elapsed                : 0.003757 second
+Start Time                        : 2021/06/07 18:07:27.977934
+Connection Elapsed                : 0.011236 second
+Start Time                        : 2021/06/07 18:07:27.985404
+End   Time                        : 2021/06/07 18:07:28.009441
+Elapsed                           : 0.024037 second
+Transactions per Second           :  80542.50 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    421 microseconds
+Average                           :     23 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+End   Time                        : 2021/06/07 18:07:28.011730
+Elapsed                           : 0.033796 second
+Transactions per Second           :  28642.44 TPS
+Minimum                           :     26 microseconds
+Maximum                           :    196 microseconds
+Average                           :     34 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+End   Time                        : 2021/06/07 18:07:28.017267
+Elapsed                           : 0.041725 second
+Transactions per Second           :  23199.52 TPS
+Minimum                           :     31 microseconds
+Maximum                           :    332 microseconds
+Average                           :     42 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 968 )
+Number of Transactions per Thread : 968
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.030813 second
+Start Time                        : 2021/06/07 18:07:38.302066
+End   Time                        : 2021/06/07 18:07:38.330763
+Elapsed                           : 0.028697 second
+Transactions per Second           : 134927.00 TPS
+Minimum                           :     21 microseconds
+Maximum                           :   1049 microseconds
+Average                           :     28 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.046673 second
+Start Time                        : 2021/06/07 18:07:48.676047
+End   Time                        : 2021/06/07 18:07:48.732841
+Elapsed                           : 0.056794 second
+Transactions per Second           : 136352.43 TPS
+Minimum                           :     31 microseconds
+Maximum                           :   1958 microseconds
+Average                           :     54 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.068861 second
+Start Time                        : 2021/06/07 18:07:59.067050
+End   Time                        : 2021/06/07 18:07:59.097433
+Elapsed                           : 0.030383 second
+Transactions per Second           : 254879.37 TPS
+Minimum                           :     20 microseconds
+Maximum                           :   1485 microseconds
+Average                           :     26 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.044599 second
+Start Time                        : 2021/06/07 18:08:09.382489
+End   Time                        : 2021/06/07 18:08:09.427647
+Elapsed                           : 0.045158 second
+Transactions per Second           : 171486.78 TPS
+Minimum                           :     24 microseconds
+Maximum                           :    973 microseconds
+Average                           :     40 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        4
+Start Value                       :     7744
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.024078 second
+Start Time                        : 2021/06/07 18:08:19.727194
+Connection Elapsed                : 0.034873 second
+Start Time                        : 2021/06/07 18:08:19.737899
+End   Time                        : 2021/06/07 18:08:19.752796
+Elapsed                           : 0.025602 second
+Transactions per Second           : 151238.18 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    527 microseconds
+Average                           :     24 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:08:19.788054
+Elapsed                           : 0.050155 second
+Transactions per Second           :  77200.68 TPS
+Minimum                           :     34 microseconds
+Maximum                           :    496 microseconds
+Average                           :     46 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        4
+Start Value                       :     7744
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.023475 second
+Start Time                        : 2021/06/07 18:08:30.073623
+Connection Elapsed                : 0.027030 second
+Start Time                        : 2021/06/07 18:08:30.077268
+End   Time                        : 2021/06/07 18:08:30.102306
+Elapsed                           : 0.028683 second
+Transactions per Second           : 134992.85 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    488 microseconds
+Average                           :     25 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:08:30.118321
+Elapsed                           : 0.041053 second
+Transactions per Second           :  94317.10 TPS
+Minimum                           :     24 microseconds
+Maximum                           :    405 microseconds
+Average                           :     37 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        2
+Start Value                       :    15488
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        2
+Start Value                       :        0
+Number of Transactions            :     1936
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        4
+Start Value                       :     7744
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.008968 second
+Start Time                        : 2021/06/07 18:08:40.381100
+Connection Elapsed                : 0.018293 second
+Start Time                        : 2021/06/07 18:08:40.390594
+Connection Elapsed                : 0.040052 second
+Start Time                        : 2021/06/07 18:08:40.412362
+End   Time                        : 2021/06/07 18:08:40.429395
+Elapsed                           : 0.038801 second
+Transactions per Second           :  49895.62 TPS
+Minimum                           :     28 microseconds
+Maximum                           :    295 microseconds
+Average                           :     38 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+End   Time                        : 2021/06/07 18:08:40.431333
+Elapsed                           : 0.050233 second
+Transactions per Second           :  38540.40 TPS
+Minimum                           :     38 microseconds
+Maximum                           :    509 microseconds
+Average                           :     51 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 1936 )
+Number of Transactions per Thread : 936 1000
+
+End   Time                        : 2021/06/07 18:08:40.438435
+Elapsed                           : 0.026073 second
+Transactions per Second           : 148506.12 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    400 microseconds
+Average                           :     24 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.060930 second
+Start Time                        : 2021/06/07 18:08:50.767873
+End   Time                        : 2021/06/07 18:08:50.801295
+Elapsed                           : 0.033422 second
+Transactions per Second           : 231703.67 TPS
+Minimum                           :     22 microseconds
+Maximum                           :   1780 microseconds
+Average                           :     31 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.102934 second
+Start Time                        : 2021/06/07 18:09:01.204160
+End   Time                        : 2021/06/07 18:09:01.271697
+Elapsed                           : 0.067537 second
+Transactions per Second           : 229326.15 TPS
+Minimum                           :     37 microseconds
+Maximum                           :   2724 microseconds
+Average                           :     64 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.126444 second
+Start Time                        : 2021/06/07 18:09:11.680462
+End   Time                        : 2021/06/07 18:09:11.726043
+Elapsed                           : 0.045581 second
+Transactions per Second           : 339790.70 TPS
+Minimum                           :     20 microseconds
+Maximum                           :   1950 microseconds
+Average                           :     38 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.099617 second
+Start Time                        : 2021/06/07 18:09:22.068577
+End   Time                        : 2021/06/07 18:09:22.125868
+Elapsed                           : 0.057291 second
+Transactions per Second           : 270339.15 TPS
+Minimum                           :     24 microseconds
+Maximum                           :   1505 microseconds
+Average                           :     52 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        8
+Start Value                       :    15488
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.054477 second
+Start Time                        : 2021/06/07 18:09:32.486274
+Connection Elapsed                : 0.060305 second
+Start Time                        : 2021/06/07 18:09:32.492225
+End   Time                        : 2021/06/07 18:09:32.527731
+Elapsed                           : 0.035506 second
+Transactions per Second           : 218103.98 TPS
+Minimum                           :     21 microseconds
+Maximum                           :    993 microseconds
+Average                           :     33 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:09:32.547253
+Elapsed                           : 0.060979 second
+Transactions per Second           : 126994.54 TPS
+Minimum                           :     32 microseconds
+Maximum                           :    947 microseconds
+Average                           :     56 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :        8
+Start Value                       :    15488
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.052829 second
+Start Time                        : 2021/06/07 18:09:42.872940
+Connection Elapsed                : 0.081410 second
+Start Time                        : 2021/06/07 18:09:42.901618
+End   Time                        : 2021/06/07 18:09:42.902885
+Elapsed                           : 0.029945 second
+Transactions per Second           : 258607.45 TPS
+Minimum                           :     19 microseconds
+Maximum                           :    730 microseconds
+Average                           :     27 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:09:42.947672
+Elapsed                           : 0.046054 second
+Transactions per Second           : 168150.43 TPS
+Minimum                           :     24 microseconds
+Maximum                           :    576 microseconds
+Average                           :     40 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        4
+Start Value                       :    30976
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        4
+Start Value                       :        0
+Number of Transactions            :     3872
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        8
+Start Value                       :    15488
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.025911 second
+Start Time                        : 2021/06/07 18:09:53.241180
+Connection Elapsed                : 0.031660 second
+Start Time                        : 2021/06/07 18:09:53.247152
+Connection Elapsed                : 0.061817 second
+Start Time                        : 2021/06/07 18:09:53.277318
+End   Time                        : 2021/06/07 18:09:53.292004
+Elapsed                           : 0.044852 second
+Transactions per Second           :  86328.37 TPS
+Minimum                           :     29 microseconds
+Maximum                           :    436 microseconds
+Average                           :     43 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:09:53.294943
+Elapsed                           : 0.053763 second
+Transactions per Second           :  72019.79 TPS
+Minimum                           :     36 microseconds
+Maximum                           :    639 microseconds
+Average                           :     52 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 3872 )
+Number of Transactions per Thread : 872 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:09:53.307469
+Elapsed                           : 0.030151 second
+Transactions per Second           : 256840.57 TPS
+Minimum                           :     20 microseconds
+Maximum                           :    727 microseconds
+Average                           :     28 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.118861 second
+Start Time                        : 2021/06/07 18:10:03.711576
+End   Time                        : 2021/06/07 18:10:03.758118
+Elapsed                           : 0.046542 second
+Transactions per Second           : 332774.70 TPS
+Minimum                           :     21 microseconds
+Maximum                           :   2526 microseconds
+Average                           :     44 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.236228 second
+Start Time                        : 2021/06/07 18:10:14.303473
+End   Time                        : 2021/06/07 18:10:14.434294
+Elapsed                           : 0.130821 second
+Transactions per Second           : 236781.56 TPS
+Minimum                           :     37 microseconds
+Maximum                           :  19280 microseconds
+Average                           :    120 microseconds
+Number of Long Transactions       :   0.06% ( 20 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.223833 second
+Start Time                        : 2021/06/07 18:10:24.980043
+End   Time                        : 2021/06/07 18:10:25.069255
+Elapsed                           : 0.089212 second
+Transactions per Second           : 347217.86 TPS
+Minimum                           :     20 microseconds
+Maximum                           :   3562 microseconds
+Average                           :     79 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.199729 second
+Start Time                        : 2021/06/07 18:10:35.505046
+End   Time                        : 2021/06/07 18:10:35.633789
+Elapsed                           : 0.128743 second
+Transactions per Second           : 240603.37 TPS
+Minimum                           :     24 microseconds
+Maximum                           :  17444 microseconds
+Average                           :    117 microseconds
+Number of Long Transactions       :   0.04% ( 11 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       16
+Start Value                       :    30976
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.114368 second
+Start Time                        : 2021/06/07 18:10:46.135060
+Connection Elapsed                : 0.115247 second
+Start Time                        : 2021/06/07 18:10:46.136045
+End   Time                        : 2021/06/07 18:10:46.194557
+Elapsed                           : 0.058512 second
+Transactions per Second           : 264697.84 TPS
+Minimum                           :     22 microseconds
+Maximum                           :   1603 microseconds
+Average                           :     51 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:10:46.221462
+Elapsed                           : 0.086402 second
+Transactions per Second           : 179255.11 TPS
+Minimum                           :     37 microseconds
+Maximum                           :   2134 microseconds
+Average                           :     79 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       16
+Start Value                       :    30976
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.089117 second
+Start Time                        : 2021/06/07 18:10:56.625843
+Connection Elapsed                : 0.099633 second
+Start Time                        : 2021/06/07 18:10:56.636331
+End   Time                        : 2021/06/07 18:10:56.700031
+Elapsed                           : 0.074188 second
+Transactions per Second           : 208766.92 TPS
+Minimum                           :     26 microseconds
+Maximum                           :  10461 microseconds
+Average                           :     64 microseconds
+Number of Long Transactions       :   0.01% ( 1 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:10:56.700196
+Elapsed                           : 0.063865 second
+Transactions per Second           : 242511.55 TPS
+Minimum                           :     19 microseconds
+Maximum                           :   9478 microseconds
+Average                           :     55 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        8
+Start Value                       :    61952
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :        8
+Start Value                       :        0
+Number of Transactions            :     7744
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       16
+Start Value                       :    30976
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.043582 second
+Start Time                        : 2021/06/07 18:11:07.049080
+Connection Elapsed                : 0.049084 second
+Start Time                        : 2021/06/07 18:11:07.054565
+Connection Elapsed                : 0.084935 second
+Start Time                        : 2021/06/07 18:11:07.090447
+End   Time                        : 2021/06/07 18:11:07.105948
+Elapsed                           : 0.056868 second
+Transactions per Second           : 136175.00 TPS
+Minimum                           :     29 microseconds
+Maximum                           :    596 microseconds
+Average                           :     53 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:11:07.131746
+Elapsed                           : 0.077181 second
+Transactions per Second           : 100335.57 TPS
+Minimum                           :     37 microseconds
+Maximum                           :   1111 microseconds
+Average                           :     71 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 7744 )
+Number of Transactions per Thread : 744 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:11:07.136010
+Elapsed                           : 0.045563 second
+Transactions per Second           : 339924.94 TPS
+Minimum                           :     21 microseconds
+Maximum                           :   8399 microseconds
+Average                           :     41 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.253162 second
+Start Time                        : 2021/06/07 18:11:17.730355
+End   Time                        : 2021/06/07 18:11:17.844648
+Elapsed                           : 0.114293 second
+Transactions per Second           : 271022.72 TPS
+Minimum                           :     22 microseconds
+Maximum                           :  24422 microseconds
+Average                           :     96 microseconds
+Number of Long Transactions       :   0.06% ( 18 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            :    61952
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.498998 second
+Start Time                        : 2021/06/07 18:11:28.656647
+End   Time                        : 2021/06/07 18:11:29.034415
+Elapsed                           : 0.377768 second
+Transactions per Second           : 163994.83 TPS
+Minimum                           :     37 microseconds
+Maximum                           : 108319 microseconds
+Average                           :    339 microseconds
+Number of Long Transactions       :   0.70% ( 433 / 61952 )
+Number of Transactions per Thread : 0 0 952 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            :    61952
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.398918 second
+Start Time                        : 2021/06/07 18:11:39.848263
+End   Time                        : 2021/06/07 18:11:40.071416
+Elapsed                           : 0.223153 second
+Transactions per Second           : 277621.18 TPS
+Minimum                           :     21 microseconds
+Maximum                           :  12941 microseconds
+Average                           :    209 microseconds
+Number of Long Transactions       :   0.00% ( 2 / 61952 )
+Number of Transactions per Thread : 0 0 952 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            :    61952
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.469824 second
+Start Time                        : 2021/06/07 18:11:50.787032
+End   Time                        : 2021/06/07 18:11:51.054943
+Elapsed                           : 0.267911 second
+Transactions per Second           : 231240.97 TPS
+Minimum                           :     24 microseconds
+Maximum                           :  91250 microseconds
+Average                           :    236 microseconds
+Number of Long Transactions       :   0.42% ( 262 / 61952 )
+Number of Transactions per Thread : 0 0 952 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       32
+Start Value                       :    61952
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.174588 second
+Start Time                        : 2021/06/07 18:12:01.767837
+Connection Elapsed                : 0.228968 second
+Start Time                        : 2021/06/07 18:12:01.822292
+End   Time                        : 2021/06/07 18:12:01.963785
+Elapsed                           : 0.141493 second
+Transactions per Second           : 218922.49 TPS
+Minimum                           :     20 microseconds
+Maximum                           :  12442 microseconds
+Average                           :    126 microseconds
+Number of Long Transactions       :   0.03% ( 8 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:12:01.972816
+Elapsed                           : 0.204979 second
+Transactions per Second           : 151117.92 TPS
+Minimum                           :     37 microseconds
+Maximum                           :  15748 microseconds
+Average                           :    169 microseconds
+Number of Long Transactions       :   0.05% ( 16 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       32
+Start Value                       :    61952
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.192847 second
+Start Time                        : 2021/06/07 18:12:12.543207
+Connection Elapsed                : 0.204803 second
+Start Time                        : 2021/06/07 18:12:12.555235
+End   Time                        : 2021/06/07 18:12:12.732673
+Elapsed                           : 0.189466 second
+Transactions per Second           : 163491.07 TPS
+Minimum                           :     25 microseconds
+Maximum                           :   6206 microseconds
+Average                           :    176 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:12:12.751924
+Elapsed                           : 0.196689 second
+Transactions per Second           : 157487.20 TPS
+Minimum                           :     27 microseconds
+Maximum                           :  17423 microseconds
+Average                           :    184 microseconds
+Number of Long Transactions       :   0.00% ( 1 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       16
+Start Value                       :   123904
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            :    15488
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       32
+Start Value                       :    61952
+Number of Transactions            :    30976
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.116450 second
+Start Time                        : 2021/06/07 18:12:23.247606
+Connection Elapsed                : 0.138709 second
+Start Time                        : 2021/06/07 18:12:23.269719
+Connection Elapsed                : 0.194495 second
+Start Time                        : 2021/06/07 18:12:23.325660
+End   Time                        : 2021/06/07 18:12:23.360983
+Elapsed                           : 0.113377 second
+Transactions per Second           : 136606.19 TPS
+Minimum                           :     31 microseconds
+Maximum                           :   3877 microseconds
+Average                           :     90 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:12:23.461627
+Elapsed                           : 0.135967 second
+Transactions per Second           : 227819.99 TPS
+Minimum                           :     21 microseconds
+Maximum                           :   7879 microseconds
+Average                           :    126 microseconds
+Number of Long Transactions       :   0.00% ( 0 / 30976 )
+Number of Transactions per Thread : 0 976 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+End   Time                        : 2021/06/07 18:12:23.462546
+Elapsed                           : 0.192827 second
+Transactions per Second           :  80320.70 TPS
+Minimum                           :     35 microseconds
+Maximum                           :  10811 microseconds
+Average                           :    176 microseconds
+Number of Long Transactions       :   0.01% ( 1 / 15488 )
+Number of Transactions per Thread : 488 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+iSQL> ALTER SYSTEM CHECKPOINT;
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            :    61952
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.438334 second
+Start Time                        : 2021/06/07 18:12:34.352212
+End   Time                        : 2021/06/07 18:12:34.717145
+Elapsed                           : 0.364933 second
+Transactions per Second           : 169762.67 TPS
+Minimum                           :     23 microseconds
+Maximum                           : 102180 microseconds
+Average                           :    338 microseconds
+Number of Long Transactions       :   0.08% ( 47 / 61952 )
+Number of Transactions per Thread : 0 0 952 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.
