@@ -1,0 +1,18 @@
+run samesize
+rm -f bmt_insert bmt_insert.o bmt_insert_merged.c bmt_insert_merged.sc
+rm -f bmt_select bmt_select.o bmt_select_merged.c bmt_select_merged.sc
+rm -f bmt_update bmt_update.o bmt_update_merged.c bmt_update_merged.sc
+rm -f bmt_delete bmt_delete.o bmt_delete_merged.c bmt_delete_merged.sc
+cat bmt_header.sc bmt_insert.sc bmt_footer.sc >bmt_insert_merged.sc
+apre -mt bmt_insert_merged.sc
+
+
+
+THREADS=1 4 8 16 32 64
+START=
+RECORED=96838
+UNIT=1000
+THRESHOLD=10000
+TESTMODE=
+SYS MANAGER DSN=localhost;PORT_NO=20300;CONNTYPE=1
+/data/cloud/CloudNative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
