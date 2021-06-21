@@ -1,0 +1,462 @@
+run samesize
+rm -f bmt_insert bmt_insert.o bmt_insert_merged.c bmt_insert_merged.sc
+rm -f bmt_select bmt_select.o bmt_select_merged.c bmt_select_merged.sc
+rm -f bmt_update bmt_update.o bmt_update_merged.c bmt_update_merged.sc
+rm -f bmt_delete bmt_delete.o bmt_delete_merged.c bmt_delete_merged.sc
+cat bmt_header.sc bmt_insert.sc bmt_footer.sc >bmt_insert_merged.sc
+apre -mt bmt_insert_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_insert.o bmt_insert_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_insert bmt_insert.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_select.sc bmt_footer.sc >bmt_select_merged.sc
+apre -mt bmt_select_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_select.o bmt_select_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_select bmt_select.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_update.sc bmt_footer.sc >bmt_update_merged.sc
+apre -mt bmt_update_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_update.o bmt_update_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_update bmt_update.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+cat bmt_header.sc bmt_delete.sc bmt_footer.sc >bmt_delete_merged.sc
+apre -mt bmt_delete_merged.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+gcc -D_GNU_SOURCE -W -Wall -pipe -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DPDL_HAS_AIO_CALLS -m64 -mtune=k8 -O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer -DPDL_NDEBUG -D_GNU_SOURCE -DACP_CFG_COMPILE_64BIT -DACP_CFG_COMPILE_BIT=64 -DACP_CFG_COMPILE_BIT_STR=64 -DCOMPILER_OPT_FLAGS="-O3 -funroll-loops -fno-strict-aliasing -fno-omit-frame-pointer" -MMD -MP -c -I/data/cloud/altibase_home/include -o bmt_delete.o bmt_delete_merged.c
+g++ -Wl,-relax -Wl,--no-as-needed -L. -O3 -L/data/cloud/altibase_home/lib -o bmt_delete bmt_delete.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt -lstdc++
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+Ok..Shutdown Proceeding....
+
+
+TRANSITION TO PHASE : Shutdown Altibase
+  [RP] Finalization : PASS
+shutdown immediate success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+
+	Creating MMDB FILES     [SUCCESS]
+
+	Creating Catalog Tables [SUCCESS]
+
+	Creating DRDB FILES     [SUCCESS]
+
+  [SM] Rebuilding Indices [Total Count:0]  [SUCCESS]
+
+DB Writing Completed. All Done.
+
+Create success.
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+
+TRANSITION TO PHASE : PROCESS
+
+
+TRANSITION TO PHASE : CONTROL
+
+
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version => Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database 
+  [SM] Recovery Phase - 3 : Skipping Recovery & Starting Threads...
+                            Refining Disk Table 
+  [SM] Refine Memory Table : ........................................................................................................................................... [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:137] ......................................................................................................................................... [SUCCESS]
+
+
+TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : [PASS]
+
+--- STARTUP Process SUCCESS ---
+Command executed successfully.
+
+
+THREADS=64
+START=
+RECORED=968380
+UNIT=1000
+THRESHOLD=10000
+TESTMODE=
+SYS MANAGER DSN=localhost;PORT_NO=20300;CONNTYPE=1
+/data/cloud/cloudnative/1.BMT/Test4Single/work/HDB/APRE/MEMORY
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+[ERR-31031 : Table or view was not found : 
+0001 : DROP TABLE TEST
+                 ^   ^
+]
+iSQL> CREATE TABLE TEST (
+    K01  INTEGER,
+    K02  DATE,
+    K03  DATE,
+    K04  CHAR(10),
+    K05  CHAR(10),
+    K06  CHAR(10),
+    K07  VARCHAR(20),
+    K08  VARCHAR(20),
+    K09  VARCHAR(20),
+    K10  VARCHAR(20),
+    K11  DOUBLE,
+    K12  DOUBLE,
+    K13  DOUBLE,
+    K14  CHAR(10),
+    K15  VARCHAR(50),
+    K16  VARCHAR(50),
+    K17  VARCHAR(50),
+    K18  VARCHAR(50),
+    K19  INTEGER,
+    K20  INTEGER,
+    K21  CHAR(3),
+    K22  CHAR(3),
+    K23  CHAR(10),
+    K24  INTEGER,
+    K25  INTEGER,
+    K26  INTEGER,
+    K27  INTEGER,
+    K28  VARCHAR(30),
+    K29  VARCHAR(30),
+    K30  VARCHAR(30),
+    K31  DATE,
+    K32  DOUBLE,
+    K33  DOUBLE,
+    K34  INTEGER,
+    K35  INTEGER,
+    K36  CHAR(10),
+    K37  CHAR(10),
+    K38  VARCHAR(100),
+    K39  VARCHAR(100),
+    K40  VARCHAR(100),
+    K41  INTEGER,
+    K42  INTEGER,
+    K43  INTEGER,
+    K44  DOUBLE,
+    K45  DOUBLE,
+    K46  CHAR(10),
+    K47  CHAR(10),
+    K48  DATE,
+    K49  DATE,
+    K50  CHAR(20),
+    K51  DATE,
+    K52  INTEGER,
+    K53  INTEGER,
+    K54  DATE,
+    K55  CHAR(20),
+    K56  CHAR(20),
+    K57  CHAR(20),
+    K58  DOUBLE,
+    K59  INTEGER,
+    K60  VARCHAR(300)
+);
+Create success.
+iSQL> ALTER TABLE TEST ADD CONSTRAINT TEST_INDEX PRIMARY KEY ( K01 );
+Alter success.
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            : 61976320
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.417734 second
+Start Time                        : 2021/06/21 15:56:52.875809
+End   Time                        : 2021/06/21 16:03:07.031618
+Elapsed                           : 374.155809 second
+Transactions per Second           : 165643.08 TPS
+Minimum                           :     32 microseconds
+Maximum                           : 181025 microseconds
+Average                           :    386 microseconds
+Number of Long Transactions       :   0.79% ( 490028 / 61976320 )
+Number of Transactions per Thread : 940000 948000 949000 951000 954000 955000 955000 956000 956000 956000 959000 959000 959320 960000 961000 961000 961000 962000 962000 962000 964000 965000 965000 966000 966000 967000 967000 967000 968000 968000 968000 968000 968000 968000 968000 969000 970000 970000 970000 970000 970000 971000 971000 972000 973000 974000 975000 977000 978000 978000 979000 980000 980000 981000 981000 982000 982000 982000 984000 984000 984000 985000 985000 990000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            : 61976320
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.406174 second
+Start Time                        : 2021/06/21 16:03:07.497941
+End   Time                        : 2021/06/21 16:06:41.060475
+Elapsed                           : 213.562534 second
+Transactions per Second           : 290202.21 TPS
+Minimum                           :     20 microseconds
+Maximum                           : 155619 microseconds
+Average                           :    220 microseconds
+Number of Long Transactions       :   0.00% ( 2246 / 61976320 )
+Number of Transactions per Thread : 828000 864000 880000 899000 908000 913000 918000 919000 935000 936000 938000 938000 941000 946000 947000 950000 958000 962000 962000 966000 966000 967000 968000 970000 971000 971000 971000 972000 972000 972000 972000 973000 973000 974000 976000 977000 978000 978000 979000 979000 980000 980000 982000 985000 985000 988000 988000 989000 989000 990000 990000 991000 993000 994000 1002320 1004000 1004000 1006000 1011000 1018000 1024000 1035000 1040000 1041000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Update
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            : 61976320
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.435588 second
+Start Time                        : 2021/06/21 16:06:41.551416
+End   Time                        : 2021/06/21 16:11:15.751486
+Elapsed                           : 274.200070 second
+Transactions per Second           : 226025.91 TPS
+Minimum                           :     27 microseconds
+Maximum                           : 228662 microseconds
+Average                           :    283 microseconds
+Number of Long Transactions       :   0.06% ( 34784 / 61976320 )
+Number of Transactions per Thread : 945320 948000 951000 953000 954000 954000 956000 956000 957000 957000 960000 961000 961000 962000 962000 963000 963000 963000 964000 964000 964000 964000 965000 965000 966000 966000 967000 967000 967000 968000 968000 969000 969000 970000 970000 970000 971000 971000 971000 971000 971000 972000 972000 972000 973000 973000 974000 974000 975000 975000 975000 976000 976000 977000 977000 977000 977000 978000 980000 983000 985000 988000 991000 992000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       32
+Start Value                       : 61976320
+Number of Transactions            : 30988160
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            : 30988160
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.217019 second
+Start Time                        : 2021/06/21 16:11:16.030416
+Connection Elapsed                : 0.227831 second
+Start Time                        : 2021/06/21 16:11:16.041238
+End   Time                        : 2021/06/21 16:13:59.770161
+Elapsed                           : 163.728923 second
+Transactions per Second           : 189265.03 TPS
+Minimum                           :     21 microseconds
+Maximum                           : 171855 microseconds
+Average                           :    168 microseconds
+Number of Long Transactions       :   0.02% ( 5985 / 30988160 )
+Number of Transactions per Thread : 936000 943000 943000 944000 945000 946000 946000 947000 947000 948000 949000 952000 953000 955000 956000 961000 963000 965000 969000 973000 981000 981160 985000 986000 990000 994000 996000 998000 1000000 1004000 1008000 1024000
+
+End   Time                        : 2021/06/21 16:15:05.973319
+Elapsed                           : 229.942903 second
+Transactions per Second           : 134764.59 TPS
+Minimum                           :     33 microseconds
+Maximum                           : 158166 microseconds
+Average                           :    237 microseconds
+Number of Long Transactions       :   0.08% ( 23347 / 30988160 )
+Number of Transactions per Thread : 913000 920000 923000 923000 924000 925000 927000 930000 931000 932000 932000 933000 933000 933000 934000 934000 936000 943000 968000 1013000 1016000 1017000 1017000 1017000 1019000 1023000 1023160 1024000 1027000 1027000 1029000 1042000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       32
+Start Value                       :        0
+Number of Transactions            : 30988160
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Select+Update
+Number of Threads                 :       32
+Start Value                       : 61976320
+Number of Transactions            : 30988160
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.247074 second
+Start Time                        : 2021/06/21 16:15:06.281227
+Connection Elapsed                : 0.268540 second
+Start Time                        : 2021/06/21 16:15:06.302700
+End   Time                        : 2021/06/21 16:18:18.314102
+Elapsed                           : 192.032875 second
+Transactions per Second           : 161369.04 TPS
+Minimum                           :     21 microseconds
+Maximum                           : 176902 microseconds
+Average                           :    198 microseconds
+Number of Long Transactions       :   0.03% ( 8724 / 30988160 )
+Number of Transactions per Thread : 930000 932160 933000 935000 937000 942000 942000 943000 944000 947000 949000 951000 955000 957000 961000 961000 964000 965000 966000 974000 976000 984000 989000 995000 998000 998000 1002000 1008000 1009000 1011000 1012000 1018000
+
+End   Time                        : 2021/06/21 16:18:35.475982
+Elapsed                           : 209.173282 second
+Transactions per Second           : 148145.88 TPS
+Minimum                           :     25 microseconds
+Maximum                           : 198521 microseconds
+Average                           :    215 microseconds
+Number of Long Transactions       :   0.04% ( 11692 / 30988160 )
+Number of Transactions per Thread : 913000 927000 931000 933000 933000 936000 937000 937000 942000 943000 945000 948000 956000 956000 967000 974000 979000 979000 980160 982000 982000 986000 989000 991000 1000000 1002000 1003000 1003000 1006000 1008000 1009000 1011000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       16
+Start Value                       :        0
+Number of Transactions            : 15494080
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       32
+Start Value                       : 61976320
+Number of Transactions            : 30988160
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Insert+Select+Update
+Number of Threads                 :       16
+Start Value                       : 123952640
+Number of Transactions            : 15494080
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.101974 second
+Start Time                        : 2021/06/21 16:18:35.636409
+Connection Elapsed                : 0.129182 second
+Start Time                        : 2021/06/21 16:18:35.663573
+Connection Elapsed                : 0.230163 second
+Start Time                        : 2021/06/21 16:18:35.764560
+End   Time                        : 2021/06/21 16:21:35.677073
+Elapsed                           : 179.912513 second
+Transactions per Second           : 172240.16 TPS
+Minimum                           :     21 microseconds
+Maximum                           : 150795 microseconds
+Average                           :    185 microseconds
+Number of Long Transactions       :   0.02% ( 7004 / 30988160 )
+Number of Transactions per Thread : 930000 937000 939000 940000 944000 945000 950000 954000 956000 956160 958000 959000 962000 962000 964000 968000 970000 975000 975000 976000 978000 978000 979000 979000 983000 988000 990000 994000 996000 999000 1001000 1003000
+
+End   Time                        : 2021/06/21 16:22:01.170620
+Elapsed                           : 205.507047 second
+Transactions per Second           :  75394.40 TPS
+Minimum                           :     28 microseconds
+Maximum                           : 221616 microseconds
+Average                           :    212 microseconds
+Number of Long Transactions       :   0.04% ( 6310 / 15494080 )
+Number of Transactions per Thread : 927000 946000 949000 950000 953000 955000 958000 958000 968000 976000 981000 986080 993000 996000 998000 1000000
+
+End   Time                        : 2021/06/21 16:22:13.044804
+Elapsed                           : 217.408395 second
+Transactions per Second           :  71267.17 TPS
+Minimum                           :     33 microseconds
+Maximum                           : 160467 microseconds
+Average                           :    224 microseconds
+Number of Long Transactions       :   0.04% ( 6426 / 15494080 )
+Number of Transactions per Thread : 922000 934000 935080 938000 941000 951000 961000 965000 972000 988000 989000 989000 991000 994000 1009000 1015000
+
+Working Directory                 : HDB/APRE/MEMORY
+Test Mode                         : Delete
+Number of Threads                 :       64
+Start Value                       :        0
+Number of Transactions            : 61976320
+Size   of Unit                    :     1000
+Threshold(microsecond)            :    10000
+Cap(TPS)                          :        0
+User                              : SYS
+Password                          : MANAGER
+Option                            : DSN=localhost;PORT_NO=20300;CONNTYPE=1
+Connection Elapsed                : 0.484042 second
+Start Time                        : 2021/06/21 16:22:13.590147
+End   Time                        : 2021/06/21 16:28:14.768424
+Elapsed                           : 361.178277 second
+Transactions per Second           : 171594.82 TPS
+Minimum                           :     20 microseconds
+Maximum                           : 220263 microseconds
+Average                           :    372 microseconds
+Number of Long Transactions       :   0.05% ( 29800 / 61976320 )
+Number of Transactions per Thread : 935000 936000 937000 939000 939000 940000 942000 942000 945000 948000 954000 955000 956000 957000 957000 958000 958000 960000 960000 960000 961320 962000 964000 964000 965000 965000 966000 966000 968000 969000 969000 970000 971000 971000 971000 973000 973000 973000 974000 974000 975000 976000 977000 977000 977000 977000 978000 979000 982000 982000 983000 984000 986000 986000 987000 987000 988000 992000 992000 992000 992000 992000 993000 995000
+
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.2.4_13
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL> DROP TABLE TEST;
+Drop success.

@@ -71,8 +71,8 @@ pwd
 isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f schema.sql
 let RECORDALL=$RECORDS*$THREAD
 TEST_MODE="Insert"
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 START="0"
  
 if [ "$osname" = "Linux" ]; then
@@ -96,8 +96,8 @@ let ENDSTART=`expr $START + $RECORDALL`
  
 TEST_MODE="Select"
 START="0"
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 let RECORDALL=$RECORDS*$THREAD
 if [ "$osname" = "Linux" ]; then
     cd $HOME/performance/bin/Linux;
@@ -118,8 +118,8 @@ fi
 cd $path
 TEST_MODE="Update"
 START="0"
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 let RECORDALL=$RECORDS*$THREAD
 if [ "$osname" = "Linux" ]; then
 
@@ -152,8 +152,8 @@ let THREAD1=$THREAD*$ISR_INSERT_RATIO/100
 let THREAD2=$THREAD*$ISR_SELECT_RATIO/100
 let RECORDS1=$RECORDS*$THREAD*$ISR_INSERT_RATIO/100
 let RECORDS2=$RECORDS*$THREAD*$ISR_SELECT_RATIO/100
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 if [ "$osname" = "Linux" ]; then
     cd $HOME/performance/bin/Linux;
     ./usagestart.sh;
@@ -204,8 +204,8 @@ let THREAD1=$THREAD*$SUR_SELECT_RATIO/100
 let THREAD2=$THREAD*$SUR_UPDATE_RATIO/100
 let RECORDS1=$RECORDS*$THREAD*$SUR_SELECT_RATIO/100
 let RECORDS2=$RECORDS*$THREAD*$SUR_UPDATE_RATIO/100
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 if [ "$osname" = "Linux" ]; then
     cd $HOME/performance/bin/Linux;
     ./usagestart.sh;
@@ -259,8 +259,8 @@ let THREAD3=$THREAD*$ISUR_UPDATE_RATIO/100
 let RECORDS1=$RECORDS*$THREAD*$ISUR_INSERT_RATIO/100
 let RECORDS2=$RECORDS*$THREAD*$ISUR_SELECT_RATIO/100
 let RECORDS3=$RECORDS*$THREAD*$ISUR_UPDATE_RATIO/100
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 if [ "$osname" = "Linux" ]; then
     cd $HOME/performance/bin/Linux;
     ./usagestart.sh;
@@ -312,8 +312,8 @@ START="0"
  
 export STANDARD_ALLTHREAD="0"
 let RECORDALL=$RECORDS*$THREAD
-isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
-sleep 10
+#isql -s $HOST -u $DBUSER -p $PASSWORD -port $PORT -f checkpoint.sql
+#sleep 1
 if [ "$osname" = "Linux" ]; then
     cd $HOME/performance/bin/Linux;
     ./usagestart.sh;
