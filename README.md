@@ -1,4 +1,4 @@
-# CloudNative
+# CloudNative DBMS
 
 CloudNative Repository is for development for Cloud Native DBMS based on Altibase 
 We will approach many kind of approaches to develop Cloud Native DBMSs as belows:
