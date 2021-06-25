@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-4103C (266300) Request of fetching data to an unprepared SQL statement.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-4103C (266300) Request of fetching data to an unprepared SQL statement.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148062 {padding: 0px;}
+div.rbtoc1624409148062 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148062 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148062'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Overview'>Overview</a></li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Version'>Version</a></li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Cause'>Cause</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-WhenCOMMIT/ROLLBACKisperformedintheOPENCURSORstate'>When COMMIT/ROLLBACK is performed in the OPEN CURSOR state</a></li>
+</ul>
+</li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-WhenCOMMIT/ROLLBACKisperformedintheOPENCURSORstate.1'>When COMMIT/ROLLBACK is performed in the OPEN CURSOR state</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-1.SeparationoffetchsessionandchangeDMLsession'>1. Separation of fetch session and change DML session</a></li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-2.Declareacursoronlyenoughtobestoredinthecommunicationbuffer,andthenrepetitivelyopenthecursor'>2. Declare a cursor only enough to be stored in the communication buffer, and then repetitively open the cursor</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Reference'>Reference</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Differencesbyversion'>Differences by version</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Overview">Overview</h1><hr /><p>This document describes an error that occurs during the record fetch process by using a cursor to process a select statement that returns multiple records.</p><p> </p><h1 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Version">Version</h1><hr /><p>Altibase 4.3.9</p><p> </p><h1 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Symptom">Symptom</h1><hr /><p>To process a query statement that returns multiple records, a CURSOR must be used in the following process.</p><ol><li>DECLARE CURSOR</li><li>OPEN CURSOR</li><li>FETCH CURSOR</li><li>CLOSE/RELEASE CURSOR</li></ol><p>Although the cursor is used as above, the <span style="color: rgb(255,0,0);">3. </span><span style="color: rgb(255,0,0);">FETCH process proceeds to some extent in the CURSOR FETCH stage</span>, and the 'ERR-4103C (266300)' error Request of fetching data to an unprepared SQL statement.' occurs even though there are still records to be fetched at some point.</p><p>Below is an example where an error occurs when using the cursor and the result of the error.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of using cursor-SESC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;"> 
+DECLARE CURSOR
+
+OPEN CURSOR
+ 
+/* fetch cursor in loop */
+/* To retrieve all records that meet the conditions, the FETCH CURSOR statement is repeatedly executed until the execution result is SQL_NO_DATA. */
+while(1)
+{
+    커서(CURSOR) FETCH ;
+    
+    if (sqlca.sqlcode == SQL_SUCCESS) 
+    {
+        ...
+    }
+    else if (sqlca.sqlcode == SQL_NO_DATA)
+    {
+        ...
+    }
+    else 
+    {   
+        /* Even though there are records to be fetched at some point after fetching to some extent, the error &#39;ERR-4103C (266300) Request of fetching data to an unprepared SQL statement.&#39; occurs.*/
+        printf(&quot;Error : [%d] %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        break;
+    }  
+}
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of error occurrence result</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">$ ./cursor1
+&lt;CURSOR 1&gt;
+[Success declare cursor]
+
+[Success open cursor]
+
+[Fetch Cursor]                                                    
+------------------------------------------------------------------
+DNO      DNAME                          DEP_LOCATION       MGR_NO 
+------------------------------------------------------------------
+1     BUSINESS DEPT                  Seoul              100
+2     BUSINESS DEPT                  Seoul              100
+...Omitted...
+908     BUSINESS DEPT                  Seoul              100
+909     BUSINESS DEPT                  Seoul              100
+
+Error : [-266300] Request of fetching data to an unprepared SQL statement.      /* Error occurred while performing fetch */
+------------------------------------------------------------------
+[Close Cursor]                                                    
+------------------------------------------------------------------
+Success close cursor</pre>
+</div></div><p> </p><h1 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Cause">Cause</h1><hr /><h2 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-WhenCOMMIT/ROLLBACKisperformedintheOPENCURSORstate">When COMMIT/ROLLBACK is performed in the OPEN CURSOR state</h2><hr /><p>Altibase complies with the ANSI standard and is configured not to support the fetch across commit method by default. Therefore, if COMMIT or ROLLBACK is performed after opening the cursor, the cursor is forcibly closed according to the ANSI standard.</p><div class="aui-message hint shadowed information-macro"><span class="aui-icon icon-hint">Icon.</span></div><div class="aui-message hint shadowed information-macro"><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <div class="aui-message hint shadowed information-macro"><div class="message-content"><p>This is a method that performed COMMIT while fetching the unit record after opening the cursor, which is not recommended by the ANSI standard.</p></div></div>
+                    </div>
+    </div>
+<p> </p></div><div class="aui-message hint shadowed information-macro"><div class="message-content"><p><span style="color: rgb(255,0,0);">The reason an error occurs while performing FETCH to some extent is that the first large amount of records is stored in the communication buffer during FETCH.</span> An error occurs when fetching all the records in the communication buffer and fetching the next certain amount of records into the communication buffer.</p><p>The following is an example of creating an application that may cause an error by performing COMMIT or ROLLBACK in the cursor OPEN state.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">non-autocommit mode
+ 
+DECLARE CURSOR
+ 
+OPEN CURSOR
+ 
+while(1)
+{
+    커서(CURSOR) FETCH ;
+     
+    if (sqlca.sqlcode == SQL_SUCCESS) {
+     
+       /* Execute change DML */                    
+        
+       /* Perform COMMIT or ROLLBACK */
+        
+    }
+    else if (sqlca.sqlcode == SQL_NO_DATA) {
+       ...
+    }
+    else {             
+      /* An error occurs at this stage when all the records in the first communication buffer are processed and then placed in the second communication buffer. */
+       ...
+    }  
+}</pre>
+</div></div><p> </p></div><div><h1 class="syntaxhighlighter nogutter  cpp" id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Solution">Solution</h1><hr /><h2 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-WhenCOMMIT/ROLLBACKisperformedintheOPENCURSORstate.1">When COMMIT/ROLLBACK is performed in the OPEN CURSOR state</h2></div><div><hr /><p>Here are two solutions to deal with this error.</p><ul><li><p>Separate fetch and change DML operations using multiple connections</p></li><li><p>Open the cursor repeatedly after declaring the cursor only enough to be contained in the communication buffer</p></li></ul><p>All of the above solutions require application changes.</p><h3 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-1.SeparationoffetchsessionandchangeDMLsession">1. Separation of fetch session and change DML session</h3><p>By using multiple connections within one application, COMMIT or ROLLBACK does not affect the cursor.</p></div><div><ul><li><p>Create a session that uses a cursor and a session that executes modified DML statements. It is described by defining it as CONN1 and CONN2, respectively.</p></li><li><p>Whenever cursor FETCH is executed in the session using the cursor (CONN1), change DML is executed in CONN2 and COMMIT or ROLLBACK is executed.</p></li><li><p>The session (CONN2) that executes the modified DML statement is set to non-autocommit mode.</p></li></ul><p>The following is an example of creating an application that reflects this action.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">/* Session for FETCH */
+EXEC SQL AT conn1 CONNECT;
+  
+/* Session for performing change DML */
+EXEC SQL AT conn2 CONNECT;
+ 
+EXEC SQL AT conn2 AUTOCOMMIT OFF;
+  
+/* Declare cursor in CONN1, perform OPEN, FETCH */
+EXEC SQL AT conn1 DECLARE cursor;
+EXEC SQL AT conn1 OPEN cursor;
+while (1)
+{
+    /* Perform FETCH on conn1 */
+    EXEC SQL AT conn1 FETCH cursor
+         
+    if (sqlca.sqlcode == SQL_SUCCESS) { 
+             
+          /* Change DML and COMMIT or ROLLBACK in conn2 */
+          EXEC SQL AT conn2 INSERT or UPDATE or DELETE ;
+           
+          /* check sqlca.sqlcode */
+          if (sqlca.sqlcode == SQL_SUCCESS) {
+             ...
+          }
+          else {
+             ...
+          }
+           
+          /* The commit or rollback performed in conn2 does not affect the cursor use of conn1. */ 
+          EXEC SQL AT conn2 commit or rollback;
+             
+          /* check sqlca.sqlcode */
+          if (sqlca.sqlcode == SQL_SUCCESS) {
+              ...
+          }
+          else {
+              ...
+          }                                            
+    } 
+    else if (sqlca.sqlcode == SQL_NO_DATA)  {
+        ...
+    }
+    else    {
+        ...
+    }            
+}</pre>
+</div></div><h3 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-2.Declareacursoronlyenoughtobestoredinthecommunicationbuffer,andthenrepetitivelyopenthecursor">2. Declare a cursor only enough to be stored in the communication buffer, and then repetitively open the cursor</h3><p>After calculating the number of records enough to put in the communication buffer with one FETCH, declare the cursor using the LIMIT clause.</p><p><span style="color: rgb(255,0,0);">The communication buffer size of Altibase version 4.3.9 and above is 64K.</span> Since the number of records in the communication buffer depends on the record size, the last value of the LIMIT clause varies depending on the operating environment.</p><p>Specify the number of records to be stored in the communication buffer in the LIMIT clause, and open the cursor again and use it while changing the start value of the LIMIT clause before opening the cursor.</p><p>The following is an example of creating an application that reflects this action.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">/* The cursor is declared using the LIMIT clause. n is the last record value to be returned in the LIMIT clause and must be defined according to the operating environment. The number of records in the communication buffer depends on the record size. */
+DECLARE CURSOR
+         SELECT ~
+           FROM ~
+          WHERE ~
+          LIMIT :s_start, n;
+               
+ 
+/* Declare the starting value used in the LIMIT clause. */
+s_start = 1;
+    
+while(1)
+{
+    /* Cursor open is repeated until all records meeting the conditions are fetched. */                  
+    OPEN CURSOR
+     
+        while(1)
+        {
+            FETCH CURSOR ;
+             
+            if (sqlca.sqlcode == SQL_SUCCESS) {
+             
+               /* Execute change DML */                           
+            }
+            else if (sqlca.sqlcode == SQL_NO_DATA) {
+               ...
+            }
+            else {             
+               ...
+            }  
+        }
+         
+        /* Perform COMMIT or ROLLBACK */   
+  
+       /* Specify the starting value of the LIMIT clause. n is an example. */
+       s_start = s_start + n ;
+         
+}
+ 
+CLOSE CURSOR OR CLOSE RELEASE CURSOR</pre>
+</div></div><p> </p><h1 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Reference">Reference</h1><hr /><h2 id="ERR-4103C(266300)RequestoffetchingdatatoanunpreparedSQLstatement.-Differencesbyversion">Differences by version</h2><hr /><p>Depending on the Altibase version, the error messages that occur in the same situation may be different.</p><p>The difference in error messages that occurs when COMMIT/ROLLBACK is executed among FETCHs in a non-autocommit environment is as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr style="margin-left: 30.0px;"><th class="confluenceTh">Version</th><th colspan="1" class="confluenceTh">Error code</th><th class="confluenceTh">Error message</th><th colspan="1" class="confluenceTh">Reference page</th></tr><tr style="margin-left: 60.0px;"><td class="confluenceTd">Altibase 4.3.9</td><td colspan="1" class="confluenceTd">ERR-4103C</td><td class="confluenceTd">Request of fetching data to an unprepared SQL statement.</td><td colspan="1" class="confluenceTd"> </td></tr><tr style="margin-left: 60.0px;"><td colspan="1" class="confluenceTd">Altibase 5.3.3 ~ 6.1.1</td><td colspan="1" class="confluenceTd">100</td><td colspan="1" class="confluenceTd">Not found data</td><td colspan="1" class="confluenceTd"><a href="http://aid.altibase.com/x/7YKZ" class="external-link" rel="nofollow">http://aid.altibase.com/x/7YKZ</a></td></tr><tr style="margin-left: 60.0px;"><td class="confluenceTd">Altibase 6.3.1 or later</td><td colspan="1" class="confluenceTd">ERR-410D2</td><td class="confluenceTd">Fetch out of sequence.</td><td colspan="1" class="confluenceTd"> <a href="http://aid.altibase.com/x/9oKZ" class="external-link" rel="nofollow">http://aid.altibase.com/x/9oKZ</a></td></tr></tbody></table></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

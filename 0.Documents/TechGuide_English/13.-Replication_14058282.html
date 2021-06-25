@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 13. Replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 13. Replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 16, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check </span><span>t</span><span>he replica</span><span>t</span><span>ion informa</span><span>t</span><span>ion is as follows.</span></p><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-ReplicationSenderInformation"><span class="md-plain md-expand">Replication Sender Information</span></h4><p><span>T</span><span>his shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he replica</span><span>t</span><span>ion sender </span><span>t</span><span>hreads.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT REP_NAME
+     , PEER_IP REMOTE_IP
+     , PEER_PORT REMOTE_REP_PORT
+     , DECODE(STATUS, 0, &#39;STOP&#39;, 1, &#39;RUN&#39;, 2, &#39;RETRY&#39;) AS STAUS
+     , REPL_MODE                                                    
+     , DECODE(NET_ERROR_FLAG, 0, &#39;OK&#39;, &#39;ERROR&#39;) AS NETWORK
+     , XSN
+  FROM V$REPSENDER ;</pre>
+</div></div><ul><li><h5 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription"><span class="md-plain md-expand">Main Column Description</span></h5></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REP_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the replication object</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REMOTE_IP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The IP address of the remote server to be replicated</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REMOTE_REP_PORT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The replication port number of the remote server that is the replication target is determined by the properties of the remote server</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATUS</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Sender's current status is 1 to be normal.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">STOP (0), RUN (1), RETRY (2)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REPL_MODE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Sender's current replication mode</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">NETWORK</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether there is a network error. </span><span class="md-plain">OK (0), ERROR (1)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">XSN</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The SN (Serial Number / Redo Log Serial Number) that the sender last sent, which is the same as REP_SN in v $ repgap.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-13.Replication-ReplicationReceiverInformation"><span class="md-plain md-expand">Replication Receiver Information</span></h3><p><span>T</span><span>his shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he replica</span><span>t</span><span>ion receiver </span><span>t</span><span>hreads.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT REP_NAME
+     , PEER_IP REMOTE_IP
+     , PEER_PORT REMOTE_REP_PORT
+     , APPLY_XSN
+  FROM V$REPRECEIVER ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription.1"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REMOTE_IP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The IP address of the remote server that is the replication target</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REMOTE_REP_PORT</span></span></td><td class="confluenceTd">The port number to which the sender of the remote server, which is the subject of Replication. Because it is not specifically set, it is different from time to time.</td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">APPLY_XSN</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The SN of the remote server that the receiver is currently reflecting</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-13.Replication-ReplicationGap"><span class="md-plain md-expand">Replication Gap</span></h3><p><span>T</span><span>his checks </span><span>t</span><span>he replica</span><span>t</span><span>ion gap informa</span><span>t</span><span>ion.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT REP_NAME
+     , REP_SN
+     , REP_LAST_SN
+     , REP_GAP
+     , READ_FILE_NO
+     , START_FLAG       
+  FROM V$REPGAP ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription.2"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REP_SN</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The last SN sent by the sender, same as XSN of v</span><span>$</span><span class="md-plain">repsender</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REP_LAST_SN</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The SN most recently logged by the local server transaction</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REP_GAP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The degree of asynchronousness at intervals between REP_LAST_SN and REP_SN. (Ie, REP_LAST_SN - REP_SN)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">READ_FILE_NO</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The redo log file number that sender last accessed for replication is not updated when reading the redo log buffer for replication in memory, so the old redo log file number may appear even if there is no replication gap.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">Therefore, the value of this column is meaningful only when there is a replication gap.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">START_FLAG</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The driving state of replication is generally 0.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">NORMAL (0), QUICK (1), SYNC (2), SYNC_ONLY (3), SYNC RUN (4), SYNC END (5), RECOVERY (6), OFFLINE (7)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-13.Replication-OverallStatusofReplication"><span class="md-plain md-expand">Overall Status of Replication</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT A.REPLICATION_NAME REP_NAME
+     , D.HOST_IP REMOTE_IP
+     , NVL(TO_CHAR(E.REP_GAP), &#39;-&#39;) AS REP_GAP
+     , A.XSN RESTART_XSN
+     , DECODE(B.PEER_PORT, NULL, &#39;OFF&#39;, &#39;ON&#39;) AS SENDER
+     , DECODE(C.PEER_PORT, NULL, &#39;OFF&#39;, &#39;ON&#39;) AS RECEIVER
+  FROM SYSTEM_.SYS_REPL_HOSTS_ D ,
+       SYSTEM_.SYS_REPLICATIONS_ A
+       LEFT OUTER JOIN V$REPSENDER B ON A.REPLICATION_NAME = B.REP_NAME
+       LEFT OUTER JOIN V$REPRECEIVER C ON A.REPLICATION_NAME = C.REP_NAME
+       LEFT OUTER JOIN (SELECT REP_NAME, MAX(REP_GAP) REP_GAP
+                          FROM V$REPGAP
+                         GROUP BY REP_NAME) E ON A.REPLICATION_NAME = E.REP_NAME
+ WHERE A.REPLICATION_NAME = D.REPLICATION_NAME
+ ORDER BY REP_NAME ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription.3"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">RESTART_XSN</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The SN reflected by the remote server, which is the target of replication, means the retransmission starting point when replication is restarted</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SENDER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether the sender works</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">RECEIVER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether the receiver works</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-13.Replication-MeasureofAccumulatedRedoLogFilesduetofailuretoperformReplication"><span class="md-plain md-expand">Measure of Accumulated Redo Log Files due to failure to perform Replication</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT CASE2((BUFFER_MIN_SN &lt; READ_SN),
+                &#39;REP BUFFER &#39;||ROUND((BUFFER_MAX_SN-READ_SN)/(BUFFER_MAX_SN-BUFFER_MIN_SN)*100, 2)||&#39; % LEFT &#39;,
+                (SELECT TO_CHAR(CUR_WRITE_LF_NO - READ_FILE_NO) FROM V$LFG, V$REPGAP)
+            ) LOGFILE_FOR_REP
+  FROM V$REPLOGBUFFER ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription.4"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LOGFILE_FOR_REP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">When the sender is reading a replication-only redo log buffer, it represents a percentage of &quot;logs to be transferred from a replication-only redo log buffer&quot; and when the sender is reading the redo log file directly, it represents &quot;number of redo log files to be replicated&quot;. (MB conversion is possible indirectly depending on the application.) <br />If this value appears only as a percentage, it can be a good thing because the replication is performed only in the redo log buffer for replication (When transmitting very quickly, negative numbers may com out instantaneously, but this can be ignored).</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span>However, if the number of redo log files is frequently monitored, increase the size of the redo log buffer dedicated to replication defined by the property REPLICATION_LOG_BUFFER_SIZE to the default value of 30 or more. Or the REPLICATION_PREFETCH_LOGFILE_COUNT property - which means the number of redo log files to be cached in memory for the sender - should be increased in advance.<br /></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-13.Replication-ListofTablestobeReplicated"><span class="md-plain md-expand">List of Tables to be Replicated</span></h3><p><span>T</span><span>his shows </span><span>t</span><span>he </span><span>t</span><span>able lis</span><span>t</span><span>ed in </span><span>t</span><span>he replica</span><span>t</span><span>ed </span><span>ob</span><span>jec</span><span>t</span><span>.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT REPLICATION_NAME REP_NAME
+     , LOCAL_USER_NAME||&#39;.&#39;||LOCAL_TABLE_NAME LOCAL_TBL
+     , REMOTE_USER_NAME||&#39;.&#39;||REMOTE_TABLE_NAME REMOTE_TBL
+  FROM SYSTEM_.SYS_REPL_ITEMS_
+ ORDER BY 1, 2 ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-13.Replication-MainColumnDescription.5"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LOCAL_TBL</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is output in the form of 'username.tablename' as the target table of replication of the local server.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">REMOTE_TBL</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">This is output in the form of 'username.tablename' as the target table of replication of the remote server.</span></span></td></tr></tbody></table></div><p> </p><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

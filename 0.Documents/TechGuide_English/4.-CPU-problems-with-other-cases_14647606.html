@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. CPU problems with other cases</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-CPU-Overload-Analysis-Guide_14647581.html">Altibase CPU Overload Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. CPU problems with other cases
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>There are cases where the CPU is not being used as much as expected. These phenomena should consider the following cases.</p><h1 id="id-4.CPUproblemswithothercases-4.1MismatchofDBandapplicationprogramcharacterset">4.1 Mismatch of DB and application program character set</h1><div>When the character set (NLS_USE) setting is different from the DB and the application program, there has been a reported case that ALTIBASE performance is degraded and CPU usage is increased due to an internal character set encoding (Encoding). In this case, the problem is solved by matching the character set between the DB server and the application program.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<pre># Query to check client's NLS_USE
+iSQL&gt; select id, comm_name, client_nls from v$session;
+ 
+#  Query to check DB charset
+iSQL&gt; select * from v$nls_parameters;
+SESSION_ID : 1
+NLS_USE : US7ASCII &lt;---- current client's character set
+NLS_CHARACTERSET : MS949 &lt;--- DB server's character set
+NLS_NCHAR_CHARACTERSET : UTF8
+NLS_COMP : BINARY
+NLS_NCHAR_CONV_EXCP : FALSE
+NLS_NCHAR_LITERAL_REPLACE : FALSE
+1 row selected.</pre>
+</div></div><p> </p><h1 id="id-4.CPUproblemswithothercases-4.2IncreaseofServiceThread">4.2 Increase of Service Thread</h1><p>In the Altibase 4.3.x version, there has been a case of an increase in CPU usage by the 'Select-Poll' system-call due to the increase of the 'Dedicated Thread'.</p><div>Altibase handles transactions by 'Service Thread' in charge of session access. When a long-run query occurs or all 'Service Threads' are in the Executing state, it processes new connections or waiting transactions. 'Dedicated Thread' is created in real-time.</div><div>Newly created 'Dedicated Threads' periodically check whether there is a transaction to be processed by ALTIBASE. In this process, ALTIBASE increases the number of 'Select-Poll' system-calls and increases sys(%) usage among CPU usages.</div><div>The DB service thread state can be retrieved with the query below.</div><div><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>SQL&gt; select type,state, run_mode, count(*)
+    2 from v$service_thread
+    3 group by type,state, run_mode;
+TYPE                  STATE       RUN_MODE   COUNT(*)             
+-----------------------------------------------------------------------
+IPC                   POLL        DEDICATED  1                    
+SOCKET(MULTIPLEXING)  EXECUTE     SHARED     1                    
+SOCKET(MULTIPLEXING)  POLL        SHARED     31                   
+3 rows selected.</pre>
+</div></div><p> </p></div><div><div>In preparation for this type, there is a method to increase the attribute value of 'MULTIPLEXING_POLL_TIMEOUT'. This is to decrease the number of system-calls by increasing the execution cycle of the 'Select-Poll' system-call.</div><div>Fundamentally, the reason for the occurrence of 'Dedicated Thread' is an increase in sessions, an increase in transaction load, a large number of long-run queries, and for lock contention.</div><div><h1 id="id-4.CPUproblemswithothercases-4.3AffectofOSenvironmentvariablesetting">4.3 Affect of OS environment variable setting</h1><p>There may be a change in CPU usage depending on the OS environment variable setting. Because ALTIBASE adopts a multi-threaded structure, it is necessary to properly set the related settings for the OS configuration. This setting can be understood not as a reduction in CPU usages, but as a setting for cases in which using the CPU is not under-performing.</p><p>For more detailed information, please refer to the &quot;Altibase Installation Guide&quot; provided for each OS.</p><h1 id="id-4.CPUproblemswithothercases-4.4FrequentDBconnectionattempts">4.4 Frequent DB connection attempts</h1><p>The v$statement of Altibase contains execution information for queries executed by the currently connected session. Therefore, it is very difficult to retrieve malicious queries from this information in a structure in which connect/disconnect is repeatedly performed.</p><h2 id="id-4.CPUproblemswithothercases-4.4.1CheckingwhetherfrequentDBaccessoccurs">4.4.1 Checking whether frequent DB access occurs</h2><p>This can be check with the following query.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Identify whether frequent connect/disconnect is performed (frequent connect/disconnect causes performance reduction)
+SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME LIKE ‘%logon cum%’;
+ 
+-- Determine if CPU is used inefficiently by performing repetitive PREPARE process
+SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME LIKE ‘%prepare%count%’;</pre>
+</div></div><h2 id="id-4.CPUproblemswithothercases-4.4.2Selectingturningtargetquerieswithprofiling">4.4.2 Selecting turning target queries with profiling</h2><p>Moreover, the performance of the application is bound to decrease as much as the cost of each connect/disconnect. Therefore, it is recommended for the user to change the structure of an application so that it is processed while connected to the DB. If this is not possible, the malicious query must be retrieved with the profiling functional as follows, even at the risk of degrading the DB performance.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TIMED_STATISTICS=1;
+ALTER SYSTEM SET QUERY_PROF_FLAG=1;  -- Execute the function
+ALTER SYSTEM SET QUERY_PROF_FLAG=0;  /* Terminate funciton */</pre>
+</div></div><p>All queries executed after executing the above function are recorded with the file name of <strong>*</strong>pro' with the extension of $ALTIBASE_HOME/trc/xxxxx.prof. This file is created as a binary file, so the user cannot immediately check it, and it must be converted to a plain text format as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">shell&gt;  altiProfile alti-13109987-0.prof &gt; log1.txt</pre>
+</div></div><p>'altiProfile' is analysis utility provided by Altibase, and analysis files can be created by using this utility. Since the executed 'queries' and 'detailed information of execute time' are recorded in the file, malicious queries that took a long time to execute can be found based on the details.</p><p>For detailed usage of altiProfile, refer to AID's FAQ. (AID description page on how to log queries performed in Altibase: <a href="http://aid.altibase.com/x/ygSL" class="external-link" rel="nofollow">http://aid.altibase.com/x/ygSL</a>)</p>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Because the profiling function may cause a disk shortage due to the deterioration of DB performance and log recording, be cautious to use it.</p>
+                    </div>
+    </div>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

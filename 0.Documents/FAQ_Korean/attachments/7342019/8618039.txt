@@ -1,0 +1,117 @@
+-- ALTIBASE HDB 5.1.5 디스크 테이블 사용량 조회 쿼리
+
+set linesize 1024
+set colsize 20
+SELECT U.USER_NAME USER_NAME                                                                                                    -- 데이터베이스 사용자
+     , DECODE(TBL.IS_PARTITIONED, 'T', 'PARTITIONED', 'F', 'NON-PARTITIONED') PARTITIONED                                       -- 파티션드 테이블이면 PARTITIONED, 논-파티션드 테이블이면 NON-PARTITIONED
+     , TBL.TABLE_NAME TABLE_NAME                                                                                                -- 테이블 이름
+     , DECODE(TBL.IS_PARTITIONED, 'T', TBL.PARTITION_NAME, 'F', '-') PARTITIONED_TABLE                                          -- 파티션드 테이블 이름
+     , TBS.NAME TABLESPACE_NAME                                                                                                 -- 테이블스페이스
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, '999,999,999') 'MAX(KB)'                                                           -- 테이블이 속한 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, '999,999,999') 'ALLOC(KB)'                -- 현재까지 할당받은 전체 크기
+     , TO_CHAR((((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(D.MAX*TBS.PAGE_SIZE))*100), '99.99') 'USAGE(%)' -- 테이블스페이스 최대 크기 대비 사용률
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, 'F', TBL.TABLE_OID, 'T', PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, 'F', TBL.TBS_ID, 'T', PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+       ) TBL
+     , V$SEGMENT SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,'ON','OFF') 'AUTOEXTEND'
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.SEGMENT_TYPE = 'TABLE'  /* 'TABLE' : 테이블, 'INDEX' : 인덱스 */
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, PARTITIONED, TABLE_NAME, PARTITIONED_TABLE
+;
+
+
+
+
+
+-- ALTIBASE HDB 5.1.5 디스크 인덱스 사용량 조회 쿼리
+
+set linesize 1024
+set colsize 20
+SELECT U.USER_NAME USER_NAME                                                                                                   -- 데이터베이스 사용자    
+     , I_LIST.TABLE_NAME                                                                                                       -- 테이블 이름
+     , DECODE(I_LIST.PARTITION_NAME, NULL, 'NON-PARTITIONED', I_LIST.PARTITION_NAME) PARTITIONED_NAME                          -- 파티션드 테이블 이름, 논-파티션드 테이블이면 NON-PARTITIONED
+     , I_LIST.INDEX_NAME INDEX_NAME                                                                                            -- 인덱스 이름
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, 'NON-PARTITIONED', I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX             -- 파티션드 인덱스 이름
+     , TBS.NAME TBS_NAME                                                                                                       -- 인덱스가 속한 테이블스페이스  
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, '999,999,999') 'MAX(KB)'                                                          -- 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, '999,999,999') 'ALLOC(KB)'               -- 인덱스에서 할당 받은 전체 크기    
+     , TO_CHAR((((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(D.MAX*TBS.PAGE_SIZE))*100), '99.99') 'USAGE(%)'   -- 테이블스페이스 최대 크기 대비 사용률
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, 'F', I.TABLE_ID, 'T', PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, 'F', T.TABLE_OID, 'T', PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, 'F', I.TBS_ID, 'T', PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID ) I_LIST
+     , V$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,'ON','OFF') 'AUTOEXTEND'
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+; 
+
+
+
+-- 디스크 테이블 수 조회 쿼리
+
+set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, 'T', 'PARTITIONED     TABLE CNT : '||PART_T.CNT, 'F', 'NON-PARTITIONED TABLE CNT : '||T.CNT) TABLE_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM V$DISKTBL_INFO D
+             , SYSTEM_.SYS_TABLES_ T
+         WHERE D.TABLE_OID = T.TABLE_OID
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_TABLE_PARTITIONS_ ) PART_T ;
+
+
+
+-- 디스크 인덱스 수 조회 쿼리
+
+set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, 'T', 'PARTITIONED     INDEX CNT : '||PART_T.CNT, 'F', 'NON-PARTITIONED INDEX CNT : '||T.CNT) INDEX_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM SYSTEM_.SYS_INDICES_
+         WHERE TABLE_ID IN (SELECT TABLE_ID
+                              FROM SYSTEM_.SYS_TABLES_ T
+                                 , V$DISKTBL_INFO D
+                             WHERE T.TABLE_OID = D.TABLE_OID)
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_INDEX_PARTITIONS_) PART_T ;
+

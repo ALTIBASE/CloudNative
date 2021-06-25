@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Tablespace</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Tablespace
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 22, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409344403 {padding: 0px;}
+div.rbtoc1624409344403 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409344403 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409344403'>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-CREATETABLESPACE'>CREATE TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-DATATABLESPACE'>DATA TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-Example'>Example</a></li>
+<li><a href='#Tablespace-TEMPORARYTABLESPACE'>TEMPORARY TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-EXAMPLE'>EXAMPLE</a></li>
+</ul>
+</li>
+<li><a href='#Tablespace-UNDOTABLESPACE'>UNDO TABLESPACE</a></li>
+</ul>
+</li>
+<li><a href='#Tablespace-ALTERTABLESPACE'>ALTER TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-EXAMPLE.1'>EXAMPLE</a></li>
+</ul>
+</li>
+<li><a href='#Tablespace-DROPTABLESPACE'>DROP TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#Tablespace-EXAMPLE.2'>EXAMPLE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1 id="Tablespace-CREATETABLESPACE">CREATE TABLESPACE</h1>
+
+<p>ALTIBASE HDB has two types of tablespace. </p>
+
+<p>Those are Memory tablespace and Disk tablespace.</p>
+
+<p>Oracle's tablespace is disk tablespace.</p>
+
+<p>Therefore, When converting oracle to altibase, user specifies statement like &quot;CREATE [ DISK ] [ DATA ] TABLESPACE&quot;.</p>
+
+<p>The majority of ALTIBASE HDB syntax are similar to the Oracle syntax.</p>
+
+<p>And ALTIBASE HDB syntax is more simple than Oracle's one.</p>
+
+<p>First, we explain example of converting tablespace statement and then explain considerations about tablespace.</p>
+
+<h2 id="Tablespace-DATATABLESPACE">DATA TABLESPACE</h2>
+
+
+<h3 id="Tablespace-Example">Example</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <strong>create</strong> <span style="color: rgb(255,0,0);"><strong>bigfile</strong></span> <strong>tablespace user_tbs</strong> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>minimum extent 128k</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(0,0,0);"><strong>datafile '/dbs/user_tbs_01.dbf'</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>blocksize 8k</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>logging</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>force logging</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>online</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>extent management local autoallocate</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(0,0,0);"><strong>segment space management auto</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>flashback off;</strong></span> </p></td>
+<td class="confluenceTd"><p> <strong>create tablespace user_tbs</strong> <br class="atl-forced-newline" />
+<strong>datafile '/dbs/user_tbs_01.dbf'</strong> <br class="atl-forced-newline" />
+<strong>size 64M autoextend on next 64M maxsize 1024M</strong> <br class="atl-forced-newline" />
+<strong>segment management auto;</strong> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<p>ALTIBASEHDB does not support red syntax above. If you create new tablespace, you should not use this red syntax.</p>
+
+<p>We describe ALTIBASE HDB syntax  as compared with Oracle as below.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Comments <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BIGFILE | SMALLFILE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATAFILE </p></td>
+<td class="confluenceTd"><p> DATAFILE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MINIMUM EXTENT </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BLOCKSIZE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FORCE LOGGING </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DEFAULT storage </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE | OFFLINE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXTENT MANAGEMENT LOCAL </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SEGMENT SPACE MANAGEMENT AUTO | MANUAL </p></td>
+<td class="confluenceTd"><p> SEGMENT MANAGEMENT AUTO | MANUAL </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FLASHBACK ON | OFF </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p><strong>SEGMENT MANAGEMENT MANUAL</strong><br />
+convert SEGMENT phase to SEGMENT MANAGEMENT AUTO | MANUAL and other phase is not supported</p>
+                    </div>
+    </div>
+
+
+<h3 id="Tablespace-TEMPORARYTABLESPACE">TEMPORARY TABLESPACE</h3>
+
+
+<h4 id="Tablespace-EXAMPLE">EXAMPLE</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <strong>create</strong> <span style="color: rgb(255,0,0);"><strong>bigfile</strong></span> <strong>temporary tablespace user_temp</strong> <br class="atl-forced-newline" />
+<strong>tempfile '/dbs/temp_001.dbf'</strong> <br class="atl-forced-newline" />
+<strong>size 128m</strong> <br class="atl-forced-newline" />
+<strong>autoextend on next 128m maxsize 1024m</strong> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>tablespace group tmp_grp</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>extent management local;</strong></span> </p></td>
+<td class="confluenceTd"><p> <strong>create temporary tablespace user_temp</strong> <br class="atl-forced-newline" />
+<strong>tempfile '/dbs/temp_001.dbf'</strong> <br class="atl-forced-newline" />
+<strong>size 128m</strong> <br class="atl-forced-newline" />
+<strong>autoextend on next 128m</strong> <br class="atl-forced-newline" />
+<strong>maxsize 1024m;</strong> </p></td>
+</tr>
+</tbody></table></div>
+
+<p>ALTIBAES HDB does not support red syntax above. If you create new temporary tablespace, you should avoid this red syntax.</p>
+
+<p>We compare ALTIBASE HDB syntax with Oracle's as below.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BIGFILE | SMALLFILE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE GROUP </p></td>
+<td class="confluenceTd"><p> - </p></td>
+<td class="confluenceTd"><p> -  <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXTENT MANAGEMENT LOCAL | DICTIONARY </p></td>
+<td class="confluenceTd"><p> - </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="Tablespace-UNDOTABLESPACE">UNDO TABLESPACE</h3>
+
+<p>In Altibase, user can not create or drop undo tablespace. </p>
+
+<p>In the process of creating database, various system tablespaces, including the dictionary tablespace, the undo tablespace,</p>
+
+<p>and temporary tablespaces are created.</p>
+
+<p>A user only can modify the size of it by using &quot;ALTER TABLESPACE&quot; statement as shown below.</p>
+
+<p>User can use &quot;SYS_TBS_DISK_UNDO&quot; TABLESPACE only .</p>
+
+<h2 id="Tablespace-ALTERTABLESPACE"><br class="atl-forced-newline" /> ALTER TABLESPACE</h2>
+
+<p>By specifying &quot;ALTER TABLESPACE&quot; statement, resizing and renaming datafile, adding and dropping datafile,</p>
+
+<p>modifying the definition of tablespace and status of tablespace, backing up tablespaces are available in Altibase.</p>
+
+<p>But renaming tablespace is not possible in altibase.
+<br class="atl-forced-newline" /></p>
+
+<p>The functionality of Altibase and Oracle is similar as described above in &quot;CREATE TABLESPACE&quot; statement.
+<br class="atl-forced-newline" /></p>
+
+<p>Further desription of the differences between ORACLE and ALTIBASE HDB is as follows using &quot;ALTER TABLESPACE&quot; statement.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> READ(ONLY|WRITE) </p></td>
+<td class="confluenceTd"><p> - </p></td>
+<td class="confluenceTd"><p> - </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COALESCE </p></td>
+<td class="confluenceTd"><p> - </p></td>
+<td class="confluenceTd"><p> - </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RETENTION(GUARANTEE|NOGRUARANTEE) </p></td>
+<td class="confluenceTd"><p> - </p></td>
+<td class="confluenceTd"><p> - </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE|OFFLINE<span style="color: rgb(255,0,0);"><strong>(NORMAL|TEMPORARY|IMMEDIATE)</strong></span> </p></td>
+<td class="confluenceTd"><p> ONLINE|OFFLINE|DISCARD </p></td>
+<td class="confluenceTd"><p> Similar(At the control phase, discard option can be used. <br class="atl-forced-newline" />
+This can't be brought back online. <br class="atl-forced-newline" />
+Due to Inconsistent tablespace, Altibase can't startup. <br class="atl-forced-newline" />
+In that case, discard option is available) </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h4 id="Tablespace-EXAMPLE.1">EXAMPLE</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER TABLESPACE USER_TEMP <br class="atl-forced-newline" />
+ADD TEMPFILE 'USER_TEMP01.dbf' <br class="atl-forced-newline" />
+SIZE 100M AUTOEXTEND OFF; <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> ALTER TABLESPACE USER_TEMP <br class="atl-forced-newline" />
+ADD TEMPFILE 'USER_TEMP01.dbf' <br class="atl-forced-newline" />
+SIZE 100M AUTOEXTEND OFF; </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER TABLESPACE USER_TEMP <br class="atl-forced-newline" />
+OFFLINE <span style="color: rgb(255,0,0);"><strong>NORMAL</strong></span>; </p></td>
+<td class="confluenceTd"><p> ALTER TABLESPACE USER_TEMP OFFLINE; </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="Tablespace-DROPTABLESPACE">DROP TABLESPACE</h2>
+
+<p>The statement of Altibase and Oracle is completely same in use.
+<br class="atl-forced-newline" /></p>
+
+<h4 id="Tablespace-EXAMPLE.2">EXAMPLE</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DROP TABLESPACE USER_TEMP <br class="atl-forced-newline" />
+INCLUDING DATAFILES AND CONTENTS <br class="atl-forced-newline" />
+CASCADE CONSTRAINTS; </p></td>
+<td class="confluenceTd"><p> DROP TABLESPACE USER_TEMP <br class="atl-forced-newline" />
+INCLUDING DATAFILES AND CONTENTS <br class="atl-forced-newline" />
+CASCADE CONSTRAINTS; </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

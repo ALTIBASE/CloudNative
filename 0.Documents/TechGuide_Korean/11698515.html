@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : ADO.NET 개발 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698513.html">Altibase window ADO.NET 개발 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : ADO.NET 개발 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p class="0cm">ADO.NET 환경에서 ALTIBASE에 접속할 경우의 각 Class들의 예제를 설명한다. 사용된 코드는 ADO.NET환경에서 많이 사용되는 Visual C# 을 기준으로 설명한다. </p><h1 class="0cm" id="ADO.NET개발가이드-AltibaseConnection">AltibaseConnection</h1><p>AltibaseConnection 은 다음과 같이 사용한다. 다음의 예제는  Altibase DB와 연결 테스트를 하는 간단한 예제이다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>using System.Collections.Generic;</p><p>using System.Linq;</p><p>using System.Text;</p><p><strong>using Altibase.Data.AltibaseClient;</strong></p><p>namespace ConsoleApplication1</p><p>{</p><p>    class Program</p><p>    {</p><p>        static voidMain(string[] args)</p><p>        {</p><p><strong>            String connStr = &quot;DSN=192.168.1.35;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300&quot;;</strong></p><p><strong>            AltibaseConnection cn = new AltibaseConnection(connStr);</strong></p><p>            try</p><p>            {</p><p>                <strong>cn.Open();</strong></p><p>                Console.WriteLine(&quot;정상적으로 연결됨\n&quot;);</p><p>            }</p><p>            catch (AltibaseException e)</p><p>            {</p><p>                Console.WriteLine(e.Message);</p><p>            }</p><p>            Console.ReadLine();</p><p>        }</p><p>    }</p><p>}</p>
+</div></div><p>접속정보로 사용되는 항목들은 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>접속정보</strong><strong> </strong><strong>구성항목</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>DSN</p></td><td class="confluenceTd"><p>ALTIBASE DB서버가 위치한 물리적인 IP주소</p></td></tr><tr><td class="confluenceTd"><p>UID</p></td><td class="confluenceTd"><p>DB계정 명</p></td></tr><tr><td class="confluenceTd"><p>PWD</p></td><td class="confluenceTd"><p>DB계정의 패스워드</p></td></tr><tr><td class="confluenceTd"><p>PORT</p></td><td class="confluenceTd"><p>ALTIBASE의 Listen Port번호</p></td></tr><tr><td class="confluenceTd"><p>NLS_USE</p></td><td class="confluenceTd"><p>다국어 처리를 위한 문자셋 (DB생성 시 사용한 문자셋)</p></td></tr></tbody></table></div><p> </p><h1 id="ADO.NET개발가이드-AltibaseDataReader,AltibaseCommand를이용한날짜/시각가져오기">AltibaseDataReader, AltibaseCommand를 이용한 날짜/시각 가져오기</h1><p>Command와 DataReader객체를 통한 날짜/시각을 가져오는 예제이다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>AltibaseCommand cm;</strong></p><p><strong>AltibaseDataReader dr;</strong></p><p> </p><p>try</p><p>{</p><p>  ................</p><p>................</p><p>    cn.Open();</p><p>     Console.WriteLine(&quot;정상적으로 연결됨\n&quot;);</p><p> </p><p>     <strong>cm = new AltibaseCommand();</strong></p><p><strong>     cm.Connection = cn;</strong></p><p><strong>     cm.CommandText = &quot;Select to_char(sysdate, 'yyyy-mm-dd hh:mi:ss') from dual&quot;;</strong></p><p><strong>     dr = cm.ExecuteReader();</strong></p><p><strong> </strong></p><p><strong>     while (dr.Read())</strong></p><p><strong>     {</strong></p><p><strong>         Console.WriteLine(dr.GetString(0));</strong></p><p><strong>     }</strong></p><p>}</p><p>catch (AltibaseException e)</p><p>{</p><p>     Console.WriteLine(e.Message);</p><p>}</p>
+</div></div><p> </p><h1 id="ADO.NET개발가이드-AltibaseDataAdaptor를통한INSERT">AltibaseDataAdaptor를 통한 INSERT</h1><p>AltibaseDataAdaptor를 통한 INSERT예제를 설명한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>AltibaseConnection cn = new AltibaseConnection(connStr);</p><p><strong>AltibaseDataAdapter da = new AltibaseDataAdapter();</strong></p><p> try</p><p>{</p><p>  .................</p><p>    cn.Open();</p><p>     Console.WriteLine(&quot;정상적으로 연결됨\n&quot;);</p><p>      <strong>da.InsertCommand = new AltibaseCommand(&quot;INSERT INTO T1 VALUES (?, ?)&quot;, cn);</strong></p><p>      DataTable t1 = new DataTable();</p><p>      DataRow r1 = null;</p><p>      t1.Columns.Add(new DataColumn(&quot;C1&quot;, typeof(string)));</p><p>      t1.Columns.Add(new DataColumn(&quot;C2&quot;, typeof(int)));</p><p><strong> da.InsertCommand.Parameters.Add(da.InsertCommand.CreateParameter());</strong></p><p><strong>      da.InsertCommand.Parameters[0].SourceColumn = &quot;C1&quot;;</strong></p><p> </p><p>      <strong>da.InsertCommand.Parameters.Add(da.InsertCommand.CreateParameter());</strong></p><p><strong>      da.InsertCommand.Parameters[1].SourceColumn = &quot;C2&quot;;</strong></p><p> </p><p>      r1 = t1.NewRow();</p><p>      r1.ItemArray = new Object[] {&quot;hong gi dong&quot;, 23};</p><p>      t1.Rows.Add(r1);</p><p>        <strong>da.Update(t1);</strong></p><p>}</p>
+</div></div><p> </p><h1 id="ADO.NET개발가이드-AltibaseTransaction"><a name="_Toc273085973" rel="nofollow"></a><span>AltibaseTransaction</span><span> </span></h1><p><span>AltibaseTranaction의 예제는 다음과 같다.</span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>AltibaseCommand cm = new AltibaseCommand();</p><p><strong>AltibaseTransaction tx = null;</strong></p><p>           </p><p>try</p><p>{</p><p>      cn.Open();</p><p>      <strong>tx = cn.BeginTransaction();</strong></p><p>      cm.Connection = cn;</p><p>      cm.CommandText = &quot;insert into t1 values ('viliad', 30)&quot;;</p><p>      cm.ExecuteNonQuery();</p><p>      <strong>tx.Commit();</strong></p><p>}</p><p>catch (AltibaseException e2)</p><p>{</p><p>      <strong>tx.Rollback();</strong></p><p>      Console.WriteLine(e2.Message);</p><p>}</p>
+</div></div><p><span><br /></span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

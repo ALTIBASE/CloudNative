@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-21011 : Invalid literal</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-21011 : Invalid literal
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 30, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148595 {padding: 0px;}
+div.rbtoc1624409148595 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148595 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148595'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-21011:Invalidliteral-Overview'>Overview</a></li>
+<li><a href='#ERR-21011:Invalidliteral-Version'>Version</a></li>
+<li><a href='#ERR-21011:Invalidliteral-Cause'>Cause</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-21011:Invalidliteral-Overview">Overview</h1><hr /><p>This document describes the causes and examples of invalid literal error.</p><p> </p><h1 id="ERR-21011:Invalidliteral-Version">Version</h1><hr /><p>All the versions of Altibase</p><p> </p><h1 id="ERR-21011:Invalidliteral-Cause">Cause</h1><hr /><p>It occurs when the data types between comparison targets do not match when using conversion functions such as TO_NUMBER and CAST or comparison operators.</p><p>It can also occur when you have a value that cannot be converted to the data type you want to convert during automatic casting.</p><h4 id="ERR-21011:Invalidliteral-Case1.WhenusingUNIONandUNIONALL,thedatatypeofthecolumntobemappedisdifferent.">Case 1. When using UNION and UNION ALL, the data type of the column to be mapped is different.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> iSQL&gt; SELECT 0 from DUAL
+    2 UNION
+    3 SELECT &#39;A&#39; from DUAL;
+0           
+--------------
+0           
+[ERR-21011 : Invalid literal]
+1 row selected.</pre>
+</div></div><h4 id="ERR-21011:Invalidliteral-Case2.WhenthevaluegiventotheTO_NUMBERfunctionisacharactertypethatcannotbeconvertedtoanumerictype."><br />Case 2. When the value given to the TO_NUMBER function is a character type that cannot be converted to a numeric type.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT TO_NUMBER(&#39;1-1&#39;) from DUAL;
+[ERR-21011 : Invalid literal 
+0001 : SELECT TO_NUMBER(&#39;1-1&#39;) from DUAL
+                       ^    ^
+]
+iSQL&gt;  </pre>
+</div></div><h4 id="ERR-21011:Invalidliteral-Case3.Whenthereisadatavaluethatcannotbeconvertedautomaticallyinacolumnusedinacomparisonoperation.">Case 3. When there is a data value that cannot be converted automatically in a column used in a comparison operation.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T (NO CHAR(1));
+Create success.
+iSQL&gt; INSERT INTO T VALUES(&#39;1&#39;);
+1 row inserted.
+iSQL&gt; INSERT INTO T VALUES(&#39;2&#39;);
+1 row inserted.
+iSQL&gt; SELECT * FROM T WHERE NO = 1;         -- Compare the value of the CHAR type column with the numeric data. NO column value is automatically converted to numeric type.
+NO                                          -- Since only values that can be converted to numeric type exist in the NO column, it is executed without error.
+------
+1                                           
+1 row selected.
+
+iSQL&gt; INSERT INTO T VALUES(&#39;A&#39;);            -- A value that cannot be converted to a numeric type is entered in the NO column.
+1 row inserted.
+iSQL&gt; SELECT * FROM T WHERE NO = 1;         -- As the value of the NO column is automatically converted into a numeric type, an invalid literal error occurs due to the value of&#39;A&#39;.
+[ERR-21011 : Invalid literal]
+
+iSQL&gt; SELECT * FROM T WHERE NO = &#39;1&#39;;       -- For character columns, single quotation marks (&#39;) must be used for comparison values.
+NO                                          
+------
+1                                           
+1 row selected.
+
+
+
+iSQL&gt; INSERT INTO T VALUES(&#39; &#39;);            -- An Invalid literal error occurs even if the NO column contains blank characters.
+1 row inserted.
+iSQL&gt; SELECT TO_NUMBER(NO) FROM T;          
+[ERR-21011 : Invalid literal]
+
+iSQL&gt; SELECT TO_NUMBER(TRIM(NO)) FROM T;    -- In the case of space characters, the error can be eliminated by using the TRIM function. 
+TO_NUMBER(TRIM(CODE)) 
+------------------------
+1           
+2           
+                       
+3 rows selected.
+iSQL&gt;   </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

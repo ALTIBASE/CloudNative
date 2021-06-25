@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 디스크 I/O 발생유형</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698408.html">Altibase 운영을 위한 디스크 구성 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 디스크 I/O 발생유형
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h1 id="id-디스크I/O발생유형-리두로그"><span style="color: rgb(0,0,0);">리두로그</span></h1><p>ALTIBASE의 리두로그는 트랜잭션을 처리하는 과정에서 발생하는 모든 변경사항을 기록한다. 즉, 데이터를 복구 시켜야 하는 경우를 대비하여 필요한 모든 정보를 기록한다. 이러한 정보에는 트랜잭션을 처리하는데 필요한 리소스의 변경 내역과 데이터의 변경과정에서 발생하는 모든 정보를 포함한다.</p><p>ALTIBASE의 리두로그는 mmap에 의해 메모리상에 맵핑된 영역에 우선 기록되며 LogSyncThread에 의해 주기적으로 리두로그파일에 저장된다. mmap에 맵핑된 메모리의 변경내역은 호출한 프로세스가 비정상 종료되어도 OS가 파일로 저장되는 것을 보장한다. 따라서, 정전이나 OS hang과 같은 상황이 아니라면 로그의 유실은 발생하지 않는다. (장애 발생 시 복구에 대해서는 장애대처 가이드를 참고한다.) </p><p>ALTIBASE DBMS는 성능본위의 제품이기 때문에 여러 성능저하의 요인 중 하나인 빈번한 디스크I/O를 최소화 하기 위해 위와 같은 처리방법을 기본설정으로 채택하고 있다. 매우 높은 처리성능을 요구하지 않을 경우 사용자는 리두로그 기록방법을 프로퍼티를 통해 변경할 수 있다. </p><h1 id="id-디스크I/O발생유형-체크포인트">체크포인트</h1><p>ALTIBASE는 메모리DB와 디스크DB를 동시에 지원하는데 메모리DB의 경우 어떤 단계에서 디스크I/O가 발생하는지 알아보도록 한다.</p><p>구동단계에서 메모리DB는 디스크에 저장된 모든 데이터를 메모리상에 상주시킨다. 메모리에 데이터를 올리는 공간은 페이지 단위로 관리하며 한 페이지의 크기는 32K로 고정되어 있다. 각 페이지는 페이지가 속한 테이블의 레코드 크기에 따라 n개의 슬롯(Slot)으로 분할되며 각 슬롯마다 데이터가 저장되는 구조이다.  트랜잭션이 진행되는 과정에서 데이터가 변경/저장/삭제가 되면 해당 데이터가 저장된 페이지는 내부적으로 관리하는 더티페이지(Dirty Page) 리스트에 등록이 된다. 이 더티페이지 리스트에 관리되는 페이지들을 물리적인 파일에 저장하는 과정을 체크포인트 라고 부른다.</p><p>메모리는 휘발성인 특성을 갖고 있기 때문에 체크포인트와 같은 과정을 수행하지 않으면 정전과 같은 상황에서 데이터는 영속성을 가질 수 없다. 체크포인트와 관련한 좀 더 자세한 사항은 체크포인트 문서를 참조하도록 한다. 본 문서에는 고려해야 할 부분은 주기적인 체크포인트의 과정을 통해 메모리DB 역시 디스크의 데이터파일로 저장한다는 점이다.</p><p>메모리DB에 대한 트랜잭션 처리량이 많을수록 체크포인트 단계에서 저장해야 할 더티페이지 개수도 많아지게 된다. 이때 리두로그를 저장하는 공간과 메모리DB의 데이터파일을 동일한 물리적 디스크 공간으로 설정 하였다면 체크포인트 진행단계에서 발생하는 트랜잭션들은 리두로그 기록단계와 함께 디스크 쓰기병목을 불러 일으키기 때문에 물리적으로 각각 분리된 디스크에 구성을 하는 것이 바람직하다.</p><p>다음과 같이 예를 들어 구성할 수 있다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>디스크구성</strong><strong> </strong></p></th></tr><tr><td class="confluenceTd"><p>리두로그 공간</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>데이터 공간</p></td><td class="confluenceTd"><p>/ALTIBASE_DATA</p></td></tr></tbody></table></div><h1 id="id-디스크I/O발생유형-디스크DB">디스크DB</h1><p>앞서 리두로그 기록단계와 메모리DB의 체크포인트 단계에서 디스크병목 발생의 가능성을 설명하고 분리할 것을 권고하였다. 다음으로 디스크DB의 디스크I/O 발생단계를 살펴보고 어떻게 구성을 할지 알아보도록 한다.</p><p>디스크DB는 모든 데이터를 디스크에 저장된 파일에 보관하기 때문에 트랜잭션에 의해 데이터를 접근해야 하는 경우 디스크에 저장된 데이터를 매번 탐색해야 한다. 이러한 디스크 접근비용은 성능저하를 유발하기 때문에 일반적으로 디스크DB를 지원하는 DBMS는 모두 버퍼라는 임시 메모리 저장공간을 설정하여 활용하고 있다. 자주 접근하는 데이터는 버퍼에 저장하여 매번 디스크를 탐색하는 비용을 줄이는 것이다.</p><p>버퍼는 사용자가 설정한 크기만큼 메모리에 설정되며 8K 단위의 페이지 형태로 관리된다.   디스크DB에 대한 트랜잭션이 발생하면 가장 먼저 버퍼를 탐색하여 필요한 데이터가 존재 하는지 확인하고 없을 경우 데이터파일로부터 버퍼에 적재시킨다. 버퍼에 변경된 데이터가 속한 페이지는 플러쉬리스트(Flush List)에 등록이 되고 플러쉬가 발생하는 경우 여기에 등록된 페이지들은 디스크에 저장된다. 혹은, 버퍼가 더 이상 사용할 수 있는 공간이 없는 경우 LRU알고리즘에 의해 접근빈도가 낮은 페이지들은 디스크에 저장된 후 빈 공간으로 설정되어 재사용된다. 이러한 과정은 버퍼리플레이스 (Buffer Replace) 라고 표현한다.</p><p>동일한 디스크에 메모리DB 및 디스크DB를 할당하여 사용한다면 위에서 설명한 체크포인트와 디스크DB의 트랜잭션 처리과정에서 발생하는 플러쉬, 버퍼리플레이스가 빈번하게 디스크I/O를 유발하고 디스크병목에 의한 성능저하까지 발생할 수 있다.  따라서, 메모리DB와 디스크DB를 혼용하여 사용할 경우 각각의 저장공간 역시 물리적으로 분리된 디스크로 구성하는 것이 바람직하다.</p><p>다음과 같이 예를 들어 구성할 수 있다</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>디스크구성</strong></p></th></tr><tr><td class="confluenceTd"><p>리두로그 공간</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>데이터 공간 (메모리DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_MEMORY_DATA</p></td></tr><tr><td class="confluenceTd"><p>데이터 공간 (디스크DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_DATA</p></td></tr></tbody></table></div><h1 id="id-디스크I/O발생유형-언두테이블스페이스">언두테이블스페이스</h1><p>변경트랜잭션이 발생할 때 메모리DB는 복구를 위한 언두이미지를 메모리상에 관리한다. 원본데이터를 별도의 공간에 복제한 후 복제본에 변경연산을 적용하는 out-place update 방식을 이용한다. (이와 같은 방식을 MVCC기법이라고 하며 자세한 사항은 MVCC 가이드를 참조한다.)</p><p>디스크DB의 경우 원본데이터를 언두 테이블스페이스에 복제한 후 원본데이터 영역에서 변경트랜잭션을 수행한다. 이러한 방식을 in-place update 방식이라 한다.</p><p>복구가 필요한 경우 언두 테이블스페이스 저장된 원본데이터를 다시 원래 위치에 복제하여 복구하는 방법을 취한다. 이 과정에서 언두 테이블스페이스에는 디스크DB의 변경트랜잭션이 발생할 때마다 복제가 발생하기 때문에 가능한 디스크DB와 별도의 디스크공간으로 구성을 하여 물리적인 디스크병목을 회피하는 것이 바람직하다. </p><p>다음과 같이 예를 들어 구성할 수 있다</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>디스크구성</strong></p></th></tr><tr><td class="confluenceTd"><p>리두로그</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>데이터 공간 (메모리DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_MEMORY_DATA</p></td></tr><tr><td class="confluenceTd"><p>데이터 공간 (디스크DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_DATA</p></td></tr><tr><td class="confluenceTd"><p>디스크DB 언두 공간</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_UNDO</p></td></tr></tbody></table></div><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

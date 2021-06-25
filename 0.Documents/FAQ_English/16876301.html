@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : [Notify : Fetch Timeout] Session Closed by Server.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : [Notify : Fetch Timeout] Session Closed by Server.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147789 {padding: 0px;}
+div.rbtoc1624409147789 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147789 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147789'>
+<ul class='toc-indentation'>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Overview'>Overview</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Version'>Version</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Symptom'>Symptom</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-AltibaseServer'>Altibase Server</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-AltibaseClient'>Altibase Client</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-OrangeforALTIBASE'>Orange for ALTIBASE</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-iSQL'>iSQL</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-APRE(SESC),SQLCLI,ODBC,CAPI'>APRE(SESC), SQLCLI, ODBC, CAPI</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-JDBC'>JDBC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Cause'>Cause</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Checkingtheapplicationlogic'>Checking the application logic</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-ChangingFETCH_TIMEOUTsettingvalue'>Changing FETCH_TIMEOUT setting value</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Changingsessionproperty'>Changing session property</a></li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-Changingsystemproperty'>Changing system property</a></li>
+</ul>
+</li>
+<li><a href='#id-[Notify:FetchTimeout]SessionClosedbyServer.-HowtochecktheFETCH_TIMEOUTpropertyvalue'>How to check the FETCH_TIMEOUT property value</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Overview">Overview</h1><hr /><p>This document describes the Fetch Timeout message.</p><p> </p><h1 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Version">Version</h1><hr /><p>All the versions of ALTIBASE HDB</p><h1 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Symptom">Symptom</h1><hr /><h2 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-AltibaseServer">Altibase Server</h2><hr /><p>In the Altibase server log, the following logs can be checked.</p><ul><li><p>Check the Altibase server log ($ALTIBASE_HOME/trc/altibase_boot.log).</p></li><li><p>The output format is different for each version, so refer to the results below.</p></li><li><p>Comprehensively check the log output time, CLIENT_INFO, and Caused by Query to see if it is related to the client-side phenomenon.</p></li><li><p><strong>Altibase HDB 5 or later</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase HDB version 5 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[2015/04/10 15:48:28] [Thread-1] [Level-1]
+[Notify : Fetch Timeout] Session Closed by Server : Session ID = 32
+    CLIENT_INFO           =&gt; TCP 127.0.0.1:50696(PID : 18647665)
+    Time Limit            =&gt; 1
+    Running Time          =&gt; 2
+    Caused by Query       =&gt; SELECT * FROM EMP
+    Transaction ID        =&gt; 544259 </pre>
+</div></div></li><li><p><strong>ALTIBASE HDB 4.3.9</strong></p><div>Client IP information cannot be checked in the ALTIBASE HDB 4.3.9 server log. It should be judged with log output time and Caused by Query.</div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase HDB 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[2015/04/10 15:44:56] [Thread-139708873230080] [Level-1]
+[Notify : Fetch Timeout] Session Closed by Server : Session ID = 45
+[2015/04/10 15:44:56] [Thread-139708873230080] [Level-1]
+         Time   Limit =&gt; 2
+         Running Time =&gt; 2
+[2015/04/10 15:44:56] [Thread-139708873230080] [Level-1]
+         Caused by Query =&gt; SELECT * FROM EMP
+[2015/04/10 15:44:56] [Thread-139708873230080] [Level-1]
+         Transaction ID =&gt; 26435</pre>
+</div></div></li></ul><h2 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-AltibaseClient">Altibase Client</h2><hr /><p>The following situations occur on the Altibase client side.</p><ul><li><p>The error message can be checked when the client sends a request to the Altibase server.<br />Therefore, it may occur after the time left on the Altibase server-side (altibase_boot.log).</p></li><li><p>The connection to the Altibase server is disconnected during SELECT (when Fetch is requested).</p></li><li><p>When an application processes a fetch result and requests a FETCH back to the database, a disconnected error occurs.</p></li><li><p>The session has been closed by the server in the client log. (For ALTIBASE HDB 5.5.1 or later versions)</p></li><li><p>The Server closed the connection in the client log. (For ALTIBASE HDB 5.5.1 or later versions.)</p></li></ul><p>Refer to the following for the types of error messages for each client.</p><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-OrangeforALTIBASE">Orange for ALTIBASE</h3><ul><li><p>The following error message occurs when scrolling down the result window below after executing SELECT.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Orange for ALTIBASE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">Error : # 331843, Communication link failure. Server closed the connection.</pre>
+</div></div></li></ul><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-iSQL">iSQL</h3><ul><li><p>The following error message occurs while executing SELECT in iSQL.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select * from emp;
+...중략...
+11          1003        2750000     
+12          4002        1890000     
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li></ul><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-APRE(SESC),SQLCLI,ODBC,CAPI">APRE(SESC), SQLCLI, ODBC, CAPI</h3><ul><li>&quot;Communication link failure during fetch in APRE, SQL CLI, ODBC, and CAPI. Server closed the connection.&quot; occurs.</li><li><p>This applies to ALTIBASE HDB version 5 or later</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>APRE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">FETCH ERROR         : [-331843] Communication link failure. Server closed the connection.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SQLCLI, ODBC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">Error : SELECT * FROM EMP
+Diagnostic Record 1
+     SQLSTATE     : 08S01
+     Message text : Communication link failure. Server closed the connection.
+     Message len  : 57
+     Native error : 0x51043</pre>
+</div></div></li><li><p>SESC (ALTIBASE HDB 4 ~ 5.1.5)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SESC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ./cursor2
+...Omitted...
+16      1001     2300000.00
+17      2001     1400000.00
+FETCH ERROR              : [-331843] Communication link failure (0
+CURSOR CLOSE ERROR Error : [-594098] Connection does not exist
+DISCONN ERROR            : [0] </pre>
+</div></div></li></ul><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-JDBC">JDBC</h3><ul><li><p>In <strong>ALTIBASE HDB 4.3.9,</strong> the following error occurs during FETCH execution and the application may be stopped.</p><div class="panel" style="border-color: grey;border-style: dotted;border-width: 1px;"><div class="panelContent">
+<p><span>$ java SimpleSQL</span><br /><span>...Omitted...</span><br /><span>  ENO, DNO, SALARY : 20 40020</span><br /><span>FETCH ERROR CODE    : 0</span><br /><span>FETCH ERROR MESSAGE : Altibase JDBC $Revision: 24725 $</span><span style="color: rgb(255,0,0);"> ERROR:read time out</span><br /><span>java.sql.SQLException: Altibase JDBC $Revision: 24725 $ ERROR:read time out</span><br /><span>        at Altibase.jdbc.driver.cmProtocol.fireIOError(cmProtocol.java:87)</span><br /><span>        at Altibase.jdbc.driver.cmProtocolTCP.execFetch(cmProtocolTCP.java:817)</span><br /><span>        at Altibase.jdbc.driver.AltibaseConnection.execFetch(AltibaseConnection.java:298)</span><br /><span>        at Altibase.jdbc.driver.</span><span style="color: rgb(255,0,0);">AltibaseResultSet.next</span><span>(AltibaseResultSet.java:1126)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:105)</span></p>
+</div></div></li><li><p>From <strong>ALTIBASE HDB 5 to 6.1.1</strong>, an error occurs during FETCH, and a disconnection error occurs whenever an application sends a request to the Altibase server afterward.</p><div class="panel" style="background-color: white;border-color: grey;border-style: dotted;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dotted;border-bottom-color: grey;background-color: greywhite;"><b>JDBC-ALTIBASE HDB 5, 6.1.1 Occurrence type 1</b></div><div class="panelContent" style="background-color: white;">
+<p>$ java SimpleSQL<br />...Omitted...<br />  ENO, DNO, SALARY : 19 40021800000<br />  ENO, DNO, SALARY : 20 40020<br />FETCH ERROR CODE    : 0<br />FETCH ERROR MESSAGE : <span style="color: rgb(255,0,0);">The connection is reset by the peer</span><span style="color: rgb(255,0,0);">.</span> (errno:232)<br />java.sql.SQLException: The connection is reset by the peer. (errno:232)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:52)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:37)<br />        at Altibase.jdbc.driver.cmnTCP.recv(cmnTCP.java:130)<br />        at Altibase.jdbc.driver.cmp.flush(cmp.java:247)<br />        at Altibase.jdbc.driver.cmp.writeFetchRequest(cmp.java:1066)<br />        at Altibase.jdbc.driver.ABConnection.writeFetchRequest(ABConnection.java:335)<br />        at Altibase.jdbc.driver.ABResultSet.fetchPosition(ABResultSet.java:1184)<br />        at Altibase.jdbc.driver.<span style="color: rgb(255,0,0);">ABResultSet.next</span>(ABResultSet.java:719)<br />        at SimpleSQL.main(SimpleSQL.java:105)<br />sPreStmt.close ERROR CODE    : 0<br />sPreStmt.close ERROR MESSAGE : <span style="color: rgb(255,0,0);">Broken pipe.</span> (errno:32)<br />java.sql.SQLException: The pipe is damaged. (errno:32)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:52)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:37)<br />        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:153)<br />        at Altibase.jdbc.driver.cmp.flush(cmp.java:246)<br />        at Altibase.jdbc.driver.cmp.free(cmp.java:1085)<br />        at Altibase.jdbc.driver.ABConnection.free(ABConnection.java:346)<br />        at Altibase.jdbc.driver.<span style="color: rgb(255,0,0);">ABStatement.close</span>(ABStatement.java:174)<br />        at SimpleSQL.main(SimpleSQL.java:133)<br />sCon.close ERROR CODE    : 0<br />sCon.close ERROR MESSAGE : <span style="color: rgb(255,0,0);">Broken pipe</span>. (errno:32)<br />java.sql.SQLException: The pipe is damaged. (errno:32)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:52)<br />        at Altibase.jdbc.driver.ex.exception(ex.java:37)<br />        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:153)<br />        at Altibase.jdbc.driver.cmp.flush(cmp.java:246)<br />        at Altibase.jdbc.driver.cmp.disconnect(cmp.java:775)<br />        at Altibase.jdbc.driver.<span style="color: rgb(255,0,0);">ABConnection.clos</span>e(ABConnection.java:226)        <br />        at SimpleSQL.main(SimpleSQL.java:142)</p>
+</div></div><div class="panel" style="border-color: grey;border-style: dotted;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dotted;border-bottom-color: grey;background-color: white;color: greywhite;"><b>JDBC-ALTIBASE HDB 5, 6.1.1 Occurrence type 2</b></div><div class="panelContent">
+<p><span>$ java SimpleSQL</span><br /><span>...Omitted...</span><br /><span>  ENO, DNO, SALARY : 19 40021800000</span><br /><span>  ENO, DNO, SALARY : 20 40020</span><br /><span>FETCH ERROR CODE    : 331817</span><br /><span>FETCH ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">Communication link failure</span><br /><span>java.sql.SQLException: Communication link failure</span><br /><span>        at Altibase.jdbc.driver.ex.exception(ex.java:57)</span><br /><span>        at Altibase.jdbc.driver.ex.exception(ex.java:32)</span><br /><span>        at Altibase.jdbc.driver.ex.test(ex.java:83)</span><br /><span>        at Altibase.jdbc.driver.cmnTCP.recv(cmnTCP.java:110)</span><br /><span>        at Altibase.jdbc.driver.cmp.flush(cmp.java:253)</span><br /><span>        at Altibase.jdbc.driver.cmp.writeFetchRequest(cmp.java:1167)</span><br /><span>        at Altibase.jdbc.driver.ABConnection.writeFetchRequest(ABConnection.java:628)</span><br /><span>        at Altibase.jdbc.driver.ABResultSet.fetchPosition(ABResultSet.java:1184)</span><br /><span>        at Altibase.jdbc.driver.</span><span style="color: rgb(255,0,0);">ABResultSet.next</span><span>(ABResultSet.java:719)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:105)</span><br /><span>sPreStmt.close ERROR CODE    : 331817</span><br /><span>sPreStmt.close ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">Broken pipe</span><br /><span>java.sql.SQLException: Broken pipe</span><br /><span>        at Altibase.jdbc.driver.ex.exception(ex.java:76)</span><br /><span>        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:156)</span><br /><span>        at Altibase.jdbc.driver.cmp.flush(cmp.java:252)</span><br /><span>        at Altibase.jdbc.driver.cmp.free(cmp.java:1186)</span><br /><span>        at Altibase.jdbc.driver.ABConnection.free(ABConnection.java:655)</span><br /><span>        at Altibase.jdbc.driver</span><span style="color: rgb(255,0,0);">.ABStatement.close</span><span>(ABStatement.java:179)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:134)</span><br /><span>Caused by: </span><a href="http://java.io/" class="external-link" rel="nofollow">java.io</a><span>.IOException: Broken pipe</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.FileDispatcher.write0(Native Method)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.SocketDispatcher.write(SocketDispatcher.java:29)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.IOUtil.writeFromNativeBuffer(IOUtil.java:69)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.IOUtil.write(IOUtil.java:26)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.SocketChannelImpl.write(SocketChannelImpl.java:336)</span><br /><span>        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:147)</span><br /><span>        ... 5 more</span><br /><span>sCon.close ERROR CODE    : 331817</span><br /><span>sCon.close ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">Broken pipe</span><br /><span>java.sql.SQLException: Broken pipe</span><br /><span>        at Altibase.jdbc.driver.ex.exception(ex.java:76)</span><br /><span>        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:156)</span><br /><span>        at Altibase.jdbc.driver.cmp.flush(cmp.java:252)</span><br /><span>        at Altibase.jdbc.driver.cmp.disconnect(cmp.java:877)</span><br /><span>        at Altibase.jdbc.driver.</span><span style="color: rgb(255,0,0);">ABConnection.close</span><span>(ABConnection.java:366)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:143)</span><br /><span>Caused by: </span><a href="http://java.io/" class="external-link" rel="nofollow">java.io</a><span>.IOException: Broken pipe</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.FileDispatcher.write0(Native Method)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.SocketDispatcher.write(SocketDispatcher.java:29)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.IOUtil.writeFromNativeBuffer(IOUtil.java:69)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.IOUtil.write(IOUtil.java:26)</span><br /><span>        at </span><a href="http://sun.nio.ch/" class="external-link" rel="nofollow">sun.nio.ch</a><span>.SocketChannelImpl.write(SocketChannelImpl.java:336)</span><br /><span>        at Altibase.jdbc.driver.cmnTCP.send(cmnTCP.java:147)</span><br /><span>        ... 4 more</span></p>
+</div></div></li><li><p>From <strong>ALTIBASE HDB 6.3.1</strong>, the session has been closed by the server error message that occurs during FETCH execution, and a connection disconnection error occurs whenever a request is sent to the Altibase server.</p><div class="panel" style="background-color: white;border-color: grey;border-style: dotted;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dotted;border-bottom-color: grey;background-color: greywhite;"><b>JDBC - ALTIBASE HDB 6.3.1</b></div><div class="panelContent" style="background-color: white;">
+<p><span>FETCH ERROR CODE    : 4163</span><br /><span>FETCH ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">The session has been closed by the server</span><br /><span>java.sql.SQLException: The session has been closed by the server</span><br /><span>        at Altibase.jdbc.driver.ex.Error.processServerError(Error.java:320)</span><br /><span>        at Altibase.jdbc.driver.AltibaseForwardOnly</span><span style="color: rgb(255,0,0);">ResultSet.next</span><span>(AltibaseForwardOnlyResultSet.java:151)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:105)</span><br /><span>sPreStmt.close ERROR CODE    : 334337</span><br /><span>sPreStmt.close ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">Communication link failure: There was no response from the server, and the channel has reached end-of-stream.</span><br /><span>java.sql.SQLException: Communication link failure: There was no response from the server, and the channel has reached end-of-stream.</span><br /><span>        at Altibase.jdbc.driver.ex.Error.throwSQLExceptionInternal(Error.java:162)</span><br /><span>        at Altibase.jdbc.driver.ex.Error.throwSQLException(Error.java:102)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.readFromSocket(CmChannel.java:1042)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.receivePacket(CmChannel.java:1001)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.sendAndReceive(CmChannel.java:821)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmProtocol.freeStatement(CmProtocol.java:424)</span><br /><span>        at Altibase.jdbc.driver.</span><span style="color: rgb(255,0,0);">AltibaseStatement.close</span><span>(AltibaseStatement.java:436)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:133)</span><br /><span>sCon.close ERROR CODE    : 334337</span><br /><span>sCon.close ERROR MESSAGE : </span><span style="color: rgb(255,0,0);">Communication link failure: Broken pipe</span><br /><span>java.sql.SQLException: Communication link failure: Broken pipe</span><br /><span>        at Altibase.jdbc.driver.ex.Error.throwCommunicationErrorException(Error.java:237)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.sendPacket(CmChannel.java:921)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.sendAndReceive(CmChannel.java:819)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmProtocol.disconnect(CmProtocol.java:95)</span><br /><span>        at Altibase.jdbc.driver.AltibaseConnection.disconnect(AltibaseConnection.java:616)</span><br /><span>        at Altibase.jdbc.driver.</span><span style="color: rgb(255,0,0);">AltibaseConnection.close</span><span>(AltibaseConnection.java:601)</span><br /><span>        at SimpleSQL.main(SimpleSQL.java:142)</span><br /><span>Caused by: </span><a href="http://java.net/" class="external-link" rel="nofollow">java.net</a><span>.SocketException: Broken pipe</span><br /><span>        at </span><a href="http://java.net/" class="external-link" rel="nofollow">java.net</a><span>.SocketOutputStream.socketWrite0(Native Method)</span><br /><span>        at </span><a href="http://java.net/" class="external-link" rel="nofollow">java.net</a><span>.SocketOutputStream.socketWrite(SocketOutputStream.java:109)</span><br /><span>        at </span><a href="http://java.net/" class="external-link" rel="nofollow">java.net</a><span>.SocketOutputStream.write(SocketOutputStream.java:153)</span><br /><span>        at java.nio.channels.Channels$WritableByteChannelImpl.write(Channels.java:292)</span><br /><span>        at </span><a href="http://altibase.jdbc.driver.cm/" class="external-link" rel="nofollow">Altibase.jdbc.driver.cm</a><span>.CmChannel.sendPacket(CmChannel.java:916)</span><br /><span>        ... 5 more</span></p>
+</div></div></li></ul><h1 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Cause">Cause</h1><hr /><p>This is a notification message left by the SessionManager as it cleans up the sessions stuck on FETCH_TMEOUT.</p><p>FETCH_TMEOUT is an Altibase server property. this is a property provided to prevent an abnormal increase of DBMS resources as the time to execute the SELECT statement increases.</p><p>When the client requests fetch, the DBMS divides the fetch result by a certain amount (in the communication buffer) and sends it to the client. When the client reads all the result sets in the communication buffer, it requests the next result set to the DB server.</p><p>If the time interval for requesting the next result set exceeds the value set for FETCH_TIMEOUT, the session is cleaned up and the transaction in progress is rolled back.</p><p>If the old image created by the change transaction is viewed by the inquiry transaction, the old image is not cleaned up even when the change transaction ends.</p><div>For this reason, if the SELECT statement is executed for a long time, the following symptoms may occur.</div><div><ul><li>For memory tables, memory usage increases</li><li>For disk tables, undo tablespace usage increases</li></ul><p> </p><h1 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Solution">Solution</h1><hr /><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Checkingtheapplicationlogic">Checking the application logic</h3><ul><li>FETCH_TIMEOUT can be a problem if the application mainly processes the fetch result to perform other tasks, and this processing takes longer.</li><li><p>So, take a look at how the application handles fetch results, determine if there is room for improvement, and then take action. (Take measures after checking if there are any of the following parts)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>JDBC example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">sRS = sStmt.executeQuery( &quot;SELECT EMP_FIRST, EMP_LAST,&quot; +
+                          &quot; EMP_NO FROM TEST_EMP_TBL &quot; );
+/* Fetch all data */
+while( sRS.next() )
+{
+    /* Fetch results are processed for a long time in the application*/ 
+}</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>APRE example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">/* declare cursor */
+EXEC SQL DECLARE DEPT_CUR CURSOR FOR
+         SELECT *
+         FROM DEPARTMENTS;
+
+/* open cursor */
+EXEC SQL OPEN DEPT_CUR;
+
+/* fetch cursor in loop */
+while(1)
+{
+    EXEC SQL FETCH DEPT_CUR INTO :s_department :s_dept_ind;
+     /* Fetch results are processed for a long time in the application */
+}</pre>
+</div></div></li></ul><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-ChangingFETCH_TIMEOUTsettingvalue">Changing FETCH_TIMEOUT setting value</h3><ul><li>The default value for the FETCH_TIMEOUT property is 60 seconds. If it is determined that this value is small in the operating environment, it can be changed and used.</li><li>This property can be changed with a system property or a session property.</li></ul><h4 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Changingsessionproperty">Changing session property</h4><ul><li><p>Session property is applied to the session that executed ALTER SESSIOn on a per session basis and applied to queries executed after ALTER SESSION was executed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL-How to change session properties</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET FETCH_TIMEOUT = 600;   -- Value is in seconds</pre>
+</div></div></li><li><p> It can also be changed in the application.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>JDBC example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">sStmt.execute( &quot;ALTER SESSION SET FETCH_TIMEOUT = 600&quot; ); </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>APRE/SESC example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c#; gutter: false" style="font-size:12px;"> EXEC SQL ALTER SESSION SET ALTER SESSION SET FETCH_TIMEOUT = 600 ; </pre>
+</div></div></li></ul><h4 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-Changingsystemproperty">Changing system property</h4><ul><li><p>System property affects a connected session after executing ALTER SYSTEM.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL-How to change system properties</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET FETCH_TIMEOUT = 600;   -- Value is in seconds.</pre>
+</div></div></li><li><p>To keep the changed system property values even after restarting the Altibase server process, you need to modify the altibase.properties file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL-How to change system properties</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+FETCH_TIMEOUT  = 60</pre>
+</div></div></li></ul><h3 id="id-[Notify:FetchTimeout]SessionClosedbyServer.-HowtochecktheFETCH_TIMEOUTpropertyvalue">How to check the FETCH_TIMEOUT property value</h3><ul><li><strong>How to check the property value applied to the session</strong><br /><p>Since FETCH_TIMEOUT can be changed on a per-session basis, the value set for each session may be different.<br />The property value set in the session can be checked in V$SESSION.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- ALTIBASE HDB 5 or later
+iSQL&gt; SELECT ID SESSION_ID, FETCH_TIME_LIMIT FROM V$SESSION WHERE ID = SESSION_ID();
+
+-- ALTIBASE HDB 4.3.9 (My session ID is unknown, so infer it with client IP, PID, etc. 
+iSQL&gt; SELECT ID SESSION_ID, DB_USERNAME, CLIENT_CONSTR, COMM_NAME, CLIENT_PID, FETCH_TIME_LIMIT FROM V$SESSION;</pre>
+</div></div></li><li><p><strong>Check system property value</strong><br />It can be changed with ALTER SYSTEM or check the value set in altibase.properties in V$PROPERTY.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the property value applied to the session</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;FETCH_TIMEOUT&#39;;</pre>
+</div></div></li></ul><p> </p><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to terminate a session</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to terminate a session
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Howtoterminateasession-Aboutthisdocument.">About this document.</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> Purpose </p></td>
+<td class="confluenceTd"><p> This document explains how to terminate a session in ALTIBASE HDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Applied to </p></td>
+<td class="confluenceTd"><p> 4.3.9 or later </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Prerequisite </p></td>
+<td class="confluenceTd"><p> Administrator's Manual </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h1 id="Howtoterminateasession-Description">Description</h1>
+
+<p>You may want to terminate an ALTIBASE HDB session in abnormal behavior. In order to terminate the session, you have to connect to ALTIBASE HDB as SYSDBA.</p>
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Only SYSDBA can terminate a session.</p>
+                    </div>
+    </div>
+
+
+<ol>
+	<li><strong>Connecting as SYSDBA</strong>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+-bash-3.00$ isql -SYSDBA
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 5.5.1.0.4
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write UserID : sys
+Write Password :
+ISQL_CONNECTION = UNIX, SERVER = localhost, PORT_NO = 27562
+iSQL(SYSDBA)&gt;
+</pre>
+</div></div></li>
+	<li><strong>Finding the session identifier which you want to terminate.</strong><br />
+Assume that there is a session connected from &quot;192.168.1.84&quot;, and you want to terminate that session.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+iSQL(SYSDBA)&gt; SELECT id, comm_name FROM v$session;
+ID          COMM_NAME
+---------------------------------------------------------------------------------
+4           UNIX
+5           TCP 192.168.1.84:35679
+2 rows selected.
+</pre>
+</div></div>
+The session identifier which you want to terminate is &quot;5&quot;.</li>
+	<li><strong>Terminating the session.</strong><br />
+You can use the query below to terminate the session by specifying the session identifier.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+ALTER DATABASE MYDB SESSION CLOSE [session identifier];
+</pre>
+</div></div></li>
+</ol>
+
+
+<p>You can terminate the session #5 and verify that is terminated as shown below:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(SYSDBA)&gt; alter database mydb session close 5;
+Alter success.
+iSQL(SYSDBA)&gt; SELECT id, comm_name FROM v$session;
+ID          COMM_NAME
+---------------------------------------------------------------------------------
+4           UNIX
+1 row selected.
+</pre>
+</div></div>
+
+<p>If an active transaction is running on the session, ALTIBASE HDB rollbacks the transaction before terminating the session. Therefore,  sometimes, terminating a session may not work immediately. </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

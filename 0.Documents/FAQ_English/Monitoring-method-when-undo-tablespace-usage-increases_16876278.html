@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Monitoring method when undo tablespace usage increases</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Undo-Tablespace_16876272.html">Undo Tablespace</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Monitoring method when undo tablespace usage increases
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147669 {padding: 0px;}
+div.rbtoc1624409147669 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147669 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147669'>
+<ul class='toc-indentation'>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Overview'>Overview</a></li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Monitoringitem'>Monitoring item</a></li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Monitoringmethodbyversion'>Monitoring method by version</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-ALTIBASEHDB5.3.3,5.5.1,6.1.1,6.3.1'>ALTIBASE HDB 5.3.3, 5.5.1, 6.1.1, 6.3.1</a></li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-ALTIBASEHDB4.3.9,5.1.5'>ALTIBASE HDB 4.3.9, 5.1.5</a></li>
+</ul>
+</li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Increasingthesizeoftheundotablespace'>Increasing the size of the undo tablespace</a></li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Forciblyterminatingsession'>Forcibly terminating session</a></li>
+<li><a href='#Monitoringmethodwhenundotablespaceusageincreases-Avoidinglong-runningtransactions'>Avoiding long-running transactions</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Monitoringmethodwhenundotablespaceusageincreases-Overview">Overview</h1><hr /><p>This document describes how to monitor when the undo tablespace usage continues to increase.</p><p> </p><h1 id="Monitoringmethodwhenundotablespaceusageincreases-Monitoringitem">Monitoring item</h1><hr /><p>If the undo tablespace usage increases, the user should check the following two cases.</p><ul><li><strong>Whether there is a change transaction that changes the data in the disk table</strong></li><li><strong>Whether there is a query transaction looking at the old image created in the change transaction</strong></li></ul><p><strong><br /></strong></p><h1 id="Monitoringmethodwhenundotablespaceusageincreases-Monitoringmethodbyversion">Monitoring method by version</h1><hr /><h2 id="Monitoringmethodwhenundotablespaceusageincreases-ALTIBASEHDB5.3.3,5.5.1,6.1.1,6.3.1"><span style="color: rgb(0,0,0);">ALTIBASE HDB 5.3.3, 5.5.1, 6.1.1, 6.3.1</span></h2><hr /><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Queryformonitoringundotablespaceusagebytransaction">Query for monitoring undo tablespace usage by transaction</h3><p>With the monitoring query below, <span style="color: rgb(0,0,255);"><strong>TX_STATUS finds and takes action for long-running transactions with BEGIN or END status.</strong></span></p><p><span style="color: rgb(0,0,0);">T</span><span style="color: rgb(0,0,0);">he following information can be checked in the query result.</span></p><ul><li><p>Session information using or accessing the undo tablespace. (Autocommit mode, Client IP and Process id, UTRANS_TIMEOUT setting value)</p></li><li><p>Whether or not there is a change transaction using the undo realm</p></li><li><p>Whether there is a query transaction accessing the undo area</p></li><li><p>Undo usage in use by change transactions</p></li><li><p>Last SQL statement and execution time of transaction</p></li><li><p>Whether to execute SQL statement</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Query for undo tablespace usage by transaction</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT RPAD(DECODE(TX.LOG_TYPE, 1, REP.REP_NAME, TX.SESSION_ID), 10) SESSION_ID                                                                     -- Session ID that performed the transaction.
+     , RPAD(TX.ID, 20) TX_ID                                                                                                                        -- Transaction ID
+     , RPAD(DECODE(ST.ID, NULL, &#39;REP&#39;&#39;S TX&#39;, ST.ID), 20) STATEMENT_ID                                                                               -- STATEMENT ID
+     , RPAD(DECODE(TX.TSS_RID, 0, &#39;SELECT&#39;, &#39;UPDATE&#39;), 7) TX_TYPE                                                                                   -- Transaction type. SELECT: A transaction with only query statements. UPDATE: Transaction that changed data such as DELETE, UPDATE, etc.
+     , RPAD(DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;), 16) TX_STATUS    -- Transaction status
+     , RPAD(DECODE(ST.EXECUTE_FLAG, NULL, &#39;REP&#39;&#39;S TX&#39;, 1, &#39;SQL ING&#39;, 0, &#39;SQL END&#39;), 10) SQL_STATUS                                                  -- SQL status    
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP &#39;||REP.PEER_IP||&#39;:&#39;||REP.PEER_PORT, S.COMM_NAME||&#39; PID:&#39;||S.CLIENT_PID), 40) CLIENT_IP                      -- Client IP and process ID
+     , RPAD(DECODE(S.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, 0, &#39;OFF&#39;, NULL, &#39;REP&#39;&#39;S TX&#39;), 10) AUTOCOMMIT                                                         -- AUTOCOMMIT mode
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP&#39;&#39;S TX&#39;, S.UTRANS_TIME_LIMIT), 15) UTRANS_TIMEOUT                                                            -- Session UTRANS_TIMEOUT setting value
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) CURRENT_TIME                                                                                         -- Current time
+     , DECODE(ST.LAST_QUERY_START_TIME, NULL, TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;), ST.LAST_QUERY_START_TIME) LAST_QUERY_START_TIME   -- SQL statement start time
+     , RPAD(LTRIM(TXM.SYS_MIN_DISK_VIEWSCN), 10) SYS_MIN_DISK_VIEWSCN                                                                               -- Minimum SCN viewing at the undo area
+     , DECODE(TX.DISK_VIEW_SCN, &#39;INFINITE(                  0)&#39;, &#39;-&#39;, LTRIM(TX.DISK_VIEW_SCN)) DISK_VIEW_SCN                                        -- Minimum SCN seen in viewing transaction
+     , DECODE(TX.MIN_DISK_LOB_VIEW_SCN, &#39;INFINITE(                  0)&#39;, &#39;-&#39;, LTRIM(TX.MIN_DISK_LOB_VIEW_SCN)) MIN_DISK_LOB_VIEW_SCN                -- Minimum SCN viewed in a transaction querying LOB data
+     , TO_CHAR(((UD_S.TOTAL_EXTENT_COUNT*UD_S.PAGE_COUNT_IN_EXTENT*8192)/1024), &#39;999,999,999&#39;) &#39;UNDO_USED(KB)&#39;                                      -- Size of the undo area used in the change transaction.
+     , DECODE(TX.LOG_TYPE, 1, &#39;REMOTE_TX_ID : &#39;||REP_TX.REMOTE_TID, ST.QUERY) QUERY                                                                 -- Last query performed by a transaction accessed or using undo
+  FROM V$TRANSACTION TX LEFT OUTER JOIN (SELECT SESSION_ID , TX_ID , ID , TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + (LAST_QUERY_START_TIME) / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_QUERY_START_TIME, EXECUTE_FLAG, UNDO_READ_PAGE , UNDO_GET_PAGE , SUBSTR(QUERY, 1, 60) QUERY
+          FROM V$STATEMENT
+         WHERE (SESSION_ID
+                     , TX_ID
+                     , LAST_QUERY_START_TIME) IN (SELECT SESSION_ID
+                     , TX_ID
+                     , MAX(LAST_QUERY_START_TIME) LAST_QUERY_START_TIME
+                  FROM V$STATEMENT
+                 GROUP BY SESSION_ID
+                     , TX_ID)) ST ON TX.ID = ST.TX_ID LEFT OUTER JOIN V$SESSION S ON TX.SESSION_ID = S.ID LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL REP_TX ON TX.ID = REP_TX.LOCAL_TID LEFT OUTER JOIN V$REPRECEIVER REP ON REP_TX.REP_NAME = REP.REP_NAME
+      LEFT OUTER JOIN V$TXSEGS TX_S ON TX.ID = TX_S.TRANS_ID LEFT OUTER JOIN V$UDSEGS UD_S ON TX_S.ID = UD_S.TXSEG_ENTRY_ID               
+     , V$TRANSACTION_MGR TXM
+ WHERE 1=1
+   AND (TX.TSS_RID &lt;&gt; 0
+            OR ST.UNDO_READ_PAGE &lt;&gt; 0
+            OR ST.UNDO_GET_PAGE &lt;&gt; 0)
+ ORDER BY SESSION_ID
+     , TX_ID
+     , LAST_QUERY_START_TIME;</pre>
+</div></div><p> </p><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Outputresult">Output result</h3><p>Below is an example output showing a change transaction using undo.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4           61397121                   262147                     UPDATE        BEGIN                      SQL_END               TCP 127.0.0.1:45076 PID:1  OFF                   0                          2015-03-11 12:27:11        2015-03-11 09:30:40        800767                -                          -                                   256     UPDATE LOB_T SET C3 = &#39;UN
+                                                                                                                                 11410                                                                                                                                                                                                                          _DO TEST&#39;                     
+6           586566273                  393216                     UPDATE        BEGIN                      SQL_ING               TCP 127.0.0.1:45044 PID:1  OFF                   3600                       2015-03-11 12:27:11        2015-03-11 09:30:30        800767                800767                     800767                           68,864     UPDATE EMP SET JOIN_DATE=  
+                                                                                                                                 11242                                                                                                                                                                                               SYSDATE                    
+2 rows selected.</pre>
+</div></div><ul><li><p>If TX_TYPE is UPDATE, it means that a data change operation occurred at least once in that transaction.</p></li><li><p>If SQL_STATUS is SQL_END, it means that the SQL statement executed in the transaction has ended, but the transaction has not. (TX_ID 61397121 of session 4 in the results below)</p></li><li><p>If SQL_STATUS is SQL_ING, it means that the SQL statement executed in the transaction is being executed. (TX_ID 61397121 of session 6 in the results below)</p></li><li><p>The start time of the last SQL statement executed can be checked in the transaction with LAST_QUERY_START_TIME. The difference from the current time allows you to determine how long the transaction is running.</p></li><li><p>UTRANS_TIMEOUT means the maximum amount of time (in seconds) a change transaction can perform.</p></li><li><p>UNDO_USED(KB) shows the size of undo used in the transaction in kbytes.</p></li></ul><p>The following is the output result showing the query transaction viewing the pre-change data created in the undo area in the change transaction.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2           7374720                    131072                     SELECT        BEGIN                      SQL_END               TCP 127.0.0.1:45173 PID:1  OFF                   0                          2015-03-11 12:30:25        2015-03-11 09:31:43        800783                -                          800783                                      SELECT * FROM LOB_T
+                                                                                                                                 12123                                                                                                                                                                                                                                                     
+5           1613185                    327681                     SELECT        BEGIN                      SQL_ING               TCP 127.0.0.1:44251 PID:4  ON                    3600                       2015-03-11 12:30:25        2015-03-11 09:33:42        800783                800783                     800783                                      SELECT ENO, C_DATE         
+                                                                                                                                 0252                                                                                                                                                                                                       FROM EMP            
+2 rows selected.
+
+
+
+iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2           7374720                    131072                     SELECT        BEGIN                      SQL_END               TCP 127.0.0.1:45173 PID:1  OFF                   0                          2015-03-11 12:35:12        2015-03-11 09:31:43        800783                -                          800783                                      SELECT * FROM LOB_T
+                                                                                                                                 12123                                                                                                                                                                                                                                                     
+1 rows selected.
+
+
+
+iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE         TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9           376196                     589824                     SELECT          BEGIN                      SQL END               TCP 127.0.0.1:21792 PID:2  OFF                   3600                       2015-03-11 16:00:13        2015-03-11 15:54:19        800951                -                          -                                           SELECT DEP_LOCATION FROM   
+                                                                                                                                   20176                                                                                                                                                                                                                          DEPT WHERE DNO BETWEEN &#39;1  
+                                                                                                                                                                                                                                                                                                                                                                  001&#39; AND &#39;                 
+1 rows selected.</pre>
+</div></div><ul><li>If TX_TYPE is SELECT, it means a transaction that has never performed a change statement.</li><li><strong>SELECT statements that do not contain LOB data will no longer look at the undo image after fetching data from the database.</strong><br />- Transactions in Autocommit-Mode disappear from the result when the fetch is complete. (Refer to TX_ID 1613185 in Session 5. The SCN output in DISK_VIEW_SCN means that LOB data is not included.)<br />- In non-autocommit-mode transactions, both DISK_VIEW_SCN and MIN_DISK_LOB_VIEW_SCN are out as-after fetch is finished and until commit is executed. (TX_ID 376196 of session 9)</li><li><strong>SELECT statements including LOB</strong> data look at the undo image until commit or rollback is executed even when fetch is terminated.<br />If DISK_VIEW_SCN-and SCN is output in MIN_DISK_LOB_VIEW_SCN, it means a transaction that queries LOB data. (TX_ID 7374720 of session 2)<br />In the case of LOB data, there is information called lob cursor. When this is open, the undo image can be found. The lob cursor is closed only by commit or rollback.<br /><strong>Transactions in this state can cause increased undo usage.</strong></li></ul><p>The following is the result showing a replication transaction using the undo area.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+REP1        4417                       REP&#39;S TX                   UPDATE        BEGIN                      REP&#39;S TX              REP 192.168.1.146:55007    REP&#39;S TX              REP&#39;S TX                   2015-03-10 12:35:12        2015-03-10 11:37:40        800791                800791                     800791                            8,192     REMOTE_TX_ID : 58753       
+                                                                                                                                                                                                                                                                                                                                                                
+1 row selected.</pre>
+</div></div><ul><li><p>The IP of the server that sent the transaction with CLIENT_IP can be checked.</p></li><li><p>The name of the redundant object with SESSION_ID can be found.</p></li><li><p>The value of REP'S TX means a value that cannot be checked locally. (Section and SQL information of a redundant transaction cannot be checked locally)</p></li><li><p>The TX_ID of the remote server can be found with REMOTE_TX_ID output on QUERY.</p></li></ul><p> </p><h2 id="Monitoringmethodwhenundotablespaceusageincreases-ALTIBASEHDB4.3.9,5.1.5">ALTIBASE HDB 4.3.9, 5.1.5</h2><hr /><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Queryformonitoringundotablespaceusagebytransaction.1">Query for monitoring undo tablespace usage by transaction</h3><p>Find and take action on transactions that are using or accessing undo with the monitoring query below.</p><p>The following information can be checked in the query result.</p><ul><li><p>Session information using or accessing the undo tablespace. (Autocommit mode, Client IP and Process id, UTRANS_TIMEOUT setting value)</p></li><li><p>Whether or not there is a change transaction using the undo realm</p></li><li><p>Whether there is a query transaction accessing the undo area</p></li><li><p>Last SQL statement and execution time of transaction</p></li><li><p>Whether to execute SQL statement</p></li></ul><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Query for undo tablespace usage by transaction</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT RPAD(DECODE(TX.LOG_TYPE, 1, REP.REP_NAME, ST.SESSION_ID), 10) SESSION_ID                                                                         -- Session ID that performed the transaction.
+     , RPAD(TX.ID, 20) TX_ID                                                                                                                            -- Transaction ID
+     , RPAD(DECODE(ST.ID, NULL, &#39;REP&#39;&#39;S TX&#39;, ST.ID), 20) STATEMENT_ID                                                                                   -- STATEMENT ID
+     , RPAD(DECODE(TX.TSS_RID, 0, &#39;SELECT&#39;, &#39;UPDATE&#39;), 7) TX_TYPE                                                                                       -- Transaction type. SELECT: A transaction with only query statements. UPDATE: Transaction that changed data such as DELETE, UPDATE, etc.
+     , RPAD(DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;), 16) TX_STATUS        -- Transaction status
+     , RPAD(DECODE(ST.EXECUTE_FLAG, NULL, &#39;REP&#39;&#39;S TX&#39;, 0, &#39;SQL_END&#39;, 1, &#39;SQL_ING&#39;), 16) SQL_STATUS                                                      -- SQL statement status
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP &#39;||REP.PEER_IP||&#39;:&#39;||REP.PEER_PORT, S.COMM_NAME||&#39; PID:&#39;||S.CLIENT_PID), 40) CLIENT_IP                          -- Client IP and process ID
+     , RPAD(DECODE(S.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, 0, &#39;OFF&#39;, NULL, &#39;REP&#39;&#39;S TX&#39;), 10) AUTOCOMMIT                                                             -- AUTOCOMMIT mode
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP&#39;&#39;S TX&#39;, S.UTRANS_TIME_LIMIT), 15) UTRANS_TIMEOUT                                                                -- Session UTRANS_TIMEOUT setting value
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) CURRENT_TIME                                                                                             -- Current time     
+     , DECODE(ST.LAST_QUERY_START_TIME, NULL, TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;), ST.LAST_QUERY_START_TIME) LAST_QUERY_START_TIME -- SQL statement start time
+     , DECODE(TX.LOG_TYPE, 1, &#39;REMOTE_TX_ID : &#39;||REP_TX.REMOTE_TID, ST.QUERY) QUERY                                                                     -- Last query performed by a transaction accessed or using undo
+  FROM V$TRANSACTION TX LEFT OUTER JOIN (SELECT SESSION_ID , TX_ID , ID , TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + (LAST_QUERY_START_TIME) / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_QUERY_START_TIME , UNDO_READ_PAGE , UNDO_GET_PAGE , EXECUTE_FLAG, SUBSTR(QUERY, 1, 60) QUERY
+          FROM V$STATEMENT
+         WHERE (SESSION_ID
+                     , TX_ID
+                     , LAST_QUERY_START_TIME) IN (SELECT SESSION_ID
+                     , TX_ID
+                     , MAX(LAST_QUERY_START_TIME) LAST_QUERY_START_TIME
+                  FROM V$STATEMENT
+                 GROUP BY SESSION_ID
+                     , TX_ID)) ST ON TX.ID = ST.TX_ID LEFT OUTER JOIN V$SESSION S ON ST.SESSION_ID = S.ID LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL REP_TX ON TX.ID = REP_TX.LOCAL_TID LEFT OUTER JOIN V$REPRECEIVER REP ON REP_TX.REP_NAME = REP.REP_NAME
+ WHERE 1=1
+   AND TX.STATUS &lt;&gt; 6
+   AND (TX.TSS_RID &lt;&gt; 0
+            OR ST.UNDO_READ_PAGE &lt;&gt; 0
+            OR ST.UNDO_GET_PAGE &lt;&gt; 0)
+ ORDER BY SESSION_ID
+     , TX_ID
+     , LAST_QUERY_START_TIME; </pre>
+</div></div><p> </p><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Outputresult.1">Output result</h3><hr /><p>Below is an example output showing a change transaction using undo.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+453698      876975109             0                     UPDATE   BEGIN             SQL_ING           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 14:21:38             2015-03-11 14:07:11             UPDATE EMP SET JOIN_DATE = SYS  
+                                                                                                      PID:12959                                                                                                                   DATE                            
+453832      34379778              0                     UPDATE   BEGIN             SQL_END           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 14:21:38             2015-03-11 14:06:32             UPDATE LOB_T SET C1 = &#39;T&#39;       
+                                                                                                      PID:13015                                                                                                                                                   
+2 rows selected.</pre>
+</div></div><ul><li><p>If <strong>TX_TYPE</strong> is <strong>UPDATE</strong>, it means that a data change operation occurred at least once in that transaction.</p></li><li><p>If <strong>SQL_STATUS is SQL_END</strong>, it means that the SQL statement executed in the transaction has ended, but the transaction has not. (TX_ID 61397121 of session 4 in the results below)</p></li><li><p>If <strong>SQL_STATUS is SQL_ING</strong>, it means that the SQL statement executed in the transaction is being executed. (TX_ID 61397121 of session 6 in the results below)</p></li><li><p>The start time of the last SQL statement executed in the transaction can be checked with <strong>LAST_QUERY_START_TIME.</strong> The difference from the current time allows you to determine how long the transaction is running.</p></li><li><p><strong>UTRANS_TIMEOUT</strong> means the maximum amount of time (in seconds) a change transaction can perform.</p></li></ul><p> </p><p>The following is the output result showing the inquiry transaction viewing the pre-change data created in the undo area in the change transaction.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+462187      34470914              0                     SELECT   BEGIN             SQL_ING           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 16:31:28             2015-03-11 16:28:27             SELECT JOIN_DATE FROM EMP       
+                                                                                                      PID:16067                                                                                                                                                   
+1 row selected.</pre>
+</div></div><ul><li><p>If TX_TYPE is SELECT, it means a transaction that has never performed a change statement.</p></li></ul><p> </p><p>The following is the result showing a replication transaction using the undo area.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+REP         16617476              REP&#39;S TX              UPDATE   BLOCKED           REP&#39;S TX          REP 192.168.1.145:27206         REP&#39;S TX    REP&#39;S TX         2015-03-11 14:21:38             2015-03-11 14:21:34             REMOTE_TX_ID : 3875                                                                                                                                                                                                                                                                               
+1 rows selected.</pre>
+</div></div><ul><li><p>The IP of the server that sent the transaction can be checked with CLIENT_IP.</p></li><li><p>The name of the replication object can be checked with SESSION_ID.</p></li><li><p>The value of REP'S TX means a value that cannot be checked locally. (Section and SQL information of a redundant transaction cannot be checked locally)</p></li><li><p>The TX_ID of the remote server can be checked with REMOTE_TX_ID printed on QUERY.</p></li></ul><p> </p><h1 id="Monitoringmethodwhenundotablespaceusageincreases-Solution">Solution</h1><hr /><h2 id="Monitoringmethodwhenundotablespaceusageincreases-Increasingthesizeoftheundotablespace">Increasing the size of the undo tablespace</h2><hr /><p>The data file must be added for the undo tablespace or the size of an existing data file must be expanded.</p><p>One of the things the user can do when the undo usage is increasing.</p><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Addingdatafile">Adding data file</h3><p>After checking the existing data file name, add the data file according to the existing naming rules.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Checking data file name</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT RPAD(T.NAME, 20) SPACE_NAME
+     , RPAD(DECODE(D.AUTOEXTEND, 0, &#39;OFF&#39;, 1, &#39;ON&#39;), 10) AS AUTOEXTEND
+     , DECODE(D.MAXSIZE, 0, ROUND((D.CURRSIZE*T.PAGE_SIZE)/1024/1024), ROUND((D.MAXSIZE*T.PAGE_SIZE)/1024/1024)) AS &#39;MAXSIZE(KB)&#39;
+     , D.NAME DATAFILE
+     , DECODE(D.AUTOEXTEND, 0, &#39;OFF&#39;, 1, &#39;ON&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$TABLESPACES T, V$DATAFILES D
+ WHERE T.ID = D.SPACEID AND T.TYPE = 7
+ ORDER BY 1, 2 ;
+
+
+-- Example of execution result
+iSQL&gt; /
+SPACE_NAME            AUTOEXTEND            MAXSIZE(KB) DATAFILE                                            AUTOEXTEND  
+------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_UNDO     ON                    2048        /data/heejung.lee/63138/dbs/undo001.dbf             ON   
+1 row selected.</pre>
+</div></div><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>How to add data file: When AUTOEXTEND is ON</b></div><div class="panelContent">
+<p><span>ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE </span><span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span><span> AUTOEXTEND ON NEXT </span><em><span style="color: rgb(0,0,255);">1M </span></em><span>MAXSIZE </span><span style="color: rgb(0,0,255);"><em>2G</em></span><span>;</span><br /><br /><span>-- Example</span><br /><span>ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE </span><span style="color: rgb(0,0,255);"><em>'undo002.dbf'</em></span><span> AUTOEXTEND ON NEXT </span><span style="color: rgb(0,0,255);"><em>1M</em></span><span> MAXSIZE </span><span style="color: rgb(0,0,255);"><em>2G</em></span><span>;</span></p>
+</div></div><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>How to add data file: When AUTOEXTEND is OFF</b></div><div class="panelContent">
+<p><span>ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE </span><span style="color: rgb(0,0,255);">'<em>datafile_name</em></span><span>' SIZE </span><span style="color: rgb(0,0,255);"><em>2G</em></span><span style="color: rgb(0,0,255);"> </span><span>;</span><br /><span> </span><br /><span>-- Example</span></p><p>iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE '<span style="color: rgb(0,0,255);"><em>undo002.dbf</em></span>' SIZE 2G;<br />Alter success.</p>
+</div></div><div>The blue italic part can be changed according to the user environment. For syntax explanation, refer to the SQL Reference at <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a>/.</div><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Extendingthesizeofanexistingdatafile">Extending the size of an existing data file</h3><p>After checking the name and maximum size of the existing data file, set the maximum size larger than the current value.</p><p>Check the data file name and maximum size using the query above.</p><div class="panel" style="border-color: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-color: dashed;"><b>How to add data file: When AUTOEXTEND is ON</b></div><div class="panelContent">
+<div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span>  AUTOEXTEND OFF;</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span>  AUTOEXTEND ON NEXT 1M MAXSIZE<span style="color: rgb(0,0,255);"> <em>4G</em></span>;<br /><br />-- Example</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span>  AUTOEXTEND OFF;</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span>  AUTOEXTEND ON NEXT 1M MAXSIZE <span style="color: rgb(0,0,255);"><em>4G</em>;</span></div>
+</div></div><p> </p></div><div><p> </p><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>How to add a data file: When AUTOEXTEND is OFF</b></div><div class="panelContent">
+<p><span>ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE </span><span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span><span>  SIZE</span><span style="color: rgb(0,0,255);"> <em>4G</em></span><span>;</span><br /><br /><span>-- Example</span><br /><span>ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE </span><span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span><span> SIZE </span><span style="color: rgb(0,0,255);"><em>4G</em>;</span></p>
+</div></div><p>The blue italic part can be changed according to the user environment. For syntax explanation, refer to the SQL Reference at <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a>.</p><h2 id="Monitoringmethodwhenundotablespaceusageincreases-Forciblyterminatingsession">Forcibly terminating session</h2><hr /><p>Terminate sessions that use the undo tablespace for a long time.</p><p>This is one of the things that can be done when the undo usage is increasing.</p><p>Even if the session is forcibly terminated, the transaction termination point may be different depending on the type of transaction.</p><ul><li>In the case of a query transaction, the transaction ends as soon as the session terminates.</li><li>In the case of a change transaction, the transaction is terminated after the rollback is performed, so it may take as long as the minimum transaction progressed before the increase in undo usage is corrected.</li></ul><h3 id="Monitoringmethodwhenundotablespaceusageincreases-Howtoterminatesession">How to terminate session</h3><ul><li><p>Forcibly terminate session in ALTIBASE HDB</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>SQL statement</b></div><div class="panelContent">
+<span>iSQL&gt; connect as sysdba</span><br /><span>Write UserID : sys</span><br /><span>Write Password :</span><br /><span>Connect success.</span><br /><span>iSQL(sysdba)&gt;</span><br /><span>iSQL(sysdba)&gt; ALTER DATABASE </span><span style="color: rgb(0,0,255);"><em>database_name</em></span><span> SESSION CLOSE </span><span style="color: rgb(0,0,255);"><em>session_id</em></span><span> ;</span>
+</div></div><p>The above statement can only be executed by the sysdba user.</p><p>For <em><span style="color: rgb(0,0,255);">session_id</span>,</em> enter the SESSION_ID value from the result of 'Undo tablespace usage monitoring query per transaction', and check the <span style="color: rgb(0,0,255);"><em>database_name</em></span> with the query below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT DB_NAME FROM V$DATABASE;</pre>
+</div></div></li><li><p>Terminate the client process<br />Terminate normally by the method provided by the client program, or by kill command.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ kill -9 </span><span style="color: rgb(0,0,255);"><em>process_id</em></span></p>
+</div></div></li></ul><h2 id="Monitoringmethodwhenundotablespaceusageincreases-Avoidinglong-runningtransactions">Avoiding long-running transactions</h2><hr /><p>Long-running transactions (bulk transactions) can cause the following problems.</p>    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">Possible problems with bulk transactions</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Bulk transactions (transactions that run for a long time) should be avoided as much as possible, as they can cause the following problems.</p><ul><li><p>File system pool with redo log growth</p></li><li><p>Increased memory usage (for memory tables)</p></li><li><p>CPU load increase</p></li><li><p>Waiting transaction occurred</p></li><li><p>Increased undo tablespace usage</p></li></ul>
+                    </div>
+    </div>
+In order to avoid an increase in the undo tablespace usage due to bulk transactions, check the following items and change them by referring to the recommendations.<h3 id="Monitoringmethodwhenundotablespaceusageincreases-1.Processbydividingintosmallunitsoftransaction">1. Process by dividing into small units of transaction</h3><p>Instead of processing a large amount of data in one transaction, divide it into smaller units.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Wrong way</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT COUNT(*) FROM EMP;
+COUNT                
+-----------------------
+1000000                    
+1 row selected.
+iSQL&gt; DELETE FROM EMP ;
+iSQL&gt; COMMIT:</pre>
+</div></div><div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Recommended way</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DELETE FROM EMP WHERE ENO BETWEEN 1 AND 1000;
+COMMIT;
+
+DELETE FROM EMP WHERE ENO BETWEEN 1001 AND 2000;
+COMMIT;
+
+DELETE FROM EMP WHERE ENO BETWEEN 1001 AND 3000;
+COMMIT;
+
+…
+ </pre>
+</div></div><p> </p><h3 id="Monitoringmethodwhenundotablespaceusageincreases-2.UTRANS_TIMEOUTsetting">2. UTRANS_TIMEOUT setting</h3><p>Make sure to set UTRANS_TIMEOUT to a non-zero value.</p><p>Set this value to prevent problems that may occur as the execution time of a transaction that performs change operations (UPDATE, INSERT, DELETE) increases.</p><p>If the execution time is greater than the property value, the session is forcibly terminated and the transaction is rolled back.</p><ul><li><p><strong>How to change the session unit</strong></p><p>Use the statement below,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to change session units, iSQL example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET UTRANS_TIMEOUT = 3600;     -- The unit of the value is seconds (sec)</pre>
+</div></div><p>Or, UTRANS_TIMEOUT property can be used in the connection string.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>JDBC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">String sUtrans_timeout = &quot;300&quot;;
+sProps.put( &quot;utrans_timeout&quot;, sUtrans_timeout);
+
+sCon = DriverManager.getConnection( sURL, sProps );</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>APRE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">strcpy(conn_opt3, &quot;DSN=localhost;CONNTYPE=1;UTRANS_TIMEOUT=300&quot;);
+
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt3;
+
+Or 
+
+EXEC SQL EXECUTE IMMEDIATE ALTER SESSION SET UTRANS_TIMEOUT = 3600;</pre>
+</div></div></li><li><p><strong>How to change the system unit</strong><strong><br /></strong>If the following statement is executed during database operation, the changed value will be applied to the subsequent sessions.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to change during database operation</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET UTRANS_TIMEOUT = 3600;     -- The unit of the value is seconds (sec)</pre>
+</div></div><p>The value changed to ALTER SYSTEM is initialized to the value set in altibase.properties when the ALTIBASE HDB server is restarted. In order to apply it permanently, the altibase.properties file must also be modified.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to apply when restarting ALTIBASE HDB</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+UTRANS_TIMEOUT = 3600 </pre>
+</div></div></li></ul><h3 id="Monitoringmethodwhenundotablespaceusageincreases-3.Checkwhetheracommitisperformed">3. Check whether a commit is performed</h3><p>Transactions executed in non-autocommit mode must be committed or rolled back to end the transaction.</p><p>In the application, the transaction is executed in the non-autocommit mode and check if there is a part that does not perform commit or rollback, and if there is a part that is handled incorrectly, it must be corrected.</p><p> </p><p> </p></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-1105D Unable to begin a new update statement</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-1105D Unable to begin a new update statement
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Oct 21, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149739 {padding: 0px;}
+div.rbtoc1624409149739 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149739 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149739'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement-Version'>Version</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement-Explanation'>Explanation</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement-Cause'>Cause</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement-Action'>Action</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-1105DUnabletobeginanewupdatestatement-Version">Version</h2>
+
+<p>6.1.1 or below.</p>
+
+<p>The error code and message have been changed for 6.3.1 </p>
+
+<h2 id="ERR-1105DUnabletobeginanewupdatestatement-Explanation">Explanation</h2>
+
+<p>The following error occurs when a user function is used inside the SELECT statement:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select func1() from dual;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>[ERR-1105D : Unable to begin a new update statement.<br />
+0004 : insert into T1 values(C1);]</p>
+                    </div>
+    </div>
+
+<p>The error code and message have been changed for 6.3.1 as follows:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select func1() from dual;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>[ERR-31386 : Cannot perform a DML, commit, or rollback inside a query.</p>
+
+<p>In FUNC1<br />
+0004 :  insert into T1 values(C1);<br />
+^                         ^<br />
+]</p>
+                    </div>
+    </div>
+
+
+<h2 id="ERR-1105DUnabletobeginanewupdatestatement-Cause">Cause</h2>
+
+<p>The following error descriptions can be viewed with the AltiErr utility: </p>
+
+<p># 6.1.1 or below</p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x1105D<br />
+0x1105D ( 69725) smERR_ABORT_smiCantBeginUpdateStatement Unable to begin a new update statement.</p>
+
+<p># *Cause: Either the statement is read-only, or more than one update child statement has been requested.</p>
+
+<p># *Action: Please make sure that the request to begin a new update statement is valid.</p>
+</div></div>
+<p># 6.3.1 </p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x31386<br />
+0x31386 ( 201606) qpERR_ABORT_QSX_PSM_INSIDE_QUERY Cannot perform a DML, commit, or rollback inside a query.</p>
+
+<p># *Cause :</p>
+
+<p># - The program attempted to perform a DML, commit, or rollback inside a query.</p>
+
+<p># *Action :</p>
+
+<p># - Do not use a DML, commit, or rollback statement inside a query.</p>
+</div></div>
+<p>When a user function is used inside the SELECT statement,  the function must only include the SELECT statement.</p>
+
+<p>However, this error occurs when DMLs are included in a user function.</p>
+
+
+<h2 id="ERR-1105DUnabletobeginanewupdatestatement-Action">Action</h2>
+
+<p>Remove the DML statement from a user function inside the SELECT statement.</p>
+
+<p># In the following example, the error occurs when a function including the INSERT statement is used within the SELECT statement.</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; create or replace function func1() return varchar(10) as c1 varchar(10);
+2 begin
+3 select c1 into c1 from t1;
+4 insert into t1 values(c1);
+5 return c1;
+6 end;
+7 /
+Create success.
+iSQL&gt; select func1() from dual;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>[ERR-1105D : Unable to begin a new update statement.<br />
+0004 :       insert into T1 values(C1);<br />
+^                         ^<br />
+]</p>
+                    </div>
+    </div>
+
+
+<p># In the following example, the above function is successfully executed using the EXECUTE statement</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select * from t1;
+C1
+--------------
+abc
+1 row selected.
+iSQL&gt; var c1 varchar(10);
+iSQL&gt; exec :c1 := func1();
+Execute success.
+iSQL&gt; print var;
+[ HOST VARIABLE ]
+-------------------------------------------------------
+NAME                 TYPE                 VALUE
+-------------------------------------------------------
+C1                   VARCHAR(10)          abc
+iSQL&gt; select * from t1;
+C1
+--------------
+abc
+abc
+2 rows selected.</pre>
+</div></div>
+<p># In the following example, the function is successfully executed when the INSERT statement is removed from the SELECT statement.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; create or replace function func1() return varchar(10) as c1 varchar(10);
+    2 begin
+    3 select c1 into c1 from t1;
+    4 return c1;
+    5 end;
+    6 /
+Create success.
+</pre>
+</div></div>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select func1() from dual;
+FUNC1
+--------------
+abc
+1 row selected.
+</pre>
+</div></div>
+
+<h2 id="ERR-1105DUnabletobeginanewupdatestatement-Reference">Reference</h2>
+
+<p>N/A</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

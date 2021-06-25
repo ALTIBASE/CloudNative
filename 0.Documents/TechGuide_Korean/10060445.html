@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 5. 사용자의 테이블스페이스 접근 가능여부, 시스템/객체 권한, PSM, 뷰 관련 주요 메타테이블 및 성능뷰</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060435.html">2. 알티베이스 메타테이블 및 성능뷰</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 5. 사용자의 테이블스페이스 접근 가능여부, 시스템/객체 권한, PSM, 뷰 관련 주요 메타테이블 및 성능뷰
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Aug 01, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><h2 id="id-5.사용자의테이블스페이스접근가능여부,시스템/객체권한,PSM,뷰관련주요메타테이블및성능뷰-사용자의테이블스페이스접근가능여부,시스템/객체권한,PSM,뷰관련주요메타테이블및성능뷰"><strong>사용자의 테이블스페이스 접근 가능여부, 시스템/객체 권한, PSM, 뷰 관련 주요 메타테이블 및 성능뷰</strong></h2><hr /><p> </p><p>실시간 모니터링이 필요하진 않으나 운영업무 중 자주 확인되는 요소로 '사용자의 테이블스페이스 접근 가능 여부', '시스템/객체 권한', '스키마객체'를 들 수 있다. 스키마 객체의 경우는 PSM(프로시져/펑션/타입세트), 뷰가 대표적이다.</p><p>관련 정보를 얻기 위해 조인쿼리 시 참고할 주요 키 컬럼만 표기한 메타테이블 및 성능뷰의 관계는 아래와 같다.</p><p> </p><p><img class="confluence-embedded-image" src="attachments/10060445/10256469.png" data-image-src="attachments/10060445/10256469.png"> </p><p> </p><p>참고로 SYS_GRANT_OBJECT_에서 객체번호인 OBJ_ID 컬럼(녹색)에 대응하는 다른 객체의 컬럼 이름은 객체에 따라 서로 달라지므로 주의가 필요하다. 여기서는 TABLE_ID(붉은색), VIEW_ID(붉은색), PROC_OID(보라색) 컬럼을 예로 들 수 있다.</p><p>또한, 대부분의 데이터베이스 객체는 그에 대응하는 별도의 메타테이블을 가지나 뷰의 경우는 테이블과 함께 관리되므로 뷰의 이름과 같은 구체적인 정보는 SYS_TABLES_에서 확인하여야만 한다. SYS_VIEWS_는 뷰의 컴파일 여부만 저장되어 있다. (즉, SYS_VIEWS_의 VIEW_ID는 SYS_TABLES_의 TABLE_ID와 같다.)</p><p> </p><p> </p><h2 id="id-5.사용자의테이블스페이스접근가능여부,시스템/객체권한,PSM,뷰관련주요메타테이블및성능뷰-주요메타테이블"><strong>주요 메타테이블</strong></h2><hr /><ul style="list-style-type: square;"><li><strong>SYS_TBS_USERS_</strong><br />사용자가 접근 가능한 테이블스페이스 목록이 저장된 메타테이블이다.<br /><br /></li><li><strong>SYS_PRIVILEGES_</strong><br />시스템 권한, 객체 권한에 대한 권한번호(PRIV_ID)와 권한 이름(PRIV_NAME)이 저장된 메타테이블이다.<br /><br /></li><li><strong>SYS_GRANT_SYSTEM_</strong><br />사용자가 부여받은 시스템 권한에 대한 권한번호(PRIV_ID)가 저장된 메타테이블이다.<br /><br /></li><li><strong>SYS_GRANT_OBJECT_</strong><br />사용자가 부여 받은 객체 권한에 대한 권한번호(PRIV_ID)와 객체 정보가 저장된 메타테이블로 객체번호(OBJ_ID)를 통해 해당 객체의 상세정보를 확인할 수 있다.</li></ul><ul style="list-style-type: square;"><li><strong>SYS_VIEWS_, SYS_VIEW_PARSE_</strong><br />SYS_VIEWS_는 뷰의 컴파일 상태만 저장된 메타테이블이다. 뷰의 생성 구문은 SYS_VIEW_PARSE_를 통하여 확인할 수 있다.<br /><br /></li><li><strong>SYS_PROCEDURES_, SYS_PROC_PARSE_</strong><br />PSM(프로시져, 펑션, 타입세트)에 대한 상세한 정보가 저장된 메타테이블이다. 각 PSM에 대응하는 생성 구문은 SYS_PROC_PARSE_를 통하여 확인할 수 있다.</li></ul><p> </p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10060445/10256469.png">image2016-7-13 9:19:38.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

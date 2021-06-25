@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 3. ALTIBASE TRACE 로그</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341274.html">Altibase 개발가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 3. ALTIBASE TRACE 로그
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> Education/Contents Team</span> on Dec 31, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409849514 {padding: 0px;}
+div.rbtoc1624409849514 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409849514 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409849514'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ALTIBASETRACE로그-Trace로그의분류'>Trace 로그의 분류</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_boot.log'>altibase_boot.log</a></li>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_sm.log'>altibase_sm.log</a></li>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_qp.log'>altibase_qp.log</a></li>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_rp.log'>altibase_rp.log</a></li>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_dk.log'>altibase_dk.log</a></li>
+<li><a href='#id-3.ALTIBASETRACE로그-altibase_error.log'>altibase_error.log</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>ALTIBASE는 설치된 경로인 $ALTIBASE_HOME/trc 경로에 모듈 별로 중요한 상태정보 및 에러 등에 대해 Trace 로그를 기록하고 있습니다.. 이 에러들에 설명합니다.</p><h2 id="id-3.ALTIBASETRACE로그-Trace로그의분류"><strong>Trace 로그의 분류</strong></h2><p>ALTIBASE가 기록하는 Trace로그는 다음과 같습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>altibase_boot.log</p></td><td class="confluenceTd"><p>Start/Stop 과정 및 DBMS 전반의 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_sm.log</p></td><td class="confluenceTd"><p>체크포인트 및 테이블스페이스 관련 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_qp.log</p></td><td class="confluenceTd"><p>DDL수행 및 Query Processing과 관련된 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_rp.log</p></td><td class="confluenceTd"><p>이중화와 관련된 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_dk.log</p></td><td class="confluenceTd"><p>DB link 사용과 관련된 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_xa.log</p></td><td class="confluenceTd"><p>XA 트랜잭션과 관련된 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_mm.log</p></td><td class="confluenceTd"><p>메인 모듈(Main Module) 처리 시 발생하는 로그를 기록</p></td></tr><tr><td class="confluenceTd"><p>altibase_error.log</p></td><td class="confluenceTd"><p>서버에서 발생하는 오류와 관련된 로그를 기록.</p></td></tr><tr><td class="confluenceTd"><p>altibase_dump.log</p></td><td class="confluenceTd"><p>서버에서 발생하는 오류에 대한 디버깅 로그를 기록.</p></td></tr></tbody></table></div><p>해당 로그파일은 기본적으로 10개까지 altibase_xx.log를 포함하여 altibase_xx.log-[1-10]까지 순환되면서 로그를 기록하게 됩니다.</p><p>이하에서는 사용자에게 의미 있는 중요한 메시지들에 대한 각 Trace로그 별로 분리하여 설명합니다.</p><h3 id="id-3.ALTIBASETRACE로그-altibase_boot.log"><strong>altibase_boot.log</strong></h3><hr /><p>사용자는 DBMS에서 오류가 발생하면 altibase_boot.log를 먼저 확인해야 합니다. 표 중에 <span style="color: orange;">orange color</span>표시는 사용자가 반드시 조치할 에러입니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: orange;">ERR-0108d (errno=0) License is invalid or expired.</span></p></th></tr><tr><td class="confluenceTd"><p>구동단계에서 라이센스 파일이 없거나 잘못된 경우 발생합니다. ALTIBASE에서 라이센스 정보를 확인하고 필요 시 재발급을 받도록 해야 합니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">ERR-01052(errno=13) Unable to invoke open() function on [/dbs/mydb-0-0]</span></p></th></tr><tr><td class="confluenceTd"><p>최초에 구동 전에 DB를 생성하지 않았거나 해당 파일에 접근할 권한이 없는 경우 발생합니다. DB를 생성하거나 또는 디렉토리 및 파일에 접근권한이 있는지 확인합니다. 또는, 사용자의 실수로 데이터파일을 삭제한 경우일 수 있으므로 이 경우 백업 본을 이용하여 복구하는 절차가 필요하게 됩니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">ERR-01052(errno=2) Unable to invoke open() function on [/dblog01/logfile536358]</span></p></th></tr><tr><td class="confluenceTd"><p>ALTIBASE 구동단계에서는 자동복구를 수행하게 되는데 이 과정에 필요한 리두로그파일이 손상되었거나 존재하지 않는 경우에 발생합니다. ALTIBASE 본사로 기술지원 요청을 해야 합니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-0001c(errno=76) Unable to shutdown the communication channel</p></th></tr><tr><td class="confluenceTd"><p>ALTIBASE Shutdown 단계에서 세션과 관련된 정리과정에서 나오는 Warning메시지로 운영에는 영향이 없습니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-71019 (errno=104) Failed to invoke a system function, write() (read, accept, select)</p></th></tr><tr><td class="confluenceTd"><p>디스크 또는 네트웍상의 오류로 인해 발생한다. 파일시스템의 체크나 네트웍상의 문제가 없는지 확인이 필요합니다. 또는, 메모리의 부족으로 시스템 콜이 실패하는 경우가 발생할 수 있습니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-40029 (errno=16) Failed to invoke a system function, flock_trywrlock()</p></th></tr><tr><td class="confluenceTd"><p>이미 ALTIBASE가 구동 중이거나 구동된 상태에서 다시 ALTIBASE를 재 구동하려고 하는 경우 발생합니다. 또는, 메모리의 부족으로 시스템 콜이 실패하는 경우 발생할 수 있습니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">ERR-11018 (errno=2) The version of data file for backup is not compatible with the version of storage manager. Backup DB =&gt; [ Version ID = 5.4.1,  Bit = 64, Endian = LITTLE LogSize = 10485760  Transaction Table Size = 1024 ]  Server=&gt;[ Version ID = 5.4.1,  Bit = 64, Endian = LITTLE LogSize = 10485760 Transaction Table Size = 2049 ]</span></p></th></tr><tr><td class="confluenceTd"><p>백업 받은 데이터파일을 가지고 구동하는 과정에서 현재 사용중인 ALTIBASE 버전과 호환이 되지 않는 데이터파일을 가지고 복구하려고 시도하거나 백업시점에 설정한 ALTIBASE 설정 값과 다른 상태로 구동을 하려고 시도하는 경우에 발생합니다.</p></td></tr><tr><th class="confluenceTh"><p>[ERROR] first write () operation failed. errno=32</p></th></tr><tr><td class="confluenceTd"><p>세션이 단절된 상태에서 read/write 시스템 콜이 오류가 발생할 수밖에 없으므로 그 정보를 Warning형태로 기록을 남길 경우입니다. 응용 프로그램에서 정상적인 Disconnect 명령 없이 강제 종료시키는 경우에도 이 로그가 기록됩니다. 운영에는 영향이 없습니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-7101d(errno=11) Protocol header error. (TCP 211.115.75.212:63847) <br class="atl-forced-newline" /> Protocol processing failed. Close connection...</p></th></tr><tr><td class="confluenceTd"><p>ALTIBASE의 접속포트를 통해 접속한 세션이 ALTIBASE 서버버전과 호환되지 않는 버전으로 접속을 시도한 경우로 출력된 접속정보를 통해 역추적하여 Server/Client버전간의 호환여부를 확인해야 합니다. 운영에는 영향이 없습니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-4000f(errno=2) No Error Message Loaded</p></th></tr><tr><td class="confluenceTd"><p>$ALTIBASE_HOME/msg/ 경로에 위치한 파일들이 없거나 버전과 호환되지 않는 경우 발생합니다. 또는, 해당 경로에 읽기 권한이 없을 경우도 발생합니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">[Notify : Query Timeout] Query Canceled by Server : Session ID = 102373</span> <br class="atl-forced-newline" /> <span style="color: orange;">[Notify : Fetch Timeout] Session Closed by Server : Session ID = 80106</span> <br class="atl-forced-newline" /> <span style="color: orange;">[Notify : Utrans Timeout] Session Closed by Server : Session ID = 80106</span> <br class="atl-forced-newline" /> <span style="color: orange;">[Notify : Idle Timeout] Session Closed by Server : Session ID = 80106</span></p></th></tr><tr><td class="confluenceTd"><p>QUERY / FETCH / UTRANS / IDLE TIMEOUT 설정에 의해 TIMEOUT이 발생한 경우 그에 대한 Warning형태의 로그를 기록하는 경우입니다. 문제가 되는 경우 해당 세션정보가 메시지와 함께 기록되기 때문에 세션을 추적하여 문제라고 판단할 경우 해결하도록 해야 합니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-01027(errno=0) No more IPC channel (MAX=50, USED=50, BUFSIZE=65536)</p></th></tr><tr><td class="confluenceTd"><p>IPC 접속 가능한 자원보다 더 많은 IPC접속을 시도할 경우 발생합니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">[Warning] Memory allocation failed. Size:524320 Timeout: 0</span> <br class="atl-forced-newline" /> <span style="color: orange;">ERR-61055(errno=12) Memory allocation failure</span></p></th></tr><tr><td class="confluenceTd"><p>메모리가 부족한 상황에서 내부적으로 필요한 메모리 할당에 실패하는 경우 발생합니다. 이 경우 메모리가 부족한 원인을 파악하여 조치해야 합니다. 만일, Swap 메모리까지 부족한 경우가 발생하면 Warning없이 ALTIBASE가 비정상 종료할 수 있습니다.</p></td></tr><tr><th class="confluenceTh"><p>ioctl() failed</p></th></tr><tr><td class="confluenceTd"><p>소켓 또는 디스크 I/O작업간에 시스템 콜 수행에 일시적인 문제가 발생한 경우 발생합니다. 일반적으로 무시해도 상관없으나 네트웍 또는 디스크를 점검하는 것을 권장합니다.</p></td></tr><tr><th class="confluenceTh"><p><span style="color: orange;">WANING : write error number : 0, file name : /dblog01/logfile537572, file handle : 440, intended size : 10485760, writed size : 10485760</span> <br class="atl-forced-newline" /> <span style="color: orange;">또는,</span> <br class="atl-forced-newline" /> <span style="color: orange;">File Extending Failed. : The disk space has been exhausted.</span> <br class="atl-forced-newline" /> <span style="color: orange;">Error : Extending DataFile : from 0, size 10485760</span></p></th></tr><tr><td class="confluenceTd"><p>디스크 용량이 부족하여 ALTIBASE가 필요로 하는 파일을 생성할 때 용량이 부족하여 정상적으로 생성하지 못했다는 경고로 반드시 디스크 용량을 체크하고 조치해야 합니다.</p></td></tr></tbody></table></div><h3 id="id-3.ALTIBASETRACE로그-altibase_sm.log"><strong>altibase_sm.log</strong></h3><hr /><p>altibase_sm.log는 체크포인트의 수행여부 및 장시간 수행되는 질의의 존재 여부 등을 판단해볼 수 있는 중요한 근거가 됩니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>[CHECKPOINT-BEGIN]</p></th></tr><tr><td class="confluenceTd"><p>체크포인트가 시작되었음을 의미합니다.</p></td></tr><tr><th class="confluenceTh"><p>Remove Online Log File at LFG [0]: File[220 ~ 227]</p></th></tr><tr><td class="confluenceTd"><p>체크포인트가 수행되면서 더 이상 복구에 필요하지 않은 트랜잭션 로그파일들을 정리하는 메시지입니다. 만일, File [None] 이라고 지속적으로 표시될 경우 장시간 실행되는 질의가 없는지 또는, 이중화로 미 전송되고 있는 부분이 없는지 확인이 필요합니다.</p></td></tr><tr><th class="confluenceTh"><p>[CHECKPOINT-summary] BeginChkptLSN=[0,83,9820280], EndChkptLSN=[0,83,9820721], DiskRecLSN=[0,83,9820280]</p></th></tr><tr><td class="confluenceTd"><p>체크포인트가 정상적으로 완료되는 시점에 체크포인트의 수행정보에 대한 요약정보를 로그에 남깁니다.</p></td></tr><tr><th class="confluenceTh"><p>[CHECKPOINT-END]</p></th></tr><tr><td class="confluenceTd"><p>체크포인트가 정상적으로 완료 되었음을 의미합니다.</p></td></tr><tr><th class="confluenceTh"><p>Minimum LSN = [0,83,9824136]</p></th></tr><tr><td class="confluenceTd"><p>위 값은 현재 진행중인 트랜잭션의 기록중인 로그파일의 offset위치입니다. 따라서, 저 값이 변동하지 않고 계속 같은 값을 유지한다면 위의 Remove로그와 동일하게 장시간 수행되는 질의의 존재 여부나 이중화 미 전송여부를 반드시 확인해야 합니다.</p></td></tr><tr><th class="confluenceTh"><p>Database-Level Backup Completed [SUCCESS]</p></th></tr><tr><td class="confluenceTd"><p>백업이 정상 수행되었음을 의미합니다.</p></td></tr><tr><th class="confluenceTh"><p>DISK TABLESPACE .... DATABASE ....</p></th></tr><tr><td class="confluenceTd"><p>디스크 테이블스페이스의 백업이 수행되었음을 의미합니다.</p></td></tr><tr><th class="confluenceTh"><p>~/loganchor0 BACKUP TO</p></th></tr><tr><td class="confluenceTd"><p>로그앵커의 백업이 수행되었음을 의미합니다.</p></td></tr><tr><th class="confluenceTh"><p>MEMORY TABLESPACE DATAFILE …. BACKUP TO ….</p></th></tr><tr><td class="confluenceTd"><p>메모리 테이블스페이스의 백업이 수행되었음을 의미합니다.</p></td></tr></tbody></table></div><h3 id="id-3.ALTIBASETRACE로그-altibase_qp.log"><strong>altibase_qp.log</strong></h3><hr /><p>altibase_qp.log에는 사용자가 수행한 DDL의 수행기록 및 DB 속성값을 “ALTER SYSTEM” 구문으로 변경을 가하는 경우 등에 대한 로그가 기록됩니다.<br /> 아래와 같이 분류됩니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>[EXEC_DDL_BEGIN : create index T1_IDX on T1 (A)]</p></th></tr><tr><td class="confluenceTd"><p>사용자가 수행한 DDL의 수행시작을 의미하는 로그</p></td></tr><tr><th class="confluenceTh"><p>[EXEC_DDL_END : SUCCESS]</p></th></tr><tr><td class="confluenceTd"><p>사용자가 수행한 DDL의 정상완료를 의미하는 로그</p></td></tr><tr><th class="confluenceTh"><p>[EXEC_DDL_END : FAILURE] errorcode 1627549735.</p></th></tr><tr><td class="confluenceTd"><p>사용자가 수행한 DDL의 오류내역을 의미하는 로그</p></td></tr><tr><th class="confluenceTh"><p>[SET-PROP] CHECKPOINT_BULK_WRITE_PAGE_COUNT=[0]</p></th></tr><tr><td class="confluenceTd"><p>사용자가 시스템 전역에 영향을 미치는 DB속성 설정 값을 변경한 경우를 의미하는 로그</p></td></tr></tbody></table></div><h3 id="id-3.ALTIBASETRACE로그-altibase_rp.log"><strong>altibase_rp.log</strong></h3><hr /><p>altibase_rp.log에는 이중화의 동작상태 및 각종 Conflict발생 시의 질의가 기록되기 때문에 이중화 문제의 추적에 있어 중요한 단서제공을 하고 있습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ERR-31017(errno=0) Replication not found</p></th></tr><tr><td class="confluenceTd"><p>이중화 관련 DDL을 수행할 때 지정한 이중화 객체가 존재하지 않는 경우에 발생한다. 따라서, 지정한 이중화 객체가 존재하는지 확인이 필요합니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-6200f(errno=16) [Sender] Stop sender thread REP1 at [9765213], Restart SN[9765207]</p></th></tr><tr><td class="confluenceTd"><p>이중화 Sender를 사용자가 명시적으로 Stop시킨 경우 발생하는 로그입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-71017(errno=79) Failed to invoke a system function, connect() <br class="atl-forced-newline" /> ERR-61012(errno=79) [Sender] Failed to connect to the peer server <br class="atl-forced-newline" /> ERR-61022(errno=79) [Sender] Sender Sleep : 60 seconds <br class="atl-forced-newline" /> [Sender] getNextLastUsedHostNo: from 192.168.1.81:53341 to 192.168.1.81:53341 <br class="atl-forced-newline" /> ERR-61003(errno=9) Unable to read from a socket <br class="atl-forced-newline" /> ERR-61012(errno=119) [Sender] Failed to connect to the peer server <br class="atl-forced-newline" /> ERR-6100d(errno=119) [Sender] Failed to handshake with the peer server (Handshake Process Error)</p></th></tr><tr><td class="confluenceTd"><p>이중화 Sender가 상대편 서버에 접속할 수 없는 경우와 재 접속을 시도하는 로그입니다. 상대편의 서버, 네트웍 상태 및 ALTIBASE가 정상 구동되고 있는지 확인이 필요하다. 만일, 명시적으로 상대편 이중화를 Drop한 경우라면 정상적인 에러입니다.</p></td></tr><tr><th class="confluenceTh"><p>[Recovery Sender] Replication REP1 Start... at [60495917]</p></th></tr><tr><td class="confluenceTd"><p>이중화가 정상 개시되어 Sender가 구동된 로그입니다.</p></td></tr><tr><th class="confluenceTh"><p>[Receiver] Replication REP1 Started ...</p></th></tr><tr><td class="confluenceTd"><p>이중화가 정상 개시되어 Receiver가 구동된 로그입니다.</p></td></tr><tr><th class="confluenceTh"><p>RECEIVER:REPLICATION STOP MSG arrived! <br class="atl-forced-newline" /> [ReceiverApply] REPLICATION STOP XLog arrived! <br class="atl-forced-newline" /> Normal Stop! <br class="atl-forced-newline" /> [Receiver] Replication REP1 Stopped ...</p></th></tr><tr><td class="confluenceTd"><p>상대편 서버의 이중화가 사용자에 의해 명시적으로 Stop되어 중지된 경우입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-61047(errno=0) [Receiver] REP1 receiver has error in recvXlog() <br class="atl-forced-newline" /> ERR-61048(errno=0) [Receiver] REP1 receiver has recvXLog error in run() <br class="atl-forced-newline" /> ERR-6104b(errno=0) [Receiver] REP1 receiver is ended (by thr_exit)</p></th></tr><tr><td class="confluenceTd"><p>이중화 Receiver가 어떤 오류로 인해 쓰레드가 종료된 경우입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-61036(errno=0) [Receiver] err_not found in deleteXlog() <br class="atl-forced-newline" /> ERR-61000(errno=0) The received record is not found in the database.</p></th></tr><tr><td class="confluenceTd"><p>이중화로 수신 받은 DELETE 트랜잭션을 수행하는 과정에서 해당하는 레코드가 존재하지 않을 경우 Conflict 오류를 기록한 경우입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-61035(errno=0) [Receiver] An update conflict encountered. <br class="atl-forced-newline" /> ERR-61001(errno=0) A conflict has been occurred while executing the received statement.</p></th></tr><tr><td class="confluenceTd"><p>이중화로 수신 받은 UPDATE 트랜잭션을 수행하는 과정에서 해당하는 레코드의 Before/After 값이 달라 Conflict 오류를 기록한 경우입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-6103a(errno=0) [Receiver] err_not_found in updateXlog() <br class="atl-forced-newline" /> ERR-61000(errno=0) The received record is not found in the database.</p></th></tr><tr><td class="confluenceTd"><p>이중화로 수신 받은 UPDATE 트랜잭션을 수행하는 과정에서 해당하는 레코드가 존재하지 않을 경우 Conflict 오류를 기록한 경우입니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-11058(errno=0) The row already exists in a unique index.</p></th></tr><tr><td class="confluenceTd"><p>이중화로 수신 받은 INSERT 트랜잭션을 수행하는 과정에서 해당하는 레코드가 이미 수신 측에 존재하는 경우입니다. (동일한 PK를 가지는 데이터가 존재함)</p></td></tr></tbody></table></div><p>위 예시에서 사용된 이중화 객체 명은 “REP1” 입니다. 사용자가 지정한 이중화 객체는 이름이 다를 것이므로 에러에 대한 조회 시에 이를 고려하도록 해야 하며 주로 이중화 Sender/Receiver의 동작 상태 및 Conflict 오류를 감지할 것을 권장합니다.</p><p>또한, 이중화 Conflict가 발생하면 앞서 설명한 이중화 환경의 고려사항을 제대로 준수하지 않았거나 이중화 지연으로 데이터 불일치가 발생했을 가능성이 있기 때문에 어떠한 이유로 그러한지 Conflict 발생 시 남는 SQL문을 통해 원인을 찾는 것이 중요합니다.</p><h3 id="id-3.ALTIBASETRACE로그-altibase_dk.log"><strong>altibase_dk.log</strong></h3><hr /><p>altibase_dk.log에는 Database Link를 사용하는 환경에서 발생할 수 있는 여러 가지 정보 및 에러를 기록합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ERR-b1070(errno=0) ODBC problem occurred [0:IM002:[unixODBC][Driver Manager]Data source name not found, and no default driver specified]</p></th></tr><tr><td class="confluenceTd"><p>지정한 Data Source 이름을 찾지 못하거나 LD_LIBRARY_PATH가 설정이 되어 있지 않을 경우 발생합니다.</p></td></tr><tr><th class="confluenceTh"><p>ERR-b1070(errno=239) ODBC problem occurred [327730:08001:Client unable to establish connection.]</p></th></tr><tr><td class="confluenceTd"><p>알티베이스 서버에 연결할 수 없거나 odbc.ini 환경변수 설정이 되어 있지 않을 경우 발생합니다. 서버 구동 상태를 확인하고, odbc.ini를 환경변수에 추가하여 해결할 수 있습니다.</p></td></tr></tbody></table></div><h3 id="id-3.ALTIBASETRACE로그-altibase_error.log"><strong>altibase_error.log</strong></h3><hr /><p>altibase_error.log에는 알티베이스 비정상 종료 발생 시, 원인 분석을 위한 중요한 단서를 제공합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: orange;">BEGIN-STACK-[CRASH]=====================================</span> <br class="atl-forced-newline" /> <span style="color: orange;">END-STACK=====================================</span> <br class="atl-forced-newline" /> <span style="color: orange;"> [========= FATAL Terminated ==========]</span></p></th></tr><tr><td class="confluenceTd"><p>ALTIBASE가 버그로 인해 비정상 종료가 발생할 경우 어떤 진행과정에서 발생했는지 자체적인 Trace로그를 출력하게 됩니다. 이 에러가 발생한 경우는 ALTIBASE 프로세스가 종료된 상태임으로 우선 $ALTIBASE_HOME/trc/모든 파일을 백업하도록 합니다. 다음 리두로그 파일을 백업하고 디스크가 충분하다면 데이터베이스 파일까지 확보합니다. 이와 같은 파일백업이 완료되면 ALTIBASE를 재 구동하도록 조치하고 ALTIBASE에 기술지원을 요청합니다.</p></td></tr></tbody></table></div><p> </p><p><strong>
+
+
+<div class="plugin_pagetree">
+
+        
+        
+    <ul class="plugin_pagetree_children_list plugin_pagetree_children_list_noleftspace">
+        <div class="plugin_pagetree_children">
+        </div>
+    </ul>
+
+    <fieldset class="hidden">
+        <input type="hidden" name="treeId" value="">
+        <input type="hidden" name="treeRequestId" value="/plugins/pagetree/naturalchildren.action?decorator=none&amp;excerpt=false&amp;sort=position&amp;reverse=false&amp;disableLinks=false&amp;expandCurrent=false">
+        <input type="hidden" name="treePageId" value="">
+
+        <input type="hidden" name="noRoot" value="false">
+        <input type="hidden" name="rootPageId" value="7341274">
+
+        <input type="hidden" name="rootPage" value="">
+        <input type="hidden" name="startDepth" value="0">
+        <input type="hidden" name="spaceKey" value="DOCK" >
+
+        <input type="hidden" name="i18n-pagetree.loading" value="Loading...">
+        <input type="hidden" name="i18n-pagetree.error.permission" value="Unable to load page tree. It seems that you do not have permission to view the root page.">
+        <input type="hidden" name="i18n-pagetree.eeror.general" value="There was a problem retrieving the page tree. Please check the server log file for more information.">
+        <input type="hidden" name="loginUrl" value="">
+        <input type="hidden" name="mobile" value="false">
+
+                <fieldset class="hidden">
+                            <input type="hidden" name="ancestorId" value="7341274">
+                    </fieldset>
+    </fieldset>
+</div>
+
+</strong></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

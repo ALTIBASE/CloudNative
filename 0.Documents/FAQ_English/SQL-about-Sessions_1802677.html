@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : SQL about Sessions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : SQL about Sessions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153323 {padding: 0px;}
+div.rbtoc1624409153323 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153323 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153323'>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutSessions-Totalnumberofsessions'>Total number of sessions</a></li>
+<li><a href='#SQLaboutSessions-SessionInformation'>Session Information</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutSessions-ALTIBASEHDB4'>ALTIBASE HDB 4</a></li>
+<li><a href='#SQLaboutSessions-ALTIBASEHDB5'>ALTIBASE HDB 5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutSessions-SessioninformationconnectedasSYSDBA'>Session information connected as SYSDBA</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutSessions-ALTIBASEHDB4.1'>ALTIBASE HDB 4</a></li>
+<li><a href='#SQLaboutSessions-ALTIBASEHDB5.1'>ALTIBASE HDB 5</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1 id="SQLaboutSessions-Totalnumberofsessions">Total number of sessions</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the number of sessions which are currently established.</p>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  COUNT(*) TOTAL_SESSION_CNT
+FROM    V$SESSION ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutSessions-SessionInformation">Session Information</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about a session.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+<th class="confluenceTh"><p> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the database user name </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_IP </p></td>
+<td class="confluenceTd"><p> the client IP address<br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_APP_INFO </p></td>
+<td class="confluenceTd"><p> the type of client application </p></td>
+<td class="confluenceTd"><p> not supported in ALTIBASE HDB 4 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_PID </p></td>
+<td class="confluenceTd"><p> the client process idenfier </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSION_STATE </p></td>
+<td class="confluenceTd"><p> the status of the session </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOCOMMIT </p></td>
+<td class="confluenceTd"><p> the autocommit mode </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGIN_TIME </p></td>
+<td class="confluenceTd"><p> the time when the session is established </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IDLE_TIME </p></td>
+<td class="confluenceTd"><p> the time when the session has been idle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_QUERY </p></td>
+<td class="confluenceTd"><p> the query that the session has last executed </p></td>
+<td class="confluenceTd"><p> not supported in ALTIBASE HDB 4 </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<h2 id="SQLaboutSessions-ALTIBASEHDB4">ALTIBASE HDB 4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.ID SESSION_ID,
+        A.DB_USERNAME USER_NAME,
+        REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP,
+        A.CLIENT_PID,
+        A.SESSION_STATE,
+        DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT,
+        DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME,
+        DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME
+FROM    V$SESSION A ;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutSessions-ALTIBASEHDB5">ALTIBASE HDB 5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.ID SESSION_ID,
+        A.DB_USERNAME USER_NAME,
+        REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP,
+        A.CLIENT_APP_INFO,
+        A.CLIENT_PID,
+        A.SESSION_STATE,
+        DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT,
+        DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME,
+        DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME,
+        NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+FROM    V$SESSION A LEFT OUTER JOIN
+        V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID ;
+</pre>
+</div></div>
+
+
+
+<h1 id="SQLaboutSessions-SessioninformationconnectedasSYSDBA">Session information  connected as SYSDBA</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about a session which connects as SYSDBA .</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+<th class="confluenceTh"><p> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the database user name </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_IP </p></td>
+<td class="confluenceTd"><p> the client IP address<br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_APP_INFO </p></td>
+<td class="confluenceTd"><p> the type of client application </p></td>
+<td class="confluenceTd"><p> not supported in ALTIBASE HDB 4 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_PID </p></td>
+<td class="confluenceTd"><p> the client process idenfier </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSION_STATE </p></td>
+<td class="confluenceTd"><p> the status of sthe ession </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOCOMMIT </p></td>
+<td class="confluenceTd"><p> the autocommit mode </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGIN_TIME </p></td>
+<td class="confluenceTd"><p> the time when the session is established </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IDLE_TIME </p></td>
+<td class="confluenceTd"><p> the time when the session has been idle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_QUERY </p></td>
+<td class="confluenceTd"><p> the query that the session last executed </p></td>
+<td class="confluenceTd"><p> not supported in ALTIBASE HDB 4 </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+
+<h2 id="SQLaboutSessions-ALTIBASEHDB4.1">ALTIBASE HDB 4</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.ID SESSION_ID,
+        A.DB_USERNAME USER_NAME,
+        REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP,
+        A.CLIENT_PID,
+        A.SESSION_STATE,
+        DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT,
+        DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME,
+        DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME
+FROM    V$SESSION A
+WHERE   A.SYSDBA_FLAG = 1;
+</pre>
+</div></div>
+
+
+
+<h2 id="SQLaboutSessions-ALTIBASEHDB5.1">ALTIBASE HDB 5</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.ID SESSION_ID,
+        A.DB_USERNAME USER_NAME,
+        REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP,
+        A.CLIENT_APP_INFO,
+        A.CLIENT_PID,
+        A.SESSION_STATE,
+        DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT,
+        DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME,
+        DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME,
+        NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+FROM    V$SESSION A LEFT OUTER JOIN
+        V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID
+WHERE   A.SYSDBA_FLAG = 1;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

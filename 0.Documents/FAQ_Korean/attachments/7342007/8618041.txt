@@ -1,0 +1,50 @@
+
+
+set linesize 1024;
+set colsize 30;
+SELECT TBS.NAME TBS_NAME                                                                                                    -- 디스크 테이블스페이스 이름
+     , TO_CHAR(ROUND(DAT.MAX * TBS.PAGE_SIZE / 1024 /1024, 2)) 'MAX(M)'                                                     -- 할당 가능한 최대 크기
+     , ROUND(TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE / 1024 / 1024, 2) 'TOTAL(M)'                                              -- 현재까지 할당 받은 페이지의 합계
+     , DECODE(TBS.TYPE, 5, ROUND( UNDO.ALLOC * TBS.PAGE_SIZE/1024/1024, 2) /* UNDO TABLESPACE*/
+                         , ROUND( TBS.ALLOCATED_PAGE_COUNT * TBS.PAGE_SIZE / 1024 / 1024, 2) ) 'ALLOC(M)'                   -- 현재까지 할당받은 페이지 중 '빈 페이지'를 제외한 '사용 중인 페이지'만의 합계
+     , DECODE(TBS.TYPE, 3, '-' /* TEMP TABLESPACE */
+                      , 5, ROUND( UNDO.USED * TBS.PAGE_SIZE /1024/1024, 2) /* UNDO TABLESPACE*/                             -- 사용 중인 페이지 중에서 데이터가 적재된 크기. TEMP TABLESPACE는 구할 수 없음.
+                         , DECODE(SEG.USED, '', 0, ROUND((SEG.USED * TBS.PAGE_SIZE * TBS.A_EXTENT_PAGE_COUNT)/1024/1024, 2)) /* USER TABLESPACE & SYS_TBS_DATA */) 'USED(M)'   
+     , DECODE(TBS.TYPE, 5, ROUND( UNDO.ALLOC / DAT.MAX * 100, 2) --UNDO
+                         , ROUND( TBS.ALLOCATED_PAGE_COUNT / DAT.MAX * 100, 2) ) 'USAGE(%)'
+     , DECODE(TBS.STATE, 1, 'ONLINE', 2, 'BEGIN BACKUP', 3, 'END BACKUP', 'NOT DEFINED') STATE
+     , DAT.AUTOEXTEND
+  FROM V$TABLESPACES TBS LEFT OUTER JOIN (SELECT SPACE_ID , SUM(EXTENT_TOTAL_COUNT) ALLOC , SUM(EXTENT_FULL_COUNT ) USED
+                                            FROM X$SEGMENT
+                                            GROUP BY SPACE_ID
+                                         ) SEG ON TBS.ID = SEG.SPACE_ID
+     ,(SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, 'ON', 'OFF') 'AUTOEXTEND'
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) DAT
+     , (SELECT SUM(ALLOCATED_PAGE_COUNT) ALLOC
+             , SUM(USED_PAGE_COUNT) USED
+          FROM V$UNDO_TBS ) UNDO
+ WHERE TBS.ID = DAT.SPACEID;
+
+
+
+
+
+
+
+
+
+
+-- 출력 예
+
+TBS_NAME                        MAX(M)                          TOTAL(M)    ALLOC(M)    USED(M)                         USAGE(%)    STATE         AUTOEXTEND  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DATA                    2049                            249         249         0                               12.15       ONLINE        ON   
+SYS_TBS_UNDO                    2048                            246         245.72      0.02                            12          ONLINE        ON   
+SYS_TBS_TEMP                    2048                            100         1           -                               0.05        ONLINE        ON   
+USER_DATA                       2048                            2048        832         831                             40.63       ONLINE        OFF  
+USER_IDX                        2048                            2048        157         155.75                          7.67        ONLINE        OFF  
+USER_IDX_TBS                    512                             512         1           0                               0.2         ONLINE        OFF  
+6 rows selected.

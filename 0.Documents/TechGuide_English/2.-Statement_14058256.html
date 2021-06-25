@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Statement</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Statement
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain md-expand">This section describes each monitoring query to check the status of the query.</span></p><p class="md-end-block md-p"><span class="md-plain">To check detailed time information related to query execution, TIMED_STATISTICS should be activated (1) by default. To Monitor only information about a specific session, add the 'session_id' column of v</span><span>$</span><span class="md-plain">statement to the WHERE clause.</span></p><h3 class="md-end-block md-heading" id="id-2.Statement-HowtoactivateTIMED_STATISTICS"><span class="md-plain">How to activate TIMED_STATISTICS</span></h3><p class="md-end-block md-p"><span class="md-plain">TIMED_STATISTICS is an Altibase server property that is supported starting from Altibase v5.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">When TIMED_STATISTICS is activated, time information of queries performed after activation can be known.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TIMED_STATISTICS=1;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-TotalNumberofQueries"><span class="md-plain md-expand">Total Number of Queries</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT COUNT(*) AS TOTAL_STMT_CNT FROM V$STATEMENT ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-QueryInformation"><span class="md-plain md-expand">Query Information</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , ID STMT_ID
+     , TX_ID
+     , ROUND((PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME)/1000000, 1) PREPARE_TIME
+     , ROUND(FETCH_TIME/1000000, 1) FETCH_TIME
+     , ROUND(EXECUTE_TIME/1000000, 1) EXECUTE_TIME
+     , ROUND(TOTAL_TIME/1000000, 1) TOTAL_TIME
+     , EXECUTE_FLAG
+     , DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME
+     , NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+  FROM V$STATEMENT
+ ORDER BY EXECUTE_TIME DESC ;</pre>
+</div></div><ul><li><strong><span class="md-plain">Main Column Description</span></strong></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh">Column</th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STMT_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Query ID</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TX_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">ID of the transaction that executed the query</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PREPARE_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time taken to perform prepare (parse, validation, optimization) is seconds. This is updated whenever a query is performed. </span><span class="md-plain">TIMED_STATISTICS must be enabled for viewing.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">FETCH_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time taken to execute execution after preparation is completed, and is updated whenever a query is executed. It is used as a criterion for query timeout and the unit is second.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">TIMED_STATISTICS must be enabled for viewing.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EXECUTE_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time it takes for the client to fetch the results of the query. Depending on the size of the result, one query can perform multiple fetches and is updated each time. This becomes the standard of fetch_timeout and the unit is second.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">TIMED_STATISTICS must be enabled for viewing.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The sum of time spent for one query to be executed, and includes all of prepare, fetch, and execution. This is updated every time the query is executed, and the unit is seconds.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">TIMED_STATISTICS must be enabled for viewing.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EXECUTE_FLAG</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">If this value is 0, it is prepared only, and if it is 1, it is executing.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LAST_START_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time at which the most recently executed query was performed, and the unit is the Unix time.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-NumberofQueriesCurrentlyBeingExecuted"><span class="md-plain md-expand">Number of Queries Currently Being Executed</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT COUNT(*) AS ACTIVE_STMT_CNT
+  FROM V$STATEMENT
+ WHERE EXECUTE_FLAG = 1 ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-QueryInformationCurrentlyBeingExecuted"><span class="md-plain md-expand">Query Information Currently Being Executed</span></h3><p class="md-end-block md-p"><span class="md-plain">For column description, please refer to 'Main Column Description'.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , ID STMT_ID
+     , TX_ID
+     , ROUND((PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME)/1000000, 1) PREPARE_TIME
+     , ROUND(FETCH_TIME/1000000, 1) FETCH_TIME
+     , ROUND(EXECUTE_TIME/1000000, 1) EXECUTE_TIME
+     , ROUND(TOTAL_TIME/1000000, 1) TOTAL_TIME
+     , DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME
+     , NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+  FROM V$STATEMENT
+ WHERE EXECUTE_FLAG = 1
+ ORDER BY EXECUTE_TIME DESC ;</pre>
+</div></div><h3 class="md-end-block md-heading" id="id-2.Statement-Long-runningQueryExecutionInformation"><span class="md-plain">Long-running Query Execution Information</span></h3><p class="md-end-block md-p"><span class="md-plain">This shows query information being executed for over 600 seconds.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For column description, please refer to 'Main Column Description'.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , ID STMT_ID
+     , TX_ID
+     , ROUND((PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME)/1000000, 1) PREPARE_TIME
+     , ROUND(FETCH_TIME/1000000, 1) FETCH_TIME
+     , ROUND(EXECUTE_TIME/1000000, 1) EXECUTE_TIME
+     , ROUND(TOTAL_TIME/1000000, 1) TOTAL_TIME
+     , DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME
+     , NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+  FROM V$STATEMENT
+ WHERE EXECUTE_FLAG = 1
+   AND EXECUTE_TIME/1000000 &gt; 600   -- If the user changes the query execution time condition, the user can change the value of this condition. The value is in seconds.
+ ORDER BY EXECUTE_TIME DESC ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-LastQueryInformationofDMLTransactionThatisExecutedforaLongTime"><span class="md-plain md-expand">Last Query Information of DML Transaction That is Executed for a Long Time</span></h3><p><span>This shows the last query information of a transaction that has been running for 3600 seconds or longer.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT ST.SESSION_ID
+     , SS.COMM_NAME CLIENT_IP
+     , SS.CLIENT_PID
+     , SS.CLIENT_APP_INFO
+     , (BASE_TIME - TR.FIRST_UPDATE_TIME) AS UTRANS_TIME
+     , ROUND(EXECUTE_TIME/1000000, 1) EXECUTE_TIME
+     , ROUND(TOTAL_TIME/1000000, 1) TOTAL_TIME
+     , DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME
+     , NVL(LTRIM(ST.QUERY), &#39;NONE&#39;) QUERY
+  FROM V$TRANSACTION TR,
+       V$STATEMENT ST,
+       V$SESSIONMGR,
+       V$SESSION SS
+ WHERE TR.ID = ST.TX_ID
+   AND ST.SESSION_ID = SS.ID
+   AND TR.FIRST_UPDATE_TIME != 0  -- 0:read only transaction
+   AND (BASE_TIME - TR.FIRST_UPDATE_TIME) &gt; 3600    -- If the user wants to change the execution time condition, the user can change the value of this condition. The value is in seconds.
+ORDER BY UTRANS_TIME DESC ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading" id="id-2.Statement-MainColumnDescription"><span class="md-plain">Main Column Description</span></h4></li></ul><p class="md-end-block md-p md-focus"><span class="md-plain">For the description of other columns, refer to 'Main Column Description' above.</span></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">UTRANS_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The elapsed time up to the present based on the time when the transaction first started changing operation. It becomes the standard of UTRANS_TIME and the unit is second.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">For reference, the base_time of v</span><span>$</span><span class="md-plain">sessionmgr and the first_update_time of v</span><span>$</span><span class="md-plain">transaction for calculating this value is updated without activating (0) the TIMED_STATISTICS property.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading" id="id-2.Statement-FullScanQueryInformation"><span class="md-plain">Full Scan Query Information</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">For the description of other columns, refer to 'Main Column Description' above.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , S.COMM_NAME CLIENT_IP
+     , S.CLIENT_PID
+     , S.CLIENT_APP_INFO
+     , DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME
+     , ROUND((PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME)/1000000, 1) PREPARE_TIME
+     , ROUND(FETCH_TIME/1000000, 1) FETCH_TIME
+     , ROUND(EXECUTE_TIME/1000000, 1) EXECUTE_TIME
+     , ROUND(TOTAL_TIME/1000000, 1) TOTAL_TIME
+     , NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+  FROM V$STATEMENT T,
+       V$SESSION S
+ WHERE S.ID = T.SESSION_ID
+   AND (MEM_CURSOR_FULL_SCAN &gt; 0 OR DISK_CURSOR_FULL_SCAN &gt; 0)
+   AND UPPER(QUERY) NOT LIKE &#39;%INSERT%&#39;
+ ORDER BY EXECUTE_TIME DESC ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-FullScanQueryCountStatistics"><span class="md-plain md-expand">Full Scan Query Count Statistics</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT COUNT(EXECUTE_SUCCESS) EXECUTE_CNT
+     , SUBSTR(LTRIM(QUERY), 1, 40) QUERY
+  FROM V$STATEMENT
+ WHERE (MEM_CURSOR_FULL_SCAN &gt; 0 OR DISK_CURSOR_FULL_SCAN &gt; 0)
+   AND UPPER(QUERY) NOT LIKE &#39;%INSERT%&#39;
+ GROUP BY QUERY
+ ORDER BY EXECUTE_CNT DESC ;</pre>
+</div></div><ul><li><h4 id="id-2.Statement-MainColumnDescription.1"><strong><span class="md-plain">Main Column Description</span></strong></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EXECUTE_CNT</span></span></td><td class="confluenceTd">Total number of queries executed successfully.</td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-QueryListbySession"><span class="md-plain md-expand">Query List by Session</span></h3></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , ID STMT_ID
+     , TX_ID
+     , SUBSTR(QUERY, 1, 100) QUERY
+  FROM V$STATEMENT
+ ORDER BY 1, 2 ;</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p><h3 class="md-end-block md-heading md-focus" id="id-2.Statement-NumberofStatementsgeneratedperSession"><span class="md-plain md-expand">Number of Statements generated per Session</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SE.ID SESSION_ID
+     , COUNT(DISTINCT ST.ID) CURR_STMT_CNT_PER_SESSION
+  FROM V$SESSION SE
+     , V$STATEMENT ST
+ WHERE 1=1
+   AND SE.ID=ST.SESSION_ID
+ GROUP BY SE.ID
+ ORDER BY SE.ID;</pre>
+</div></div><ul><li><h4 id="id-2.Statement-MainColumnDescription.2"><strong>Main Column Description</strong></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span">Column</span></th><th class="confluenceTh"><span class="td-span">Description</span></th></tr></thead><tbody><tr><td class="confluenceTd">CURR_STMT_CNT_PER_SESSION</td><td class="confluenceTd">The number of statements managed by the session</td></tr></tbody></table></div><p> </p></div><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

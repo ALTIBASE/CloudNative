@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Data File Configuration Plan</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-Configuration-Guide-for-Altibase_14647508.html">Disk Configuration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Data File Configuration Plan
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>As described in the previous chapter, when the redo log is recorded during the transaction processing, the checkpoint step for the persistence of the memory DB, and the disk I/O for transaction processing of the disk DB are configured on the same disk, a disk bottleneck occurs. It is recommended to configure the redo log and each area as a physically separated disk in order to minimize the performance downgrade.</p><h1 class="0cm" id="id-2.DataFileConfigurationPlan-DiskI/O">Disk I/O</h1><div><img class="confluence-embedded-image" src="attachments/14647521/14778399.png" data-image-src="attachments/14647521/14778399.png"></div><div>As shown in the figure above, if the redo log record, checkpoint, and disk I/O by the buffer manager are concentrated on one disk, the disk bottleneck cannot be avoided. Therefore, it is recommended for the user to refer to this document for efficient disk configuration.</div><div><h1 id="id-2.DataFileConfigurationPlan-ConfigurationExample(1)">Configuration Example (1)</h1>The following configuration is recommended, even if the configuration is difficult due to the environment of the system, the redo log and others must be configured as physically separated.<div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Disk configuration</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>ALTIBASE HOME</p></td><td class="confluenceTd"><p>/ALTIBASE</p></td></tr><tr><td class="confluenceTd"><p>Redo log</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>Data space (Memory DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_MEMORY_DATA</p></td></tr><tr><td class="confluenceTd"><p>Data space (Disk DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_DATA</p></td></tr><tr><td class="confluenceTd"><p>Data space (Disk Index)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_INDEX</p></td></tr><tr><td class="confluenceTd"><p>Disk DB Undo space</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_UNDO</p></td></tr></tbody></table></div><ul><li>ALTIBASE HOME is a space that stores files such as binaries, headers, and libraries for development and operation, as well as important trace logs that occur during the operation. So, it is recommended to be configured in a separate space.</li><li>In the case of a memory index, there is no separate disk I/O. This is because index re-configuration is performed on the memory after all the memory DBS are loaded in the ALTIBASE running stage. (There is no separate logging for memory index changes.)</li><li>It is recommended to separate the disk DB and the disk index for the purpose of minimizing disk I/O contention when performing I/O or DB change operations due to the expansion of each configured data file.</li><li>Considerations related to disk backup are not described in this document, so please refer to the &quot;Backup/Recovery Guide&quot;.</li></ul><h1 id="id-2.DataFileConfigurationPlan-ConfigurationExample(2)">Configuration Example (2)</h1><p>This is the minimum separation configuration, and this configuration is recommended in the following environments.</p><ul><li>When configuring with memory DB</li><li>When configuring a disk DB that does not have many changes in the operation</li><li>When it has the minimum DISK in the system environment</li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Disk configuration</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>ALTIBASE HOME and data</p></td><td class="confluenceTd"><p>/ALTIBASE</p></td></tr><tr><td class="confluenceTd"><p>Redo log</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr></tbody></table></div><p>Such a configuration can reduce disk I/O contention only when the memory DB is mainly used or only in the service environment of the disk DB where there are not many changes.</p><h1 id="id-2.DataFileConfigurationPlan-ConfigurationExample(3)">Configuration Example (3)</h1><p>This configuration is recommended when configuring various tasks and large amounts of data in a disk DB.</p><p>It is efficient from the point of view of distributing disk I/O by composing a separate tablespace by separating complex queries from simple processing queries, and configuring the physical data files of the tablespace into separate disks. However, the efficiency is low in an environment where disk buffer replacement is frequent.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh">Disk configuration</th></tr></thead><tbody><tr><td class="confluenceTd"><p>ALTIBASE HOME and memory DB</p></td><td class="confluenceTd"><p>/ALTIBASE</p></td></tr><tr><td class="confluenceTd"><p>Disk DB-1 (complex operation)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_COMPLEX</p></td></tr><tr><td class="confluenceTd"><p>Disk DB-2 (simple operation)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_SIMPLE</p></td></tr><tr><td class="confluenceTd"><p>Redo logo</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr></tbody></table></div><p>The location of the tablespace related to complex query execution and the method of locating the physical data files of the tablespace on a volume composed of separate disks, mainly for simple processing, can be effective in the sense of distributing disk I/O. However, even with such a configuration, it may be difficult to obtain the expected effect in an environment where buffer replacement is frequent.</p><p> </p></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647521/14778399.png">redo구조.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

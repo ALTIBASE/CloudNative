@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Converting Internally Defined Exceptions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Exception-Handling_2988077.html">Exception Handling</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Converting Internally Defined Exceptions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347273 {padding: 0px;}
+div.rbtoc1624409347273 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347273 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347273'>
+<ul class='toc-indentation'>
+<li><a href='#ConvertingInternallyDefinedExceptions-Overview'>Overview</a></li>
+<li><a href='#ConvertingInternallyDefinedExceptions-System-definedExceptionCodes'>System-defined Exception Codes</a></li>
+<li><a href='#ConvertingInternallyDefinedExceptions-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ConvertingInternallyDefinedExceptions-Overview">Overview</h2>
+
+<p> Internally Defined Exceptions, namely System-defined Exception Codes, is classified as below.</p>
+
+<h2 id="ConvertingInternallyDefinedExceptions-System-definedExceptionCodes">System-defined Exception Codes</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Error Code(ORACLE, Integer) </p></th>
+<th class="confluenceTh"><p> Error Code(ALTIBASE HDB, Integer) </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURSOR_ALREADY_OPEN </p></td>
+<td class="confluenceTd"><p> CURSOR_ALREADY_OPEN </p></td>
+<td class="confluenceTd"><p> 06511 </p></td>
+<td class="confluenceTd"><p> 201062 </p></td>
+<td class="confluenceTd"><p> A program attempts to open an already open cursor. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DUP_VAL_ON_INDEX </p></td>
+<td class="confluenceTd"><p> DUP_VAL_ON_INDEX </p></td>
+<td class="confluenceTd"><p> 00001 </p></td>
+<td class="confluenceTd"><p> 201063 </p></td>
+<td class="confluenceTd"><p> A program attempts to store duplicate values in a <br class="atl-forced-newline" />
+column that is constrained by a unique index. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INVALID_CURSOR </p></td>
+<td class="confluenceTd"><p> INVALID_CURSOR </p></td>
+<td class="confluenceTd"><p> 01001 </p></td>
+<td class="confluenceTd"><p> 201064 </p></td>
+<td class="confluenceTd"><p> A program attempts a cursor operation that is not <br class="atl-forced-newline" />
+allowed, such as closing an unopened cursor. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INVALID_NUMBER </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> -01722 </p></td>
+<td class="confluenceTd"><p> In a SQL statement, the conversion of a character string <br class="atl-forced-newline" />
+into a number fails because the string does not <br class="atl-forced-newline" />
+represent a valid number. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INVALID_PATH </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201237 </p></td>
+<td class="confluenceTd"><p> Invalid directory path(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INVALID_MODE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201235 </p></td>
+<td class="confluenceTd"><p> Invalid file open mode(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INVALID_HANDLE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201238 </p></td>
+<td class="confluenceTd"><p> Invalid file handle(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INVALID_OPERATION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201239 </p></td>
+<td class="confluenceTd"><p> Invalid file operation(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NO_DATA_FOUND </p></td>
+<td class="confluenceTd"><p> NO_DATA_FOUND </p></td>
+<td class="confluenceTd"><p> 01403 </p></td>
+<td class="confluenceTd"><p> 201066 </p></td>
+<td class="confluenceTd"><p> A SELECT INTO statement returns no rows, <br class="atl-forced-newline" />
+or your program references a deleted element in a nested table(not supported in altibase) <br class="atl-forced-newline" />
+or an uninitialized element in an index-by table(associative array). </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOO_MANY_ROWS </p></td>
+<td class="confluenceTd"><p> TOO_MANY_ROWS </p></td>
+<td class="confluenceTd"><p> 01422 </p></td>
+<td class="confluenceTd"><p> 201070 </p></td>
+<td class="confluenceTd"><p> A SELECT INTO statement returns more than one row. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ACCESS_INTO_NULL </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06530 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program attempts to assign values to the attributes of an uninitialized object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CASE_NOT_FOUND </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06592 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> None of the choices in the WHEN clauses of a CASE <br class="atl-forced-newline" />
+statement is selected, and there is no ELSE clause. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COLLECTION_IS_NULL </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06531 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program attempts to apply collection methods other <br class="atl-forced-newline" />
+than EXISTS to an uninitialized nested table or varray, <br class="atl-forced-newline" />
+or the program attempts to assign values to the <br class="atl-forced-newline" />
+elements of an uninitialized nested table or varray(not in altibase). </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGIN_DENIED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 01017 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program attempts to log on to ORACLE with an invalid <br class="atl-forced-newline" />
+username or password. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NOT_LOGGED_ON </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 01012 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program issues a database call without being <br class="atl-forced-newline" />
+connected to ORACLE. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PROGRAM_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06501 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> PL/SQL has an internal problem. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ROWTYPE_MISMATCH </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06504 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> The host cursor variable and PL/SQL cursor variable <br class="atl-forced-newline" />
+involved in an assignment have incompatible return <br class="atl-forced-newline" />
+types. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SELF_IS_NULL </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 30625 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program attempts to call a MEMBER method, but the <br class="atl-forced-newline" />
+instance of the object type has not been initialized. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STORAGE_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06500 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> PL/SQL runs out of memory or memory has been <br class="atl-forced-newline" />
+corrupted. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SUBSCRIPT_BEYOND_COUNT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06533 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program references a nested table or varray element <br class="atl-forced-newline" />
+using an index number larger than the number of <br class="atl-forced-newline" />
+elements in the collection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SUBSCRIPT_OUTSIDE_LIMIT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06532 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program references a nested table or varray element <br class="atl-forced-newline" />
+using an index number (-1 for example) that is outside <br class="atl-forced-newline" />
+the legal range. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYS_INVALID_ROWID </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 01410 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> The conversion of a character string into a universal <br class="atl-forced-newline" />
+rowid fails because the character string does not <br class="atl-forced-newline" />
+represent a valid rowid. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TIMEOUT_ON_RESOURCE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 00051 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A time out occurs while Oracle is waiting for a <br class="atl-forced-newline" />
+resource. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> VALUE_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 06502 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> An arithmetic, conversion, truncation, or <br class="atl-forced-newline" />
+size-constraint error occurs. <br class="atl-forced-newline" />
+For example, when your program selects a column value into a character <br class="atl-forced-newline" />
+variable, if the value is longer than the declared length <br class="atl-forced-newline" />
+of the variable, PL/SQL aborts the assignment and <br class="atl-forced-newline" />
+raises VALUE_ERROR. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ZERO_DIVIDE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 01476 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> A program attempts to divide a number by zero. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> READ_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201242 </p></td>
+<td class="confluenceTd"><p> File read error(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> WRITE_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201243 </p></td>
+<td class="confluenceTd"><p> File write error(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> ACCESS_DENIED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201236 </p></td>
+<td class="confluenceTd"><p> Directory access denied(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> DELETE_FAILED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201240 </p></td>
+<td class="confluenceTd"><p> File remove operation failed(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> RENAME_FAILED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> 201241 </p></td>
+<td class="confluenceTd"><p> File rename operation failed(exception is not handled in the stored procedure or function) </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ConvertingInternallyDefinedExceptions-Example">Example</h2>
+
+<p>As example shown below, A procedures for defining System-defined exception in the ALTIBASE HDB and ORACLE are same.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE TOO_MANY_ROWS; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+ WHEN TOO_MANY_ROWS THEN <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ DBMS_OUTPUT.PUT_LINE('SQLCODE: ' || SQLCODE); <br class="atl-forced-newline" />
+ DBMS_OUTPUT.PUT_LINE('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE TOO_MANY_ROWS; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+ WHEN TOO_MANY_ROWS THEN <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ PRINTLN('SQLCODE: ' || SQLCODE); <br class="atl-forced-newline" />
+ PRINTLN('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE DUP_VAL_ON_INDEX; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+ WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ DBMS_OUTPUT.PUT_LINE('SQLCODE: ' || SQLCODE); <br class="atl-forced-newline" />
+ DBMS_OUTPUT.PUT_LINE('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE DUP_VAL_ON_INDEX; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+ WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ PRINTLN('SQLCODE: ' || SQLCODE); <br class="atl-forced-newline" />
+ PRINTLN('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

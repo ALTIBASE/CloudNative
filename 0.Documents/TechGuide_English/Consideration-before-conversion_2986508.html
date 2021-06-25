@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Consideration before conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="1.-Introduction_2986498.html">1. Introduction</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Consideration before conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 07, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="Considerationbeforeconversion-Overview">Overview</h2>
+
+<p>Before Migrating from ORACLE, you need to check the features which ALTIBASE HDB doesn't provide but ORACLE does.</p>
+
+<p>Here 's a brief overview about the features those ALTIBASE HDB does not provide.</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>This guide is based on the functionalities at ALTIBASE HDB V6.</p>
+
+<p>이 가이드는 ALTIBASE HDB V6에서의 기능을 기준으로 한다.</p>
+                    </div>
+    </div>
+
+
+<h2 id="Considerationbeforeconversion-Object">Object</h2>
+
+
+<h3 id="Considerationbeforeconversion-MaterializedView">Materialized View</h3>
+
+<p>ALTIBASE HDB does not provide Materilaized View functionality that ORACLE supports.</p>
+
+<p>But, this functionality will be applied at ALTIBASE HDB V7.</p>
+
+<h3 id="Considerationbeforeconversion-IndexOrganizedTable(IOT)">Index Organized Table (IOT)</h3>
+
+<p>ALTIBASE HDB does not support Index Organized Table that ORACLE supports.
+<br class="atl-forced-newline" /></p>
+
+<h3 id="Considerationbeforeconversion-Cluster">Cluster</h3>
+
+<p>ALTIBASE HDB does not support Cluster object.</p>
+
+<h3 id="Considerationbeforeconversion-Index">Index</h3>
+
+<p>There're various index types which ORACLE supports, such as</p>
+<ul>
+	<li>B-Tree Index</li>
+	<li>Bitmap Index</li>
+	<li>Function Based Index</li>
+	<li>Application Domain Index</li>
+	<li>R-tree Index (for spatial only)</li>
+</ul>
+
+
+<p>ALTIBASE HDB supports only B-Tree index and R-Tree Index (Spatial Data only).</p>
+
+<p>But, Among those indexes listed above, A Function Based Index functionality will be applied at ALTIBASE HDB V7.</p>
+
+<h3 id="Considerationbeforeconversion-CHECKconstraintonTable">CHECK constraint on Table</h3>
+
+<p>ALTIBASE HDB does not support CHECK constraint that checks column value whether those to insert are proper for this constraint.</p>
+
+<p>But, this functionality will be provided at ALTIBASE HDB V7.</p>
+
+<h3 id="Considerationbeforeconversion-XMLsupport">XML support</h3>
+
+<p>ALTIBASE HDB does not support XML types, and related functionality.</p>
+
+<h2 id="Considerationbeforeconversion-Development">Development</h2>
+
+
+<h3 id="Considerationbeforeconversion-HierarchyQuery">Hierarchy Query</h3>
+
+<p>ALTIBASE HDB provides the limited functionality about hierarchy query. ALTIBASE HDB does not support following features those ORACLE provides</p>
+<ul>
+	<li>CONNECT_BY_ISCYCLE pseudocolumn</li>
+	<li>CONNECT_BY_ISLEAF pseudocolumn</li>
+	<li>CONNECT_BY_ROOT operator</li>
+	<li>SYS_CONNECT_BY_PATH function</li>
+	<li>SIBLINGS in order by clause</li>
+</ul>
+
+
+<p>But, At ALTIBASE HDB V7, The functionality of Hierarchical query will be enhanced.</p>
+
+<p>Among of them described above, CONNECT_BY_ISCYCLE pseudocolumn, CONNECT_BY_ISLEAF pseudocolumn, SIBLINGS will be included in ALTIBASE HDB.</p>
+
+<h3 id="Considerationbeforeconversion-AnalyticFunctions">Analytic Functions</h3>
+
+<p>ALTIBASE HDB provides the limited functionality about analytic functions.</p>
+
+<p>At the ALTIBASE HDB version 6, some of the  window functions, namely ranking functions,  those are added in a limited extent.</p>
+
+<p>Those are DENSE_RANK(), RANK(), ROW_NUMBER() functions.
+<br class="atl-forced-newline" /></p>
+
+<h3 id="Considerationbeforeconversion-UpdatableJoinview">Updatable Join view</h3>
+
+<p>To use DML statement on View except SELECT statement is not allowed to use in ALTIBASE HDB. 
+<br class="atl-forced-newline" /></p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>This functionality will be applied at ALTIBASE HDB V7 by adopting &quot;Instead of Trigger&quot; functionality.</p>
+                    </div>
+    </div>
+
+
+<h3 id="Considerationbeforeconversion-ExternalProcedures">External Procedures</h3>
+
+<p>External procedure means that DBMS engine provides the way to adopt functions or procedures written in C/C++ or Java or any progammable lanuage.</p>
+
+<p>But ALTIBASE HDB does not support this feature.</p>
+
+<h3 id="Considerationbeforeconversion-Package">Package</h3>
+
+<p>ALTIBASE HDB does not provide Package.</p>
+
+<p>But, this functionality will be adopted as a name of the Stored Package in psm at ALTIBASE HDB V7.</p>
+
+<h3 id="Considerationbeforeconversion-SQLresultsetcache(Clientside)">SQL resultset cache (Client side)</h3>
+
+<p>ALITBASE HDB does not provide SQL resultset cache function, namely the cache as a result of the query or function is stored in the client side.</p>
+
+<h3 id="Considerationbeforeconversion-FetchAcrossCommit">Fetch Across Commit</h3>
+
+<p>When a cursor is open and does fetch row by row, you can not issue &quot;COMMIT&quot; or &quot;ROLLBACK&quot; before all rows in the cursor have been fetched. </p>
+
+<p>For example,</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: true" style="font-size:12px;">
+CREATE OR REPLACE PROCEDURE proc1
+AS
+BEGIN
+ DECLARE
+  CURSOR c1 IS SELECT eno, ename FROM employee;
+ BEGIN
+  FOR emp_rec IN c1 LOOP
+    INSERT INTO emp_temp VALUES(emp_rec.eno, emp_rec.ename);
+  	COMMIT;
+  END LOOP;
+ END;
+END;
+/
+</pre>
+</div></div>
+<p>Above procedures work properly in ORACLE, but it does not work in ALTIBASE HDB and it returns error, &quot;ERR-31168 : Invalid CURSOR&quot;.</p>
+
+<p>If COMMIT or ROLLBACK statement is sent, ALTIBASE HDB applies commit or rollback operation to the transaction and closes all open cursors within the transaction. In this case, COMMIT statement is issued after INSERT statement, C1 CURSOR is closed.</p>
+
+<p>Thus client gets error as above.</p>
+
+<p>To solve this limitation, you can</p>
+<ul>
+	<li>Execute COMMIT / ROLLBACK statement after all data have been fetched in the cursor.<br />
+For example, you can change example as below.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: true" style="font-size:12px;">
+CREATE OR REPLACE PROCEDURE proc1
+AS
+BEGIN
+ DECLARE
+  CURSOR c1 IS SELECT eno, ename FROM employee;
+ BEGIN
+  FOR emp_rec IN c1 LOOP
+    INSERT INTO emp_temp VALUES(emp_rec.eno, emp_rec.ename);
+  END LOOP;
+  COMMIT;   /* Commit after all data have fetched. */
+ END;
+END;
+/
+</pre>
+</div></div></li>
+	<li>Decouple the connection between SELECT statement in CURSOR and another statement.<br />
+In APRE or ODBC/CLI interface, you can make two connections. One is for SELECT statement ( CURSOR ) , the other is for another statement (inside LOOP).</li>
+</ul>
+
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This functionality will be adopted at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+
+<h3 id="Considerationbeforeconversion-"> </h3>
+
+
+<h3 id="Considerationbeforeconversion-ParallelQuery">Parallel Query</h3>
+
+<p>ALTIBASE HDB does not provide Parallel Query feature. Only one thread per query is allowable.</p>
+
+<h3 id="Considerationbeforeconversion-MERGEstatement">MERGE statement </h3>
+
+<p>MERGE statement is useful when you want to decide whether insert or update statement is proper according to the existence of the corrsponding rows.</p>
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This functionality will be adopted at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+
+<h3 id="Considerationbeforeconversion-PartitionedtablewithGLOBALINDEX">Partitioned table with GLOBAL INDEX</h3>
+
+<p>ALTIBASE HDB support Partioned Table feature with local partition index but does not support global index in Partitioned Table.
+<br class="atl-forced-newline" /></p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This functionality will be adopted at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+
+
+<h2 id="Considerationbeforeconversion-HighAvailability">High Availability</h2>
+
+
+<h3 id="Considerationbeforeconversion-RAC">RAC</h3>
+
+<p>ALTIBASE HDB doesn't provide RAC(Real Application Cluster).<br />
+ALTIBASE HDB provides replication functionality for High Availability Instead of RAC.</p>
+
+<h3 id="Considerationbeforeconversion-TAF(TransparentApplicationFailover)">TAF (Transparent Application Failover )</h3>
+
+<p>ALTIBASE HDB only provides CTF (Connection Time Failover).</p>
+
+<p>CTF refers to the case where the fault is noted at the time of connection to the DBMS, and connection<br />
+is made to a DBMS on another available node rather than to the DBMS suffering from the fault,<br />
+so that service can continue to be provided.</p>
+
+<h2 id="Considerationbeforeconversion-DBAside">DBA side</h2>
+
+<h3 id="Considerationbeforeconversion-Auditing">Auditing<br class="atl-forced-newline" /></h3>
+
+<p>ALTIBASE HDB does not support Auditing, that is to say watching DB according to the type of executing SQLs and gathering results of it in ORACLE.</p>
+
+<p>In fact, an audit utility is in use not for same purpose but as a same name in ALTIBASE HDB.</p>
+
+<p>It is utilized for matching rows as a result of investigation of data difference between servers.</p>
+
+<p>Besides it provides a functionality for comparison of data difference between the ALTIBASE HDB server and ORACLE server irregardless of the data modification by replication.</p>
+
+<p>And matching them is available by using that utility.</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-2987325"></a>
+                                    <font class="smallfont"><p>생각나는대로 리스팅만 할께염.<br />
+rowid, SQL::merge/updatable join/pararell query, Partioned table::meta exchange/global index, db link, incremental backup, backup utility like RMAN, heap/cluster table, shrink</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ts2.tech@altibase.com at Jan 12, 2012 21:58
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

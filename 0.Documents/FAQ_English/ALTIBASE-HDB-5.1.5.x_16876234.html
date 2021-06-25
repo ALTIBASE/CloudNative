@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB 5.1.5.x</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-table-and-index-usage_16876226.html">Disk table and index usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB 5.1.5.x
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146972 {padding: 0px;}
+div.rbtoc1624409146972 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146972 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146972'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.1.5.x-Overview'>Overview</a></li>
+<li><a href='#ALTIBASEHDB5.1.5.x-Disktable'>Disk table</a></li>
+<li><a href='#ALTIBASEHDB5.1.5.x-DiskIndex'>Disk Index</a></li>
+<li><a href='#ALTIBASEHDB5.1.5.x-Reference-Howtocheckthenumberofdisktablesandindexes'>Reference - How to check the number of disk tables and indexes</a></li>
+</ul>
+</div></p><p> </p><h1 id="ALTIBASEHDB5.1.5.x-Overview">Overview</h1><hr /><ul><li>This is a disk table and index usage query for ALTIBASE HDB version 5.1.5.</li><li>In ALTIBASE HDB 5, due to a change in the structure of the disk table, only the size allocated to the table can be known and the actual usage cannot be checked.</li><li>This means that data cannot be calculated except for the free space that occurred after DELETE.</li><li>From ALTIBASE HDB 5.3.3.33, 5.3.5.15, 5.5.1.0.3, it has been improved so that the usage can be checked.</li></ul><p> </p><h1 id="ALTIBASEHDB5.1.5.x-Disktable">Disk table</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 5.1.5 Disk Table Usage Query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 30
+SELECT U.USER_NAME USER_NAME                                                                                                    -- Database user
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, &#39;PARTITIONED&#39;, &#39;F&#39;, &#39;NON-PARTITIONED&#39;) PARTITIONED                                       -- If a partitioned table, PARTITIONED a non-partitioned, then NON-PARTITIONED
+     , TBL.TABLE_NAME TABLE_NAME                                                                                                -- Table name
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, TBL.PARTITION_NAME, &#39;F&#39;, &#39;-&#39;) PARTITIONED_TABLE                                          -- Partitioned table name
+     , TBS.NAME TABLESPACE_NAME                                                                                                 -- Tablesapce
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999&#39;) &#39;MAX(KB)&#39;                                                           -- Maximum size of the tablespace to which the table belongs
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, &#39;999,999,999&#39;) &#39;ALLOC(KB)&#39;                -- Total size allocated to date
+     , TO_CHAR((((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(D.MAX*TBS.PAGE_SIZE))*100), &#39;99.99&#39;) &#39;USAGE(%)&#39; -- Percentage of utilization compared to the maximum size of the tablespace
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TBS_ID, &#39;T&#39;, PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+       ) TBL
+     , V$SEGMENT SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.SEGMENT_TYPE = &#39;TABLE&#39;  /* &#39;TABLE&#39; :, &#39;INDEX&#39; : */
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, PARTITIONED, TABLE_NAME, PARTITIONED_TABLE
+; </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">USER_NAME             PARTITIONED      TABLESPACE_NAME       TABLE_NAME            PARTITIONED_TABLE     MAX(KB)          ALLOC(KB)        USAGE(%)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   NON-PARTITIONED  SYS_TBS_DISK_DATA     CUSTOMER              -                        2,097,152              256        .01
+SYS                   NON-PARTITIONED  SYS_TBS_DISK_DATA     DEPARTMENT            -                        2,097,152              256        .01
+SYS                   NON-PARTITIONED  SYS_TBS_DISK_DATA     EMPLOYEE              -                        2,097,152              256        .01
+SYS                   NON-PARTITIONED  SYS_TBS_DISK_DATA     GOODS                 -                        2,097,152              256        .01
+SYS                   NON-PARTITIONED  USER_DATA             ORDERS                -                        2,097,152              256        .01
+SYS                   PARTITIONED      PART_DATA             PART_T1               P1                         262,144              512        .20
+SYS                   PARTITIONED      PART_DATA             PART_T1               P2                         262,144              512        .20
+SYS                   PARTITIONED      PART_DATA             PART_T1               P3                         262,144           18,176       6.93
+SYS                   PARTITIONED      PART_DATA             PART_T2               P201406                    262,144            9,472       3.61
+SYS                   PARTITIONED      PART_DATA             PART_T2               P201407                    262,144           18,944       7.23
+SYS                   PARTITIONED      PART_DATA             PART_T2               P201408                    262,144            4,864       1.86
+SYS                   PARTITIONED      PART_DATA             PART_T2               P201512                    262,144            7,168       2.73
+SYS                   PARTITIONED      PART_DATA_DEF         PART_T2               PMAX                       262,144            8,192       3.13
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE2                DEF                      2,097,152              256        .01
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE2                Q1_2014                  2,097,152            1,536        .07
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE2                Q2_2014                  2,097,152              768        .04
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE2                Q3_2014                  2,097,152            2,304        .11
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE2                Q4_2014                  2,097,152              256        .01
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE_SALES           DEF                      2,097,152              256        .01
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE_SALES           Q1_2014                  2,097,152              768        .04
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE_SALES           Q2_2014                  2,097,152            1,536        .07
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE_SALES           Q3_2014                  2,097,152            1,280        .06
+SYS                   PARTITIONED      SYS_TBS_DISK_DATA     RANGE_SALES           Q4_2014                  2,097,152              768        .04
+23 rows selected.</pre>
+</div></div><p> </p><h1 id="ALTIBASEHDB5.1.5.x-DiskIndex">Disk Index</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT U.USER_NAME USER_NAME                                                                                                   -- Database user  
+     , I_LIST.TABLE_NAME                                                                                                       -- Table name
+     , DECODE(I_LIST.PARTITION_NAME, NULL, &#39;NON-PARTITIONED&#39;, I_LIST.PARTITION_NAME) PARTITIONED_NAME                          -- Partitioned table name. If a non-partitioned, then NON-PARTITIONED
+     , I_LIST.INDEX_NAME INDEX_NAME                                                                                            -- Index name
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, &#39;NON-PARTITIONED&#39;, I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX             -- Partitioned index name
+     , TBS.NAME TBS_NAME                                                                                                       -- Tablespace to which the index belongs  
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999&#39;) &#39;MAX(KB)&#39;                                                          -- Maximum size of table space
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, &#39;999,999,999&#39;) &#39;ALLOC(KB)&#39;               -- Total size allocated from the index 
+     , TO_CHAR((((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(D.MAX*TBS.PAGE_SIZE))*100), &#39;99.99&#39;) &#39;USAGE(%)&#39;   -- Percentage of utilization compared to the maximum size of the tablespace
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, I.TABLE_ID, &#39;T&#39;, PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, &#39;F&#39;, I.TBS_ID, &#39;T&#39;, PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID ) I_LIST
+     , V$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+; </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> USER_NAME             TABLE_NAME            PARTITIONED_NAME      INDEX_NAME            PARTITIONED_INDEX     TBS_NAME              MAX(KB)          ALLOC(KB)        USAGE(%)        
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   CUSTOMER              NON-PARTITIONED       __SYS_IDX_ID_113      NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   DEPARTMENT            NON-PARTITIONED       DEP_IDX1              NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   DEPARTMENT            NON-PARTITIONED       __SYS_IDX_ID_111      NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   EMPLOYEE              NON-PARTITIONED       EMP_IDX1              NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   EMPLOYEE              NON-PARTITIONED       __SYS_IDX_ID_112      NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   GOODS                 NON-PARTITIONED       __SYS_IDX_ID_114      NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   GOODS                 NON-PARTITIONED       __SYS_IDX_ID_115      NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256        .01          
+SYS                   ORDERS                NON-PARTITIONED       ODR_IDX1              NON-PARTITIONED       USER_IDX                 2,097,152              256        .01          
+SYS                   ORDERS                NON-PARTITIONED       ODR_IDX2              NON-PARTITIONED       USER_IDX                 2,097,152              256        .01          
+SYS                   ORDERS                NON-PARTITIONED       ODR_IDX3              NON-PARTITIONED       USER_IDX                 2,097,152              256        .01          
+SYS                   ORDERS                NON-PARTITIONED       __SYS_IDX_ID_116      NON-PARTITIONED       USER_DATA                2,097,152              256        .01          
+SYS                   PART_T1               P1                    PART_T1_IDX           P_IDX1                PART_IDX                   786,432              256        .03          
+SYS                   PART_T1               P2                    PART_T1_IDX           P_IDX2                PART_IDX                   786,432              256        .03          
+SYS                   PART_T1               P3                    PART_T1_IDX           P_IDX3                PART_IDX                   786,432            7,424        .94          
+14 rows selected.</pre>
+</div></div><p> </p><h1 id="ALTIBASEHDB5.1.5.x-Reference-Howtocheckthenumberofdisktablesandindexes">Reference - How to check the number of disk tables and indexes</h1><hr /><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk table count query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, &#39;T&#39;, &#39;PARTITIONED     TABLE CNT : &#39;||PART_T.CNT, &#39;F&#39;, &#39;NON-PARTITIONED TABLE CNT : &#39;||T.CNT) TABLE_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM V$DISKTBL_INFO D
+             , SYSTEM_.SYS_TABLES_ T
+         WHERE D.TABLE_OID = T.TABLE_OID
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_TABLE_PARTITIONS_ ) PART_T ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk index count query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, &#39;T&#39;, &#39;PARTITIONED     TABLE CNT : &#39;||PART_T.CNT, &#39;F&#39;, &#39;NON-PARTITIONED TABLE CNT : &#39;||T.CNT) TABLE_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM V$DISKTBL_INFO D
+             , SYSTEM_.SYS_TABLES_ T
+         WHERE D.TABLE_OID = T.TABLE_OID
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_TABLE_PARTITIONS_ ) PART_T ;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

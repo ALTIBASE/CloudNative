@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to create multiple replication objects with the same IP</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to create multiple replication objects with the same IP
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145919 {padding: 0px;}
+div.rbtoc1624409145919 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145919 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145919'>
+<ul class='toc-indentation'>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Overview'>Overview</a></li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Version'>Version</a></li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Procedure'>Procedure</a>
+<ul class='toc-indentation'>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Checktherelatedproperty'>Check the related property</a></li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Changetherelatedproperty'>Change the related property</a></li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Createreplicationobjects'>Create replication objects</a></li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Checkthehostinformationofthereplicationobject'>Check the host information of the replication object</a></li>
+</ul>
+</li>
+<li><a href='#HowtocreatemultiplereplicationobjectswiththesameIP-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="HowtocreatemultiplereplicationobjectswiththesameIP-Overview">Overview</h1><hr /><p>Altibase replication had a limitation that the same IP address could not be used when creating multiple redundant objects.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of creating multiple replication objects whose IP and PORT of the remote server are 192.168.1.145, 30300</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION REP1 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T TO ALTITEST.REP_TEST_T;
+Create success. 
+
+iSQL&gt; CREATE REPLICATION REP2 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T2 TO ALTITEST.REP_TEST_T2;
+[ERR-6110C : Replication hosts already exist.] </pre>
+</div></div><p>As a property added to Altibase version 6.5.1 or later, it is possible to create different redundant objects with the same host information without such restrictions.</p><p> </p><h1 id="HowtocreatemultiplereplicationobjectswiththesameIP-Version">Version</h1><hr /><p>Altibase version 6.5.1 or later</p><p> </p><h1 id="HowtocreatemultiplereplicationobjectswiththesameIP-Procedure">Procedure</h1><hr /><h3 id="HowtocreatemultiplereplicationobjectswiththesameIP-Checktherelatedproperty">Check the related property</h3><hr /><p>Check the value of the Altibase server property REPLICATION_ALLOW_DUPLICATE_HOSTS.</p><p>The default value of this property is 0, which does not allow different objects to have the same host information.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 60
+SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_ALLOW_DUPLICATE_HOSTS&#39;;</pre>
+</div></div><p> </p><h3 id="HowtocreatemultiplereplicationobjectswiththesameIP-Changetherelatedproperty">Change the related property</h3><hr /><p>If the value of the REPLICATION_ALLOW_DUPLICATE_HOSTS property is 0, change it to 1.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET REPLICATION_ALLOW_DUPLICATE_HOSTS = 1;</pre>
+</div></div><p>In order to permanently apply the property change value, modify the property value in the altibase.properties file and save it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">cd $ALTIBASE_HOME/conf
+vi altibase.properties
+REPLICATION_ALLOW_DUPLICATE_HOSTS     = 1</pre>
+</div></div><p> </p><h3 id="HowtocreatemultiplereplicationobjectswiththesameIP-Createreplicationobjects">Create replication objects</h3><hr /><p>Create more than one duplicate object with the same host information.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of creating multiple replication objects whose IP and PORT of the remote server are 192.168.1.145, 30300</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION REP1 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T TO ALTITEST.REP_TEST_T;
+Create success. 
+
+iSQL&gt; CREATE REPLICATION REP2 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T2 TO ALTITEST.REP_TEST_T2;
+Create success. </pre>
+</div></div><p> </p><h3 id="HowtocreatemultiplereplicationobjectswiththesameIP-Checkthehostinformationofthereplicationobject">Check the host information of the replication object</h3><hr /><p>Host information registered in the replicated object can be checked with the following sentence.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_ ORDER BY HOST_NO;</pre>
+</div></div><p> </p><h1 id="HowtocreatemultiplereplicationobjectswiththesameIP-Reference">Reference</h1><hr /><ul><li>Altibase 6.5.1 New Features Guide</li><li>General Reference (Altibase 6.5.1 or later)</li><li>Manual Download: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a> or <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a></li></ul><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

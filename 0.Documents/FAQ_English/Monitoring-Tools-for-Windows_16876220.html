@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Monitoring Tools for Windows</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Monitoring Tools for Windows
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147446 {padding: 0px;}
+div.rbtoc1624409147446 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147446 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147446'>
+<ul class='toc-indentation'>
+<li><a href='#MonitoringToolsforWindows-Overview'>Overview</a></li>
+<li><a href='#MonitoringToolsforWindows-Version'>Version</a></li>
+<li><a href='#MonitoringToolsforWindows-Monitoringbatchprogram'>Monitoring batch program</a></li>
+<li><a href='#MonitoringToolsforWindows-Settings'>Settings</a>
+<ul class='toc-indentation'>
+<li><a href='#MonitoringToolsforWindows-Checkingconnectioninformation'>Checking connection information</a></li>
+<li><a href='#MonitoringToolsforWindows-Addingmonitoringitems'>Adding monitoring items</a></li>
+<li><a href='#MonitoringToolsforWindows-Monitoringcycle'>Monitoring cycle</a></li>
+<li><a href='#MonitoringToolsforWindows-Deletingoldlogfunction'>Deleting old log function</a></li>
+<li><a href='#MonitoringToolsforWindows-Modifyingaltimon.vbsfile'>Modifying altimon.vbs file</a></li>
+</ul>
+</li>
+<li><a href='#MonitoringToolsforWindows-Execution'>Execution</a>
+<ul class='toc-indentation'>
+<li><a href='#MonitoringToolsforWindows-Howtorunintheforeground'>How to run in the foreground</a></li>
+<li><a href='#MonitoringToolsforWindows-Howtoexecuteinbackground'>How to execute in background</a></li>
+</ul>
+</li>
+<li><a href='#MonitoringToolsforWindows-Termination'>Termination</a>
+<ul class='toc-indentation'>
+<li><a href='#MonitoringToolsforWindows-Whenexecutingintheforeground'>When executing in the foreground</a></li>
+<li><a href='#MonitoringToolsforWindows-Whenexecutinginthebackground'>When executing in the background</a></li>
+</ul>
+</li>
+<li><a href='#MonitoringToolsforWindows-Log'>Log</a></li>
+</ul>
+</div></p><p> </p><h1 id="MonitoringToolsforWindows-Overview">Overview</h1><hr /><p>This document describes a monitoring tool for Windows.</p><p> </p><h1 id="MonitoringToolsforWindows-Version">Version</h1><hr /><ul><li>This document is written based on Altibase HDB version 6.3.1</li><li>Both ALTIBASE HDB 5 and ALTIBASE HDB 6 can be used, but some monitoring items may cause a result error.</li><li>If needed, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or in a comment section on this page.</li></ul><p> </p><h1 id="MonitoringToolsforWindows-Monitoringbatchprogram">Monitoring batch program</h1><hr /><p>Download the compressed file below, place it in a folder, and extract it.</p><ul><li><a href="https://docs.altibase.com/download/attachments/7340488/altimon_for_windows.zip?version=1&amp;modificationDate=1415946725000&amp;api=v2">altimon_for_windows.zip</a></li></ul><p>Once it is unzipped, the user will find two folders and two files.</p><ul><li><a href="https://docs.altibase.com/download/attachments/7340488/altimon.bat?version=1&amp;modificationDate=1415946725000&amp;api=v2">altimon.bat</a> : Batch program for monitoring</li><li><a href="https://docs.altibase.com/download/attachments/7340488/altimon.vbs?version=1&amp;modificationDate=1415946725000&amp;api=v2">altimon.vbs</a> : VB file to run batch program in background</li><li><p>ALTIMON_SCRIPT folder: There are .sql files containing monitoring queries</p></li><li><p>ALTIMON_LOG folder: Save log files</p></li></ul><p> </p><h1 id="MonitoringToolsforWindows-Settings">Settings</h1><hr /><h2 id="MonitoringToolsforWindows-Checkingconnectioninformation">Checking connection information</h2><p>Change the ALTIBASE HDB server connection command in the altimon.bat file to suit your environment.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">set ISQL=&quot;%ALTIBASE_HOME%\bin\isql.exe&quot; -s localhost -u sys -p manager -silent</pre>
+</div></div><h2 id="MonitoringToolsforWindows-Addingmonitoringitems">Adding monitoring items</h2><hr /><p>If there are items that the user wants to add other than the basic monitoring items, add a monitoring query to the all.sql file in the ALTIMON_SCRIPT folder.</p><p>In the monitoring query, enter the identifier starting with sysdate in the first column of the SELECT clause and _MON_ in the second column.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of monitoring query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TO_CHAR(SYSDATE, &#39;HH:MI:SS&#39;) TIME, &#39;_MON_REP_GAP&#39;
+     , REP_NAME
+     , REP_SN
+     , REP_GAP
+  FROM V$REPGAP
+ ORDER BY REP_NAME, REP_GAP;</pre>
+</div></div><p> </p><h2 id="MonitoringToolsforWindows-Monitoringcycle">Monitoring cycle</h2><p>At the end of altimon.bat, change the number after -n in the command below. This number refers to the monitoring cycle.</p><p>Modify to suit the environment in seconds.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ping -n 60 127.0.0.1 &gt; nul</pre>
+</div></div><p>Ex) When set to 5 minutes, -n 60 to -n 300</p><h2 id="MonitoringToolsforWindows-Deletingoldlogfunction">Deleting old log function</h2><p>At the bottom of the altimon.bat file are commands that start with forfiles.</p><p>In this command, the /D -30 option means to delete the log 30 days ago, so change the number after the /D option.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">forfiles /P . /M mon.log* /D -30 /C &quot;cmd /c del @file&quot;</pre>
+</div></div><p> </p><h2 id="MonitoringToolsforWindows-Modifyingaltimon.vbsfile">Modifying altimon.vbs file</h2><p>After downloading the above files, upload them to a folder on the server to be monitored.</p><p>Then, modify the path of the second line in the altimon.vbs file to suit your environment.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">Set WshShell = CreateObject(&quot;WScript.Shell&quot;)
+WshShell.Run chr(34) &amp; &quot;C:\Users\Altibase\Desktop\altimon.bat&quot; &amp; Chr(34), 0
+Set WshShell = Nothing</pre>
+</div></div><p> </p><h1 id="MonitoringToolsforWindows-Execution">Execution</h1><hr /><h2 id="MonitoringToolsforWindows-Howtorunintheforeground">How to run in the foreground</h2><p>Execute Windows Command Prompt (Execution Window). Go to the folder where the altimon.bat file is located and run the batch program.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">C:\Users\Altibase&gt;start altimon.bat
+or
+C:\Users\Altibase&gt;start altimon</pre>
+</div></div><p>The user can also go to the folder where the batch program (altimon.bat) is located in Windows Explorer and double-click the alti_mon.bat file.</p><p>If executing the batch program in the foreground, a notification message appears in the execution window as shown below.</p><p><img class="confluence-embedded-image" src="attachments/16876220/17039377.jpeg" data-image-src="attachments/16876220/17039377.jpeg"></p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>The batch program executed in the foreground is terminated when the open window is closed.</p>
+                    </div>
+    </div>
+<h2 id="MonitoringToolsforWindows-Howtoexecuteinbackground">How to execute in background</h2><p>Put the attached files in the same folder, open a DOS window, move to the folder, and execute the command below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">C&gt; alti_mon.vbs</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">C:\Users\Altibase\Desktop&gt;alti_mon.vbs
+Microsoft (R) Windows Script Host version 5.8
+Copyright (C) Microsoft Corporation 1996-2001. All rights reserved.</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>A batch program executing in the background does not terminate the batch program even if you close an open window. To terminate, you need to use the taskkill command. Refer to the end.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="MonitoringToolsforWindows-Termination">Termination</h1><hr /><h2 id="MonitoringToolsforWindows-Whenexecutingintheforeground">When executing in the foreground</h2><p>Close the execution window where you executed the batch program (altimon.bat) or press Ctrl+c.</p><h2 id="MonitoringToolsforWindows-Whenexecutinginthebackground">When executing in the background</h2><p>Execute the Windows command prompt (execution window) and execute the command below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">C&gt; taskkill /fi &quot;windowtitle eq ALTIMON FOR WINDOWS&quot;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">C:\Users\Altibase\Desktop&gt;taskkill /fi &quot;windowtitle eq ALTIMON FOR WINDOWS&quot;
+Success: A shutdown signal was sent to the process (PID 8216).</pre>
+</div></div><h1 id="MonitoringToolsforWindows-Log"><br />Log</h1><p>When executing the batch program, a log file in the form of mon.log.YYYY-MM-DD is created under the ALTIMON_LOG folder.</p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876220/17039377.jpeg">altimon_for_windows.jpeg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

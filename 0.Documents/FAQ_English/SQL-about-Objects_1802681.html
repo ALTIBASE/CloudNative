@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : SQL about Objects</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : SQL about Objects
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153205 {padding: 0px;}
+div.rbtoc1624409153205 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153205 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153205'>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-MemoryTable'>Memory Table</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-QueueTable'>Queue Table</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.1'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.1'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-Memorytable/QueuetableIndexinformation'>Memory table / Queue table Index information</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.2'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.2'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-DiskTable'>Disk Table</a></li>
+<li><a href='#SQLaboutObjects-DiskIndex'>Disk Index</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.3'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.3'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-Sequence'>Sequence</a></li>
+<li><a href='#SQLaboutObjects-Synonym'>Synonym</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.4'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.4'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-PSM(StoredProcedures/Function/Typeset)'>PSM (Stored Procedures / Function / Typeset)</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.5'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.5'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-View'>View</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV4.6'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutObjects-ALTIBASEHDBV5.6'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutObjects-SystemPrivileges'>System Privileges</a></li>
+<li><a href='#SQLaboutObjects-ObjectPrivileges'>Object Privileges</a></li>
+<li><a href='#SQLaboutObjects-Constraintlist'>Constraint list</a></li>
+<li><a href='#SQLaboutObjects-PrimaryKey,ForeignKey,UniqueConstraint'>Primary Key, Foreign Key, Unique Constraint</a></li>
+<li><a href='#SQLaboutObjects-Indexcolumnlist'>Index column list</a></li>
+<li><a href='#SQLaboutObjects-Indexinformation'>Index information</a></li>
+</ul>
+</div>
+
+<h1 id="SQLaboutObjects-MemoryTable">Memory Table</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a memory table.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace name which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_OID </p></td>
+<td class="confluenceTd"><p> the table object identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the memory table (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USED(M) </p></td>
+<td class="confluenceTd"><p> actually used size of the memory table (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EFFICIENCY(%) </p></td>
+<td class="confluenceTd"><p> store efficiency of the object </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4">ALTIBASE HDB V4</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME,
+        &#39;SYS_TBS_MEMORY&#39; TABLESPACE_NAME,
+        C.TABLE_OID,
+        ROUND((C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)/(1024*1024),2) &#39;ALLOC(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(1024*1024),2) &#39;USED(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        V$MEMTBL_INFO C
+WHERE   A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.TABLE_TYPE = &#39;T&#39;
+        AND A.USER_ID = B.USER_ID
+        AND B.TABLE_OID = C.TABLE_OID;
+</pre>
+</div></div>
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME,
+        D.NAME TABLESPACE_NAME,
+        C.TABLE_OID,
+        ROUND((C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)/(1024*1024),2) &#39;ALLOC(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(1024*1024),2) &#39;USED(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        V$MEMTBL_INFO C,
+        V$TABLESPACES D
+WHERE   A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.TABLE_TYPE = &#39;T&#39;
+        AND A.USER_ID = B.USER_ID
+        AND B.TABLE_OID = C.TABLE_OID
+        AND B.TBS_ID = D.ID ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutObjects-QueueTable">Queue Table</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a queue table.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace name which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_OID </p></td>
+<td class="confluenceTd"><p> the table object identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the memory table (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USED(M) </p></td>
+<td class="confluenceTd"><p> actually used size of the memory table (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EFFICIENCY(%) </p></td>
+<td class="confluenceTd"><p> store efficiency of the object </p></td>
+</tr>
+</tbody></table></div>
+
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Queue table structure is the same as a memory table except its functionality.</p>
+                    </div>
+    </div>
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.1">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME,
+        &#39;SYS_TBS_MEMORY&#39; TABLESPACE_NAME,
+        C.TABLE_OID,
+        ROUND((C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)/(1024*1024),2) &#39;ALLOC(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(1024*1024),2) &#39;USED(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        V$MEMTBL_INFO C
+WHERE   A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.TABLE_TYPE = &#39;Q&#39;
+        AND A.USER_ID = B.USER_ID
+        AND B.TABLE_OID = C.TABLE_OID;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.1">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME,
+        D.NAME TABLESPACE_NAME,
+        C.TABLE_OID,
+        ROUND((C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)/(1024*1024),2) &#39;ALLOC(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(1024*1024),2) &#39;USED(M)&#39;,
+        ROUND((C.FIXED_USED_MEM + C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM + C.VAR_ALLOC_MEM)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        V$MEMTBL_INFO C,
+        V$TABLESPACES D
+WHERE   A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.TABLE_TYPE = &#39;Q&#39;
+        AND A.USER_ID = B.USER_ID
+        AND B.TABLE_OID = C.TABLE_OID
+        AND B.TBS_ID = D.ID ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutObjects-Memorytable/QueuetableIndexinformation">Memory table / Queue table Index information</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the index information of a memory table and a queue object.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_TYPE </p></td>
+<td class="confluenceTd"><p> the type of object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace name which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_NAME </p></td>
+<td class="confluenceTd"><p> the table object identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_TYPE </p></td>
+<td class="confluenceTd"><p> the table object identifier </p></td>
+</tr>
+</tbody></table></div>
+
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Estimating of memory index is very simple in most cases.  ALTIBASE HDB index just consists of pointers, thus you just multiply 16 bytes by the number of table rows to get the size of each index.</p>
+                    </div>
+    </div>
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.2">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  C.USER_NAME,
+        DECODE(F.TABLE_TYPE, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) OBJECT_TYPE,
+        TABLE_NAME OBJECT_NAME,
+        &#39;SYS_TBS_MEMORY&#39; TABLESPACE_NAME,
+        E.INDEX_NAME,
+        RPAD(CASE2(E.INDEX_TYPE=1, &#39;B-TREE&#39;, &#39;R-TREE&#39;),10,&#39; &#39;) INDEX_TYPE
+FROM    V$INDEX B,
+        SYSTEM_.SYS_USERS_ C,
+        SYSTEM_.SYS_INDICES_ E,
+        SYSTEM_.SYS_TABLES_ F
+WHERE   B.INDEX_ID = E.INDEX_ID
+        AND E.USER_ID = C.USER_ID
+        AND F.USER_ID = E.USER_ID
+        AND F.TABLE_OID = B.TABLE_OID
+        AND C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;;
+</pre>
+</div></div>
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.2">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  C.USER_NAME,
+        DECODE(F.TABLE_TYPE, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) OBJECT_TYPE,
+        TABLE_NAME OBJECT_NAME,
+        D.SPACE_NAME TABLESPACE_NAME,
+        E.INDEX_NAME,
+        RPAD(CASE2(E.INDEX_TYPE=1, &#39;B-TREE&#39;, &#39;R-TREE&#39;),10,&#39; &#39;) INDEX_TYPE
+FROM    V$INDEX B,
+        SYSTEM_.SYS_USERS_ C,
+        V$MEM_TABLESPACES D,
+        SYSTEM_.SYS_INDICES_ E,
+        SYSTEM_.SYS_TABLES_ F
+WHERE   B.INDEX_ID = E.INDEX_ID
+        AND E.USER_ID = C.USER_ID
+        AND F.USER_ID = E.USER_ID
+        AND F.TBS_ID = D.SPACE_ID
+        AND F.TABLE_OID = B.TABLE_OID
+        AND C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutObjects-DiskTable">Disk Table</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a disk table.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace name which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_OID </p></td>
+<td class="confluenceTd"><p> the table object identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the memory table (Megabyte) </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  USER_NAME,
+        A.TABLE_NAME,
+        D.NAME TBS_NAME,
+        A.TABLE_OID,
+        ROUND((B.DISK_PAGE_CNT*8)/1024) &#39;ALLOC(M)&#39;
+FROM    SYSTEM_.SYS_TABLES_ A,
+        V$DISKTBL_INFO B,
+        SYSTEM_.SYS_USERS_ C,
+        V$TABLESPACES D
+WHERE   A.TABLE_OID = B.TABLE_OID
+        AND A.USER_ID = C.USER_ID
+        AND A.TBS_ID=D.ID
+        AND C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-DiskIndex">Disk Index</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a disk index.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace name which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_NAME </p></td>
+<td class="confluenceTd"><p> the name of index </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_TYPE </p></td>
+<td class="confluenceTd"><p> the type of index </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the memory table (Megabyte) </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.3">ALTIBASE HDB V4</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  USER_NAME,
+        TABLE_NAME,
+        D.NAME TBS_NAME,
+        E.INDEX_NAME,
+        RPAD(CASE2(E.INDEX_TYPE=1,&#39;B-TREE&#39;, &#39;R-TREE&#39;),10,&#39; &#39;) INDEX_TYPE,
+        ROUND(D.A_EXTENT_PAGE_COUNT*D.PAGE_SIZE*A.EXTENT_TOTAL_COUNT/1024/1024) &#39;ALLOC(M)&#39;
+FROM    V$SEGMENT A,
+        V$INDEX B,
+        V$TABLESPACES D,
+        SYSTEM_.SYS_USERS_ C,
+        SYSTEM_.SYS_INDICES_ E,
+        SYSTEM_.SYS_TABLES_ F
+WHERE   A.SEGMENT_DESC = B.INDEX_SEG_DESC
+        AND B.INDEX_ID = E.INDEX_ID
+        AND E.USER_ID = C.USER_ID
+        AND A.SPACE_ID = D.ID
+        AND F.TBS_ID = D.ID
+        AND A.SEGMENT_TYPE=&#39;INDEX&#39;
+        AND F.USER_ID = E.USER_ID
+        AND F.TABLE_OID = B.TABLE_OID ;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.3">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  USER_NAME,
+        TABLE_NAME,
+        D.NAME TBS_NAME,
+        E.INDEX_NAME,
+        RPAD(CASE2(E.INDEX_TYPE=1,&#39;B-TREE&#39;, &#39;R-TREE&#39;),10,&#39; &#39;) INDEX_TYPE,
+        ROUND(D.EXTENT_PAGE_COUNT*D.PAGE_SIZE*A.EXTENT_TOTAL_COUNT/1024/1024) &#39;ALLOC(M)&#39;
+FROM    V$SEGMENT A,
+        V$INDEX B,
+        V$TABLESPACES D,
+        SYSTEM_.SYS_USERS_ C,
+        SYSTEM_.SYS_INDICES_ E,
+        SYSTEM_.SYS_TABLES_ F
+WHERE   A.SEGMENT_PID = B.INDEX_SEG_PID
+        AND B.INDEX_ID = E.INDEX_ID
+        AND E.USER_ID = C.USER_ID
+        AND A.SPACE_ID = D.ID
+        AND F.TBS_ID = D.ID
+        AND A.SEGMENT_TYPE=&#39;INDEX&#39;
+        AND F.USER_ID = E.USER_ID
+        AND F.TABLE_OID = B.TABLE_OID ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-Sequence">Sequence</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a sequence.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SEQ_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MIN </p></td>
+<td class="confluenceTd"><p> the minimum value of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_SEQ </p></td>
+<td class="confluenceTd"><p> the current value of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX </p></td>
+<td class="confluenceTd"><p> the maximum value of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INCREMENT </p></td>
+<td class="confluenceTd"><p> increment property of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IS_CYCLE </p></td>
+<td class="confluenceTd"><p> can be cycled </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CACHE </p></td>
+<td class="confluenceTd"><p> the cache size of the sequence </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  USER_NAME,
+        TABLE_NAME SEQ_NAME,
+        MIN_SEQ MIN,
+        CURRENT_SEQ,
+        MAX_SEQ MAX,
+        INCREMENT_SEQ INCREMENT,
+        IS_CYCLE,
+        CACHE_SIZE CACHE
+FROM    V$SEQ A,
+        SYSTEM_.SYS_USERS_ B,
+        SYSTEM_.SYS_TABLES_ C
+WHERE   A.SEQ_OID = C.TABLE_OID
+        AND B.USER_ID = C.USER_ID
+        AND B.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-Synonym">Synonym</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a synonym.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYNONYM_OWNER </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYNONYM_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_OWNER </p></td>
+<td class="confluenceTd"><p> the minimum value of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_NAME </p></td>
+<td class="confluenceTd"><p> the current value of the sequence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_DDL_TIME </p></td>
+<td class="confluenceTd"><p> the last DDL occured time </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.4">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  NVL(USER_NAME, &#39;PUBLIC&#39;) SYNONYM_OWNER,
+        SYNONYM_NAME,
+        SCHEMA_NAME OBJECT_OWNER,
+        OBJECT_NAME
+FROM    SYSTEM_.SYS_SYNONYMS_ A LEFT OUTER JOIN
+        SYSTEM_.SYS_USERS_ B ON A.USER_ID = B.USER_ID
+WHERE
+				A.SCHEMA_NAME != &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.4">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  NVL(USER_NAME, &#39;PUBLIC&#39;) SYNONYM_OWNER,
+        SYNONYM_NAME,
+        OBJECT_OWNER_NAME OBJECT_OWNER,
+        OBJECT_NAME,
+        TO_CHAR(A.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+FROM    SYSTEM_.SYS_SYNONYMS_ A LEFT OUTER JOIN
+        SYSTEM_.SYS_USERS_ B ON A.SYNONYM_OWNER_ID = B.USER_ID
+WHERE   OBJECT_OWNER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-PSM(StoredProcedures/Function/Typeset)">PSM (Stored Procedures / Function / Typeset)</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about a PSM.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PSM_TYPE </p></td>
+<td class="confluenceTd"><p> the type of PSM </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PSM_NAME </p></td>
+<td class="confluenceTd"><p> the name of PSM </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATUS </p></td>
+<td class="confluenceTd"><p> the status of PSM </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_DDL_TIME </p></td>
+<td class="confluenceTd"><p> the last DDL occured time </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.5">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        DECODE(OBJECT_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;, 3, &#39;TYPESET&#39;) PSM_TYPE,
+        PROC_NAME PSM_NAME,
+        DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_PROCEDURES_ B
+WHERE A.USER_ID = B.USER_ID AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.5">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        DECODE(OBJECT_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;, 3, &#39;TYPESET&#39;) PSM_TYPE,
+        PROC_NAME PSM_NAME,
+        DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS,
+        TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_PROCEDURES_ B
+WHERE A.USER_ID = B.USER_ID AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+
+
+<h1 id="SQLaboutObjects-View">View</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the  object information about a view.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> VIEW_NAME </p></td>
+<td class="confluenceTd"><p> the type of PSM </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATUS </p></td>
+<td class="confluenceTd"><p> the status of PSM </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_DDL_TIME </p></td>
+<td class="confluenceTd"><p> the last DDL occured time </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV4.6">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME VIEW_NAME,
+        DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        SYSTEM_.SYS_VIEWS_ C
+WHERE   A.USER_ID = B.USER_ID
+        AND B.TABLE_ID = C.VIEW_ID
+        AND B.TABLE_TYPE = &#39;V&#39; ;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutObjects-ALTIBASEHDBV5.6">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME VIEW_NAME,
+        DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS,
+        TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        SYSTEM_.SYS_VIEWS_ C
+WHERE   A.USER_ID = B.USER_ID
+        AND B.TABLE_ID = C.VIEW_ID
+        AND B.TABLE_TYPE = &#39;V&#39; ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-SystemPrivileges">System Privileges</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the object information about system privileges.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GRANTEE </p></td>
+<td class="confluenceTd"><p> the grantee </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GRANTOR </p></td>
+<td class="confluenceTd"><p> the granter <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PRIV_NAME </p></td>
+<td class="confluenceTd"><p> the name of privilege </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME GRANTEE,
+        C.USER_NAME GRANTOR,
+        REPLACE(D.PRIV_NAME, &#39;_&#39;, &#39; &#39;) PRIV_NAME
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_GRANT_SYSTEM_ B,
+        SYSTEM_.SYS_USERS_ C,
+        SYSTEM_.SYS_PRIVILEGES_ D
+WHERE   C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.GRANTEE_ID = A.USER_ID
+        AND B.GRANTOR_ID = C.USER_ID
+        AND B.PRIV_ID = D.PRIV_ID ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-ObjectPrivileges">Object Privileges</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about object privileges.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GRANTEE </p></td>
+<td class="confluenceTd"><p> the grantee </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GRANTOR </p></td>
+<td class="confluenceTd"><p> the granter <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_OWNER </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_TYPE </p></td>
+<td class="confluenceTd"><p> the object type </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PRIV_NAME </p></td>
+<td class="confluenceTd"><p> the name of privilege </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GRANTABLE </p></td>
+<td class="confluenceTd"><p> is grant-able </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME GRANTEE,
+        C.USER_NAME GRANTOR,
+        F.USER_NAME OBJECT_OWNER,
+        E.TABLE_NAME OBJECT_NAME,
+        E.TABLE_TYPE OBJECT_TYPE,
+        REPLACE(D.PRIV_NAME, &#39;_&#39;, &#39; &#39;) PRIV_NAME,
+        DECODE(B.WITH_GRANT_OPTION, 0, &#39;NO&#39;, &#39;YES&#39;) GRANTABLE
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_GRANT_OBJECT_ B,
+        SYSTEM_.SYS_USERS_ C,
+        SYSTEM_.SYS_PRIVILEGES_ D,
+        SYSTEM_.SYS_TABLES_ E,
+        SYSTEM_.SYS_USERS_ F
+WHERE   C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.GRANTEE_ID = A.USER_ID
+        AND B.GRANTOR_ID = C.USER_ID
+        AND B.PRIV_ID = D.PRIV_ID
+        AND B.OBJ_ID = E.TABLE_ID
+        AND E.USER_ID = F.USER_ID
+ORDER BY GRANTEE, GRANTOR, OBJECT_OWNER, OBJECT_TYPE, OBJECT_NAME, PRIV_NAME ;
+</pre>
+</div></div>
+
+
+
+<h1 id="SQLaboutObjects-Constraintlist">Constraint list</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about object constraints.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_NAME </p></td>
+<td class="confluenceTd"><p> the object name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OBJECT_TYPE </p></td>
+<td class="confluenceTd"><p> the object type </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONST_NAME </p></td>
+<td class="confluenceTd"><p> the constraint name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONST_type </p></td>
+<td class="confluenceTd"><p> the constraint type </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COLUMN_NAME </p></td>
+<td class="confluenceTd"><p> the column name </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  USER_NAME,
+        TABLE_NAME OBJECT_NAME,
+        DECODE(B.TABLE_TYPE, &#39;T&#39;, &#39;TABLE&#39;, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;V&#39;, &#39;VIEW&#39;, &#39;SEQUENCE&#39;) OBJECT_TYPE,
+        C.CONSTRAINT_NAME CONST_NAME,
+        DECODE(C.CONSTRAINT_TYPE,0, &#39;FK&#39;, 1, &#39;NOT NULL&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;, 5, &#39;TIMESTAMP&#39;, 6, &#39;LOCAL UNIQUE&#39;) CONST_TYPE,
+        COLUMN_NAME
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        SYSTEM_.SYS_CONSTRAINTS_ C,
+        SYSTEM_.SYS_COLUMNS_ D,
+        SYSTEM_.SYS_CONSTRAINT_COLUMNS_ E
+WHERE   A.USER_ID=C.USER_ID
+        AND B.TABLE_ID = C.TABLE_ID
+        AND A.USER_ID = D.USER_ID
+        AND A.USER_ID = E.USER_ID
+        AND B.TABLE_ID = D.TABLE_ID
+        AND B.TABLE_ID = E.TABLE_ID
+        AND C.CONSTRAINT_ID = E.CONSTRAINT_ID
+        AND D.COLUMN_ID = E.COLUMN_ID
+        AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutObjects-PrimaryKey,ForeignKey,UniqueConstraint">Primary Key, Foreign Key, Unique Constraint</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about object constraints.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the table name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONST_TYPE </p></td>
+<td class="confluenceTd"><p> the constraint type </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONST_NAME </p></td>
+<td class="confluenceTd"><p> the constraint name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_NAME </p></td>
+<td class="confluenceTd"><p> the index name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> R_TABLE </p></td>
+<td class="confluenceTd"><p> the referenced table </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> R_INDEX </p></td>
+<td class="confluenceTd"><p> the referenced index </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        B.TABLE_NAME,
+        DECODE(C.CONSTRAINT_TYPE,0, &#39;FK&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;) CONST_TYPE,
+        C.CONSTRAINT_NAME CONST_NAME,
+        DECODE(D.INDEX_NAME,C.CONSTRAINT_NAME,NULL,INDEX_NAME) INDEX_NAME,
+        (SELECT TABLE_NAME FROM SYSTEM_.SYS_TABLES_ WHERE TABLE_ID = C.REFERENCED_TABLE_ID) R_TABLE,
+        (SELECT INDEX_NAME FROM SYSTEM_.SYS_INDICES_ WHERE INDEX_ID = C.REFERENCED_INDEX_ID) R_INDEX
+FROM     SYSTEM_.SYS_USERS_ A,
+         SYSTEM_.SYS_TABLES_ B,
+         SYSTEM_.SYS_CONSTRAINTS_ C LEFT OUTER JOIN
+         SYSTEM_.SYS_INDICES_ D ON C.INDEX_ID = D.INDEX_ID
+WHERE    C.TABLE_ID = B.TABLE_ID
+         AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+         AND C.USER_ID = A.USER_ID
+         AND C.CONSTRAINT_TYPE IN (3, 0, 2, 6) --PK, FK, UNIQUE, LOCAL UNIQUE
+ORDER BY TABLE_NAME, CONST_TYPE ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-Indexcolumnlist">Index column list</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about index columns.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the table name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_NAME </p></td>
+<td class="confluenceTd"><p> the index name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COLUMN_NAME </p></td>
+<td class="confluenceTd"><p> the column name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COL_ORDER </p></td>
+<td class="confluenceTd"><p> column order (when composite index) </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  D.USER_NAME,
+        C.TABLE_NAME,
+        B.INDEX_NAME,
+        E.COLUMN_NAME,
+        A.INDEX_COL_ORDER COL_ORDER,
+        DECODE(A.SORT_ORDER, &#39;A&#39;, &#39;ASC&#39;, &#39;D&#39;, &#39;DESC&#39;) SORT
+FROM    SYSTEM_.SYS_INDEX_COLUMNS_ A,
+        SYSTEM_.SYS_INDICES_ B,
+        SYSTEM_.SYS_TABLES_ C,
+        SYSTEM_.SYS_USERS_ D,
+        SYSTEM_.SYS_COLUMNS_ E
+WHERE   D.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND C.TABLE_TYPE = &#39;T&#39;
+        AND A.INDEX_ID = B.INDEX_ID
+        AND A.TABLE_ID = C.TABLE_ID
+        AND A.USER_ID = D.USER_ID
+        AND A.COLUMN_ID = E.COLUMN_ID
+ORDER BY USER_NAME, TABLE_NAME, INDEX_NAME, COL_ORDER ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutObjects-Indexinformation">Index information</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about an index.</p>
+</div></div>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the object owner </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_NAME </p></td>
+<td class="confluenceTd"><p> the index name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEX_ID </p></td>
+<td class="confluenceTd"><p> the index name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> the table name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_NAME </p></td>
+<td class="confluenceTd"><p> the tablespace which this object belongs to </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IS_UNIQUE </p></td>
+<td class="confluenceTd"><p> unique index or not </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COLUMN_CNT </p></td>
+<td class="confluenceTd"><p> the number of columns </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  A.USER_NAME,
+        C.INDEX_NAME,
+        C.INDEX_ID,
+        B.TABLE_NAME,
+        NVL(D.NAME, &#39;SYS_TBS_MEMORY&#39;) TBS_NAME,
+        C.IS_UNIQUE,
+        C.COLUMN_CNT
+FROM    SYSTEM_.SYS_USERS_ A,
+        SYSTEM_.SYS_TABLES_ B,
+        SYSTEM_.SYS_INDICES_ C LEFT OUTER JOIN
+        V$TABLESPACES D ON C.TBS_ID = D.ID
+WHERE   A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+        AND B.TABLE_TYPE = &#39;T&#39;
+        AND C.TABLE_ID = B.TABLE_ID
+        AND C.USER_ID = A.USER_ID
+ORDER BY B.TABLE_NAME, C.INDEX_NAME ;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

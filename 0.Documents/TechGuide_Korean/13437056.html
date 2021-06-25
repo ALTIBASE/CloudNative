@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 설치 시 발생할 수 있는 문제상황과 조치</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 설치 시 발생할 수 있는 문제상황과 조치
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409865210 {padding: 0px;}
+div.rbtoc1624409865210 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409865210 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409865210'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-개요'>개요</a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-공통환경에서의문제상황유형및조치법'>공통 환경에서의 문제 상황 유형 및 조치법 </a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-바이너리해석불가'>바이너리 해석 불가 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-환경변수미등록'>환경변수 미 등록 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-사용자의파일권한문제'>사용자의 파일 권한 문제 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-altibase.properties파일의부재'>altibase.properties 파일의 부재 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-license파일의부재'>license 파일의 부재 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-라이선스의오류'>라이선스의 오류 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-라이선스의기간만료'>라이선스의 기간 만료</a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-Property값의오류'>Property 값의 오류  </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-파일쓰기오류'>파일 쓰기 오류 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-데이터베이스생성절차생략'>데이터베이스 생성 절차 생략 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-Listenerportbind실패'>Listener port bind 실패 </a></li>
+<li><a href='#Altibase설치시발생할수있는문제상황과조치-Replicationportbind실패'>Replication port bind 실패 </a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="Altibase설치시발생할수있는문제상황과조치-개요">개요 <span style="color: rgb(0,0,255);"><br /></span></h1><hr /><p>본 문서는 사용자가 ALTIBASE 제품을 설치하고자 할 때에 발생 할 수 있는 문제 유형별로 조치 방법에 대해 설명합니다.</p><p>문서에 없는 상황이 발생 할 수 있으며, ALTIBASE 버전에 따라 발생 유형이 다를 수 있습니다.</p><p>문서에서 설명되지 않는 문제상황에 대해서는 발생 조건에 대한 설명과 ALTIBASE Trace 로그파일(ALTIBASE 설치 경로 하위의 ‘trc’ directory)을 첨부해서 <a class="external-link" href="mailto:support@altibase.com" rel="nofollow">support@altibase.com</a>으로 메일을 보내주십시오.</p><p> </p><ul><li>Altibase 5.5.1 이상</li></ul><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<h1 id="Altibase설치시발생할수있는문제상황과조치-공통환경에서의문제상황유형및조치법">공통 환경에서의 문제 상황 유형 및 조치법<span style="color: rgb(0,0,255);"> </span></h1><hr /><p>설치 시 발생할 수 있는 문제 유형을 나열하고 이에 맞는 조치 방법을 기술한다.</p><h2 id="Altibase설치시발생할수있는문제상황과조치-바이너리해석불가">바이너리 해석 불가<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul style="list-style-type: square;"><li> ALTIBASE 패키지는 지원하는 CPU의 분류에 맞게 compile 되어 배포된다.</li><li> ALTIBASE를 설치하려는 장비의 CPU와 맞지 않은 ALTIBASE 패키지를 다운받아 설치하려는 경우 발생할 수 있다.</li><li>설치한 실행파일이 정상적인지 확인하려 할 때에는 간단하게 altibase –v 명령을 이용한다.</li><li><p> 아래 예제의 에러 메시지는 가장 일반적인 에러 상황의 경우이다. 이 외에도 라이브러리 호환 등의 다른 에러메시지를 리턴 할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제1: 장비의 CPU와 ALTIBASE 패키지가 맞지 않은 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ./altibase-HDB-server-6.5.1.6.8-LINUX-POWERPC-64bit-release.run 
+-bash: ./altibase-HDB-server-6.5.1.6.8-LINUX-POWERPC-64bit-release.run: cannot execute binary file</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong>해결방안 : 해당 장비의 CPU에 맞는 패키지를 다시 설치한다.</strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-환경변수미등록">환경변수 미 등록<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul style="list-style-type: square;"><li>ALTIBASE를 sysdba 모드로 접속 하기 위해서는 ALTIBASE가 설치된 경로가 ‘ALTIBASE_HOME’란 이름의 변수에 등록이 되어있어야 한다.</li><li><p>이 변수가 등록되어 있지 않을 경우 아래와 같은 에러가 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -s 127.0.0.1 -u sys -p manager -port 20300 -sysdba
+ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20300
+[ERR-91003 : Environment  (ALTIBASE_HOME) does not exists.</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong>해결방안 : ‘ALTIBASE_HOME’란 이름의 변수의 값으로 ALTIBASE 설치 경로를 등록한다.</strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-사용자의파일권한문제">사용자의 파일 권한 문제<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li>ALTIBASE를 설치하고 데이터베이스를 생성할 때에는 sysdba 모드로 접속해야 한다.</li><li><p>이 때, sysdba 모드로의 접속은 ALTIBASE을 설치한 유저로만 가능하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -s 127.0.0.1 -u sys -p manager -port 26084 -sysdba
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.6.8
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+WARNING: A port number is not required when connecting via IPC or UNIX, so the -port option was ignored.
+ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1
+[ERR-9100B : Privilege error for sysdba user account.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : ALTIBASE를 설치한 유저로 다시 시도하거나 ALTIBASE 설치 경로 이하 모든 파일의 소유자 권한을 현재 유저로 변경해준다.</strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-altibase.properties파일의부재">altibase.properties 파일의 부재<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>ALTIBASE 설치 경로 하위의 ‘conf’ directory 안에 altibase.properties 파일이 없을 경우 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup process
+idp readConf() Error : Open File [/hdb_home/651/conf/altibase.properties] Error.</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : ALTIBASE 설치 경로 하위에 ‘conf’ directory 안에는 최초 사용자를 위한 ‘altibase.properties.sample’ 파일이 제공된다. </strong></span></strong></span><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong><br />               이 파일을 altibase.properties 파일을 사용자 환경에 맞게 수정한다.<br /></strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-license파일의부재">license 파일의 부재<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>ALTIBASE 설치 경로 하위의 ‘conf’ directory 안에 license 파일을 생성하지 않고 진행할 경우 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESS
+Commencing Server as Community Edition
+DISK_MAX_DB_SIZE(Unlimited) exceeded limit 8192M
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : ALTIBASE로부터 발급받은 라이선스를 토대로 해당 위치에 license 파일을 생성해야 한다.<br /></strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-라이선스의오류">라이선스의 오류<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>장비의 네트워크 카드가 변경되는 등의 이유로 MAC ADDRESS가 변경될 수 있다. 혹은 ALTIBASE 측에 라이선스 발급정보가 잘못 전달되어 잘못된 라이선스를 발급했을 수도 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESS
+Invalid or expired license in License File(/hdb_home/651/conf/license)
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 라이선스를 발급받을 때의 hostid 또는 Mac Address 가 대상 장비의 정보와 상이할 경우 라이선스를 재발급 받아야 한다.<br /></strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-라이선스의기간만료">라이선스의 기간 만료<span style="color: rgb(0,0,255);"><br /></span></h2><hr /><ul><li><p>발급받은 라이선스가 기간이 만료된 경우에 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESS
+Invalid or expired license in License File(/hdb_home/651/conf/license)
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : Altibase 기술지원 포털(<a href="http://support.altibase.com)" class="external-link" rel="nofollow">http://support.altibase.com)</a> 에서 새로운 라이선스를 신청해서 발급받아 적용한다.<br /></strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-Property값의오류">Property 값의 오류 <span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>ALTIBASE 설치 경로 하위의 ‘conf’ directory 안에 altibase.properties 파일에 지정된 값 또는 환경변수를 통해 지정된 값이 잘못된 경우에 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>현재 설정 된 값이 범위를 벗어난 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">idp checkRange() Error : Property [property_name] [current_value] Overflowed the Value Range.(min_value~max_value)</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>현재 설정 된 값이 data type 변환이 불가능한 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">idp convertFromString() Error : The property [property_name] value [current_value] is not convertable.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>동일한 프로퍼티가 중복 설정되어 있는 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">idp insertBySrc() Error : Property [property_name] Can&#39;t Store Multiple Values.</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 문제가 되는 속성을 확인하고 정상적인 값으로 수정해 준다</strong></span></strong></span></li></ul><p> </p><h2 id="Altibase설치시발생할수있는문제상황과조치-파일쓰기오류">파일 쓰기 오류<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li>파일 쓰기 오류는 여러 가지 문제 요인에 의해 발생할 수 있다.</li><li><p>해당 디스크에 여유공간이 부족하거나, 혹은 해당 directory에 권한이 누락되었을 수도 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESS
+Command execute success.
+
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+
+FAILURE of createdb.
+
+[ERR-0103C : Unable to invoke create() function on [/ALTIBASE/altibase_home/dbs/dwfile0.dwf]]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 해당 디스크의 여유공간, 해당 directory의 권한을 확인해 본다.</strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-데이터베이스생성절차생략">데이터베이스 생성 절차 생략<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li>ALTIBASE를 서비스모드로 구동시키기 위해서는 데이터베이스 생성 절차가 선행되어야 한다.</li><li>이 절차를 생략하고 Shell prompt 상에서 server start, isql에서 startup 혹은 WINDOWS 환경에서 서비스로 ALTIBASE를 기동 시킬 경우 발생한다.</li><li><p>보통 ALTIBASE 기동 시 제일 처음 loganchor 파일을 찾게 되므로 해당 파일이 없다는 에러메시지를 돌려준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : CONTROL
+[FAILURE] The log anchor file does not exist or it is not valid.
+
+Startup Failed....
+
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 데이터베이스 생성 절차를 수행한다.<br /></strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-Listenerportbind실패">Listener port bind 실패<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>ALTIBASE 프로세스가 사용할 TCP port를 bind하는 단계에서 실패할 경우에 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : SERVICE
+  [CM] Listener failed  : TCP on port 20300 [IPV4]
+[FAILURE] Unable to bind the socket.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 해당 포트를 바인딩 할 수 없는 원인을 찾아 해결한다.<br />               다른 어플리케이션이 선점했을 경우 어플리케이션이나 ALTIBASE의 사용 포트를 변경해 주어야 한다.</strong></span></strong></span></li></ul><h2 id="Altibase설치시발생할수있는문제상황과조치-Replicationportbind실패">Replication port bind 실패<span style="color: rgb(0,0,255);"> </span></h2><hr /><ul><li><p>ALTIBASE의 Replication thread가 사용할 포트를 bind하는 단계에서 실패할 경우에 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : FAIL
+[FAILURE] [Receiver] Failed to listen to a replication socket (Port No:30300)
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><span style="color: rgb(255,0,0);"><strong><span style="color: rgb(255,0,0);"><strong>해결방안 : 해당 포트를 바인딩 할 수 없는 원인을 찾아 해결한다.<br />               다른 어플리케이션이 선점했을 경우 어플리케이션이나 ALTIBASE의 사용 포트를 변경해 주어야 한다.</strong></span></strong></span></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

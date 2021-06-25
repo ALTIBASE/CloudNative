@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Replication monitoring query</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Replication monitoring query
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146076 {padding: 0px;}
+div.rbtoc1624409146076 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146076 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146076'>
+<ul class='toc-indentation'>
+<li><a href='#Replicationmonitoringquery-Overallstatusofreplication'>Overall status of replication</a></li>
+<li><a href='#Replicationmonitoringquery-Replicationsenderinformation'>Replication sender information</a></li>
+<li><a href='#Replicationmonitoringquery-Replicationreceiverinformation'>Replication receiver information</a></li>
+<li><a href='#Replicationmonitoringquery-Replicationgap'>Replication gap</a></li>
+</ul>
+</div></p><p> </p><h1 id="Replicationmonitoringquery-Overallstatusofreplication">Overall status of replication</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT a.replication_name rep_name
+     , d.host_ip || decode(d.host_ip, b.peer_ip, &#39; (*)&#39;, NULL) peer_ip
+     , nvl(to_char(e.rep_gap), &#39;-&#39;) as rep_gap
+     , a.xsn restart_xsn
+     , decode(b.peer_port, NULL, &#39;OFF&#39;, &#39;ON&#39;) as sender
+     , decode(c.peer_port, NULL, &#39;OFF&#39;, &#39;ON&#39;) as receiver 
+  FROM system_.sys_repl_hosts_ d 
+     , system_.sys_replications_ a
+       left outer join v$repsender b on a.replication_name = b.rep_name
+       left outer join v$repreceiver c on a.replication_name = c.rep_name
+       left outer join
+       (select rep_name, max(rep_gap) rep_gap from v$repgap group by rep_name) e
+       on a.replication_name = e.rep_name
+ WHERE a.replication_name = d.replication_name
+ ORDER BY rep_name;
+REP_NAME              PEER_IP               REP_GAP               RESTART_XSN          SENDER  RECEIVER  
+----------------------------------------------------------------------------------------------------------------
+REP                   192.168.1.149 (*)     0                     9668                 ON   ON</pre>
+</div></div><p><strong>Column description</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Column name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">restart_xsn</td><td class="confluenceTd">SN reflected by the remote server that is the target of replication, and the starting point for retransmission when the replication is restarted</td></tr><tr><td class="confluenceTd">sender</td><td class="confluenceTd">Whether the sender is running or not</td></tr><tr><td class="confluenceTd">receiver</td><td class="confluenceTd">Whether the receiver is running or not</td></tr></tbody></table></div><p>The name of the replication, IP, sender status, and receiver status can also be checked.</p><h1 id="Replicationmonitoringquery-Replicationsenderinformation">Replication sender information</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT trim(REP_NAME) as REP_NAME
+     , decode(START_FLAG, 0, &#39;Normal&#39;,
+                          1, &#39;Quick&#39;,
+                          2, &#39;Sync&#39;,
+                          3, &#39;Sync Only&#39;) as START_FLAG
+     , decode(net_error_flag, 0, &#39;OK&#39;, &#39;Error&#39;) as NET_ERROR_FLAG
+     , decode(STATUS, 0, &#39;Stop&#39;, 1, &#39;Run&#39;, 2, &#39;Retry&#39;) as STATUS
+     , peer_ip
+     , peer_port
+     , XSN
+  FROM V$REPSENDER;
+REP_NAME              START_FLAG  NET_ERROR_FLAG  STATUS  PEER_IP               PEER_PORT   XSN                  
+-------------------------------------------------------------------------------------------------------------------------
+REP                   Normal      OK              Run     192.168.1.149         30300       9675</pre>
+</div></div><p><strong>Column description</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Column name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">rep_name</td><td class="confluenceTd">Name of replication object</td></tr><tr><td class="confluenceTd">peer_ip</td><td class="confluenceTd">IP address of the replication target remote server</td></tr><tr><td class="confluenceTd">peer_port</td><td class="confluenceTd">Port number of the replication target remote server</td></tr><tr><td class="confluenceTd">Status</td><td class="confluenceTd">It is normal when the current state of sender is 1. / STOP(0), RUN(1), RETRY(2)</td></tr><tr><td class="confluenceTd">repl_mode</td><td class="confluenceTd">sender's current replication mode / lazy, eager</td></tr><tr><td class="confluenceTd">NET_ERROR_FLAG</td><td class="confluenceTd">network 에러 여부로 0이어야 정상이다. / OK(0), ERROR(1)</td></tr><tr><td class="confluenceTd">XSN</td><td class="confluenceTd">sender가 마지막으로 송신한 SN(Serial Number/리두로그일련번호)으로 v$repgap의 REP_SN과 동일</td></tr></tbody></table></div><p>The IP, port, network error, and status of the replication sender's remote server can also be checked.</p><p> </p><h1 id="Replicationmonitoringquery-Replicationreceiverinformation">Replication receiver information</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT trim(REP_NAME)
+     , trim(MY_IP)
+     , trim(PEER_IP)
+     , MY_PORT
+     , PEER_PORT
+     , apply_xsn
+  FROM X$REPRECEIVER;
+TRIM(REP_NAME)        TRIM(MY_IP)           TRIM(PEER_IP)         MY_PORT     PEER_PORT   APPLY_XSN            
+----------------------------------------------------------------------------------------------------------------------
+REP                   192.168.1.145         192.168.1.149         30300       26722       13461585</pre>
+</div></div><p><strong>Column description</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Column name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">peer_ip</td><td class="confluenceTd">IP address of the remote server as the subject of replication</td></tr><tr><td class="confluenceTd">peer_port</td><td class="confluenceTd">Port number of the remote server that is the subject of replication</td></tr><tr><td class="confluenceTd">apply_xsn</td><td class="confluenceTd">SN of the remote server currently being reflected by the receiver</td></tr></tbody></table></div><p>The IP and port of the remote server of the replication receiver can be checked.</p><p> </p><h1 id="Replicationmonitoringquery-Replicationgap">Replication gap</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+select rep_name
+     , rep_gap
+  from v$repgap;
+REP_NAME              REP_GAP              
+----------------------------------------------
+REP                   0 </pre>
+</div></div><p><strong>Column description</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Column name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">rep_name</td><td class="confluenceTd">Name of replication</td></tr><tr><td class="confluenceTd">rep_gap</td><td class="confluenceTd">The degree of unsynchronization is indicated by the interval between rep_last_sn and rep_sn. (I.e. rep_last_sn-rep_sn)</td></tr></tbody></table></div><p>If the replication gap is increased by a lot, there are things to check.</p><ol><li>Check the network status (operation, failure, if IP or port is blocked by the firewall, etc.)</li><li>Check the remote requirement status (hardware failure, remote DB shutdown, etc.)</li><li>Check the BULK DML operation</li></ol><p>In the above case, the replication gap may increase, so it is necessary to check the above cases.</p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

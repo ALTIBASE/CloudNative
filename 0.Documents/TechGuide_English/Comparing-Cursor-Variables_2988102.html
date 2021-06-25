@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Comparing Cursor Variables</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cursor-Conversion_2988073.html">Cursor Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Comparing Cursor Variables
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Dec 28, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346989 {padding: 0px;}
+div.rbtoc1624409346989 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346989 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346989'>
+<ul class='toc-indentation'>
+<li><a href='#ComparingCursorVariables-Overview'>Overview</a></li>
+<li><a href='#ComparingCursorVariables-TheuseofREFCURSOR'>The use of REF CURSOR</a></li>
+<li><a href='#ComparingCursorVariables-TYPEandTYPESET'>TYPE and TYPESET </a></li>
+<li><a href='#ComparingCursorVariables-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="ComparingCursorVariables-Overview">Overview</h2>
+
+<p>In ORACLE, To create a cursor variable, you define a REF CURSOR type, then declare cursor<br />
+variables of corresponding type.</p>
+
+<p>Declaring REF CURSOR Type and Cursor Variables, passing Cursor Variables As Parameters can be declared in a PL/SQL.</p>
+
+<p>A REF CURSOR is commonly declared in the ORACLE package and use it as a OUT PARAMETER of the ORACLE PL/SQL.</p>
+
+<p>However, in case of the ALTIBASE HDB, Since it doesn't provide a package functionality currently, Typeset should be created in advance, and use it.</p>
+
+<h2 id="ComparingCursorVariables-TheuseofREFCURSOR">The use of REF CURSOR</h2>
+
+<p>The procedures to use REF CURSOR should be divided into plural categories in ALTIBASE HDB as follows.
+<br class="atl-forced-newline" /></p>
+<ul>
+	<li>Create the user-defined type which is a REF CURSOR, and create a typeset which containing a corresponding type</li>
+	<li>Create the stored procedure, which having OUT parameters.</li>
+	<li>Execute a procedure.</li>
+</ul>
+
+
+<h2 id="ComparingCursorVariables-TYPEandTYPESET">TYPE and TYPESET </h2>
+
+<p>Since ALTIBASE HDB doesn't provide a package functionality, Once a typeset is created with user-defined type, it can be passed between procedures.</p>
+
+<p>Thus, a typeset, a combination of user-defined types using &quot;CREATE TYPE&quot; statement, can be made using &quot;CREATE TYPESET&quot; statement.</p>
+
+
+<p><strong>ORACLE</strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE TYPE emp_ary AS VARRAY(50) OF varchar2(4000);</pre>
+</div></div>
+
+
+<p><strong>ALTIBASE HDB</strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE TYPESET typeset_1
+AS
+TYPE emp_rec_type IS RECORD(
+Name VARCHAR(20),
+Job_id VARCHAR(10),
+Salary NUMBER(8));
+ 
+TYPE emp_arr_type is TABLE OF emp_rec_type INDEX BY INTEGER;
+END;
+/</pre>
+</div></div>
+
+<p><br class="atl-forced-newline" />
+ </p>
+
+<p>If you wish to see further about the method of passing result set which described above in detail, refer to this page(<a href="http://aid.altibase.com/display/migfromora/Passing+result+sets+between+procedures" class="external-link" rel="nofollow">Cursor Variables</a>)
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingCursorVariables-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PACKAGE ref_cursor_pkg AS <br class="atl-forced-newline" />
+TYPE ref_type IS REF CURSOR; <br class="atl-forced-newline" />
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql in VARCHAR2); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE OR REPLACE PACKAGE BODY ref_cursor_pkg AS <br class="atl-forced-newline" />
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql IN VARCHAR2) AS <br class="atl-forced-newline" />
+begin <br class="atl-forced-newline" />
+OPEN v_result FOR v_sql; <br class="atl-forced-newline" />
+END;/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE TYPESET my_type <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE my_cur IS REF CURSOR; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE opencursor <br class="atl-forced-newline" />
+( v_result OUT my_type.my_cur, v_sql IN VARCHAR(200) ) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN y_result FOR v_sql; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> In ORACLE, A declaration of the type is possible <br class="atl-forced-newline" />
+during a creation of the package. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+While in ALTIBASE HDB, Typeset, a set of the type, should be created ahead of use. <br class="atl-forced-newline" />
+after then, A type is available might be used in &quot;CREATE PROCEDURE&quot; statement. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

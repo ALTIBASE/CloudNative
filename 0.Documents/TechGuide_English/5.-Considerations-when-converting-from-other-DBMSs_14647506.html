@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Considerations when converting from other DBMSs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Precompiler-Guide_14647438.html">Altibase Precompiler Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Considerations when converting from other DBMSs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Among the contents of each part described above, the parts to be considered when converting from other DBMSs are summarized in a table.</p><div class="wiki-content"><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p class="0cm"> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p class="0cm">Example of using ALTIBASE and Explanation</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p class="0cm"><strong>CONNECT/DISCONNECT</strong></p></td><td class="confluenceTd"><p class="0cm">EXEC SQL CONNECT [AT :con_name] CONNECT :usr IDENTIFIED BY :pwd USING :opt;</p><p class="0cm"> </p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Function argument</strong></p></td><td class="confluenceTd"><p class="0cm">void user_function (char *param1)</p><p class="0cm">{</p><p class="0cm">   EXEC SQL BEGIN ARGUMENT SECTION;</p><p class="0cm">      char *param1;</p><p class="0cm">   EXEC SQL END ARGUMENT SECTION;</p><p class="0cm">}</p><p class="0cm">or,</p><p class="0cm">void user_function (char *param1)</p><p class="0cm">{</p><p class="0cm">   EXEC SQL BEGIN DECLARE  SECTION;</p><p class="0cm">      char *H_param1;</p><p class="0cm">   EXEC SQL END DECLARE  SECTION;</p><p class="0cm"> </p><p class="0cm">   H_param1 = param1;</p><p class="0cm">}</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Error code</strong></p></td><td class="confluenceTd"><p class="0cm">sqlca.sqlcode, SQLCODE, SQLSTATE, etc. can be used without a separate declaration, and the error code is different from other DBMSs, so the user must appropriately convert it. If the CLI standard code is used, it can be used interchangeably.</p><p class="0cm">Statements such as EXEC SQL INCLUDE sqlca.h; are not needed.</p><p class="0cm"> </p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Host variable declaration</strong></p></td><td class="confluenceTd"><p class="0cm">Starting from ALTIBASE Version 5.3 or later, the host variable declaration clause can be omitted according to the apre option. Alternatively, the variable indicated in the declaration clause can be used as a host variable as before.</p><p class="0cm">EXEC SQL BEGIN DECLARE  SECTION;</p><p class="0cm">      char *H_param1;</p><p class="0cm">EXEC SQL END DECLARE  SECTION;</p><p class="0cm"> </p><p class="0cm">Starting from ALTIBASE Version 5.3.3 or later, the initialization of host variables is supported.</p><p class="0cm"> </p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Header file path</strong></p></td><td class="confluenceTd"><p class="0cm">When specifying a header in the source, it can be done as follows.</p><p class="0cm">EXEC SQL INCLUDE &quot;…../user_header.h&quot;;</p><p class="0cm">Or,</p><p class="0cm">EXEC SQL OPTION (INCLUDE=/Absoulte path/);</p><p class="0cm">EXEC SQL INCLUDE user_header.h;</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Declaration of host variable in header file</strong></p></td><td class="confluenceTd"><p class="0cm">#ifdef SESC_DECLARE</p><p class="0cm">…..</p><p class="0cm">#endif</p><p class="0cm">It can be specified in the define clause as above.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>Omit the into clause of SELECT</strong></p></td><td class="confluenceTd"><p class="0cm">Not supported</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>SET TRANSACTION ~ statement</strong></p></td><td class="confluenceTd"><p class="0cm">Not supported</p></td></tr></tbody></table></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

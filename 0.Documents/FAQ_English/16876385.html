@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11049 (  69705) Too many pages are allocated ( Maximum Number of Pages= #).</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11049 (  69705) Too many pages are allocated ( Maximum Number of Pages= #).
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148357 {padding: 0px;}
+div.rbtoc1624409148357 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148357 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148357'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Version'>Version</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Cause'>Cause</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-WhatisMEM_MAX_DB_SIZE?'>What is MEM_MAX_DB_SIZE?</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Howtoquerymemoryusage'>How to query memory usage</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Solution'>Solution</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Howtochange'>How to change</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Note/Consideration'>Note/Consideration</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Diskspace'>Disk space</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Userenvironmentsetting(Linux/Unix)'>User environment setting (Linux/Unix)</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Version">Version</h1><hr /><p>All the versions of Altibase</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Cause">Cause</h1><hr /><p>For ALTIBASE memory tablespaces, the sum of all memory tablespaces cannot exceed MEM_MAX_DB_SIZE in $ALTIBASE_HOME/conf/altibase.properties. This error message occurs because all space is exhausted.</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-WhatisMEM_MAX_DB_SIZE?">What is MEM_MAX_DB_SIZE?</h1><hr /><ul><li><p>This refers to the maximum amount of memory that can be used as a memory tablespace (memory table or memory data) stored in physical memory.</p></li><li><p>Constraints on the total usage of all memory tablespaces combined.</p></li><li><p>This is not the maximum size that each of the memory tablespaces can use.</p></li><li><p>The size of the index created on the memory table is not included.</p></li><li><p>It also includes historical data that occurs when performing change transactions.</p></li><li><p>When a change transaction is performed, past data is retained until the transaction is terminated (MVCC technique). In the case of a memory table, a replica of the record is created in the memory table.</p></li><li><p>If the maximum value is not specified when creating a memory tablespace, it is automatically expanded by the value set for MEM_MAX_DB_SIZE.</p></li></ul><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Howtoquerymemoryusage">How to query memory usage</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;       MAX(M)&#39;,                                       -- MAX(M)   : MEM_MAX_DB_SIZE setting value
+       TO_CHAR(MEM_ALLOC_PAGE_COUNT*32/1024, &#39;999,999,999&#39;) &#39;     TOTAL(M)&#39;,                                    -- TOTAL(M) : Total page size allocated to the memory tablespace. Also refers to the size of the checkpoint image file.
+       TO_CHAR((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, &#39;999,999,999&#39;) &#39;     ALLOC(M)&#39;,              -- ALLOC(M) : Memory amount of memory used by the tablespace
+       (SELECT TO_CHAR(SUM((FIXED_USED_MEM + VAR_USED_MEM))/1024/1024, &#39;999,999,999&#39;)
+          FROM V$MEMTBL_INFO) &#39;      USED(M)&#39;,                                                                  -- USED(M)  : Memory size in which data is stored among ALLOCs
+       TO_CHAR((((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE)*100, &#39;99.99&#39;) &#39;USAGE(%)&#39;  -- USAGE(%) : ALLOC utilization rate compared to MAX
+  FROM V$DATABASE ;
+       MAX(M)         TOTAL(M)         ALLOC(M)         USED(M)     USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120              920              621              142      12.13           
+1 row selected.
+                                </pre>
+</div></div><p>When ALLOC_SIZE reaches MEM_MAX_DB_SIZE as a result of the above inquiry, 'Too many pages are allocated' error occurs.</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Solution">Solution</h1><hr /><p>To prevent the following error from occurring, the MEM_MAX_DB_SIZE property value must be increased in $ALTIBASE_HOME/conf/altibase.properties.</p><p>If this value is increased, Altibase DB Size can be increased up to this size. After modifying the properties, you must restart Altibase to apply it.</p><p>After taking the action, it is necessary to take action by checking for some reason the increase in memory tablespace usage and whether there has been a query or mass change of the usage of each table.</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Howtochange">How to change</h1><ol><li><p><strong>Stop the Altibase server</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ server stop</code></div></div></td></tr></tbody></table></div><p> </p><p> </p></li><li><p><strong>Change the altibase.properties file</strong></p><p>Save after changing MEM_MAX_DB_SIZE in the Altibase server properties file ($ALTIBASE_HOME/conf/altibase.properties).</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ </code><code class="bash functions">vi</code> <code class="bash plain">$ALTIBASE_HOME</code><code class="bash plain">/conf/altibase</code><code class="bash plain">.properties</code></div><div class="line number2 index1 alt1"><code class="bash plain">MEM_MAX_DB_SIZE        = 2G </code><code class="bash comments"># MEM_MAX_DB_SIZE</code></div></div></td></tr></tbody></table></div><p> </p><p> </p></li><li><p><strong>Start the Altibase server</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ server start</code></div></div></td></tr></tbody></table></div><p><strong><br /></strong></p></li></ol><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Note/Consideration">Note/Consideration</h1><hr /><h3 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Diskspace"><strong>Disk space</strong></h3><p>Memory tablespaces store two sets of 'memory checkpoint image files' on disk for backup purposes. So, <strong><span style="color: rgb(255,0,0);">it requires twice as much disk space as the memory data usage.</span></strong></p><p>If MEM_MAX_DB_SIZE large is set, disk usage will also increase, so make sure to free up disk space before changing MEM_MAX_DB_SIZE.</p><p>Ex) If MEM_MAX_DB_SIZE is 60G, 120G of disk space is required.</p><p> </p><h3 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Userenvironmentsetting(Linux/Unix)">User environment setting (Linux/Unix)</h3><p>ulimit -a must be executed to make sure that the settings below are <span style="color: rgb(255,0,0);"><strong>set to the maximum values allowed by the OS.</strong></span></p><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">max memory size<br />virtual memory</span></span></p><p><span style="color: rgb(255,0,0);"><strong><br /></strong></span></p><p><strong><span style="color: rgb(0,0,0);">Kernel parameter (AIX, HP-UX)</span></strong></p><p><strong><span style="color: rgb(0,0,0);"> </span></strong></p><p>For AIX, check if data, rss, fsize, etc. are set to -1 in the /etc/security/limits file.<br />For HP, check that the maxdsiz_64bit value is set large enough via kctune. Even if the maxdsiz_64bit value is less than the MEM_MAX_DB_SIZE value of the ALTIBASE property, a 'Too many pages are allocated' error may occur. Therefore, the root account must be set higher than MEM_MAX_DB_SIZE of the ALTIBASE property.<br />Linux and SunOS are not applicable.</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=#).-Reference">Reference</h1><hr /><p><a href="https://aid.altibase.com/pages/viewpage.action?pageId=16875991" class="external-link" rel="nofollow">What is MEM_MAX_DB_SIZE?</a></p><p><strong><span style="color: rgb(0,0,0);"><br /></span></strong><span style="color: rgb(0,0,0);"> </span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

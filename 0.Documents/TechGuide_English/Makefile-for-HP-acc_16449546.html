@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Makefile for HP acc</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="15630378.html">Altibase APRE(SES) *C/C++ Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Makefile for HP acc
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Previously, we discussed how to add the basic APRE library in the &quot;How to make a basic Makefile&quot; chapter. This chapter describes the library and compile options that should be additionally described in Makefile, which acc (C compiler) is used in HP UX environment.</p><h1 id="MakefileforHPacc-AdditionallibrariesandcompileoptionsforAPREcompileinHPUXenvironment"><strong>Additional libraries and compile options for APRE compile in HP UX environment</strong></h1><h2 id="MakefileforHPacc-LibrariestobeaddedtoMakefile"><strong>Libraries to be added to Makefile</strong></h2><p>As previously mentioned, the basic APRE library &quot;-lapre -lodbccli&quot; must be described in Makefile.</p><p>When compiling with only the basic library added, there are system libraries referenced by the APRE library and a reference error occurs. Therefore, system libraries used in APRE must be specified in Makefile as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Library type</th><th class="confluenceTh">Makefile Library</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Posix thread Library</td><td class="confluenceTd"><strong>-lpthread</strong></td><td class="confluenceTd">Thread library for POSIX thread functions</td></tr><tr><td class="confluenceTd"><p>Math related Library</p></td><td class="confluenceTd"><strong>-lm</strong></td><td class="confluenceTd">Library for using math functions</td></tr><tr><td class="confluenceTd">Dynamic Linking Loader(DL Library)</td><td class="confluenceTd"><strong>-ldld</strong></td><td class="confluenceTd">Dynamic loaded (DL) library</td></tr><tr><td class="confluenceTd">Unwind Express Library</td><td class="confluenceTd"><strong>-lunwind</strong></td><td class="confluenceTd">Library for use of API for stack tracking and stack winding in Itanium-based server</td></tr><tr><td class="confluenceTd">C++ Library</td><td class="confluenceTd"><strong>-lstd –lstream –lCsup -lc</strong></td><td class="confluenceTd">In case of compiling using acc C compiler in Altibase version 5.3.3 or earlier version, specify C++ library</td></tr><tr><td class="confluenceTd">Realtime Extension Library to be added</td><td class="confluenceTd"> </td><td class="confluenceTd"> </td></tr></tbody></table></div><p> </p><div><h2 id="MakefileforHPacc-Compileoptions"><strong>Compile options</strong></h2><p>It is necessary to specify the following options to improve performance and specify the compile bit type.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Option</th><th class="confluenceTh">Option display</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Multithread Program Compile option</td><td class="confluenceTd">-mt</td><td class="confluenceTd">Designation required when creating a program with multi-thread</td></tr><tr><td rowspan="2" class="confluenceTd">Instruction Set Architecture (ISA) Designation</td><td class="confluenceTd">+DD64</td><td class="confluenceTd">Creating 64-bit code for HP-UX on IA64</td></tr><tr><td colspan="1" class="confluenceTd">+DD32</td><td colspan="1" class="confluenceTd">Creating 32-bit code for HP-UX on IA64</td></tr><tr><td class="confluenceTd">Warning option</td><td class="confluenceTd">+vnocompatwarnings</td><td class="confluenceTd">Option to reduce unnecessary warning messages</td></tr></tbody></table></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><span>By referring to the $ALTIBASE_HOME/install/</span><a class="external-link" href="http://altibase_env.mk/" rel="nofollow">altibase_env.mk</a><span> file and $ALTIBASE_HOME/sample/APRE/Makefile, it can be referred to the optimized compile and link options when compiling APRE.</span></p>
+                    </div>
+    </div>
+<p> </p></div><h1 id="MakefileforHPacc-ExampleofSimpleMakefile"><strong>Example of Simple Makefile</strong></h1><p>The simplest Makefile that can compile APRE in HP acc environment is completed as follows. In addition, if there is an additional library referenced by the program, the library must be additionally described in Makefile.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>$(ALTIBASE_HOME)/include</strong><br />ALTI_LIBRARY=<strong>$(ALTIBASE_HOME)/lib</strong><br />LIBS=<strong>-lapre -lodbccli -lpthread -lunwind -lm</strong><br />LFLAGS= <strong>-mt +DD64 -Wl,+vnocompatwarnings -L.</strong></p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow"><strong>$(ALTIBASE_HOME)/bin/apre</strong> -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><h1 id="MakefileforHPacc-ExampleofMakefilefor32bitcompile"><strong>Example of Makefile for 32bit compile</strong></h1><p>An example of the APRE Makefile for acc that specifies the 32bit compile option is as follows. Specify &quot;+DD32&quot; as a compile option, and specify the path where the 32bit APRE library is installed in the path referencing the header file and library. In addition, the APRE precompiler also specifies the path to execute 32bit APRE.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>/alticlient32/include</strong><br />ALTI_LIBRARY=<strong>/alticlient32/lib</strong><br />LIBS=<strong>-lapre -lodbccli -lpthread -lunwind -lm</strong><br />LFLAGS= <strong>-mt <span style="color: rgb(0,0,0);">+DD32</span> -Wl,+vnocompatwarnings -L.</strong></p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow">/alticlient32/bin/apre -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

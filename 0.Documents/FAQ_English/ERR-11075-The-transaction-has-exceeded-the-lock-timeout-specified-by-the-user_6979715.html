@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11075 The transaction has exceeded the lock timeout specified by the user</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11075 The transaction has exceeded the lock timeout specified by the user
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 27, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409150139 {padding: 0px;}
+div.rbtoc1624409150139 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409150139 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409150139'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Version'>Version</a></li>
+<li><a href='#ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Cause'>Cause</a></li>
+<li><a href='#ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Action'>Action</a></li>
+<li><a href='#ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Explanation">Explanation</h2>
+
+<p>This error message is output or written to altibase_rp.log when a DDL/UPDATE/SELECT FOR UPDATE statement is executed.</p>
+
+
+<h2 id="ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility: </p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x11075<br />
+0x11075 ( 69749) smERR_ABORT_smcExceedLockTimeWait The transaction has exceeded the lock timeout specified by the user.</p>
+
+<p># *Cause: The transaction failed to lock the object.</p>
+
+<p># *Action: Please abort the transaction.</p>
+</div></div>
+<p>This error can occur under the following circumstances:</p>
+
+
+<p><strong>1. If an UPDATE statement has been executed:</strong></p>
+
+<p>If the transaction is to be converted to a table lock due to LOCK_ESCALATION_MEMORY_SIZE but fails to acquire an X lock because the table is already locked (e.g., IX lock).</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <span style="color: rgb(0,0,0);"><strong>Session 1</strong></span><br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> <span style="color: rgb(0,0,0);"><strong>Session 2</strong></span><br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; autocommit off;
+Set autocommit off success.
+iSQL&gt; update tb_test1 set c10=sysdate where c1=1;
+1 row updated.</pre>
+</div></div> </td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from tb_test1;
+COUNT
+-----------------------
+1000000
+1 row selected.
+iSQL&gt; alter session set TRX_UPDATE_MAX_LOGSIZE=100000000;
+Alter success.
+iSQL&gt; alter system set LOCK_ESCALATION_MEMORY_SIZE=100000000;
+Alter success.
+iSQL&gt; update tb_test1 set c10=sysdate;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#">ERR-11075 : The transaction has exceeded the lock timeout specified by the user.</a> </p>
+                    </div>
+    </div>
+ </td>
+</tr>
+</tbody></table></div>
+
+
+<p>The last UPDATE statement in Session 2 performs the update operation using row-level locking, and then tries to acquire an X lock when the update log size exceeds LOCK_ESCALATION_MEMORY_SIZE. </p>
+
+<p>However, Session 2's UPDATE statement returns the above error because Session 1's UPDATE statement is not committed and holds an IX lock.</p>
+
+<p>Remember that this error did not occur immediately after an UPDATE statement was executed, but after the UPDATE statement was executed and while trying to acquire an X LOCK. </p>
+
+<p><strong>2. If a DDL statement has been executed:</strong></p>
+
+<p>If a table lock (X lock) must be acquired for the execution of a DDL statement but the lock cannot be acquired because the table is already locked (e.g., IX lock).</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Session 1 </p></th>
+<th class="confluenceTh"><p> <span style="color: rgb(0,0,0);"><strong>Session 2</strong></span><br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; autocommit off;
+Set autocommit off success.
+iSQL&gt; update tb_test1 set c10=sysdate where c1=1;
+1 row updated.</pre>
+</div></div> </td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; truncate table tb_test1;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#">ERR-11075 : The transaction has exceeded the lock timeout specified by the user.</a></p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<p>This error is related to the DDL_LOCK_TIMEOUT property.</p>
+
+
+<p>The default value for DDL_LOCK_TIMEOUT is 0 and this means that the DDL statement will not wait to acquire an X lock.</p>
+
+<p>In other words, an error is returned if the statement fails to acquire an X lock.</p>
+
+<p>If a value larger than 0 is set for this property, the DDL statement waits for as many seconds as specified (by the value) to acquire a lock and returns an error, when unsuccessful. </p>
+
+<p><strong>3. If a SELECT FOR UPDATE statement has been executed:</strong></p>
+
+<p>If a NOWAIT or WAIT N option is used but a lock is not acquired immediately or within a certain period of time. </p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <span style="color: rgb(0,0,0);"><strong>Session 1</strong></span><br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> <span style="color: rgb(0,0,0);"><strong>Session 2</strong></span><br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; autocommit off;
+Set autocommit off success.
+iSQL&gt; update tb_test1 set c10=sysdate where c1=1;
+1 row updated.</pre>
+</div></div> </td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select * from tb_test1 where c1&lt;10 for update nowait;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#">ERR-11075 : The transaction has exceeded the lock timeout specified by the user.</a> </p>
+                    </div>
+    </div>
+ </td>
+</tr>
+</tbody></table></div>
+
+
+<p><strong>4. </strong><strong>If the error message has been output to altibase_rp.log:</strong></p>
+
+<p>If a replication transaction is waiting for a transaction on the local server to terminate.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Active Server </p></th>
+<th class="confluenceTh"><p> Standby Server </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">alter replication rep1 start;</pre>
+</div></div> </td>
+<td class="confluenceTd"><p> Does not start replication. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;  autocommit off;
+Set autocommit off success.
+iSQL&gt; insert into tb_test1(c1,c10) values(1000001, sysdate);
+1 row inserted.</pre>
+</div></div> </td>
+</tr>
+<tr>
+<td class="confluenceTd"> <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; autocommit off;
+Set autocommit off success.
+iSQL&gt; insert into tb_test1(c1,c10) values(1000001, sysdate);
+1 row inserted.</pre>
+</div></div> </td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+<p>After an INSERT statement has been executed on the Active server, the following message is output to altibase_rp.log on the Standby server.</p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>[] <a class="createlink" href="/pages/createpage.action?spaceKey=FAQINTERNAL&amp;title=Thread-1398925664">FAQINTERNAL:Thread-1398925664</a> <a class="createlink" href="/pages/createpage.action?spaceKey=FAQINTERNAL&amp;title=Level-2">FAQINTERNAL:Level-2</a><br />
+ERR-11075(errno=0) The transaction has exceeded the lock timeout specified by the user.<br />
+[] <a class="createlink" href="/pages/createpage.action?spaceKey=FAQINTERNAL&amp;title=Thread-1398925664">FAQINTERNAL:Thread-1398925664</a> <a class="createlink" href="/pages/createpage.action?spaceKey=FAQINTERNAL&amp;title=Level-3">FAQINTERNAL:Level-3</a><br />
+INSERT INTO SYS.TB_TEST1 VALUES ( 1000001, , , , , , , , , 2014-08-28 13:00:09.960371 ); (TID : 35456)</p>
+</div></div>
+<p>This error is affected by REPLICATION_LOCK_TIMEOUT.</p>
+
+<p>If the replication transaction (or Standby server) fails to acquire a lock within the time specified by REPLICATION_LOCK_TIMEOUT, an error occurs and the replication transaction fails.</p>
+
+<p># The above scenarios are only one kind of example for each error cause. Various cases can be attributed to the same cause. </p>
+
+
+<h2 id="ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Action">Action</h2>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>1.  If an UPDATE statement has been executed:</strong></p>
+
+<p>A bulk update operation is generally discouraged in DBMSs.</p>
+
+<p>If this error has been caused by LOCK_ESCALATION_MEMORY_SIZE, it is highly likely that a bulk update operation was involved.</p>
+
+<p><span style="text-decoration: underline;">The user is advised to reduce the number of records to be updated and perform multiple update operations by dividing the bulk update into smaller updates using the condition clause or LIMIT clause.</span></p>
+
+<p>If the operation must be performed in a single UPDATE statement, the following options are available (but not advised):</p>
+
+<p>1) Increase LOCK_ESCALATION_MEMORY_SIZE.</p>
+
+<p><span style="color: rgb(255,0,0);">The memory tablespace and Altibase process memory usage can increase</span> since undo images for all the records to be updated must be saved.</p>
+
+<p>2) Attempt a bulk update when the system usage is low.</p>
+
+<p>In this case, it is easy to acquire an X lock on the table. <span style="color: rgb(255,0,0);">However, if the X lock incurs a lock escalation, the table needs to wait for a SELECT and this can be mistaken as service failure.</span></p>
+</div></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>2. If a DDL statement has been executed:</strong></p>
+
+<p>It is generally advisable to execute a DDL statement when the system usage is low.</p>
+
+<p>If a DDL statement is executed while multiple transactions are being processed, the session can fail to acquire an X lock to lock the table, and repeatedly attempt to acquire the lock until the DDL statement is successfully executed.</p>
+
+<p>Thus, the user should check whether the service is busy or a long-running query (a slow running or uncommitted query) exists, take the appropriate steps and then re-execute the DDL statement.</p>
+</div></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>3. If a SELECT FOR UPDATE statement has been executed:</strong></p>
+
+<p>1) Repeatedly execute the SELECT FOR UPDATE statement until it succeeds.</p>
+
+<p>2) Find the uncommitted transaction and either execute the COMMIT or ROLLBACK statement</p>
+
+<p>3) Increase the time for the WAIT option.</p>
+</div></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>4. If the error message has been output to altibase_rp.log:</strong></p>
+
+<p>When designing the system, caution should be taken so that data is not simultaneously changed on the Master/Slave servers.</p>
+
+<p>The user should check the data as this error can disrupt the data consistency of the Master/Slave servers.</p>
+</div></div>
+<p># Since ALTIBASE HDB can temporarily fail to acquire a lock (e.g., #1 and 3 above) while it is running in the SERVICE phase, repeat the operation multiple times.</p>
+
+
+<h2 id="ERR-11075Thetransactionhasexceededthelocktimeoutspecifiedbytheuser-Reference">Reference</h2>
+
+<p>The LOCK_ESCALATION_MEMORY_SIZE property is related only to memory tables. </p>
+
+<p><span style="text-decoration: underline;">Therefore, the user should remember that what follows pertains only to memory tables. </span></p>
+
+<p>The purpose of LOCK_ESCALATION_MEMORY_SIZE is to prevent the memory usage for storing undo images from drastically increasing when performing bulk update operations using record-level locking. </p>
+
+<p>If the update log size exceeds LOCK_ESCALATION_MEMORY_SIZE during a bulk update, an attempt is made to escalate locks by acquiring an X lock. </p>
+
+<p>The above error occurs if the session fails to acquire the X lock.</p>
+
+<p>When successful, the session holds the X lock and continues to update. Memory usage does not increase because in-place updates are performed from this point onward (For further information about in-place updates, refer to the <em>Administrator's Manual</em>.). </p>
+
+<p>Since the session holds the X lock on the table, it cannot be accessed by other sessions and all DML statements and the SELECT statement enter a state of waiting. The user could interpret this as a service error. </p>
+
+<p>Thus, the user is advised to reduce the number of update target records and increase the number of updates.</p>
+
+<p>For example, an update of 100,000 records should be divided into 10 updates of 10,000 records using the condition clause or LIMIT clause. </p>
+
+<p>The user should also refer to the following error as well:</p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#"><span style="color: rgb(0,0,0);">ERR-11118 : The update log size '10485800' is bigger than TRX_UPDATE_MAX_LOGSIZE '10485760'</span></a></p>
+                    </div>
+    </div>
+
+<p>This warning error is output before the session is converted to an X lock due to LOCK_ESCALATION_MEMORY_SIZE. </p>
+
+<p>The default values for LOCK_ESCALATION_MEMORY_SIZE is 100M and TRX_UPDATE_MAX_LOGSIZE is 10M. </p>
+
+<p>If the update log size exceeds TRX_UPDATE_MAX_LOGSIZE, an error is returned to prevent the session from converting to an X lock. </p>
+
+<p>When the TRX_UPDATE_MAX_LOGSIZE error occurs, adequately increase TRX_UPDATE_MAX_LOGSIZE (the value must not exceed LOCK_ESCALATION_MEMORY_SIZE) and execute the UPDATE statement with every increase.</p>
+
+<p>When changing these property values, LOCK_ESCALATION_MEMORY_SIZE must be larger than TRX_UPDATE_MAX_LOGSIZE.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

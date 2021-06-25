@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Transaction Processing and Control</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Transaction Processing and Control
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 16, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346890 {padding: 0px;}
+div.rbtoc1624409346890 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346890 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346890'>
+<ul class='toc-indentation'>
+<li><a href='#TransactionProcessingandControl-Overview'>Overview</a></li>
+<li><a href='#TransactionProcessingandControl-Restrictions'>Restrictions</a></li>
+<li><a href='#TransactionProcessingandControl-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="TransactionProcessingandControl-Overview">Overview</h2>
+
+<p> The transaction control commands that can be used in stored procedures are COMMIT and ROLLBACK<br />
+statements. The use of these commands within a stored procedure can affect tasks that are<br />
+being conducted outside of the stored procedure.
+<br class="atl-forced-newline" /></p>
+
+<p>Using it in nonautocommit mode, it can affect another statement in a session.</p>
+
+<p>That is, in case of issuing following statement, assume that statements below is executed in an nonautocommit mode.</p>
+
+<p>In a proc1 procedure, commit statement is included in that procedure.</p>
+
+<p>Even if a commit statement is executed inside of the procedure, a statement outside of the procedure will be complete</p>
+
+<p>as a transaction on account of a previous commit statement.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; INSERT INTO t1 values (1);
+iSQL&gt; INSERT INTO t1 values (2);
+iSQL&gt; EXECUTE proc1;</pre>
+</div></div>
+
+
+
+<h2 id="TransactionProcessingandControl-Restrictions">Restrictions</h2>
+
+<ul>
+	<li>It is impossible to execute the COMMIT or ROLLBACK commands while a cursor is open. That is, a<br />
+transaction that uses cursors must contain an entire cursor control block, comprising OPEN, FETCH,<br />
+and CLOSE statements.</li>
+	<li>Stored functions called from within SELECT statements cannot contain DML statements. In addition, they cannot include TCL statements.</li>
+	<li>LOB type variables cannot be declared in the declare section of a stored procedure. Additionally, the<br />
+%TYPE and %ROWTYPE attributes cannot be used to declare variables when the underlying column<br />
+in the actual database object is a LOB type column.</li>
+	<li>Because LOB type variables cannot be declared within stored procedures, data in LOB type columns<br />
+cannot be fetched using cursors. Therefore, LOB type columns cannot be referenced using cursor<br />
+control statements.
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+<h2 id="TransactionProcessingandControl-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+transfer NUMBER(8,2) := 250; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+UPDATE accounts SET balance = balance - transfer WHERE account_id = 7715; <br class="atl-forced-newline" />
+UPDATE accounts SET balance = balance + transfer WHERE account_id = 7720; <br class="atl-forced-newline" />
+COMMIT COMMENT 'Transfer From 7715 to 7720' WRITE IMMEDIATE NOWAIT; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+transfer NUMBER(8,2) := 250; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+UPDATE accounts SET balance = balance - transfer WHERE account_id = 7715; <br class="atl-forced-newline" />
+UPDATE accounts SET balance = balance + transfer WHERE account_id = 7720; <br class="atl-forced-newline" />
+COMMIT; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Commit Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+emp_id NUMBER(6); <br class="atl-forced-newline" />
+emp_lastname VARCHAR2(25); <br class="atl-forced-newline" />
+emp_salary NUMBER(8,2); <br class="atl-forced-newline" />
+emp_jobid VARCHAR2(10); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT eno, e_lastname, salary, emp_job INTO emp_id, emp_lastname, <br class="atl-forced-newline" />
+emp_salary, emp_jobid FROM employees WHERE eno = 20; <br class="atl-forced-newline" />
+INSERT INTO emp_name VALUES (emp_id, emp_lastname); <br class="atl-forced-newline" />
+INSERT INTO emp_sal VALUES (emp_id, emp_salary); <br class="atl-forced-newline" />
+INSERT INTO emp_job VALUES (emp_id, emp_jobid); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+ROLLBACK; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Inserts have been rolled back'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+emp_id NUMBER(6); <br class="atl-forced-newline" />
+emp_lastname VARCHAR2(25); <br class="atl-forced-newline" />
+emp_salary NUMBER(8,2); <br class="atl-forced-newline" />
+emp_jobid VARCHAR2(10); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT eno, e_lastname, salary, emp_job INTO emp_id, emp_lastname, <br class="atl-forced-newline" />
+emp_salary, emp_jobid FROM employees WHERE eno = 20; <br class="atl-forced-newline" />
+INSERT INTO emp_name VALUES (emp_id, emp_lastname); <br class="atl-forced-newline" />
+INSERT INTO emp_sal VALUES (emp_id, emp_salary); <br class="atl-forced-newline" />
+INSERT INTO emp_job VALUES (emp_id, emp_jobid); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+ROLLBACK; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Inserts have been rolled back'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Rollback Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+emp_id employees.eno%TYPE; <br class="atl-forced-newline" />
+emp_lastname employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+emp_salary employees.salary%TYPE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT eno, e_lastname, salary INTO emp_id, emp_lastname, <br class="atl-forced-newline" />
+emp_salary FROM employees WHERE eno = 120; <br class="atl-forced-newline" />
+SAVEPOINT my_savepoint; <br class="atl-forced-newline" />
+UPDATE emp_name SET salary = salary * 1.1 WHERE eno = emp_id; <br class="atl-forced-newline" />
+DELETE FROM emp_name WHERE eno = 10; <br class="atl-forced-newline" />
+SAVEPOINT my_savepoint; -- move my_savepoint to current poin <br class="atl-forced-newline" />
+INSERT INTO emp_name VALUES (emp_id, emp_lastname, emp_salary); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+ROLLBACK TO my_savepoint; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Transaction rolled back.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+emp_id employees.eno%TYPE; <br class="atl-forced-newline" />
+emp_lastname employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+emp_salary employees.salary%TYPE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT eno, e_lastname, salary INTO emp_id, emp_lastname, <br class="atl-forced-newline" />
+emp_salary FROM employees WHERE eno = 120; <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><span style="text-decoration: line-through;">SAVEPOINT my_savepoint;</span></span><br class="atl-forced-newline" />
+UPDATE emp_name SET salary = salary * 1.1 WHERE eno = emp_id; <br class="atl-forced-newline" />
+DELETE FROM emp_name WHERE eno = 10; <br class="atl-forced-newline" />
+SAVEPOINT my_savepoint; -- move my_savepoint to current point <br class="atl-forced-newline" />
+INSERT INTO emp_name VALUES (emp_id, emp_lastname, emp_salary); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN DUP_VAL_ON_INDEX THEN <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><span style="text-decoration: line-through;">ROLLBACK TO my_savepoint;</span></span><br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Transaction rolled back.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Savepoint statement cannot be issued <br class="atl-forced-newline" />
+within the ALTIBASE Stored Procedure. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+daily_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+weekly_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+monthly_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+COMMIT; -- ends previous transaction <br class="atl-forced-newline" />
+SET TRANSACTION READ ONLY NAME 'Calculate Order Totals'; <br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO daily_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE; <br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO weekly_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE - 7; <br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO monthly_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE - 30; <br class="atl-forced-newline" />
+COMMIT; -- ends read-only transaction <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+daily_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+weekly_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+monthly_order_total NUMBER(12,2); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+COMMIT; -- ends previous transaction <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><span style="text-decoration: line-through;">SET TRANSACTION READ ONLY NAME 'Calculate Order Totals';</span></span><br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO daily_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE; <br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO weekly_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE - 7; <br class="atl-forced-newline" />
+SELECT SUM (order_total) INTO monthly_order_total FROM orders <br class="atl-forced-newline" />
+WHERE order_date = SYSDATE - 30; <br class="atl-forced-newline" />
+COMMIT; -- ends read-only transaction <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Set Transaction statement cannot be issued <br class="atl-forced-newline" />
+within the ALTIBASE Stored Procedure. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+-- if &quot;FOR UPDATE OF salary&quot; is included on following line, an error is raised <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT * FROM employees; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO emp_rec; -- FETCH fails on the second iteration with FOR UPDATE <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+IF emp_rec.eno = 10 THEN <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary * 1.05 WHERE eno = 10; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+COMMIT; -- releases locks <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+-- if &quot;FOR UPDATE OF salary&quot; is included on following line, an error is raised <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT * FROM employees; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO emp_rec; -- FETCH fails on the second iteration with FOR UPDATE <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+IF emp_rec.eno = 10 THEN <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary * 1.05 WHERE eno = 10; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+COMMIT; -- releases locks <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Fetch Across Commit   <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+iSQL&gt; exec proc1; <br class="atl-forced-newline" />
+[ERR-31168 : Invalid CURSOR <br class="atl-forced-newline" />
+0009 : FETCH C1 INTO EMP_REC; <br class="atl-forced-newline" />
+-- FETCH fails on the second iteration with <br class="atl-forced-newline" />
+FOR UPDATE       ^                     ^ ] <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+It is supported in the ALTIBASE Stored Procedure. <br class="atl-forced-newline" />
+But, it will be applied in the Altibase HDB V7. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

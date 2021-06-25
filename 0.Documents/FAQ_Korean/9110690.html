@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : tablespace does not have enough free space 에러</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : tablespace does not have enough free space 에러
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="tablespacedoesnothaveenoughfreespace에러-/*&lt;![CDATA[*/div.rbtoc1624409055988{padding:0px;}div.rbtoc1624409055988ul{list-style:disc;margin-left:0px;}div.rbtoc1624409055988li{margin-left:0px;padding-left:0px;}/*]]&gt;*/개요#tablespacedoesnothaveenoughfreespace에러-개"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055988 {padding: 0px;}
+div.rbtoc1624409055988 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055988 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055988'>
+<ul class='toc-indentation'>
+<li><a href='#tablespacedoesnothaveenoughfreespace에러-개요'>개요 </a></li>
+<li><a href='#tablespacedoesnothaveenoughfreespace에러-버전'>버전</a></li>
+<li><a href='#tablespacedoesnothaveenoughfreespace에러-원인'>원인</a></li>
+<li><a href='#tablespacedoesnothaveenoughfreespace에러-조치'>조치</a></li>
+<li><a href='#tablespacedoesnothaveenoughfreespace에러-참고'>참고</a></li>
+</ul>
+</div></h1><h1 id="tablespacedoesnothaveenoughfreespace에러-개요"><strong style="line-height: 1.25;">개요 </strong></h1><hr /><p>테이블 스페이스 공간부족</p><p> </p><p> </p><p> </p><h1 id="tablespacedoesnothaveenoughfreespace에러-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 4 이상</p><p> </p><p> </p><p> </p><h1 id="tablespacedoesnothaveenoughfreespace에러-원인"><strong>원인</strong></h1><hr /><p>이 에러는 특정 테이블스페이스의 크기 부족으로 발생한 것입니다 .</p><p> </p><p> </p><p> </p><h1 id="tablespacedoesnothaveenoughfreespace에러-조치"><strong><strong>조치</strong></strong></h1><hr /><p>1. 테이블스페이스 공간 사용량을 확인합니다.</p><p>사용하는 알티베이스 버전에 맞는 쿼리문을 사용하여 사용량 확인 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">http://aid.altibase.com/pages/viewpage.action?pageId=6520890</pre>
+</div></div><p> </p><p>2. <span style="color: rgb(0,0,0);"> 테이블스페이스 사용량 조회 후 쿼리 결과값에서 USAGE(%) 가 100% 에 가까운 테이블스페이스에 공간을 추가합니다.</span> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ALTER TABLESPACE 테이블스페이스명 add datafile &#39;/경로/파일명&#39; size 2G autoextend off; </pre>
+</div></div><p><span style="color: rgb(0,0,0);font-size: medium;"> </span> </p><p> </p><h1 id="tablespacedoesnothaveenoughfreespace에러-참고"><strong><strong>참고</strong></strong></h1><hr /><p><span style="font-size: 10.0pt;"><span style="color: rgb(51,51,51);">데이터 파일 추가시  해당 테이블스페이스에 <span> lock </span>이 발생하기 때문에 서비스를 차단하고 작업길 권장합니다.</span></span></p><p><span style="font-size: 10.0pt;"><span style="color: rgb(51,51,51);">HDB 5.3.3 이하는 테이블스페이스 추가 작업이 완료될때까지 select 및 DML 및 쿼리가 대기 합니다.</span></span></p><p><span style="font-size: 10.0pt;"><span style="color: rgb(51,51,51);">HDB 5.5.1 이상부터  최신의 V6 까지는  테이블스페이스 추가 작업이 완료될때까지 DML은  대기하지만  select 문은 정상적으로 수행됩니다.</span></span></p><p><span style="font-size: 10.0pt;"><span style="color: rgb(51,51,51);"> </span></span></p><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

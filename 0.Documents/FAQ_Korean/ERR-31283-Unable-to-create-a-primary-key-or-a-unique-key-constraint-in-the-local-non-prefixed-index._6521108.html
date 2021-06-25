@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-31283 Unable to create a primary key or a unique key constraint in the local non-prefixed index.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-31283 Unable to create a primary key or a unique key constraint in the local non-prefixed index.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> JH Choi</span>, last modified by <span class='editor'> richard.nahm	</span> on Mar 30, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055775 {padding: 0px;}
+div.rbtoc1624409055775 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055775 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055775'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-대상버전'>대상 버전</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-증상'>증상</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-원인'>원인</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-해결방안'>해결 방안</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-참고사항'>참고 사항</a></li>
+</ul>
+</div></p><h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-대상버전">대상 버전</h2><p>6.1.1 이하 버전</p><h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-증상">증상</h2><p>파티션 테이블에 PK 또는 UNIQUE INDEX 생성 시 다음 에러 발생.</p><p>[ERR-31283 : Unable to create a primary key or a unique key constraint in the local non-prefixed index.]</p><h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-원인">원인</h2><p>다음과 같이 altierr 유틸리티를 이용하여 해당 에러에 대한 설명을 확인할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x31283</p><p>0x31283 ( 201347) qpERR_ABORT_QDX_NOT_ALLOWED_PRIMARY_AND_UNIQUE_KEY_OF_NONE_PREFIXED_INDEX Unable to create a primary key or a unique key constraint in the local non-prefixed index.<br /> # - The user tried to create a primary key or a unique key constraint in the local prefixed index.<br /> # *Action:<br /> # - Please do not create a primary key or a unique key constraint in the local non-prefixed index.</p>
+</div></div><p>알티베이스 6.1.1 이하 버전에서는 global index를 지원하지 않습니다.</p><p>따라서 모든 파티션 인덱스는 local index이고 local non-prefixed index를 PK나 UNIQUE INDEX로 생성할 수 없습니다.</p><p>local non-prefixed index를 PK나 UNIQUE INDEX로 생성할 수 없는 이유는 해당 컬럼값이 특정 파티션 내에서 유일한 값이더라도 테이블 전체에서 UNIQUE함을 보장할 수 없기 때문입니다.</p><p>(테이블 전체에서 UNIQUE 속성을 검사하기 위해서는 전체 파티션을 검사해야 하는데 local index는 특정 파티션 내에서만 UNIQUE 속성을 검사함.)</p><h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-해결방안">해결 방안</h2><p>1. PK나 UNIQUE INDEX는 prefixed index로 생성해야 합니다. 즉, PK나 UNIQUE INDEX는 파티션 키컬럼과 인덱스 컬럼이 동일해야 합니다.</p><p>2. 파티션 키컬럼과 동일하지 않은 컬럼으로 인덱스 생성을 원하다면 NON-UNIQUE INDEX로 생성할 수 있습니다.</p><p>3. 알티베이스를 6.3.1 이상 버전으로 업그레이드 하면 global index로 PK나 UNIQUE INDEX 생성이 가능합니다.</p><p> </p><p># 예제</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE REALSET_CONTENTS
+2 (
+3 CT_ID VARCHAR (32) NOT NULL,
+4 CT_TYPE VARCHAR (2) NOT NULL,
+5 CT_PATH VARCHAR (256) NOT NULL,
+6 CT_URL VARCHAR (256) NOT NULL,
+7 REG_DATE DATE NOT NULL,
+8 FILE_NAME VARCHAR (256) NOT NULL,
+9 STATUS VARCHAR (4) NOT NULL
+10 )
+11 PARTITION BY RANGE (REG_DATE)
+12 (
+13 PARTITION P_1 VALUES LESS THAN (to_date(&#39;2013-05-01&#39;, &#39;YYYY-MM-DD&#39;)),
+14 PARTITION P_2 VALUES LESS THAN (to_date(&#39;2013-09-01&#39;, &#39;YYYY-MM-DD&#39;)),
+15 PARTITION P_DEF VALUES DEFAULT
+16 )
+17 TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; alter table REALSET_CONTENTS add primary key(CT_ID,REG_DATE);
+[ERR-31283 : Unable to create a primary key or a unique key constraint in the local non-prefixed index.]
+</pre>
+</div></div><p>1. PK 컬럼 순서를 바꾸어 local prefixed index를 PK로 생성하는 예제.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter table REALSET_CONTENTS add primary key(REG_DATE,CT_ID);
+Alter success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_142                         BTREE    UNIQUE        REG_DATE ASC,
+                                                                CT_ID ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+REG_DATE, CT_ID
+</pre>
+</div></div><p>2. local non-prefixed index를 PK로 생성하지 않고 non-unique index로 생성하는 예제.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create index REALSET_CONTENTS_IDX1 on REALSET_CONTENTS(CT_ID,REG_DATE) local;
+Create success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+REALSET_CONTENTS_IDX1                    BTREE                  CT_ID ASC,
+                                                                REG_DATE ASC
+REALSET_CONTENTS has no primary key
+</pre>
+</div></div><p>3. 6.3.1 버전으로 업그레이드 후 global index로 PK를 생성하는 예제.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt;  alter table REALSET_CONTENTS add primary key(CT_ID,REG_DATE);
+Alter success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_922                         BTREE    UNIQUE        CT_ID ASC,
+                                                                REG_DATE ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+CT_ID, REG_DATE
+</pre>
+</div></div><h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex.-참고사항">참고 사항</h2><p># 파티션 테이블을 위한 인덱스 종류</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>분류조건1</p></th><th class="confluenceTh"><p>분류조건2</p></th><th class="confluenceTh"><p>분류조건3</p></th><th class="confluenceTh"><p>인덱스 종류</p></th><th class="confluenceTh"><p>알티베이스 지원여부</p></th></tr><tr><td class="confluenceTd"><p>인덱스가 파티션 되어 있음.</p></td><td class="confluenceTd"><p>index part key = table part key</p></td><td class="confluenceTd"><p>index part key = index key</p></td><td class="confluenceTd"><p>(Partitioned) Local prefixed Index</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>index part key != index key</p></td><td class="confluenceTd"><p>(Partitioned) Local nonprefixed Index</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>index part key != table part key</p></td><td class="confluenceTd"><p>index part key = index key</p></td><td class="confluenceTd"><p>(Partitioned) Global prefixed Index</p></td><td class="confluenceTd"><p>미지원</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>index part key != index key</p></td><td class="confluenceTd"><p>(Partitioned) Global nonprefixed Index</p></td><td class="confluenceTd"><p>미지원</p></td></tr><tr><td class="confluenceTd"><p>인덱스가 파티션 되어 있지 않음.</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Nonpartitioned global index</p></td><td class="confluenceTd"><p>6.3.1 이상 버전에서 지원</p></td></tr></tbody></table></div><p>prefixed index와 nonprefixed index를 구분하는 이유는 unique 속성 때문입니다.</p><p>nonprefixed index의 경우 파티션 내에서 unique 하더라도 테이블 전체에서 unique 함을 보장하지 못합니다.</p><p>따라서 nonprefixed index는 PK나 UNIQUE INDEX로 생성하지 못하는 것입니다.</p><p>  </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

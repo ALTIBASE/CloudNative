@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Error Code and Error Message Retrieval</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Exception-Handling_2988077.html">Exception Handling</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Error Code and Error Message Retrieval
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 29, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347363 {padding: 0px;}
+div.rbtoc1624409347363 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347363 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347363'>
+<ul class='toc-indentation'>
+<li><a href='#ErrorCodeandErrorMessageRetrieval-Overview'>Overview </a></li>
+<li><a href='#ErrorCodeandErrorMessageRetrieval-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="ErrorCodeandErrorMessageRetrieval-Overview">Overview </h2>
+
+<p>As described below, system-defined exceptions are already defined in the ALTIBASE HDB PSM.</p>
+
+<p>So additional declarations are not necessary.</p>
+
+<h2 id="ErrorCodeandErrorMessageRetrieval-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS  <br class="atl-forced-newline" />
+past_due EXCEPTION; <br class="atl-forced-newline" />
+acct_num NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+DECLARE ---------- sub-block begins <br class="atl-forced-newline" />
+past_due EXCEPTION; -- this declaration prevails <br class="atl-forced-newline" />
+acct_num NUMBER; <br class="atl-forced-newline" />
+due_date DATE := SYSDATE - 1; <br class="atl-forced-newline" />
+todays_date DATE := SYSDATE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF due_date &lt; todays_date THEN <br class="atl-forced-newline" />
+RAISE past_due; -- this is not handled <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; ------------- sub-block ends <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN past_due THEN -- does not handle raised exception <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Handling PAST_DUE exception.'); <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Could not recognize PAST_DUE_EXCEPTION in this scope.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+past_due EXCEPTION; <br class="atl-forced-newline" />
+acct_num NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+DECLARE ---------- sub-block begins <br class="atl-forced-newline" />
+past_due EXCEPTION; -- this declaration prevails <br class="atl-forced-newline" />
+acct_num NUMBER; <br class="atl-forced-newline" />
+due_date DATE := SYSDATE - 1; <br class="atl-forced-newline" />
+todays_date DATE := SYSDATE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF due_date &lt; todays_date THEN <br class="atl-forced-newline" />
+RAISE past_due; -- this is not handled <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; ------------- sub-block ends <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN past_due THEN -- does not handle raised exception <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Handling PAST_DUE exception.'); <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Could not recognize PAST_DUE_EXCEPTION in this scope.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Declaring and raising Exceptions. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC2 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ E1 EXCEPTION; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE E1; <br class="atl-forced-newline" />
+PROC1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN E1 THEN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('EXCEPTION FROM PROC1 CATCHED.'); <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('SQLCODE : '||SQLCODE); <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC2 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ E1 EXCEPTION; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ RAISE E1; <br class="atl-forced-newline" />
+PROC1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN E1 THEN <br class="atl-forced-newline" />
+PRINTLN('EXCEPTION FROM PROC1 CATCHED.'); <br class="atl-forced-newline" />
+PRINTLN('SQLCODE : '||SQLCODE); <br class="atl-forced-newline" />
+PRINTLN('SQLERRM: ' || SQLERRM); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Acquiring Error Code and Error Message from Altibase and Oracle. <br class="atl-forced-newline" />
+Handling user-defined exceptions in Altibase, the error code is always 201232, which can be verified by <br class="atl-forced-newline" />
+checking the value of SQLCODE. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ CODE INTEGER; <br class="atl-forced-newline" />
+ ERRM VARCHAR(1000); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ INSERT INTO T1 VALUES(NULL, SYSDATE); <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+ CODE := SQLCODE; <br class="atl-forced-newline" />
+ ERRM := SUBSTR(ERRM, 1, 1000); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ INSERT INTO T2 VALUES (CODE, ERRM); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ CODE INTEGER; <br class="atl-forced-newline" />
+ ERRM VARCHAR(1000); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+ INSERT INTO T1 VALUES(NULL, SYSDATE); <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+ CODE := SQLCODE; <br class="atl-forced-newline" />
+ ERRM := SUBSTR(ERRM, 1, 1000); <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+ INSERT INTO T2 VALUES (CODE, ERRM); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+salary_too_high EXCEPTION; <br class="atl-forced-newline" />
+current_salary NUMBER := 20000; <br class="atl-forced-newline" />
+max_salary NUMBER := 10000; <br class="atl-forced-newline" />
+erroneous_salary NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+BEGIN ---------- sub-block begins <br class="atl-forced-newline" />
+IF current_salary &gt; max_salary THEN <br class="atl-forced-newline" />
+RAISE salary_too_high; -- raise the exception <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN salary_too_high THEN <br class="atl-forced-newline" />
+-- first step in handling the error <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary || ' is out of range.'); <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Maximum salary is ' || max_salary || '.'); <br class="atl-forced-newline" />
+RAISE; -- reraise the current exception <br class="atl-forced-newline" />
+END; ------------ sub-block ends <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN salary_too_high THEN <br class="atl-forced-newline" />
+-- handle the error more thoroughly <br class="atl-forced-newline" />
+erroneous_salary := current_salary; <br class="atl-forced-newline" />
+current_salary := max_salary; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || <br class="atl-forced-newline" />
+' to ' || current_salary || '.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+salary_too_high EXCEPTION; <br class="atl-forced-newline" />
+current_salary NUMBER := 20000; <br class="atl-forced-newline" />
+max_salary NUMBER := 10000; <br class="atl-forced-newline" />
+erroneous_salary NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+BEGIN ---------- sub-block begins <br class="atl-forced-newline" />
+IF current_salary &gt; max_salary THEN <br class="atl-forced-newline" />
+RAISE salary_too_high; -- raise the exception <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN salary_too_high THEN <br class="atl-forced-newline" />
+-- first step in handling the error <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Salary ' || erroneous_salary || ' is out of range.'); <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Maximum salary is ' || max_salary || '.'); <br class="atl-forced-newline" />
+RAISE; -- reraise the current exception <br class="atl-forced-newline" />
+END; ------------ sub-block ends <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN salary_too_high THEN <br class="atl-forced-newline" />
+-- handle the error more thoroughly <br class="atl-forced-newline" />
+erroneous_salary := current_salary; <br class="atl-forced-newline" />
+current_salary := max_salary; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Revising salary from ' || erroneous_salary || <br class="atl-forced-newline" />
+' to ' || current_salary || '.'); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> This example has a different result. <br class="atl-forced-newline" />
+Discrepancy resulted from the difference of scope in those DBMSs. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+ORACLE: <br class="atl-forced-newline" />
+Salary  is out of range. <br class="atl-forced-newline" />
+Maximum salary is 10000. <br class="atl-forced-newline" />
+Revising salary from 20000 to 10000. <br class="atl-forced-newline" />
+PL/SQL procedure successfully completed. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+ALTIBASE: <br class="atl-forced-newline" />
+Salary  is out of range. <br class="atl-forced-newline" />
+Maximum salary is 10000. <br class="atl-forced-newline" />
+[ERR-31157 : Unhandled exception : Unable to find exception name] </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+name employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+v_code NUMBER; <br class="atl-forced-newline" />
+v_errm VARCHAR2(64); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT e_lastname INTO name FROM employees <br class="atl-forced-newline" />
+WHERE eno = -1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+v_code := SQLCODE; <br class="atl-forced-newline" />
+v_errm := SUBSTR(SQLERRM, 1 , 64); <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Error code ' || v_code || ': ' || v_errm); <br class="atl-forced-newline" />
+-- Normally we would call another procedure, declared with PRAGMA <br class="atl-forced-newline" />
+-- AUTONOMOUS_TRANSACTION, to insert information about errors. <br class="atl-forced-newline" />
+INSERT INTO errors VALUES (v_code, v_errm, SYSTIMESTAMP); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+name employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+v_code NUMBER; <br class="atl-forced-newline" />
+v_errm VARCHAR2(64); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT e_lastname INTO name FROM employees <br class="atl-forced-newline" />
+WHERE eno = -1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+v_code := SQLCODE; <br class="atl-forced-newline" />
+v_errm := SUBSTR(SQLERRM, 1 , 64); <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Error code ' || v_code || ': ' || v_errm); <br class="atl-forced-newline" />
+-- Normally we would call another procedure, declared with PRAGMA <br class="atl-forced-newline" />
+-- AUTONOMOUS_TRANSACTION, to insert information about errors. <br class="atl-forced-newline" />
+INSERT INTO errors VALUES (v_code, v_errm, SYSTIMESTAMP); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

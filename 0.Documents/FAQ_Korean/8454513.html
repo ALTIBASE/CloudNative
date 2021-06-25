@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 도스 형식 데이터 파일을 iloader로 업로드 할 때 에러가 발생 합니다.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520892.html">11. 유틸리티</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iLoader_6521528.html">iLoader</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 도스 형식 데이터 파일을 iloader로 업로드 할 때 에러가 발생 합니다.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Jan 21, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409056207 {padding: 0px;}
+div.rbtoc1624409056207 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409056207 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409056207'>
+<ul class='toc-indentation'>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-개요'>개요</a></li>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-제거방법'>제거 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-윈도우즈에서'>윈도우즈에서 </a></li>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-Linux/Unix에서'>Linux/Unix에서</a>
+<ul class='toc-indentation'>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-dos2unix를이용하여unix형파일로변환'>dos2unix 를 이용하여 unix 형 파일로 변환</a></li>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-sed를이용하여^M제거'>sed 를이용하여 ^M 제거</a></li>
+</ul>
+</li>
+<li><a href='#id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-ALTIBASEHDB5.5.1부터는...'>ALTIBASE HDB 5.5.1 부터는 ...</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-개요"><strong>개요</strong></h1><hr /><p>도스 형식의 데이터 파일을 Unix/Linux 서버에서 iloader로 업로드하기 위해서는 에디트 프로그램 또는 dos2unix 를 이용하여 파일을 변환해야 합니다.</p><p>변환없이 iloader 를 수행할 경우 아래와 같은 에러가 발생할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">ERR-9102B : Token value length overflow.</pre>
+</div></div><p> </p><p>도스 형식의 파일은  Row Termination Code 가 CR(Carriage Return) +  LF(Line Feed) 로 구성되어 있습니다. </p><p>iloader는 데이터 파일을  파싱할 때 %n(LF) 을  줄바꿈(Row terminator) 으로 인식합니다. 그래서 도스 형식의 데이터 파일을 업로드 할 때 파싱 에러가 발생할 수 있습니다.</p><p> </p><p>도스 형식의 파일을 Linux/Unix 에서 vi 로 파일을 열어보면 라인 끌에 ^M 가 붙어있거나 아래와 같이 보입니다.</p><p>&quot;SYS_T.dat&quot; [도스] 225L, 33822C  </p><p> </p><p> </p><h1 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-제거방법"><strong>제거 방법</strong></h1><hr /><h2 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-윈도우즈에서"><strong>윈도우즈에서 </strong></h2><hr /><ul><li>윈도우즈에서는 에디트 프로그램을 이용하여 변환할 수 있습니다.</li><li>예) UltraEdit 에서 파일 -&gt; 변환 -&gt; 'DOS-&gt;UNIX' 선택 후 저장</li></ul><p> </p><h2 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-Linux/Unix에서"><strong>Linux/Unix에서</strong></h2><hr /><h3 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-dos2unix를이용하여unix형파일로변환">dos2unix 를 이용하여 unix 형 파일로 변환</h3><ul><li><p>dos2unix 명령은 DOS/MAC 파일을 UNIX 형식으로 변환해줍니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ dos2unix SYS_T.dat
+dos2unix: converting file SYS_T.dat to UNIX format ...</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>dos2unix 수행 전,후 파일 타입 비교</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ file SYS_T.dat
+SYS_T.dat: ISO-8859 text, with very long lines, with CRLF line terminators           # 도스 형식 파일
+
+$ dos2unix SYS_T.dat
+dos2unix: converting file SYS_T.dat to UNIX format ...
+
+$ file SYS_T.dat
+SYS_T.dat: ISO-8859 text, with very long lines                                       # UNIX 형식 파일</pre>
+</div></div></li></ul><h3 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-sed를이용하여^M제거">sed 를이용하여 ^M 제거</h3><ul><li>sed 를 이용하여 ^M 제거 한 파일을 iloader 데이터 파일로 사용합니다.</li><li><p>^M 은 Ctrl+v+m 으로 입력해야 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ sed &#39;s/^M//g&#39; SYS_T.dat &gt; SYS_T.dat.1</pre>
+</div></div></li></ul><p> </p><h2 id="id-도스형식데이터파일을iloader로업로드할때에러가발생합니다.-ALTIBASEHDB5.5.1부터는...">ALTIBASE HDB 5.5.1 부터는 ...</h2><hr /><ul><li><p>ALTIBASE HDB 5.5.1 부터는 레코드 구분자로 CR+LF를 의미하는 <strong>%r%n</strong> 을 사용하면 파일 변환/수정 없이 업로드 할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ file SYS_T.txt
+SYS_T.txt: ISO-8859 text, with CRLF, LF line terminators
+
+
+$ iloader -s 127.0.0.1 -u sys -p manager in -f SYS_T.fmt -d SYS_T.txt -log SYS_T.log -bad SYS_T.bad -t &quot;|&quot; -r &quot;%r%n&quot;
+-----------------------------------------------------------------
+     Altibase Data Load/Download utility.
+     Release Version 5.5.1.4.10
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION : TCP
+DATA_NLS_USE: MS949
+UPLOAD : 13.5710 msec
+     
+     Load Count  : 2(T)</pre>
+</div></div></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 2. Database side diagnostics</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Performance-Tuning_1802802.html">ALTIBASE HDB Performance Tuning</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Performance-diagnostics-for-ALTIBASE-HDB_1802804.html">Performance diagnostics for ALTIBASE HDB</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 2. Database side diagnostics
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> Technical Support 1 Team</span> on Mar 06, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Once all the considerations on &quot;Application side diagnostics&quot; are applied, the next step is to look into the settings of ALTIBASE HDB.</p>
+
+
+<h2 id="id-2.Databasesidediagnostics-LogfileI/Ocontention">Log file I/O contention</h2>
+
+<p>ALTIBASE HDB makes use of  WAL (Write Ahead Logging) protocol which requires that all modifications are written to a transaction log (logfile) before they are applied to DBMS. If you want to enhance the performance of the application, you will need to check the state of log files.</p>
+
+<p>There are two threads related to the state of log files. The first one is &quot;logfile prepare thread&quot; which allocates new memory in order to write a redo log. The second one is &quot;log write thread&quot; which applies all modifications into DBMS.<br />
+Once the speed of &quot;log write thread&quot; exceeds &quot;logfile prepare thread&quot;, &quot;log write thread&quot; has to wait for &quot;logfile prepare thread&quot; to prepare log files. This symptom is called as &quot;logfile IO contention&quot;.<br />
+ALTIBASE HDB provides a parameter called &quot;PREPARE_LOG_FILE_COUNT&quot;(default value is 5) to address this issue. Increasing this value sufficiently can prevent the problem in advance.<br />
+You can monitor the state of logfile as follows:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select LF_OPEN_COUNT, LF_PREPARE_COUNT, LF_PREPARE_WAIT_COUNT from v$lfg;
+</pre>
+</div></div>
+
+<p>If the value of LF_PREPARE_WAIT_COUNT is greater than 1 from the result of the above query, you need to increase the value. The value can be estimated as following.<br />
+Double the parameter value of &quot;PREPARE_LOG_FILE_COUNT&quot;, then see the value of LF_PREPARE_WAIT_COUNT is still larger than 1.<br />
+If so, double the value again and see the result until the value reaches 100.<br />
+If LF_PREPARE_WAIT_COUNT is still over 1, it means that the performance of disk is slow. Therefore, you have to consider changing the disk to resolve the problem.</p>
+
+
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Caution : ALTIBASE HDB allocates memory for log files based on the value of PREPARE_LOG_FILE_COUNT. Therefore, larger value means larger memory usage.</p>
+                    </div>
+    </div>
+
+
+<h2 id="id-2.Databasesidediagnostics-CheckpointI/O">Checkpoint I/O</h2>
+
+<p>The fuzzy and ping-pong based implementation of ALTIBASE HDB checkpointing does not impact transaction response times. However, if the log files and data files are physically on the same file system there may be some read and write I/O contention.</p>
+
+<p>In another case, If buffered I/O mechanisms of the Operating System (OS) is used, most of I/O the traffic resides in the OS buffer. Once OS flushes all data onto disk area, the performance again may fluctuate at that time. If buffered I/O of the OS causes performance degradations, you may want to consider changing it to DIRECT I/O. Please, refer to the OS manual how to change this setting.</p>
+
+<p>The best approach to deal with such I/O contentions is to separate the physical location of  the log files and datafiles.</p>
+
+<p>ALTIBASE HDB provides the following parameters to scatter I/O writes.</p>
+
+<ul>
+	<li>CHECKPOINT_BULK_WRITE_PAGE_COUNT 0 =&gt; 100</li>
+	<li>CHECKPOINT_BULK_WRITE_SLEEP_SEC 0 =&gt; 0</li>
+	<li>CHECKPOINT_BULK_WRITE_SLEEP_USEC 0 =&gt; 5000</li>
+	<li>CHECKPOINT_BULK_SYNC_PAGE_COUNT 3200 =&gt; 100</li>
+</ul>
+
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Caution : Checkpoint duration with tuned parameters as above is longer than when using the default parameters. Therefore in this case, you have to have more disk space available for log files.</p>
+                    </div>
+    </div>
+
+
+<h2 id="id-2.Databasesidediagnostics-MULTIPLEXING_THREAD_COUNTsetting">MULTIPLEXING_THREAD_COUNT setting</h2>
+
+<p>We highly recommend that the number of MULTIPLEXING_THREAD_COUNT be twice or four times bigger than the number of CPU cores. The best-suited value must be determined by testing with the application.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; select rpad(type, 30), count(*) from v$service_thread group by type
+    2  union all
+    3 select &#39;# of IPC &#39;, count(*) from v$session where comm_name like &#39;%IPC%&#39;;
+RPAD(TYPE, 30)                  COUNT
+--------------------------------------------------------
+DEDICATED                       1
+SHARED                          16
+# of IPC                        1
+</pre>
+</div></div>
+<p>It is best to have the number of &quot;DEDICATED&quot; thread same as &quot;# of IPC&quot;<br />
+Having &quot;DEDICATED&quot; value greater than # of IPC means a long running query may exist, so you will need to locate and tune it.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; select rpad(type, 30), count(*) from v$service_thread group by type
+    2  union all
+    3 select rpad(name, 30), value1 from v$property where name like &#39;MULTIPLEXING%_THREAD_COUNT&#39;;
+RPAD(TYPE, 30)                  COUNT
+-----------------------------------------------
+SOCKET                          16
+MULTIPLEXING_THREAD_COUNT       16
+MULTIPLEXING_MAX_THREAD_COUNT   1024
+</pre>
+</div></div>
+
+<p>The number of &quot;SOCKET&quot; thread might grow up to the value of MULTIPLEXING_MAX_THREAD_COUNT(default 1024). If the value of &quot;SOCKET&quot; is bigger than the value of MULTIPLEXING_THREAD_COUNT, again there may exist some long running queries.</p>
+
+<p>A long running query slows down the performance and takes much CPU usage in the system.</p>
+
+<h2 id="id-2.Databasesidediagnostics-MemoryAger(GarbageCollector-GC)">Memory Ager (Garbage Collector - GC)</h2>
+
+<p>The Memory Ager (GC) reclaims garbage or memory occupied by objects that are no longer in use by the application - the committed old versions by transactions. The GC works independently formed by threads and is consisted with MEM_LOGICAL_AGER and MEM_DELTHR. The former mostly clears unused &quot;index pages&quot; while the latter does unused &quot;data pages&quot;, respectively. If GC can not process the work fast enough, it affects the performance of transactions. The reason is that transactions may look up not only the current version of record and index pages, but also the old versions of them.</p>
+
+<p>ALTIBASE HDB provides the performance view tables to monitor the state of GC.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select add_oid_cnt, gc_oid_cnt , add_oid_cnt - gc_oid_cnt GCGAP from v$memgc;
+</pre>
+</div></div>
+
+<p>If you get increasing values of GCGAP while executing the query above, there may exist some long running queries. You can locate such queries with the following SQL.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select c.session_id, comm_name, client_pid, execute_flag, total_time, execute_time, fetch_time, rpad(query,500)
+  from (select * from v$memgc limit 1) a, v$transaction b, v$statement c, v$session d
+ where (a.MINMEMSCNINTXS = b.MEMORY_VIEW_SCN or a.MINMEMSCNINTXS = b.MIN_MEMORY_LOB_VIEW_SCN)
+   and b.id = c.tx_id
+   and c.session_id = d.id;
+</pre>
+</div></div>
+
+<p>If there are no symptoms related to the cases above, ALTIBASE HDB provides the parameters below to take control.</p>
+<ul>
+	<li>AGER_WAIT_MINIMUM=200000 (microseconds)</li>
+	<li>AGER_WAIT_MAXIMUM=1000000 (microseconds)</li>
+</ul>
+
+
+<p>To enhance GC's performance, you need to lower the parameter values. Then the next wake-up time of GC, it will be faster.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Caution : The faster wake-up time of GC is, the more CPU cycle is consumed by GC which may result in slower transaction response times due to high CPU consumption.</p>
+                    </div>
+    </div>
+
+
+<h2 id="id-2.Databasesidediagnostics-BUFFER_AREA_SIZE">BUFFER_AREA_SIZE</h2>
+
+<p>The Buffer Cache uses the LRU (least recently used)  algorithm to keep track of what was used and when. The LRU allows HDB to determine which buffers have not been accessed for a long time so that they can be replaced first.In ALTIBASE HDB, the LRU list is separated into hot and cold zones, and can thus be called a “hot-cold LRU list”. Buffers that are accessed frequently are placed in the hot zone, whereas those that are not accessed frequently are placed in the cold zone. When a buffer needs to be replaced, only the cold zone is searched, meaning that hot buffers are not considered as replacement candidates.<br />
+When a page is first loaded into a buffer, it is inserted at the mid-point (LRU cold first) of the LRU list. When allocating a buffer to the new data page, if there are no free buffers in the prepare list, the end (LRU cold last) of this list is searched first, and a cold buffer is then replaced. The buffer that is replaced is called a “victim”. Buffers that are read frequently are moved to the “LRU hot first” position in the hot zone. Meanwhile, dirty buffers, that is, buffers containing pages that have been updated but haven't been flushed to disk, are moved to the flush list. Additionally, clean buffers, that is, buffers containing pages that haven't been updated, are designated as replacement buffers as long as they are not in the hot zone. The relative size of the hot zone can be set using the HOT_LIST_PCT property. The default is 50, which means that half of the LRU list is used as the hot zone. Users need to analyze access patterns in their application since HOT_LIST_PCT property values can influence the performance.</p>
+
+<ul>
+	<li>Example SQL how to alter HOT_LIST_PCT value</li>
+</ul>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+alter system set HOT_LIST_PCT = 60;
+</pre>
+</div></div>
+
+<h2 id="id-2.Databasesidediagnostics-SQLPLANCACHE">SQL PLAN CACHE</h2>
+
+<p>The Plan Cache is a piece of memory that ALTIBASE HDB uses in order to store SQL plans. This feature has been introduced to HDB because the Prepare-Phase(Parse-Validate-Optimize) is expensive in terms of CPU cycles. It's functionality can be compared to the Library Cache of Oracle.</p>
+
+<p>ALTIBASE HDB provide performance-views to find out about the state of the SQL plan cache.</p>
+<ul>
+	<li>V$SQL_PLAN_CACHE</li>
+	<li>V$SQL_PLAN_CACHE_PCO</li>
+	<li>V$SQL_PLAN_CACHE_SQLTEXT</li>
+</ul>
+
+
+<p>Following parameters are used to tune the performance of the SQL plan cache.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> name </p></th>
+<th class="confluenceTh"><p> value </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQL_PLAN_CACHE_SIZE </p></td>
+<td class="confluenceTd"><p> 67108864 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQL_PLAN_CACHE_BUCKET_CNT </p></td>
+<td class="confluenceTd"><p> 127 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQL_PLAN_CACHE_HOT_REGION_LRU_RATIO </p></td>
+<td class="confluenceTd"><p> 50 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQL_PLAN_CACHE_PREPARED_EXECUTION_CONTEXT_CNT </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<ul>
+	<li>Check the hit_ratio of the plan cache in the time interval.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select CACHE_HIT_COUNT, CACHE_MISS_COUNT from v$sql_plan_cache;
+</pre>
+</div></div></li>
+</ul>
+
+
+<ol>
+	<li>If CACHE_HIT_COUNT is much bigger than CACHE_MISS_COUNT, that would be a desirable state.<br />
+We highly recommend you that the ratio of &quot;CACHE_MISS_COUNT / CACHE_HIT_COUNT&quot; be normally less than 1/10000. Please also note that this figure is not applicable to all cases.
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Recommended Action :<br />
+a. extend the size of PLAN_CACHE<br />
+b. convert the source &quot;direct-execute&quot; to &quot;prepare-execute&quot;<br />
+c. configure the SQL_PLAN_CACHE_HOT_REGION_LRU_RATIO.</p>
+                    </div>
+    </div>
+</li>
+	<li>Check the number of statements and SQL_PLAN_CACHE_BUCKET_CNT<br />
+The plan cache is managed by a hash-table. SQL_PLAN_CACHE_BUCKET_CNT property inidicates the number of hash table buckets in a SQL plan cache. To reduce the scan time, we highly recommend that SQL_PLAN_CACHE_BUCKET_CNT would be 1/4 of total number of statements based on our experience.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select count(*) as total_number_of_statement from v$statement;
+</pre>
+</div></div>
+Set the SQL_PLAN_CACHE_BUCKET_CNT = total_number_of_statement/4</li>
+	<li>SQL_PLAN_CACHE_PREPARED_EXECUTION_CONTEXT_CNT<br />
+This property indicates the number of execution contexts that are initially created when plans are generated. The initial number of execution contexts is specified before plans are created, however, this only determines the initial number. The number of execution contexts increases or decreases automatically<br />
+as required during runtime. Increasing this value can help realize better performance when only one plan is executed at a time, however, in other cases the plan size is merely increased, without realizing improved performance.To avoid the concurrent contention, we recommend that SQL_PLAN_CACHE_PREPARED_EXECUTION_CONTEXT_CNT would be similar as the number of CPU's.</li>
+</ol>
+
+
+<h2 id="id-2.Databasesidediagnostics-Others">Others</h2>
+
+<p>If all considerations above are applied, and still observing performance issues, the following procedure will be helpful to figure out what the problem is.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+pstack $ALTIBASE_PID
+</pre>
+</div></div>
+<p>We highly recommend you to consecutively gather 3 times of pstack with sleep interval (for example: 10 seconds).</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select * from v$mutex order by miss_count desc limit 10;
+</pre>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select event, wait_time from v$statement where wait_time &gt; 1;
+</pre>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+select event, TOTAL_WAITS, time_waited from v$system_event order by 2,3;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-2130184"></a>
+                                    <font class="smallfont"><p>very good  <br class="atl-forced-newline" /> <br class="atl-forced-newline" /></p>
+
+<p>sunzhiqiang</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by  at Jul 14, 2011 06:54
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-3473541"></a>
+                                    <font class="smallfont"><p>HOT_PCT_LIST --&gt; HOT_LIST_PCT </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ts1.tech@altibase.com at Mar 06, 2012 15:16
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

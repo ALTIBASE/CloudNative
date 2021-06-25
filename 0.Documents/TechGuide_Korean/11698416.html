@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 커널파라미터</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698415.html">Altibase 운영을 위한 Solaris 설정 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 커널파라미터
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p class="0cm">솔라리스 운영체제에서 Altibase를 운영할 경우 변경해야 할 커널파라미터의 종류와 어떤 이유로 설정을 변경해야 하는지에 대해 설명한다. 마지막 부분에는 솔라리스에서 커널파라미터를 변경하는 방법에 대해 소개한다.</p><p class="0cm">각 커널파라미터와 관련된 상세한 사항은 솔라리스에서 제공하는 가이드를 참조하도록 한다.</p><h1 class="0cm" id="id-커널파라미터-공유메모리">공유메모리</h1><p>어플리케이션을 개발하는 경우 두 개 이상의 프로세스가 정보를 주고 받아야 할 필요성이 발생한다. 운영체제는 이를 위해 IPC (Inter Process Communication)라고 부르는 자원을 제공하고 있다. 여러 IPC자원 중에 두 개 이상의 프로세스가 정보를 주고 받기 위해 사용되는 메모리영역을 공유메모리(shared memory)라고 부른다.    공유메모리는 사용자가 단위를 지정하여 한 개 이상의 영역으로 나누어 설정할 수 있다. 한 개의 공유메모리 영역을 세그먼트(segment)라고 부른다.</p><p>예를 들어 사용자는 10메가바이트로 1개의 세그먼트를 갖는 공유메모리를 설정할 수도 있고 10 메가바이트 영역을 10개의 세그먼트로 구성하여 100 메가바이트의 공유메모리를 설정할 수도 있다.</p><p>Altibase 는 기본설정으로 메모리DB를 프로세스의 힙(Heap)영역에 적재하지만 사용자의 설정에 따라서는 공유메모리에 적재하여 사용할 수 있다. (이와 관련된 설정방법은『Altibase 프로퍼티 설정 가이드』문서를 참고하도록 한다.) 혹은, DBMS와 접속하는 클라이언트의 통신버퍼를 공유메모리를 통해 주고 받을 수 있도록 설정할 수 있다. 따라서, 메모리를 사용하는 부분에 대한 최대크기나 세그먼트의 개수제한에 대한 커널파라미터 설정을 올바르게 변경해야 한다.</p><p>일반적인 유닉스 시스템에서 공유메모리와 관련된 커널파라미터는 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p align="center">커널파라미터</p></th><th class="confluenceTh"><p>설명</p></th><th class="confluenceTh"><p>권장 값</p></th></tr><tr><td class="confluenceTd"><p>shmmax</p></td><td class="confluenceTd"><p>한 개의 공유메모리 세그먼트의 최대크기</p></td><td class="confluenceTd"><p>2G+1</p></td></tr><tr><td class="confluenceTd"><p>shmmni</p></td><td class="confluenceTd"><p>시스템내의 공유메모리 세그먼트의 최대개수</p></td><td class="confluenceTd"><p>500이상</p></td></tr><tr><td class="confluenceTd"><p>shmseg</p></td><td class="confluenceTd"><p>한 개의 공유메모리에 접근 가능한 프로세스의 최대개수</p></td><td class="confluenceTd"><p>200이상</p></td></tr></tbody></table></div><h2 id="id-커널파라미터-메모리DB를공유메모리에적재할경우고려사항"><strong>메모리DB를 공유메모리에 적재할 경우 고려사항</strong></h2><p>메모리DB를 공유메모리에 적재할 경우에는 아래 사항들을 추가로 고려해야 한다.</p><ul><li>shmmax<br />shmmax의 경우는 구동단계에서는 Altibase 설정파일 내에 STARTUP_SHM_CHUNK_SIZE 항목의 크기만큼 한 개의 세그먼트가 만들어지기 때문에 STARTUP_SHM_CHUNK_SIZE 보다 큰 값으로 설정하도록 한다.</li><li>shmmni<br />메모리DB의 사용량이 증가하게 되면 Altibase는 자동적으로 메모리영역을 증가시킨다. 이 경우 역시 세그먼트가 새롭게 생성되는데 이 세그먼트의 크기는 Altibase설정파일 내에 EXPAND_CHUNK_PAGE_COUNT * 32K 단위로 세그먼트가 생성되기 때문에 shmmni는 가능한 여유 있게 설정하도록 한다.</li></ul><h1 id="id-커널파라미터-세마포어">세마포어</h1><p>공유메모리와 동일하게 IPC자원의 일종이다. 차이점은 공유메모리가 데이터를 프로세스 간에 공유하기 위한 방법으로 제공되는 반면에 세마포어는 프로세스 간의 동기화를 구현하기 위한 방법으로 운영체제에서 제공되는 자원이다. 동기화란 특정자원이나 객체에 대해 한 시점에 하나의 프로세스만이 접근하여 변경 가능하도록 제어 하는 것을 의미한다. (뮤텍스(mutex)와 다르게 조회는 동시에 가능하게 하다.)</p><p>Altibase는 앞에서 설명한대로 로컬서버 내에 Altibase 서버와 클라이언트가 존재할 경우 양단간의 통신버퍼로 공유메모리를 사용하는데 이때, 메모리에 대한 동시성을 제어해야 할 필요가 있다. (동시에 쓰기를 진행하면 안되기 때문이다.)</p><p>이 경우 메모리에 대한 읽기/쓰기에 대한 접근권한의 제어를 위해 세마포어 오퍼레이션(semaphore operation)이 발생하게 된다.</p><p>세마포어 오퍼레이션에 따라 프로세스는 대기상태가 되거나 혹은 진행상태가 될 수 있다. 이러한 세마포어 오퍼레이션은 동시다발적으로 발생되기 때문에 세마포어의 개수 및 오퍼레이션에 대한 적합한 커널파라미터 설정이 필요하다.</p><p>일반적인 유닉스 시스템에서 세마포어와 관련된 커널파라미터는 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>커널파라미터</p></th><th class="confluenceTh"><p>설명</p></th><th class="confluenceTh"><p>권장 값</p></th></tr><tr><td class="confluenceTd"><p>semmns</p></td><td class="confluenceTd"><p>시스템 내 세마포어의 최대개수이며 16바이트의 커널메모리가 할당된다.</p></td><td class="confluenceTd"><p>8192</p></td></tr><tr><td class="confluenceTd"><p>semmni</p></td><td class="confluenceTd"><p>세마포어 세트의 최대개수로 65535 이내에 설정가능하며 하나의 세트당 84바이트의 커널메모리가 할당된다.</p></td><td class="confluenceTd"><p>5029</p></td></tr><tr><td class="confluenceTd"><p>semmsl</p></td><td class="confluenceTd"><p>한 개의 세마포어 세트에 존재하는 세마포어의 최대개수이며 논리적으로 semmns와 같거나 작아야 한다. 너무 크게 잡으면 몇 개의 세마포어 ID가 시스템 전체의 세마포어를 독점할 수 있다.</p></td><td class="confluenceTd"><p>2000</p></td></tr><tr><td class="confluenceTd"><p>semmap</p></td><td class="confluenceTd"><p>semget 호출에 의해 얻어지는 세마포어 공간을 의미</p></td><td class="confluenceTd"><p>5024</p></td></tr><tr><td class="confluenceTd"><p>semmnu</p></td><td class="confluenceTd"><p>시스템 내의 undo structure의 최대개수</p></td><td class="confluenceTd"><p>1024</p></td></tr><tr><td class="confluenceTd"><p>semopm</p></td><td class="confluenceTd"><p>semop 시스템 콜에서 처리하는 operation의 최대개수</p></td><td class="confluenceTd"><p>512</p></td></tr><tr><td class="confluenceTd"><p>semume</p></td><td class="confluenceTd"><p>한 개의 프로세스당 undo entry의 최대개수</p></td><td class="confluenceTd"><p>512</p></td></tr><tr><td class="confluenceTd"><p>semvmx</p></td><td class="confluenceTd"><p>한 개의 세마포어의 최대값을 제한하며 32767보다 크게 지정하지 않는다.</p></td><td class="confluenceTd"><p>32767</p></td></tr></tbody></table></div><h1 id="id-커널파라미터-변경방법">변경방법</h1><p>솔라리스에서는 /etc/system 파일을 통해 커널파라미터를 설정하며 5.10 이후부터는 기존방법 외에도 프로젝트 개념을 도입하면서 사용자계정 별로도 커널파라미터를 적용할 수 있게 되어 있다.</p><p>여기서는 두 가지 방식으로 모두에 대해 설정하는 예를 다룬다. 기본적으로 root 계정으로의 접속을 필요로 하며 올바르게 적용하기 위해서는 변경 후 시스템을 재 구동을 하여야만 한다.</p><h2 id="id-커널파라미터-5.10이하"><strong>5.10</strong> 이하</h2><p>/etc/system 파일 내에 vi와 같은 편집기로 아래와 같은 내용을 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set shmsys:shminfo_shmmin = 1 
+set shmsys:shminfo_shmmax = 2147483649
+set shmsys:shminfo_shmmni = 500 
+set shmsys:shminfo_shmseg = 200 
+set semsys:seminfo_semmns = 8192 
+set semsys:seminfo_semmni = 5029 
+set semsys:seminfo_semmsl = 2000 
+set semsys:seminfo_semmap = 5024 
+set semsys:seminfo_semmnu = 1024 
+set semsys:seminfo_semopm = 512 
+set semsys:seminfo_semume = 512</pre>
+</div></div><h2 id="id-커널파라미터-5.10이상"><strong style="color: rgb(0,0,0);font-size: 20.0px;">5.10</strong><span style="color: rgb(0,0,0);"> 이상</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><p>솔라리스 5.10에서는 기존에 존재하던 커널파라미터 항목들이 일부 사라졌기 때문에 공유메모리 및 세마포어와 관련된 설정 항목을 projadd 및 projmod라는 솔라리스 유틸리티를 사용하여 쉘 프롬프트 상에서 실행하면 된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">  # projadd -U altibase -K &quot;project.max-sem-ids=(priv,5029,deny)&quot; user.altibase 
+  # projmod -a -K &quot;project.max-shm-memory=(priv, 물리메모리 최대값, deny)&quot; user.altibase 
+  # projmod -a -K &quot;process.max-sem-nsems=(priv,2000,deny)&quot;  user.altibase 
+  # projmod -a -K &quot;process.max-sem-ops=(priv,512,deny)&quot;  user.altibase
+  # projmod -a -K &quot;project.max-shm-ids=(priv,1024,deny)&quot; user.altibase 
+  # projmod -a -K &quot;project.max-msg-messages=(priv,100,deny)&quot;  user.altibase
+  # projmod -a -K &quot;project.max-msg-ids=(priv,100,deny)&quot; user.altibase
+  # projmod -a -K &quot;process.max-msg-qbytes=(priv,1048576,deny)&quot; user.altibase</pre>
+</div></div><p>주의할 것은 max-shm-memory의 경우 물리적 메모리의 최대값으로 설정하도록 한다.</p><p>설정 변경에 대한 확인은 아래 명령어로 확인 가능하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># projadd –l</pre>
+</div></div><p> </p><p><span style="color: rgb(0,0,0);"><br /></span></p><p><strong><br /></strong></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

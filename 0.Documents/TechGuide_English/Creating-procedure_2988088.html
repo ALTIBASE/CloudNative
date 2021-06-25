@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Creating procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Creating procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 16, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346726 {padding: 0px;}
+div.rbtoc1624409346726 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346726 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346726'>
+<ul class='toc-indentation'>
+<li><a href='#Creatingprocedure-Overview'>Overview </a></li>
+<li><a href='#Creatingprocedure-Notices'>Notices</a></li>
+<li><a href='#Creatingprocedure-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Creatingprocedure-Overview">Overview </h2>
+
+<p>Approximate structure of ALTIBASE Stored Procedure is almost same with the PL/SQL of ORACLE.</p>
+
+<p>It consists of parameter declaration, local variables declaration, execution section and exception handlers.</p>
+
+<p>The description above is same with ALTIBASE HDB and ORACLE.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="Creatingprocedure-Notices">Notices</h2>
+
+<ul>
+	<li>LOB type value is unavailable as a parameter value</li>
+	<li>To execute an creation of procedure, &quot;/&quot; is required after &quot;END;&quot; on iSQL.
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+<h2 id="Creatingprocedure-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary (column_value <span style="color: rgb(0,0,255);"><strong>VARCHAR2</strong></span>, <br class="atl-forced-newline" />
+emp_column <span style="color: rgb(0,0,255);"><strong>VARCHAR2</strong></span>, amount NUMBER) IS <br class="atl-forced-newline" />
+v_column VARCHAR2(30); <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- determine if a valid column name has been given as input <br class="atl-forced-newline" />
+SELECT COLUMN_NAME INTO v_column FROM USER_TAB_COLS <br class="atl-forced-newline" />
+WHERE TABLE_NAME = 'EMPLOYEES' AND COLUMN_NAME = emp_column; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>DBMS_OUTPUT.put_line('COLUMN_NAME: ' || V_COLUMN);</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>sql_stmt := 'UPDATE employees SET salary = salary + :1 WHERE '</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>|| v_column || ' = :2';</strong></span> <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE sql_stmt USING amount, column_value; <br class="atl-forced-newline" />
+IF SQL%ROWCOUNT &gt; 0 THEN <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>DBMS_OUTPUT.PUT_LINE</strong></span>('Salaries have been updated for: ' || emp_column || ' = ' || column_value); <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN NO_DATA_FOUND THEN <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>DBMS_OUTPUT.PUT_LINE</strong></span> ('Invalid Column: ' || emp_column); <br class="atl-forced-newline" />
+END raise_emp_salary; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary <br class="atl-forced-newline" />
+ (column_value <span style="color: rgb(0,0,255);"><strong>VARCHAR2(40),</strong></span> <br class="atl-forced-newline" />
+emp_column <span style="color: rgb(0,0,255);"><strong>VARCHAR2(40),</strong></span> amount NUMBER) IS <br class="atl-forced-newline" />
+v_column VARCHAR2(40); <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- determine if a valid column name has been given as input <br class="atl-forced-newline" />
+SELECT B.COLUMN_NAME INTO v_column <br class="atl-forced-newline" />
+FROM SYSTEM_.SYS_TABLES_ A, SYSTEM_.SYS_COLUMNS_ B <br class="atl-forced-newline" />
+ WHERE A.USER_ID = B.USER_ID AND A.TABLE_ID = B.TABLE_ID <br class="atl-forced-newline" />
+AND A.TABLE_NAME = 'EMPLOYEES' AND B.COLUMN_NAME = emp_column; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>SYSTEM_.PRINTLN('COLUMN_NAME: ' || V_COLUMN);  </strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>sql_stmt := 'UPDATE employees SET salary = salary + :column_value WHERE ' || v_column || ' = :emp_column';</strong></span> <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE sql_stmt USING amount, column_value; <br class="atl-forced-newline" />
+IF SQL%ROWCOUNT &gt; 0 THEN <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>SYSTEM_.PRINTLN</strong></span>('Salaries have been updated for: ' || emp_column || ' = ' || column_value); <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN NO_DATA_FOUND THEN <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>SYSTEM_.PRINTLN</strong></span> ('Invalid Column: ' || emp_column); <br class="atl-forced-newline" />
+END raise_emp_salary; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> As parameters of procedure in ORACLE, The length of char data type should be omitted. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+The transformation of DBMS_OUTPUT.put_line statement is equal to the left. <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+PLACE HOLDER(e.g&gt; :1, :2, :3) is not supported in ALTIBASE HDB. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+So it should be modified to the corresponding variable_name with a colon mark.(e.g&gt; :column_value, :emp_column) </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

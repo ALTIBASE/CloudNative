@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-21011 : Invalid literal</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-21011 : Invalid literal
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> richard.nahm	</span> on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055744 {padding: 0px;}
+div.rbtoc1624409055744 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055744 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055744'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-21011:Invalidliteral-개요'>개요</a></li>
+<li><a href='#ERR-21011:Invalidliteral-버전'>버전</a></li>
+<li><a href='#ERR-21011:Invalidliteral-원인'>원인</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-21011:Invalidliteral-개요">개요</h1><hr /><p>Invalid literal 에러 발생 원인과 발생 사례에 대해 설명합니다.</p><p> </p><p> </p><h1 id="ERR-21011:Invalidliteral-버전">버전</h1><hr /><p>ALTIBASE HDB 모든 버전.</p><p> </p><p> </p><h1 id="ERR-21011:Invalidliteral-원인">원인</h1><hr /><p>TO_NUMBER, CAST 등의 변환 함수나 비교 연산자 사용 시 비교 대상 간의 데이터 타입이 일치하지 않을 때 발생합니다.</p><p>자동 형 변환 과정에서 변환하려는 데이터 타입으로 변환할 수 없는 값을 가질 때 발생할 수도 있습니다.</p><p> </p><h4 id="ERR-21011:Invalidliteral-사례1.UNION,UNIONALL사용시맵핑이되는컬럼에대해데이터타입이다를때.">사례 1. UNION, UNION ALL 사용 시 맵핑이 되는 컬럼에 대해 데이터 타입이 다를 때.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> iSQL&gt; SELECT 0 from DUAL
+    2 UNION
+    3 SELECT &#39;A&#39; from DUAL;
+0           
+--------------
+0           
+[ERR-21011 : Invalid literal]
+1 row selected.</pre>
+</div></div><p> </p><p> </p><h4 id="ERR-21011:Invalidliteral-사례2.TO_NUMBER함수에주어진값이숫자형으로변환할수없는문자형일때.">사례 2. TO_NUMBER 함수에 주어진 값이 숫자형으로 변환할 수 없는 문자형일 때.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT TO_NUMBER(&#39;1-1&#39;) from DUAL;
+[ERR-21011 : Invalid literal 
+0001 : SELECT TO_NUMBER(&#39;1-1&#39;) from DUAL
+                       ^    ^
+]
+iSQL&gt; </pre>
+</div></div><p> </p><p> </p><h4 id="ERR-21011:Invalidliteral-사례3.비교연산에사용된컬럼에자동형변환할수없는데이터값이존재하는경우.">사례 3. 비교 연산에 사용된 컬럼에 자동 형 변환할 수 없는 데이터 값이 존재하는 경우.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T (NO CHAR(1));
+Create success.
+iSQL&gt; INSERT INTO T VALUES(&#39;1&#39;);
+1 row inserted.
+iSQL&gt; INSERT INTO T VALUES(&#39;2&#39;);
+1 row inserted.
+iSQL&gt; SELECT * FROM T WHERE NO = 1;         -- CHAR형 컬럼의 값을 숫자형 데이터와 비교함. NO 컬럼의 값이 숫자형으로 자동 형 변환이 이루어짐. 
+NO                                          -- NO 컬럼에 숫자형으로 변환 가능한 값만 존재하기 때문에 에러없이 수행됨.
+------
+1                                           
+1 row selected.
+
+iSQL&gt; INSERT INTO T VALUES(&#39;A&#39;);            -- NO 컬럼에 숫자형으로 변환할 수 없는 값이 입력.
+1 row inserted.
+iSQL&gt; SELECT * FROM T WHERE NO = 1;         -- NO 컬럼의 값을 숫자형으로 자동 형 변환이 이루어지면서 &#39;A&#39; 라는 값 때문에 Invalid literal 에러가 발생함. 
+[ERR-21011 : Invalid literal]
+
+iSQL&gt; SELECT * FROM T WHERE NO = &#39;1&#39;;       -- 문자형 컬럼에는 비교 값에 작은 따옴표(&#39;) 를 사용해야함. 
+NO                                          
+------
+1                                           
+1 row selected.
+
+
+
+iSQL&gt; INSERT INTO T VALUES(&#39; &#39;);            -- NO 컬럼에 공백 문자로 포함된 경우도 Invalid literal 에러가 발생함.
+1 row inserted.
+iSQL&gt; SELECT TO_NUMBER(NO) FROM T;          
+[ERR-21011 : Invalid literal]
+
+iSQL&gt; SELECT TO_NUMBER(TRIM(NO)) FROM T;    -- 공백 문자의 경우 TRIM 함수를 이용하면 에러를 없앨 수 있음. 
+TO_NUMBER(TRIM(CODE)) 
+------------------------
+1           
+2           
+                       
+3 rows selected.
+iSQL&gt;  </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

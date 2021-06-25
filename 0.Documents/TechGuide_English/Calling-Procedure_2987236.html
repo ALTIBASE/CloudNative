@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Calling Procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Calling Procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348079 {padding: 0px;}
+div.rbtoc1624409348079 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348079 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348079'>
+<ul class='toc-indentation'>
+<li><a href='#CallingProcedure-Procedure'>Procedure</a></li>
+<li><a href='#CallingProcedure-CallProcinEmbedded-SQL'>Call Proc in Embedded-SQL</a></li>
+<li><a href='#CallingProcedure-SampleCode'>Sample Code</a></li>
+<li><a href='#CallingProcedure-DifferencefromORACLEinProcedure'>Difference from ORACLE in Procedure</a></li>
+</ul>
+</div>
+
+<h2 id="CallingProcedure-Procedure">Procedure</h2>
+
+<p>It is similar to PL/SQL of ORACLE.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+CREATE OR REPLACE PROCEDURE proc()
+AS
+// declare variable
+BEGIN
+// User-Code
+END;
+/
+</pre>
+</div></div>
+
+<h2 id="CallingProcedure-CallProcinEmbedded-SQL">Call Proc in Embedded-SQL</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+...
+EXEC SQL EXECUTE
+  BEGIN
+     pro_name();
+  END;
+END-EXEC;
+</pre>
+</div></div>
+<ul>
+	<li>APRE doesn't support functionality as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char ename[100];
+int sal;
+
+...
+// It is not supported.
+EXEC SQL EXECUTE
+BEGIN
+  SELECT ename, sal into :ename, :sal FROM employee;
+END;
+END-EXEC;
+</pre>
+</div></div></li>
+	<li>ALTIBASE HDB doesn't support returning array-result.</li>
+	<li>ALTIBASE HDB doesn't support a external procedure. (like procedure that it is stored in library-files)</li>
+</ul>
+
+
+<h2 id="CallingProcedure-SampleCode">Sample Code</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+// Procedure Sample
+CREATE OR REPLACE PROCEDURE proc1(ename in CHAR(40), o_sal out INTEGER)
+AS
+BEGIN
+  SELECT sal INTO o_sal FROM employee WHERE name = ename;
+END;
+/
+
+// APRE source Sample
+#include &lt;stdio.h&gt;
+
+main()
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+    char name[40+1];
+    int  sal;
+  EXEC SQL END DECLARE SECTION;
+
+
+  // Connect To DB
+  ...
+  // Call Procedure
+  sprintf (name, &quot;Andy Park&quot;);
+
+  EXEC SQL EXECUTE
+    BEGIN
+      proc1(:name, :sal);
+    END;
+  END-EXEC;
+</pre>
+</div></div>
+
+<h2 id="CallingProcedure-DifferencefromORACLEinProcedure">Difference from ORACLE in Procedure</h2>
+
+<p>If you execute a procedure having DML statement in auto-commit mode, you can search records affected after execution of procedure is complete.</p>
+
+<p>If you want to do it with ORACLE-style, you have to execute a procedure after change to Non-Autocommit mode in your session.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

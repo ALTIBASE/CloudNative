@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. JBoss Installation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JBOSS-Integration-Guide-for-Altibase_14647358.html">JBOSS Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. JBoss Installation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="id-1.JBossInstallation-/*&lt;![CDATA[*/div.rbtoc1624409361372{padding:0px;}div.rbtoc1624409361372ul{list-style:disc;margin-left:0px;}div.rbtoc1624409361372li{margin-left:0px;padding-left:0px;}/*]]&gt;*/InstallingJBoss#id-1.JBossInstallation-InstallingJBossInsta"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409361372 {padding: 0px;}
+div.rbtoc1624409361372 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409361372 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409361372'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.JBossInstallation-InstallingJBoss'>Installing JBoss</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.JBossInstallation-InstallationRequirements'>Installation Requirements</a></li>
+<li><a href='#id-1.JBossInstallation-BasicInstallation'>Basic Installation</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.JBossInstallation-WindowsenvironmentJDKsetting'>Windows environment JDK setting</a></li>
+<li><a href='#id-1.JBossInstallation-UnixenvironmentJDKsetting'>Unix environment JDK setting</a></li>
+</ul>
+</li>
+<li><a href='#id-1.JBossInstallation-JBossdirectorystructure'>JBoss directory structure</a></li>
+<li><a href='#id-1.JBossInstallation-RunningJBoss'>Running JBoss</a></li>
+<li><a href='#id-1.JBossInstallation-ShuttingJBossDown'>Shutting JBoss Down</a></li>
+<li><a href='#id-1.JBossInstallation-ConsiderationswhenrunningandshuttingdownJBoss'>Considerations when running and shutting down JBoss</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.JBossInstallation-Errorduetoportduplicationwhilerunning'>Error due to port duplication while running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></h1><h1 id="id-1.JBossInstallation-InstallingJBoss">Installing JBoss</h1><hr /><p>This chapter describes how to install and run JBoss, how to set environment variables, how to bind IP addresses, and the directory structure of Jboss.</p><h2 id="id-1.JBossInstallation-InstallationRequirements"><span>Installation Requirements</span></h2><hr /><p><span style="color: rgb(0,0,0);">Because JBoss is an application that is certified by the Java EE 6 Standard, JDK 1.6 to later must be installed to use JBoss.</span></p><p><span style="color: rgb(0,0,0);">JDK 1.7 was used in the test environment.</span></p><h2 id="id-1.JBossInstallation-BasicInstallation"><span>Basic Installation</span></h2><hr /><p>To install JBoss, download the package of the corresponding version from the JBoss homepage. (<a href="http://www.jboss.org/jbossas/downloads" class="external-link" rel="nofollow">http://www.jboss.org/jbossas/downloads</a>)<br />After downloading the package, unzip it using a compression tool in the Windows environment, and unzip command in the Unix environment.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Unzip</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">unzip jboss-6.1.0.GA.zip
+ …
+ inflating: jboss-6.1.0.GA/server/web/deployers/jboss-jca.deployer/jboss-jca-deployer.jar
+ inflating: jboss-6.1.0.GA/server/web/deployers/jbossweb.deployer/web.xml
+ inflating: jboss-6.1.0.GA/server/web/deployers/metadata-deployer-jboss-beans.xml
+ inflating: jboss-6.1.0.GA/server/web/deployers/security-deployer-jboss-beans.xml
+  
+ #</pre>
+</div></div><p>In this document, jboss-6.1.0.Final directory created by unpacking is named JBOSS_HOME. JBoss installs is completed by unzipping the package, and it can be run after configuring the JDK.</p><h3 id="id-1.JBossInstallation-WindowsenvironmentJDKsetting"><span>Windows environment JDK setting</span></h3><p><span style="color: rgb(0,0,0);">How to set JDK in Windows environment is as follows, and select one of two methods to set it.</span></p><ul><li><span style="color: rgb(0,0,0);">Add the JAVA_HOME variable to the system environment variable.</span></li></ul><p><span style="color: rgb(0,0,0);"><img class="confluence-embedded-image" src="attachments/14647358/14778383.png" data-image-src="attachments/14647358/14778383.png"></span></p><ul><li><span style="color: rgb(0,0,0);">Add to the JOBSS_HOME/bin/run.bat file, which is a BJoss running script.</span></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>run.bat</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">@echo off
+rem -------------------------------------------------------------------------
+rem JBoss Bootstrap Script for Windows
+rem -------------------------------------------------------------------------
+rem $Id: run.bat 111395 2011-05-18 07:45:07Z beve $
+ 
+ set JAVA_HOME=C:\Program Files\java\jdk1.7.0         ← Add JDK path
+@if not &quot;%ECHO%&quot; == &quot;&quot; echo %ECHO%
+@if &quot;%OS%&quot; == &quot;Windows_NT&quot; setlocal
+if &quot;%OS%&quot; == &quot;Windows_NT&quot; (
+ set &quot;DIRNAME=%~dp0%&quot;
+) else (
+ set DIRNAME=.\
+)
+ 
+ ……</pre>
+</div></div><h3 id="id-1.JBossInstallation-UnixenvironmentJDKsetting"><span>Unix environment JDK setting</span></h3><p><span style="color: rgb(0,0,0);">How to set JDK in the Unix environment is as follows, and select one of four methods to set it.</span></p><ul><li><p>Add the JAVA_HOME variable to the system environment variable</p></li><li><p>Add to the JBOSS_HOME/bin/run.sh file, which is a JBoss startup script</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>run.sh</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">#!/bin/sh
+### ====================================================================== ###
+## ##
+## JBoss Bootstrap Script ##
+## ##
+### ====================================================================== ###
+### $Id: run.sh 111395 2011-05-18 07:45:07Z beve $ ###
+# Extract the directory and the program name
+ 
+ 
+JAVA_HOME=/usr/jdk/jdk1.7.0 ← Add JDK path*
+ 
+…… |</pre>
+</div></div><h2 id="id-1.JBossInstallation-JBossdirectorystructure">JBoss directory structure</h2><hr /><p>When JBoss is installed, the following directories are created.</p><ul><li>JBOSS_HOME<ul><li>bin: JBOSS related shell script directory</li><li>common: Libraries commonly used in all server configurations</li><li>client: JAR file directory required for client operation</li><li>docs: XML schema and example configuration files directory</li><li>lib: JAR file directory required to run JBOSS</li><li>server: JBOSS server configuration directory<ul><li>all: Configuration that supports HA, clustering, and CORBA including Java EE</li><li>default: Configuration that provides Web, EJB, web and additional services</li><li>standard: Configuration that supports Web, EJB, jCA, JMS, Seam, Webservice, Console</li><li>web: Configuration supporting Web, EJB, Security, Console</li><li>minimal: Configuration that supports only minimal functions<ul><li>conf: Directory containing basic configuration information for security, logging, Boostrap, and JBOSS</li><li>data: Data directory required for JBOSS operation</li><li>deploy: JBOSS Service and application distribution directory</li><li>deployers: Deployer directory based on the JBOSS Microcontainer</li><li>lib: JAR file directory required for the JBOSS operation</li><li>log: Logging directory</li><li>tmp: JBOSS temporary directory Ex.) JSP file of WAR file</li><li>work: JBOSS working directory Ex.) Java file for JSP</li></ul></li></ul></li></ul></li></ul><h2 id="id-1.JBossInstallation-RunningJBoss">Running JBoss</h2><hr /><p>JBoss can be started by installing JBoss and configuring JDK.</p><p>In the Unix environment, it can be run by executing JBOSS_HOME/bin/run.sh script, and in the Windows environment, it can be run by executing JBOSS_HOME/bin/run bat batch file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Executing run.sh</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># sh run.sh
+ 
+ …
+16:44:55,672 INFO [xnio] XNIO Version 2.1.0.CR2
+16:44:55,678 INFO [nio] XNIO NIO Implementation Version 2.1.0.CR2
+16:44:55,858 INFO [remoting] JBoss Remoting version 3.1.0.Beta2
+16:44:55,907 INFO [TomcatDeployment] deploy, ctxPath=/
+16:44:55,960 INFO [HornetQServerImpl] trying to deploy queue jms.queue.ExpiryQueue
+16:44:56,026 INFO [HornetQServerImpl] trying to deploy queue jms.queue.DLQ
+16:44:56,039 INFO [service] Removing bootstrap log handlers
+16:44:56,078 INFO [org.apache.coyote.http11.Http11Protocol] Starting Coyote HTTP/1.1 on http-127.0.0.1-8080
+16:44:56,080 INFO [org.apache.coyote.ajp.AjpProtocol] Starting Coyote AJP/1.3 on ajp-127.0.0.1-8009
+16:44:56,081 INFO [org.jboss.bootstrap.impl.base.server.AbstractServer] JBossAS [6.1.0.Final &quot;Neo&quot;] Started in 19s:637ms </pre>
+</div></div><p><br />When JBoss is running normally, &quot;Started&quot; is displayed in the last log message, and the user can check whether JBoss is running normally by accessing the web console (<a href="http://server_ipport/" class="external-link" rel="nofollow">http://server_ip:port</a> number).</p><p>By accessing the Administration Console with an admin account (password: admin), the user can operate the currently running JBoss.</p><p><img class="confluence-embedded-image" src="attachments/14647358/14778384.png" data-image-src="attachments/14647358/14778384.png"></p><h2 id="id-1.JBossInstallation-ShuttingJBossDown"><span>Shutting JBoss Down</span></h2><hr /><p><span style="color: rgb(0,0,0);">To shut down JBoss, execute the JBOSS_HOME/bin/shutdown.sh or shutdown.bat script.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Executing shutdown.sh</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># sh shutdown.sh –S    ← When running with localhost
+ Shutdown message has been posted to the server.
+ Server shutdown may take a while - check logfiles for completion
+ # </pre>
+</div></div><h2 id="id-1.JBossInstallation-ConsiderationswhenrunningandshuttingdownJBoss">Considerations when running and shutting down JBoss</h2><hr /><p>When starting JBoss and shutting it down, these are some of the considerations.</p><h3 id="id-1.JBossInstallation-Errorduetoportduplicationwhilerunning">Error due to port duplication while running</h3><hr /><p>In JBoss, the default port is &quot;8080&quot;.</p><p>However, if this port is being used by another program, the following error occurs when starting JBoss, so it is necessary to change the port.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>port conflict error</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">DEPLOYMENTS IN ERROR:
+Deployment &quot;WebServer&quot; is in error due to the following reason(s): LifecycleException: Protocol handler initialization failed: java.net.BindException: Address already in use /127.0.0.1:8080 </pre>
+</div></div><p>To change the JBoss default port, modify the connector port in the JBOSS_HOME/server/default/deploy/jbossweb.sar/server.xml file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>server.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;8088&quot; address=&quot;${jboss.bind.address}&quot; redirectPort=&quot;${jboss.web.https.port}&quot; /&gt;</pre>
+</div></div><p> </p><div><span style="color: rgb(0,0,0);"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

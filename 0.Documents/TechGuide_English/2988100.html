@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Comparing PLSQL&#39;s Dynamic SQL with ALTIBASE HDB</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Dynamic-SQL-Conversion_2988071.html">Dynamic SQL Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Comparing PLSQL&#39;s Dynamic SQL with ALTIBASE HDB
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346940 {padding: 0px;}
+div.rbtoc1624409346940 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346940 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346940'>
+<ul class='toc-indentation'>
+<li><a href='#ComparingPLSQL&#39;sDynamicSQLwithALTIBASEHDB-Overview'>Overview</a></li>
+<li><a href='#ComparingPLSQL&#39;sDynamicSQLwithALTIBASEHDB-Example'>Example </a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingPLSQL&#39;sDynamicSQLwithALTIBASEHDB-Overview">Overview</h2>
+
+<p> The usage of dynamic SQL statement in ORACLE is almost same with that of ALTIBASE HDB.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingPLSQL&#39;sDynamicSQLwithALTIBASEHDB-Example">Example </h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_column VARCHAR2(30) := 'dno'; <br class="atl-forced-newline" />
+dno NUMBER(4) := 46; <br class="atl-forced-newline" />
+dname VARCHAR2(30) := 'Special Projects'; <br class="atl-forced-newline" />
+mgr_no NUMBER(6) := 200; <br class="atl-forced-newline" />
+dep_location NUMBER(4) := 1700; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- note that there is no semi-colon (;) inside the quotes '...' <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'CREATE TABLE bonus (id NUMBER, amt NUMBER)'; <br class="atl-forced-newline" />
+sql_stmt := 'INSERT INTO departments VALUES (:1, :2, :3, :4)'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE sql_stmt USING dno, dname, mgr_no, dep_location; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DELETE FROM departments WHERE ' || v_column || ' = :num' <br class="atl-forced-newline" />
+USING dno; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'ALTER SESSION SET SQL_TRACE TRUE'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DROP TABLE bonus'; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_column VARCHAR2(30) := 'dno'; <br class="atl-forced-newline" />
+dno NUMBER(4) := 46; <br class="atl-forced-newline" />
+dname VARCHAR2(30) := 'Special Projects'; <br class="atl-forced-newline" />
+mgr_no NUMBER(6) := 200; <br class="atl-forced-newline" />
+dep_location NUMBER(4) := 1700; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- note that there is no semi-colon (;) inside the quotes '...' <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'CREATE TABLE bonus (id NUMBER, amt NUMBER)'; <br class="atl-forced-newline" />
+sql_stmt := 'INSERT INTO departments VALUES (dno, dname, mgr_no, dep_location)'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE sql_stmt USING dno, dname, mgr_no, dep_location; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DELETE FROM departments WHERE ' || v_column || ' = :num' <br class="atl-forced-newline" />
+USING dno; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'ALTER SESSION SET EXPLAIN PLAN = ON'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DROP TABLE bonus'; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

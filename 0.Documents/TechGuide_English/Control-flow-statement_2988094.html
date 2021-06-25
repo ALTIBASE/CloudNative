@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Control flow statement</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Control flow statement
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 16, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346851 {padding: 0px;}
+div.rbtoc1624409346851 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346851 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346851'>
+<ul class='toc-indentation'>
+<li><a href='#Controlflowstatement-Overview'>Overview</a></li>
+<li><a href='#Controlflowstatement-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="Controlflowstatement-Overview">Overview</h2>
+
+<p>ALTIBASE HDB supports use of the following control flow statements in the stored procedures</p>
+<ul>
+	<li>The IF and CASE conditional statements</li>
+	<li>The LOOP, WHILE and FOR loop constructs, which cause multiple statements to be repeatedly<br />
+executed</li>
+	<li>The EXIT and CONTINUE statements, which are used to control the iteration of loops</li>
+	<li>The NULL statement, which indicates that nothing is to be executed</li>
+	<li>The GOTO statement, which is used to transfer control to a particular point</li>
+</ul>
+
+
+<p> The functionalities of control flow statement in the ORACLE PL/SQL have so much similarity to that of the ALTIBASE Stored Procedures as shown below.</p>
+
+<h2 id="Controlflowstatement-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+sales NUMBER(8,2) := 10100; <br class="atl-forced-newline" />
+quota NUMBER(8,2) := 10000; <br class="atl-forced-newline" />
+bonus NUMBER(6,2); <br class="atl-forced-newline" />
+emp_id NUMBER(6) := 120; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF sales &gt; (quota + 200) THEN <br class="atl-forced-newline" />
+bonus := (sales - quota)/4; <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary + bonus WHERE eno = emp_id; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+sales NUMBER(8,2) := 10100; <br class="atl-forced-newline" />
+quota NUMBER(8,2) := 10000; <br class="atl-forced-newline" />
+bonus NUMBER(6,2); <br class="atl-forced-newline" />
+emp_id NUMBER(6) := 120; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF sales &gt; (quota + 200) THEN <br class="atl-forced-newline" />
+bonus := (sales - quota)/4; <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary + bonus WHERE eno = emp_id; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> IF-THEN Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+grade CHAR(1); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+grade := 'B'; <br class="atl-forced-newline" />
+CASE grade <br class="atl-forced-newline" />
+WHEN 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent'); <br class="atl-forced-newline" />
+WHEN 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good'); <br class="atl-forced-newline" />
+WHEN 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); <br class="atl-forced-newline" />
+WHEN 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); <br class="atl-forced-newline" />
+WHEN 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor'); <br class="atl-forced-newline" />
+ELSE DBMS_OUTPUT.PUT_LINE('No such grade'); <br class="atl-forced-newline" />
+END CASE; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+grade CHAR(1); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+grade := 'B'; <br class="atl-forced-newline" />
+CASE grade <br class="atl-forced-newline" />
+WHEN 'A' THEN SYSTEM_.PRINTLN('Excellent'); <br class="atl-forced-newline" />
+WHEN 'B' THEN SYSTEM_.PRINTLN('Very Good'); <br class="atl-forced-newline" />
+WHEN 'C' THEN SYSTEM_.PRINTLN('Good'); <br class="atl-forced-newline" />
+WHEN 'D' THEN SYSTEM_.PRINTLN('Fair'); <br class="atl-forced-newline" />
+WHEN 'F' THEN SYSTEM_.PRINTLN('Poor'); <br class="atl-forced-newline" />
+ELSE SYSTEM_.PRINTLN('No such grade'); <br class="atl-forced-newline" />
+END CASE; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CASE-WHEN Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS  <br class="atl-forced-newline" />
+credit_rating NUMBER := 0; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+credit_rating := credit_rating + 1; <br class="atl-forced-newline" />
+IF credit_rating &gt; 3 THEN <br class="atl-forced-newline" />
+EXIT; -- exit loop immediately <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+-- control resumes here <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE ('Credit rating: ' || TO_CHAR(credit_rating)); <br class="atl-forced-newline" />
+IF credit_rating &gt; 3 THEN <br class="atl-forced-newline" />
+RETURN; -- use RETURN not EXIT when outside a LOOP <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE ('Credit rating: ' || TO_CHAR(credit_rating)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+credit_rating NUMBER := 0; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+credit_rating := credit_rating + 1; <br class="atl-forced-newline" />
+IF credit_rating &gt; 3 THEN <br class="atl-forced-newline" />
+EXIT; -- exit loop immediately <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+-- control resumes here <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN ('Credit rating: ' || TO_CHAR(credit_rating)); <br class="atl-forced-newline" />
+IF credit_rating &gt; 3 THEN <br class="atl-forced-newline" />
+RETURN; -- use RETURN not EXIT when outside a LOOP <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN ('Credit rating: ' || TO_CHAR(credit_rating)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> EXIT Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+ASs PLS_INTEGER := 0; <br class="atl-forced-newline" />
+i PLS_INTEGER := 0; <br class="atl-forced-newline" />
+j PLS_INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+&lt;&lt;outer_loop&gt;&gt; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+i := i + 1; <br class="atl-forced-newline" />
+j := 0; <br class="atl-forced-newline" />
+&lt;&lt;inner_loop&gt;&gt; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+j := j + 1; <br class="atl-forced-newline" />
+s := s + i * j; -- sum a bunch of products <br class="atl-forced-newline" />
+EXIT inner_loop WHEN (j &gt; 5); <br class="atl-forced-newline" />
+EXIT outer_loop WHEN ((i * j) &gt; 15); <br class="atl-forced-newline" />
+END LOOP inner_loop; <br class="atl-forced-newline" />
+END LOOP outer_loop; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('The sum of products equals: ' || TO_CHAR(s)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+s INTEGER := 0; <br class="atl-forced-newline" />
+i INTEGER := 0; <br class="atl-forced-newline" />
+j INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+&lt;&lt;outer_loop&gt;&gt; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+i := i + 1; <br class="atl-forced-newline" />
+j := 0; <br class="atl-forced-newline" />
+&lt;&lt;inner_loop&gt;&gt; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+j := j + 1; <br class="atl-forced-newline" />
+s := s + i * j; -- sum a bunch of products <br class="atl-forced-newline" />
+EXIT inner_loop WHEN (j &gt; 5); <br class="atl-forced-newline" />
+EXIT outer_loop WHEN ((i * j) &gt; 15); <br class="atl-forced-newline" />
+END LOOP inner_loop; <br class="atl-forced-newline" />
+END LOOP outer_loop; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('The sum of products equals: ' || TO_CHAR(s)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> EXIT With Labeled Loops </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS  <br class="atl-forced-newline" />
+p NUMBER := 0; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+FOR k IN 1..500 LOOP -- calculate pi with 500 terms <br class="atl-forced-newline" />
+p := p + ( ( (-1) ** (k + 1) ) / ((2 * k) - 1) ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+p := 4 * p; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE( 'pi is approximately : ' || p ); -- print result <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+p NUMBER := 0; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+FOR k IN 1 .. 500 LOOP -- calculate pi with 500 terms <br class="atl-forced-newline" />
+p := p + ( ( (-1) * (k + 1) ) / ((2 * k) - 1) ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+p := 4 * p; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN( 'pi is approximately : ' || p ); -- print result <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Simple FOR..LOOP Statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_employees employees%ROWTYPE; -- declare record variable <br class="atl-forced-newline" />
+CURSOR c1 is SELECT * FROM employees; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- open the cursor before fetching <br class="atl-forced-newline" />
+-- An entire row is fetched into the v_employees record <br class="atl-forced-newline" />
+FOR i IN 1..10 LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO v_employees; <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+-- process data here <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_employees employees%ROWTYPE; -- declare record variable <br class="atl-forced-newline" />
+CURSOR c1 is SELECT * FROM employees; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- open the cursor before fetching <br class="atl-forced-newline" />
+-- An entire row is fetched into the v_employees record <br class="atl-forced-newline" />
+FOR i IN 1 .. 10 LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO v_employees; <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+-- process data here <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> EXIT in a LOOP </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_last_name VARCHAR2(25); <br class="atl-forced-newline" />
+v_emp_id NUMBER(6) := 120; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+&lt;&lt;get_name&gt;&gt; <br class="atl-forced-newline" />
+SELECT e_lastname INTO v_last_name FROM employees <br class="atl-forced-newline" />
+WHERE eno = v_emp_id; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE (v_last_name); <br class="atl-forced-newline" />
+v_emp_id := v_emp_id + 5; <br class="atl-forced-newline" />
+IF v_emp_id &lt; 120 THEN <br class="atl-forced-newline" />
+GOTO get_name; -- branch to enclosing block <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_last_name VARCHAR2(25); <br class="atl-forced-newline" />
+v_emp_id NUMBER(6) := 120; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+&lt;&lt;get_name&gt;&gt; <br class="atl-forced-newline" />
+SELECT e_lastname INTO v_last_name FROM employees <br class="atl-forced-newline" />
+WHERE eno = v_emp_id; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN (v_last_name); <br class="atl-forced-newline" />
+v_emp_id := v_emp_id + 5; <br class="atl-forced-newline" />
+IF v_emp_id &lt; 120 THEN <br class="atl-forced-newline" />
+GOTO get_name; -- branch to enclosing block <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> GOTO Statement to Branch an Enclosing Block </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_job_id VARCHAR2(10); <br class="atl-forced-newline" />
+v_emp_id NUMBER(6) := 110; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT emp_job INTO v_job_id FROM employees <br class="atl-forced-newline" />
+WHERE emp_job = v_emp_id; <br class="atl-forced-newline" />
+IF v_job_id = 'SA_REP' THEN <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary * 1.2; <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+NULL; -- do nothing if not a sales representative <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_job_id VARCHAR2(10); <br class="atl-forced-newline" />
+v_emp_id NUMBER(6) := 110; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT emp_job INTO v_job_id FROM employees <br class="atl-forced-newline" />
+WHERE emp_job = v_emp_id; <br class="atl-forced-newline" />
+IF v_job_id = 'SA_REP' THEN <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary * 1.2; <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+NULL; -- do nothing if not a sales representative <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> NULL Statement </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Appendix</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iBatis-Integration-Guide-for-Altibase_14058303.html">iBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Appendix
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> 정준헌</span> on Sep 10, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">Based on the sampleConnection example, the method of integrating with Altibasein iBATIS is explained in detail.</span></p><blockquote style="margin-left: 0.0px;"><p class="md-end-block md-p"><span class="md-plain">Note: IDE uses Eclipse.</span></p></blockquote><h3 class="md-end-block md-heading" id="Appendix-CreatingDBTablesandSequences"><span class="md-plain">Creating DB Tables and Sequences</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">The following tables and sequences are created in the DB. (Refer to create_tbl.sql file)</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE TABLE PERSON(
+    PER_ID NUMBER (5, 0) NOT NULL,
+    PER_NAME VARCHAR (40) NOT NULL,
+    PER_BIRTH_DATE DATE,
+    PER_WEIGHT_KG NUMBER (4, 2) NOT NULL,
+    PER_HEIGHT_M NUMBER (4, 2) NOT NULL,
+    PRIMARY KEY (PER_ID)
+);
+ 
+CREATE SEQUENCE PERSON_SEQ;</pre>
+</div></div><h3 class="md-end-block md-heading" id="Appendix-CreatingProject"><span class="md-plain">Creating Project</span></h3><p class="md-end-block md-p"><span class="md-plain">Create a project called SimpleConnection in Eclipse.</span></p><ol class="ol-list"><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Click Menu-File-Java Project</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Project name: Enter SimpleConnection</span></p></li><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain">Click the Finish button</span></p></li></ol><p><img class="confluence-embedded-image" width="500" src="attachments/14058317/15335444.png" data-image-src="attachments/14058317/15335444.png"></p><h3 class="md-end-block md-heading" id="Appendix-CreatingSqlMapFile"><span class="md-plain">Creating SqlMap File</span></h3><p class="md-end-block md-p"><span class="md-plain">Create a SqlMap file that defines CRUD SQL statement of the Person table and methods to be mapped (Person.xml).</span></p><ol class="ol-list"><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Right-click on the SimpleConnection project-src directory and click New-File.</span></p></li><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain">Create Person.xml in File name:.</span></p></li></ol><div><img class="confluence-embedded-image" width="500" src="attachments/14058317/15335445.png" data-image-src="attachments/14058317/15335445.png"></div><div><span>Write the following in the Person.xml file.</span></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMap PUBLIC &quot;-//iBATIS.com//DTD SQL Map 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-mapconfig-2.dtd&quot;&gt;
+ 
+&lt;sqlMap namespace=&quot;Person&quot;&gt;
+    &lt;resultMap id=&quot;PersonResult&quot; class=&quot;examples.domain.Person&quot;&gt;
+        &lt;result property=&quot;id&quot; column=&quot;per_id&quot; /&gt;
+        &lt;result property=&quot;name&quot; column=&quot;per_name&quot; /&gt;
+        &lt;result property=&quot;birthDate&quot; column=&quot;per_birth_date&quot; /&gt;
+        &lt;result property=&quot;weightInKilograms&quot; column=&quot;per_weight_kg&quot; /&gt;
+        &lt;result property=&quot;heightInMeters&quot; column=&quot;per_height_m&quot; /&gt;
+&lt;/resultMap&gt;
+ 
+&lt;select id=&quot;getPerson&quot; parameterClass=&quot;int&quot; resultClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            SELECT
+            PER_ID as id,
+            PER_NAME as name,
+            PER_BIRTH_DATE as birthDate,
+            PER_WEIGHT_KG as weightInKilograms,
+            PER_HEIGHT_M as heightInMeters
+            FROM PERSON
+            WHERE PER_ID = #value#
+        ]]&gt;
+&lt;/select&gt;
+ 
+&lt;insert id=&quot;insertPerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            INSERT INTO
+            PERSON (PER_ID, PER_NAME, PER_BIRTH_DATE,
+PER_WEIGHT_KG, PER_HEIGHT_M)
+            VALUES (#id#, #name#, #birthDate#,
+#weightInKilograms#, #heightInMeters#)
+        ]]&gt;
+&lt;/insert&gt;
+ 
+&lt;update id=&quot;updatePerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            UPDATE PERSON
+            SET PER_NAME = #name#,
+            PER_BIRTH_DATE = #birthDate#,
+            PER_WEIGHT_KG = #weightInKilograms#,
+            PER_HEIGHT_M = #heightInMeters#
+            WHERE PER_ID = #id#
+        ]]&gt;
+&lt;/update&gt;
+ 
+&lt;delete id=&quot;deletePerson&quot; parameterClass=&quot;int&quot;&gt;
+        &lt;![CDATA[
+            DELETE PERSON
+            WHERE PER_ID = #id#
+        ]]&gt;
+&lt;/delete&gt;
+ 
+&lt;select id=&quot;getAllPersons&quot;  resultMap=&quot;PersonResult&quot;&gt;
+        &lt;![CDATA[
+            SELECT * FROM person
+        ]]&gt;
+&lt;/select&gt;
+&lt;/sqlMap&gt;</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span class="md-plain md-expand">SQL matching the ID defined in </span><span>&lt;</span><span class="md-plain">insert&gt;, </span><span>&lt;</span><span class="md-plain">update&gt;, </span><span>&lt;</span><span class="md-plain">delete&gt;, and </span><span>&lt;</span><span class="md-plain md-expand">select&gt; tags defined in the above file when calling insert, update, delete, queryForXXX () method of SqlMapClient in the application are automatically executed.</span></span></p><h3 class="md-end-block md-heading md-focus" id="Appendix-CreatingSqlMapConfigFile"><span class="md-plain md-expand">Creating SqlMapConfig File</span></h3><ol class="ol-list"><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain md-expand">Create a properties file (db.properties) that defines properties for Altibase connection. (Right-click on SimpleConnection project-src directory and click New-File. Create db.properties in File name :)</span></p></li></ol><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.1.35:21129/mydb
+username=sys
+password=manager</pre>
+</div></div><p>2. S<span>et the dataSource and SqlMap files for interworking with Altibase in the SqlMapConfig file (SqlMapConfigExample.xml). (Right-click on the SimpleConnection project-src directory and click New-File. Create SqlMapConfigExample.xml in File name:)</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMapConfig PUBLIC &quot;-//iBATIS.com//DTD SQL Map Config 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-map-config-2.dtd&quot;&gt;
+ 
+&lt;sqlMapConfig&gt;
+ 
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+ 
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+    &lt;dataSource type=&quot;SIMPLE&quot;&gt;
+       &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+       &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+       &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+       &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+    &lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+ 
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+ 
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><h3 class="md-end-block md-heading" id="Appendix-CreatingApplication"><span class="md-plain">Creating Application</span></h3><ol class="ol-list"><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Create a Person class (Person.java) that is a DO object for the person table.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Right-click in the src directory of the SimpleConnection project and click New-Class.</span></p></li><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain">Enter examples.domain in Package: and Person in Name:</span></p></li></ol><p><img class="confluence-embedded-image" width="500" src="attachments/14058317/15335446.png" data-image-src="attachments/14058317/15335446.png"></p><p> </p><p><span>Write the following in the Person.java file.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">package examples.domain;
+import java.sql.*;
+public class Person {
+    private int id;
+    private String name;
+    private Date birthDate;
+    private double weightInKilograms;
+    private double heightInMeters;
+    public int getId () {
+        return id;
+    }
+    public void setId (int id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public void setWeightInKilograms(double weightInKilograms) {
+        this.weightInKilograms = weightInKilograms;
+    }
+    public double getWeightInKilograms() {
+        return weightInKilograms;
+    }
+    public void setHeightInMeters(double heightInMeters) {
+        this.heightInMeters = heightInMeters;
+    }
+    public double getHeightInMeters() {
+        return heightInMeters;
+    }
+    public String toString(){
+                return &quot;id=&quot;+id+&quot;, name=&quot;+name+&quot;, birthData=&quot;+birthDate+&quot;,
+weightInKillograms=&quot;+weightInKilograms+
+&quot;,heightInMeters=&quot;+heightInMeters;
+    }
+}</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain md-expand">3. Write a main program (PersonApp.java) that executes CRUD in the DB.</span></p><p class="md-end-block md-p"><span class="md-plain">4. Right-click in the src directory of the SimpleConnection project and click New-Class.</span></p><p class="md-end-block md-p"><span class="md-plain"> </span>5. Enter PersonApp in Name :.</p><p class="md-end-block md-p"><img class="confluence-embedded-image" width="500" src="attachments/14058317/15335447.png" data-image-src="attachments/14058317/15335447.png"></p><p class="md-end-block md-p"> </p><p class="md-end-block md-p"><span>Write the following in the PersonApp.java file.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import java.io.IOException;
+import java.io.Reader;
+import java.sql.SQLException;
+import java.util.List;
+import examples.domain.Person;
+import com.ibatis.common.resources.Resources;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+ 
+public class PersonApp {
+ 
+public static void main(String[] args) throws Exception {
+    String resource =&quot;SqlMapConfigExample.xml&quot;;
+    Reader reader = Resources.getResourceAsReader(resource);
+    SqlMapClient sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+ 
+    //insert Person
+    Person newPerson1 = new Person();
+    newPerson1.setName(&quot;KIM&quot;);
+    newPerson1.setBirthDate (new java.sql.Date(1978,1-1,1));
+    newPerson1.setHeightInMeters(1.82);
+    newPerson1.setWeightInKilograms(80.23);
+    sqlMap.insert (&quot;insertPerson&quot;, newPerson1);
+ 
+    Person newPerson2 = new Person();
+    newPerson2.setName(&quot;LEE&quot;);
+    newPerson2.setBirthDate (new java.sql.Date(1975,5-1,5));
+    newPerson2.setHeightInMeters(1.57);
+    newPerson2.setWeightInKilograms(45.23);
+    sqlMap.insert (&quot;insertPerson&quot;, newPerson2);
+    System.out.println();
+    System.out.println(&quot;insert Person&quot;);
+ 
+    List&lt;Person&gt; list = (List&lt;Person&gt;)sqlMap.queryForList(&quot;getAllPersons&quot;);
+    System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+    for(int i=0; i&lt; list.size();i++){
+        System.out.println(list.get(i));
+    }
+ 
+    //update Person
+    newPerson1.setHeightInMeters(1.93);
+    newPerson1.setWeightInKilograms(86.36);
+    sqlMap.update(&quot;updatePerson&quot;, newPerson1);
+    System.out.println();
+    System.out.println(&quot;update Person&quot;);
+    list = sqlMap.queryForList(&quot;getAllPersons&quot;);
+    System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+    for(int i=0; i&lt; list.size();i++){
+        System.out.println(list.get(i).toString());
+    }
+    System.out.println();
+    System.out.println(&quot;get Person&quot;);
+ 
+    //get Person
+    Integer personPk = new Integer(1);
+    Person person = (Person) sqlMap.queryForObject (&quot;getPerson&quot;, personPk);
+    System.out.println(person);
+ 
+    //delete Person
+    sqlMap.delete (&quot;deletePerson&quot;, new Integer(1));
+    sqlMap.delete (&quot;deletePerson&quot;, new Integer(2));
+    System.out.println();
+    System.out.println(&quot;delete Person&quot;);
+    list = sqlMap.queryForList(&quot;getAllPersons&quot;);
+    System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+    for(int i=0; i&lt; list.size();i++){
+        System.out.println(list.get(i));
+    }
+ 
+}
+}</pre>
+</div></div><h3 class="md-end-block md-heading" id="Appendix-AddingRelatedJARFiles"><span class="md-plain">Adding Related JAR Files</span></h3><p class="md-end-block md-p"><span class="md-plain">Add the Altibase.jar and ibatis-2.3.4.x.jar files.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Right-click on SimpleConnection project, click Properties-Java Build Path-Click Add External JARS in Libraries to add Altibase.jar and ibatis-2.3.4.x.jar files.</span></p><p class="md-end-block md-p md-focus"><img class="confluence-embedded-image" width="500" src="attachments/14058317/15335448.png" data-image-src="attachments/14058317/15335448.png"></p><h3 class="md-end-block md-heading" id="Appendix-RunningApplication"><span class="md-plain">Running Application</span></h3><p class="md-end-block md-p"><span class="md-plain">Run the SimpleConnection project.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">After clicking the SimpleConnection project, run from the menu or click the Run button.</span></p><p class="md-end-block md-p md-focus"><img class="confluence-embedded-image" width="500" src="attachments/14058317/14221525.png" data-image-src="attachments/14058317/14221525.png"></p><p> </p><p> </p><p> </p></div><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221520.png">additional_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221521.png">additional_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221522.png">additional_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221523.png">additional_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221524.png">additional_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/14221525.png">additional_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/15335444.png">6-1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/15335445.png">6-2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/15335446.png">6-3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/15335447.png">6-4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058317/15335448.png">6-5.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

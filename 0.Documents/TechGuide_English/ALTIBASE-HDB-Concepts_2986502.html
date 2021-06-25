@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : ALTIBASE HDB Concepts</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="1.-Introduction_2986498.html">1. Introduction</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : ALTIBASE HDB Concepts
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 19, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409342681 {padding: 0px;}
+div.rbtoc1624409342681 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409342681 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409342681'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDBConcepts-CorrelationbetweenDataSizeandSpeed'>Correlation between Data Size and Speed</a></li>
+<li><a href='#ALTIBASEHDBConcepts-PhysicalPerformanceGapbetweenALTIBASEHDBandthechiefdisk-residentRDBMS'>Physical Performance Gap between ALTIBASE HDB and the chief disk-resident RDBMS</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ALTIBASEHDBConcepts-CorrelationbetweenDataSizeandSpeed">Correlation between Data Size and Speed</h2>
+
+<p>  <img class="confluence-embedded-image" height="234" width="469" src="attachments/2986502/4194309.png" data-image-src="attachments/2986502/4194309.png"><br />
+   </p>
+
+
+<p>Due to extreme speed, user choose memory tablespace. (up to 20x faster than disk tablespace)<br />
+Relatively, the access speed of the disk tablespace is slower than one of the memory tablespaces.</p>
+
+<p>To avoid the bottleneck in disk tablespace, ALTIBASE HDB utilizes Disk Buffer, used for buffer zone between disk and<br />
+memory area.
+<br class="atl-forced-newline" /></p>
+
+<p>A disk buffer also belongs to the memory space in ALTIBASE HDB.</p>
+
+<p>It was adopted to reduce the bottleneck in disk tablespace by locating data which resides in the disk tablespace, which is frequently accessed by a user or user applications.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ALTIBASEHDBConcepts-PhysicalPerformanceGapbetweenALTIBASEHDBandthechiefdisk-residentRDBMS">Physical Performance Gap between ALTIBASE HDB and the chief disk-resident RDBMS</h2>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" height="258" width="478" src="attachments/2986502/4194311.png" data-image-src="attachments/2986502/4194311.png"><br class="atl-forced-newline" /></p>
+
+<p> As shown in the chart above, the access speed to the ALTIBASE HDB(memory tablespace) is even faster than to the major disk resident<br />
+RDBMS.<br />
+In case of INSERT/UPDATE/DELETE operations, up to 14x faster than that.<br />
+Whereas in SELECT operation, approximately 5x faster than that. That's why select operation only fetches stored data without any modifications.</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194306.png">캡처.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194307.png">캡처.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194308.png">캡처.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194305.png">캡처.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194309.png">캡처1.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194310.png">캡처2.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986502/4194311.png">캡처3.PNG</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Routine Checklist</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-CPU-Overload-Analysis-Guide_14647581.html">Altibase CPU Overload Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Routine Checklist
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Service delay may occur due to sudden CPU overload during the service operation. In this process, when a phenomenon caused by Altibase CPU overload continuously occurs. This chapter describes all the checklist and solutions for this case.</p><h1 id="id-1.RoutineChecklist-1.1RoutineChecklist"><strong>1.1 Routine Checklist</strong></h1><p>The user needs the following history management to determine whether the current CPU load is normal or not. Altibase does not have a function to provide information on the CPU usage rate used by Altibase by itself, so the CPU usage rate must use the command provided by the OS.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"> </th><th class="confluenceTh"><div class="tablesorter-header-inner">Collection Plan</div></th></tr></thead><tbody><tr><td class="confluenceTd">Whether the service thread is increased or decreased</td><td class="confluenceTd"><p>There are cases where the number of service threads increases due to an increase in sessions or an increase in workload than usual. Check whether this pattern occurs.</p><p>SELECT COUNT(*) AS THREAD FROM V$SERVICE_THREAD;<br />SELECT COUNT(*) AS SESSION FROM V$SESSION;</p></td></tr><tr><td class="confluenceTd">Hourly/daily CPU utilization</td><td class="confluenceTd">Record/manage periodically with the method of obtaining the CPU utilization rate of the process provided by the OS.</td></tr><tr><td class="confluenceTd">Transaction throughput by time/day</td><td class="confluenceTd"><p>Record/manage the transaction throughput of the application program.If this is difficult, the following information is periodically acquired and recorded/managed with V$SYSSTAT provided by ALTIBASE.</p><p>select name,value from V$SYSSTAT where name in ( 'execute success count','prepare success count','prepare failure count');</p></td></tr></tbody></table></div><p>It may be more convenient to record information collected at regular intervals in a file using the following shell script.</p><p>Since EXECUTE COUNT obtained by V$sysstat is an accumulated value, to obtain the increase per unit time, the unit time increase value = (last value-previous value) must be calculated.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"># gettps.sh
+ALTIPID=`ps -ef | grep $USER | grep  &quot;bin/altibase -p boot&quot;  | grep -v grep | awk &#39;{print $2}&#39;`
+MAXCOUNT=3
+COUNT=0
+INTERVAL=30
+LOGFILE=altitps.log
+ 
+do_getExecuteCount()
+{
+is -silent &lt;&lt;EOF
+set linesize 1024;
+set colsize 50;
+set feedback off;
+set heading off;
+select &#39;RESULT=&#39;||( select count(*) from v\$session )
+       ||&#39;=&#39; || ( select count(*) from v\$service_thread )
+       ||&#39;=&#39; || ( select sum(value) from v\$sysstat where name in ( &#39;execute success count&#39;,&#39;prepare success count&#39;,&#39;prepare failure count&#39;) )
+from dual;
+EOF
+}
+ 
+while [ $COUNT -lt $MAXCOUNT ]
+do
+ALTICPU=`ps -o pcpu -p $ALTIPID | grep -v CPU`
+EXECRESULT=`do_getExecuteCount`
+SESSIONCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 2| tr -d &#39; &#39;`
+THREADCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 3 | tr -d &#39; &#39;`
+EXECCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 4 | tr -d &#39; &#39;`
+echo  `date &quot;+%Y%m%d %H%M%S: CPU USAGE=&quot;`$ALTICPU&quot; SESSIONCNT=$SESSIONCNT THREADCNT=$THREADCNT EXECCNT=$EXECCNT&quot;
+ 
+sleep  $INTERVAL
+COUNT=`expr $COUNT + 1`
+done</pre>
+</div></div><p>When the above shell script is executed, the following output can be displayed.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$sh gettps.sh</p><p>20170203 150253: CPU USAGE= 12.3 SESSIONCNT=208 THREADCNT=16 EXECCNT=181813<br />20170203 150323: CPU USAGE= 24.8 SESSIONCNT=208 THREADCNT=10 EXECCNT=185834<br />20170203 150353: CPU USAGE= 32.1 SESSIONCNT=212 THREADCNT=15 EXECCNT=189865</p><p>......</p>
+</div></div><p>With the above history information, the user will be able to create a history in the form of a table as follows. It is convenient to use the Excel cell calculation formula for the increment per unit time.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">Time(HH:MI:SS)</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">CPU (%)</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Session / Thread</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">EXECUTE cumulative value</div></th><th colspan="1" class="confluenceTh"><div class="tablesorter-header-inner">EXECUTE increase per unit time</div></th><th colspan="1" class="confluenceTh"><div class="tablesorter-header-inner">TPS(Transaction per second)</div></th></tr></thead><tbody><tr><td class="confluenceTd">15:03:53</td><td class="confluenceTd">32.1</td><td class="confluenceTd">212/17</td><td class="confluenceTd">189865</td><td colspan="1" class="confluenceTd">4031=(189865-185834)</td><td colspan="1" class="confluenceTd">134=4031/30 seconds</td></tr><tr><td class="confluenceTd">15:03:23</td><td class="confluenceTd">24.8</td><td class="confluenceTd">208/16</td><td class="confluenceTd">185834</td><td colspan="1" class="confluenceTd">4021=(185834-181813)</td><td colspan="1" class="confluenceTd">134=4021/30 seconds</td></tr><tr><td class="confluenceTd">15:02:53</td><td class="confluenceTd">12.3</td><td class="confluenceTd">208/16</td><td class="confluenceTd">181813</td><td colspan="1" class="confluenceTd">-</td><td colspan="1" class="confluenceTd">-</td></tr></tbody></table></div><p>With this type of data, it is necessary to first determine whether the difference in load between the normal point of time and the point of CPU overload is due to an increase in transaction throughput.</p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

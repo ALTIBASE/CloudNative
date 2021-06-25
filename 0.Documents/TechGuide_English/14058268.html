@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 6. GC (Garbage Collector)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 6. GC (Garbage Collector)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check GC (Garbage Collec</span><span>t</span><span>or) informa</span><span>t</span><span>ion is as follows.</span></p><h3 class="md-end-block md-heading md-focus" id="id-6.GC(GarbageCollector)-MemoryDBGCGap"><span class="md-plain md-expand">Memory DB GC Gap</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT GC_NAME
+     , SCNOFTAIL
+     , MINMEMSCNINTXS
+     , ADD_OID_CNT-GC_OID_CNT GC_GAP
+  FROM V$MEMGC ;</pre>
+</div></div><ul><li><h4 id="id-6.GC(GarbageCollector)-MainColumnDescription"><strong><span class="md-plain">Main Column Description</span></strong></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">GC_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">There are two GC names. MEM_LOGICAL_AGER is a GC that deletes the old version of the index, and MEM_DELTHR is a GC that deletes the old version of the table record.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SCNOFTAIL</span></span></td><td class="confluenceTd">The number of the most recent version among the old versions to be deleted identified by GC.</td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MINMEMSCNINTXS</span></span></td><td class="confluenceTd">The number of the oldest 'old version'.</td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">GC_GAP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Each GC means the amount of the old version to be deleted. The larger this value, the greater the amount of old version to be deleted. At this time, if scnoftail&gt; minmemscnintxs, the deletion cannot proceed because of the active transaction. Conversely, if scnoftail &lt;minmemscnintxs, the deletion is still in progress, but it can be judged that the old version to be deleted is increasing due to the completion of the update transaction.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-6.GC(GarbageCollector)-QueryBeingExecutedinaTransactionWheretheMemoryDBGCisWaiting"><span class="md-plain">Query Being Executed in a Transaction Where the Memory DB GC is Waiting</span></h3><p class="md-end-block md-p"><span class="md-plain">The transaction that GC is waiting for refers to the transaction referring to the 'oldest version in Altibase'. If the GC does not work and waits indefinitely due to such a transaction, the memory usage can also increase infinitely, so it is one of the factors to check when the GC gap increases.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">By executing the query below, the user can see the query executed in the session where the GC is waiting for the transaction. In addition, it can be usefully used when detecting queries that perform an index scan but consume instantaneous CPU as it is no different from a full scan due to its poor distribution. </span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Please note that depending on the situation, it must be performed periodically and repeatedly because it may not be detected in one operation.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , TOTAL_TIME
+     , EXECUTE_TIME
+     , TX_ID
+     , QUERY
+  FROM V$STATEMENT
+ WHERE TX_ID IN (SELECT ID
+                   FROM V$TRANSACTION
+                  WHERE MEMORY_VIEW_SCN = (SELECT MINMEMSCNINTXS FROM V$MEMGC LIMIT 1))
+   AND EXECUTE_FLAG = 1
+ ORDER BY 2 DESC ;</pre>
+</div></div><p><span>Or</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT ST.SESSION_ID,
+       ST.TX_ID,
+       TOTAL_TIME/1000000 &#39;TOTAL(SEC)&#39;,
+       EXECUTE_TIME/1000000 &#39;EXECUTE(SEC)&#39;,
+       FETCH_TIME/1000000 &#39;FETCH(SEC)&#39;,
+ST.QUERY
+  FROM V$STATEMENT ST,
+       V$TRANSACTION TX
+ WHERE ST.TX_ID = TX.ID
+AND TX_ID IN (SELECT ID
+                   FROM V$TRANSACTION,
+ (SELECT MINMEMSCNINTXS FROM V$MEMGC LIMIT 1) GC
+                  WHERE MEMORY_VIEW_SCN = GC.MINMEMSCNINTXS
+OR MIN_MEMORY_LOB_VIEW_SCN = GC.MINMEMSCNINTXS)
+AND ST.SESSION_ID != SESSION_ID()
+AND TX.SESSION_ID &lt;&gt; SESSION_ID()
+ ORDER BY 3 DESC;</pre>
+</div></div><p><span class="md-plain"><br /></span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11098 smERR_ABORT_BackupLogMode cannot be executed in no archive log mode</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11098 smERR_ABORT_BackupLogMode cannot be executed in no archive log mode
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409150547 {padding: 0px;}
+div.rbtoc1624409150547 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409150547 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409150547'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Version'>Version</a></li>
+<li><a href='#ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Cause'>Cause</a></li>
+<li><a href='#ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Action'>Action</a></li>
+<li><a href='#ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Explanation">Explanation</h2>
+
+<p>Unable to perform an online backup.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Cause">Cause</h2>
+
+<p>An online backup has been performed in NO ARCHIVING mode. </p>
+
+
+
+
+
+
+
+<h2 id="ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Action">Action</h2>
+
+<p>An online backup can only be performed in ARCHIVING mode. Otherwise, an error occurs. </p>
+
+<p>Check whether the database is running in ARCHIVING mode with the following command:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;select archivelog_mode from v$log;
+ARCHIVELOG_MODE
+------------------------
+NOARCHIVE</pre>
+</div></div>
+<p><strong>&lt;How to change to ARCHIVING mode from NOARCHIVING mode&gt;</strong></p>
+
+<p>1. Shut down the database.</p>
+
+<p>2. Re-start the database.</p>
+
+<p>3. Run the database in the CONTROL phase.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SHELL&gt;server stop
+SHELL&gt;is –silent –sysdba</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#">ERR-910FB : Connected to idle instance</a><br />
+isql(sysdba)&gt;startup control </p>
+                    </div>
+    </div>
+
+<p>4. Change to ARCHIVING mode using the ALTER DATABASE ARCHIVELOG statement.</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">isql(sysdba)&gt;alter database archivelog</pre>
+</div></div>
+
+<p><strong>&lt;Execute an online backup in ARCHIVING MODE&gt;</strong></p>
+
+
+<p>1. Run the database in the SERVICE phase.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">isql(sysdba)&gt;startup service</pre>
+</div></div>
+<p>2. Re-start backup. </p>
+
+
+
+<h2 id="ERR-11098smERR_ABORT_BackupLogModecannotbeexecutedinnoarchivelogmode-Reference">Reference</h2>
+
+<p>N/A</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

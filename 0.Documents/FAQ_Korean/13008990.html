@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 이중화 객체 생성 및 삭제 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520884.html">03. 이중화</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 이중화 객체 생성 및 삭제 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Dec 11, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409052202 {padding: 0px;}
+div.rbtoc1624409052202 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409052202 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409052202'>
+<ul class='toc-indentation'>
+<li><a href='#id-이중화객체생성및삭제방법-개요'>개요</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-버전'>버전</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-준비할것'>준비할 것</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-이중화기능활성화RepEnable'>이중화 기능 활성화</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-이중화객체생성create_rep_obj'>이중화 객체 생성</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-이중화시작create_rep_obj_start'>이중화 시작</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-이중화객체삭제'>이중화 객체 삭제</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-에러메시지'>에러 메시지</a></li>
+<li><a href='#id-이중화객체생성및삭제방법-참고문서'>참고문서</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-개요">개요</h1><hr /><p>이중화를 처음 사용하는 사용자를 대상으로 이중화 객체를 생성하고 삭제하는 방법에 관해 설명합니다.</p><ul style="list-style-type: square;"><li>이중화 설계 또는 구성을 위한 사전 작업을 마친 것으로 가정하고 설명합니다.</li><li>이중화 대상 서버 간 데이터가 일치하는 것을 가정합니다. 데이터가 모두 동일하게 존재하거나 양쪽 모두 0 건이거나.<br /><br /></li></ul><p>이중화 설계 및 구성에 관한 가이드는 아래의 기술 문서를 참고합니다.</p><ul style="list-style-type: square;"><li><a href="attachments/13008990/13205550.pdf">D24_ALTIBASE_&#54952;&#50984;&#51201;&#51064;_&#51060;&#51473;&#54868;_&#44032;&#51060;&#46300;.pdf</a></li><li><a href="attachments/13008990/13205549.pdf">D67_ALTIBASE_&#51060;&#51473;&#54868;_&#51228;&#50557;&#49324;&#54637;_&#44032;&#51060;&#46300;.pdf</a></li></ul><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-버전">버전</h1><hr /><p>Altibase 4.3.9 이상</p><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-준비할것">준비할 것</h1><hr /><ul style="list-style-type: square;"><li>이중화 전용 IP<br />이중화에 사용할 IP는 서비스망과 분리된 전용 라인을 사용할 것을 권장합니다.<br /><br /></li><li>이중화 서비스 포트<br />이중화 용 서비스 포트 번호를 정합니다. 사용자가 임의로 정할 수 있으며 일반적으로 30300을 사용합니다.<br /><br /></li><li>이중화 대상 테이블 선정<br />복제할 이중화 대상 테이블은 Primay Key가 존재해야 합니다.</li></ul><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-이중화기능활성화RepEnable">이중화 기능 활성화<span class="confluence-anchor-link" id="id-이중화객체생성및삭제방법-RepEnable"></span></h1><hr /><ul style="list-style-type: square;"><li><p>Altibase 서버의 이중화 기능은 기본적으로 비활성화 상태이므로,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">-- REPLICATION_PORT_NO 프로퍼티의 기본값은 0 으로 이중화 기능이 비활성화 상태를 의미.
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_PORT_NO&#39;;
+NAME                            VALUE1                          
+------------------------------------------------------------------- 
+REPLICATION_PORT_NO             0                                        
+1 row selected.</pre>
+</div></div></li><li>이중화 기능을 사용하려면 관련 프로퍼티를 변경하여 활성화해야합니다.</li><li><span style="color: rgb(255,0,0);">이중화 기능을 활성화하는 작업은 Altibase 서버 재기동이 필요합니다. </span><span style="color: rgb(255,0,0);"> </span><br /><span style="color: rgb(255,0,0);"><br /></span></li></ul><h4 id="id-이중화객체생성및삭제방법-REPLICATION_PORT_NO프로퍼티변경">REPLICATION_PORT_NO 프로퍼티 변경</h4><ul style="list-style-type: square;"><li><p>Altibase 서버 프로퍼티 REPLICATION_PORT_NO의 값을 변경하는 것으로 이중화 기능을 활성화합니다.</p></li><li>REPLICATION_PORT_NO 프로퍼티는 이중화 쓰레드 간 사용할 포트 번호를 의미하기도 합니다.</li><li>포트 번호는 서버에서 사용하지 않는 번호로 사용자가 임의로 지정하며 일반적으로 30300을 사용하기도 합니다.<br /><br /></li></ul><ol><li><p>이중화 대상 서버에서 사용자가 지정한 이중화 포트가 사용 중인지 확인합니다.</p><p>LISTEN 상태가 보이면 해당 포트는 다른 프로세스에서 사용한다는 것으로 이중화 포트로 사용할 수 없습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;"># 이중화 포트, REPLICATION_PORT_NO를 30300으로 지정하였을 때 수행 예
+
+$ netstat -an | grep 30300 | grep LISTEN      </pre>
+</div></div></li><li><p>altibase.properties 파일을 열어서 REPLICATION_PORT_NO 값을 변경하고 저장합니다. 이 작업은 이중화 대상 서버에서 각각 수행해야합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>REPLICATION_PORT_NO 변경</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;"># 이중화 포트를 30300으로 설정하고자 할 경우 REPLICATION_PORT_NO 설정 예
+
+$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties
+REPLICATION_PORT_NO = 30300                    </pre>
+</div></div></li><li><p>Altibase 서버 프로세스를 재구동합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;">$ server restart</pre>
+</div></div>
+<div id="expander-288070416" class="expand-container">
+<div id="expander-control-288070416" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">이중화 객체 생성 과정 동안 어플리케이션을 막고자 할 경우</span>
+</div>
+<div id="expander-content-288070416" class="expand-content"><p>이중화 객체 생성 과정 동안 어플리케이션의 접근을 막고자 할 경우 Altibase 서버 서비스 포트 변경 후 재구동합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;">$ export ALTIBASE_PORT_NO=20400
+$ server restart</pre>
+</div></div></div>
+</div>
+</li><li><p>Altibase 서버 구동 후 이중화 포트 LISTEN 상태와 프로퍼티 설정값을 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 포트 LISTEN 상태 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;"># 이중화 포트, REPLICATION_PORT_NO 을 30300 으로 설정한 경우 예
+
+$ netstat -an | grep 30300 | grep LISTEN
+tcp        0      0 0.0.0.0:30300               0.0.0.0:*                   LISTEN </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>REPLICATION_PORT_NO 설정값 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">-- 이중화 포트, REPLICATION_PORT_NO 을 30300 으로 설정한 경우 예
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_PORT_NO&#39;;
+NAME                            VALUE1                          
+-------------------------------------------------------------------
+REPLICATION_PORT_NO             30300                           
+1 row selected.</pre>
+</div></div></li></ol><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-이중화객체생성create_rep_obj">이중화 객체 생성<span class="confluence-anchor-link" id="id-이중화객체생성및삭제방법-create_rep_obj"></span></h1><hr /><ul style="list-style-type: square;"><li>이중화 객체는 CREATE REPLICATION 구문으로 생성하며 이중화 모드, 이중화 서버 정보와 이중화 대상 테이블 등 이중화 관련 정보를 정의합니다.</li><li><p>이중화 대상 서버는 2대가 쌍을 이룹니다.</p></li><li><p>이중화 객체는 쌍을 이루는 이중화 대상 서버에 동일한 객체 이름으로 각각 생성해야 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION replication_name                   -- 이중화 객체 이름을 정의한다.
+WITH remote_host_ip, remote_replication_port_no       -- WITH 절에 쌍을 이룰 원격 서버의 IP와 PORT를 지정한다.
+FROM user_name.table_name TO user_name.table_name,    -- FROM ~ TO 절에 이중화 대상 테이블을 나열한다. 
+FROM ... 
+; </pre>
+</div></div></li><li><p>이중화 객체 생성 구문의 추가 옵션은 Replication Manual -&gt; <a name="t39" rel="nofollow"></a>3. 이중화 사용 -&gt; <a name="t50" rel="nofollow"></a>이중화 생성 (CREATE REPLICATION) 부분을 참고하세요.</p></li><li><p>매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></p></li></ul><p> </p><p> </p>
+<div id="expander-773779580" class="expand-container">
+<div id="expander-control-773779580" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">이중화 객체 생성 절차 - 예제 1 (이중화 대상 서버가 2대인 경우)</span>
+</div>
+<div id="expander-content-773779580" class="expand-content"><p>이중화 객체 생성 조건이 다음과 같을 때 이중화 객체를 생성하는 예입니다.</p><ul><li>이중화 대상 서버는 A, B서버 2대이다.</li><li>이중화 객체 이름은 REP1으로 생성한다.</li></ul><div class="A_bcf8_bb38-_ae00_ba38_b9ac__ae30_d638_inner"><ul><li><a name="9003843" rel="nofollow"></a>이중화 대상 서버 A의 IP 주소는 192.168.1.112, 이중화 포트 번호는 <a name="9003843" rel="nofollow"></a>25524 이고 <br />이중화 대상 서버 B의 IP 주소는 192.168.1.113, 이중화 포트 번호는 <a name="9003844" rel="nofollow"></a>35524 이다.<br />
+
+<map id="gliffy-map-13205545-7456" name="gliffy-map-13205545-7456"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 232px;" usemap="#gliffy-map-13205545-7456" src="attachments/13008990/13205546.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li><li>이중화 대상 테이블은 SYS유저의 employees 테이블과 departments 테이블이다.</li></ul></div><p style="margin-left: 30.0px;"> </p><ol><li><p><strong>A 서버 : IP 192.168.1.112 , 이중화 포트 25524</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep1 WITH &#39;192.168.1.113&#39;, 35524 
+FROM sys.employees TO sys.employees,
+FROM sys.departments TO sys.departments; 
+Create success.</pre>
+</div></div></li><li><p><strong>B 서버 : IP 192.168.1.113 , 이중화 포트 35524</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep1 WITH &#39;192.168.1.112&#39;, 25524
+FROM sys.employees TO sys.employees,
+FROM sys.departments TO sys.departments; 
+Create success.</pre>
+</div></div></li><li><p><strong>이중화 객체 생성 확인</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 대상 서버 A에서 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP1                            192.168.1.113                   35524       
+1 row selected.
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP1                            SYS                             EMPLOYEES                       
+REP1                            SYS                             DEPARTMENTS                     
+2 rows selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 대상 서버, B에서 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP1                            192.168.1.112                   35524       
+1 row selected.          
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP1                            SYS                             EMPLOYEES                       
+REP1                            SYS                             DEPARTMENTS                     
+2 rows selected.</pre>
+</div></div></li></ol></div>
+</div>
+<div class="A_bcf8_bb38-_ae00_ba38_b9ac__ae30_d638_inner">
+<div id="expander-170173370" class="expand-container">
+<div id="expander-control-170173370" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">이중화 객체 생성 절차 - 예제 2 (이중화 대상 서버가 3대인 경우)</span>
+</div>
+<div id="expander-content-170173370" class="expand-content"><p>이중화 객체 생성 조건이 다음과 같을 때 이중화 객체를 생성하는 예입니다.</p><ul><li>이중화 대상 서버는 A, B, C 3대이고 <br />A는 B, C와 <br />B는 A, C와 <br />C는 A, B와 서로서로 동기화한다.<br /><br /></li><li>이중화 객체 이름은 다음과 같이 정한다. <br />- A와 B서버의 경우 REP_A_B<br />- B와 C서버의 경우 REP_B_C<br />- A와 C서버의 경우 REP_C_A <br /><br /></li></ul><div class="A_bcf8_bb38-_ae00_ba38_b9ac__ae30_d638_inner"><ul><li><a name="9003843" rel="nofollow"></a> 각 서버의 IP 주소와 이중화 포트 번호는 아래와 같다. <br />- 서버 A : 192.168.1.112, 30300 <br />- 서버 B : 192.168.1.113, <a name="9003844" rel="nofollow"></a>30300<br />- 서버 C : 192.168.1.114, 30300 <br /><br />
+
+<map id="gliffy-map-13205543-279" name="gliffy-map-13205543-279"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 292px;" usemap="#gliffy-map-13205543-279" src="attachments/13008990/13205544.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul></div><ul><li>이중화 대상 테이블은 SYS유저의 employees 테이블과 departments 테이블이다.</li></ul><p> </p><ol><li><p><strong>A 서버 : IP 192.168.1.112 , 이중화 포트 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_a_b WITH &#39;192.168.1.113&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_c_a WITH &#39;192.168.1.114&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>B 서버 : IP 192.168.1.113 , 이중화 포트 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_a_b WITH &#39;192.168.1.112&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_b_c WITH &#39;192.168.1.114&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>C 서버 : IP 192.168.1.114, 이중화 포트 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 객체 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_c_a WITH &#39;192.168.1.112&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_b_c WITH &#39;192.168.1.113&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>이중화 객체 생성 확인</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 대상 서버 A에서 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP_A_B                         192.168.1.113                   30300       
+REP_C_A                         192.168.1.114                   30300       
+2 rows selected.
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP_A_B                         SYS                             EMPLOYEES                       
+REP_A_B                         SYS                             DEPARTMENTS                     
+REP_C_A                         SYS                             EMPLOYEES                       
+REP_C_A                         SYS                             DEPARTMENTS                     
+4 rows selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 대상 서버, B에서 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------  
+REP_A_B                         192.168.1.112                   30300       
+REP_B_C                         192.168.1.114                   30300       
+2 rows selected.        
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------                   
+REP_A_B                         SYS                             EMPLOYEES                       
+REP_A_B                         SYS                             DEPARTMENTS                     
+REP_B_C                         SYS                             EMPLOYEES                       
+REP_B_C                         SYS                             DEPARTMENTS                     
+4 rows selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 대상 서버 C에서 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------    
+REP_B_C                         192.168.1.113                   30300       
+REP_C_A                         192.168.1.112                   30300     
+2 rows selected.        
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------                                  
+REP_B_C                         SYS                             EMPLOYEES                       
+REP_B_C                         SYS                             DEPARTMENTS  
+REP_C_A                         SYS                             EMPLOYEES                       
+REP_C_A                         SYS                             DEPARTMENTS                      
+4 rows selected.</pre>
+</div></div></li></ol></div>
+</div>
+<p> </p><p> </p></div><p> </p><h1 id="id-이중화객체생성및삭제방법-이중화시작create_rep_obj_start">이중화 시작<span class="confluence-anchor-link" id="id-이중화객체생성및삭제방법-create_rep_obj_start"></span></h1><hr /><ul style="list-style-type: square;"><li>이중화 시작은 데이터 동기화를 시작하는 것을 의미합니다.</li><li>이중화 시작을 수행한 서버는 <em>이중화 송신 쓰레드(Sender)</em>가 구동되며 해당 서버와 쌍을 이루는 <em>원격 서버</em>는 <em>수신 쓰레드(Receiver)</em>가 구동됩니다.</li></ul><p> </p><ol><li><p><strong>이중화 시작 서버(<em>Active 서버</em>) 선정</strong></p><p>이중화 시작을 수행할 서버, 이중화 송신 쓰레드(Sender)를 구동할 서버는 변경 트랜잭션이 발생하는 서버를 말하며 Active 서버라 부르기도 합니다.<br />쌍을 이루는 이중화 대상 서버 중 데이터 변경이 발생하는 곳이 Active 서버이고 다른 쪽 서버는 <em>Standby 서버</em>가 됩니다.<br />양 서버 모두 변경 트랜잭션이 발생하여 양 방향 동기화 할 경우 두 서버 모두 Active 서버가 됩니다.<br /><br /></p></li><li><p><strong>이중화 시작</strong></p><p>Active 서버에서 ALTER REPLICATION 구문으로 이중화를 시작합니다. <em>replication_name</em> 은 <a href="#id-이중화객체생성및삭제방법-create_rep_obj">&#51060;&#51473;&#54868; &#44061;&#52404; &#49373;&#49457;</a> 단계에서 생성한 객체 이름입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">-- 이 명령을 수행한 서버에는 이중화 송신 쓰레드(Sender)가 구동되며 해당 서버와 쌍을 이루는 원격 서버는 수신 쓰레드(Receiver)가 구동된다.
+iSQL&gt; ALTER REPLICATION replication_name START;</pre>
+</div></div></li><li><p><strong>이중화 시작 상태 확인</strong></p><p>이중화 송신 쓰레드(Sender)와 수신 쓰레드(Receiver) 구동 여부를 확인하는 문장입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 시작 서버, Active 서버의 이중화 송신 쓰레드(Sender)구동 상태 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;
+REPLICATION_NAME                IS_STARTED                      
+-------------------------------------------------------------------
+REP                             STARTED                         
+1 row selected.
+
+iSQL&gt; SELECT REP_NAME, DECODE(STATUS, 0, &#39;STOP&#39;, 1, &#39;START&#39;, STATUS) STATUS FROM V$REPSENDER;
+REP_NAME                        STATUS                          
+-------------------------------------------------------------------
+REP                             START                           
+1 row selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 수신 쓰레드(Receiver) 구동 상태 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select REP_NAME, MY_IP, MY_PORT FROM V$REPRECEIVER;
+REP_NAME              MY_IP                 MY_PORT     
+------------------------------------------------------------
+REP                   192.168.1.113         30300       
+1 row selected.</pre>
+</div></div></li></ol><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-이중화객체삭제">이중화 객체 삭제</h1><hr /><p>이중화 객체를 삭제하는 방법입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">-- 먼저 이중화를 중지합니다. 
+iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- 이중화 객체를 삭제합니다. 
+iSQL&gt; DROP REPLICATION replication_name ;</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="id-이중화객체생성및삭제방법-에러메시지">에러 메시지</h1><hr /><p>이중화 객체 생성 과정 중 발생할 수 있는 에러 메시지 몇 가지를 소개합니다.</p><p> </p><h3 id="id-이중화객체생성및삭제방법-[ERR-61023:Replicationisdisabled]">[ERR-61023 : Replication is disabled]</h3><ul style="list-style-type: square;"><li>CREATE REPLICATION 구문 수행 시 만날 수 있는 에러 메세지로, 이중화 기능이 비활성화되어 있는 경우 발생합니다.</li><li>REPLICATION_PORT_NO 프로퍼티의 값을 확인하세요. <a href="#id-이중화객체생성및삭제방법-RepEnable">&#51060;&#51473;&#54868; &#44592;&#45733; &#54876;&#49457;&#54868;</a> 부분을 참고합니다.</li></ul><p> </p><h3 id="id-이중화객체생성및삭제방법-[ERR-61113:Areplicatedtablemusthaveaprimarykey.(user_name.table_name)]">[ERR-61113 : A replicated table must have a primary key. (<em>user_name</em>.<em>table_name</em>)]</h3><ul style="list-style-type: square;"><li>CREATE REPLICATION 구문 수행 시 발생할 수 있는 에러 메시지입니다.</li><li>FROM절에서 지정한 이중화 대상 테이블에 primary key가 없는 경우 발생합니다.</li><li>에러 메시지 마지막 부분 () 안의 테이블에 primary key를 생성하고 이중화 객체 생성 문장을 수행해야합니다.</li></ul><p><span style="color: rgb(0,0,0);"><br /></span></p><h3 id="id-이중화객체생성및삭제방법-[ERR-6100D:[Sender]Failedtohandshakewiththepeerserver(HandshakeProcessError)]"><span style="color: rgb(0,0,0);">[ERR-6100D : [Sender] Failed to handshake with the peer server (Handshake Process Error)]</span></h3><ul style="list-style-type: square;"><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">ALTER REPLICATION <em>replication_name</em> START 실행 시 발생할 수 있는 에러 메시지이다. </span></span></span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">WITH 절에 입력한 원격 서버의 IP와 이중화 포트 번호가 올바른지, 해당 IP와 포트로 접근이 가능한지 확인합니다. <br /></span></span></li></ul><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></p><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></p><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></p><h1 id="id-이중화객체생성및삭제방법-참고문서"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">참고문서</span></span></h1><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"> </span></span></p><hr /><ul style="list-style-type: square;"><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Replication Manual</span></span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">SQL Reference</span></span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">매뉴얼 다운로드 페이지</span></span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a><br /></span></span></li></ul><p><span style="color: rgb(0,0,0);"> </span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(255,0,0);"> </span></p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205543">rep_create_three_server</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205544.png">rep_create_three_server.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205545">rep_create_two_server</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205546.png">rep_create_two_server.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205547">creaet_rep_object_ex1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205548.png">creaet_rep_object_ex1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205549.pdf">D67_ALTIBASE_이중화_제약사항_가이드.pdf</a> (application/pdf)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13008990/13205550.pdf">D24_ALTIBASE_효율적인_이중화_가이드1.pdf</a> (application/pdf)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

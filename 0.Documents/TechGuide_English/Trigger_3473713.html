@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Trigger</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Trigger
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 15, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345309 {padding: 0px;}
+div.rbtoc1624409345309 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345309 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345309'>
+<ul class='toc-indentation'>
+<li><a href='#Trigger-Overview'>Overview</a></li>
+<li><a href='#Trigger-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="Trigger-Overview">Overview</h2>
+
+<p>ALTIBASE HDB has constraints as below while using trigger.</p>
+<ul>
+	<li>does not support system trigger (Schema trigger, Database trigger). and does not support DDL trigger.</li>
+	<li>does not support Instead of trigger, Compound DML trigger </li>
+	<li>In ORACLE, the triggering event of a DML trigger comprises multiple triggering statements. (using insert, update, delete statements)<br />
+But ALTIBASE HDB can't be done like that. ALTIBASE HDB Trigger event has to be written for each statement.</li>
+	<li>does not support RENAME clause(to rename the trigger)
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>&quot;Before update trigger&quot; feature has been applied at ALTIBASE HDB V6.</p>
+                    </div>
+    </div>
+</li>
+</ul>
+
+
+<h2 id="Trigger-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE TRIGGER trg_orders <br class="atl-forced-newline" />
+AFTER UPDATE ON orders <br class="atl-forced-newline" />
+REFERENCING <span style="color: rgb(255,0,0);"><strong>OLD old</strong></span> <br class="atl-forced-newline" />
+FOR EACH ROW <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+INSERT INTO orders_trg VALUES(<span style="color: rgb(255,0,0);"><strong>:old.ono</strong></span>, <span style="color: rgb(255,0,0);"><strong>:old.eno</strong></span>); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE TRIGGER trg_orders <br class="atl-forced-newline" />
+AFTER UPDATE ON orders <br class="atl-forced-newline" />
+REFERENCING <span style="color: rgb(255,0,0);"><strong>OLD ROW</strong></span> <span style="color: rgb(255,0,0);"><strong>old_row</strong></span> <br class="atl-forced-newline" />
+FOR EACH ROW <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>AS</strong></span> BEGIN <br class="atl-forced-newline" />
+INSERT INTO orders_trg VALUES(<span style="color: rgb(255,0,0);"><strong>old_row</strong></span>.ono, <span style="color: rgb(255,0,0);"><strong>old_row</strong></span>.eno); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> On the left side, <br class="atl-forced-newline" />
+In ALTIBASE HDB, OLD ROW keyword <br class="atl-forced-newline" />
+should be used instead of OLD. <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+In addition, AS keyword is required in Altibase HDB unlike in Oracle. <br class="atl-forced-newline" />
+and in a VALUES clause, semi colon(indicating value specified in the referencing clause) <br class="atl-forced-newline" />
+is essential. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE TRIGGER trg_orders_ins <br class="atl-forced-newline" />
+AFTER INSERT ON orders <br class="atl-forced-newline" />
+REFERENCING <span style="color: rgb(255,0,0);"><strong>NEW NEW</strong></span> <br class="atl-forced-newline" />
+FOR EACH ROW <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+INSERT INTO orders_trg VALUES(<span style="color: rgb(255,0,0);"><strong>:old.ono</strong></span>, <span style="color: rgb(255,0,0);"><strong>:old.eno</strong></span>); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE TRIGGER trg_orders_ins <br class="atl-forced-newline" />
+AFTER INSERT ON orders <br class="atl-forced-newline" />
+REFERENCING <span style="color: rgb(255,0,0);"><strong>NEW ROW new_row</strong></span> <br class="atl-forced-newline" />
+FOR EACH ROW <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>AS</strong></span> BEGIN <br class="atl-forced-newline" />
+INSERT INTO orders_trg VALUES(<span style="color: rgb(255,0,0);"><strong>new_row</strong></span>.ono, <span style="color: rgb(255,0,0);"><strong>new_row</strong></span>.eno); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> almost same above </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<p>For the rest of the differences between ALTIBASE HDB and Oracle on trigger, See PL/SQL Conversion part for more details. </p>
+
+<p>That's why  the most of the differences between Altibase and Oracle are in the trigger_action part.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

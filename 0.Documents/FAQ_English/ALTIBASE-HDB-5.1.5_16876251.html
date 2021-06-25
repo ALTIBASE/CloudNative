@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB 5.1.5</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-tablespace-usage_16876245.html">Disk tablespace usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB 5.1.5
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 24, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ALTIBASEHDB5.1.5-/*&lt;![CDATA[*/div.rbtoc1624409147092{padding:0px;}div.rbtoc1624409147092ul{list-style:disc;margin-left:0px;}div.rbtoc1624409147092li{margin-left:0px;padding-left:0px;}/*]]&gt;*/Overview#ALTIBASEHDB5.1.5-OverviewDisktablespaceusagequery#ALTIBA"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147092 {padding: 0px;}
+div.rbtoc1624409147092 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147092 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147092'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.1.5-Overview'>Overview</a></li>
+<li><a href='#ALTIBASEHDB5.1.5-Disktablespaceusagequery'>Disk tablespace usage query</a></li>
+</ul>
+</div></h1><p> </p><h1 id="ALTIBASEHDB5.1.5-Overview">Overview</h1><hr /><ul><li>In ALTIBASE HDB version 5, the disk tablespace usage cannot be queried due to the change in the disk table structure, and only the allocated size is known.</li><li>Starting from ALTIBASE HDB version 5.3.3, it has been improved so that the usage can be queried. (Excluding undo tablespaces and temporary tablespaces)</li></ul><p> </p><h1 id="ALTIBASEHDB5.1.5-Disktablespaceusagequery">Disk tablespace usage query</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk tablespace usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SET LINESIZE 1024;SET COLSIZE 30;SELECT  NAME TBS_NAME                                         -- Disk tablespace name
+      , TO_CHAR(ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2)) &#39;MAX(M)&#39;                             -- Max size of tablespace
+      , ROUND(TOTAL_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                        -- Total number of pages allocated so far
+      , DECODE(TYPE, 7, ROUND((SELECT (SUM(total_page_count) * PAGE_SIZE)/1024/1024
+                                 FROM V$undo_seg)+
+                              (SELECT (SUM(ALLOC_PAGE_COUNT) * PAGE_SIZE)/1024/1024
+                                 FROM v$tss_seg), 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2)) &#39;ALLOC(M)&#39;   -- Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far
+      , DECODE(TYPE, 7, ROUND( ( (SELECT SUM(total_page_count) FROM V$undo_seg) +
+                                 (SELECT SUM(ALLOC_PAGE_COUNT) FROM v$tss_seg ) ) / D.MAX  * 100, 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT / D.MAX * 100, 2))             &#39;USAGE(%)&#39;   -- ALLOC utilization rate compared to MAX
+       , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+       , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+       ,(SELECT  SPACEID
+              , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+              , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+           FROM V$DATAFILES
+           GROUP BY SPACEID) D
+ WHERE T.ID = D.SPACEID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)                          TOTAL(M)    ALLOC(M)    USAGE(%)    STATE           AUTOEXTEND  
+----------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_DATA               2048                            100         0.25        0.01        ONLINE          ON   
+SYS_TBS_DISK_UNDO               2048                            100         2           0.1         ONLINE          ON   
+SYS_TBS_DISK_TEMP               2048                            100         0.25        0.01        ONLINE          ON   
+3 rows selected.</pre>
+</div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Summary (Considerations for Altibase Backup Policy)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Considerations-for-Altibase-Backup-Policy_14647709.html">Considerations for Altibase Backup Policy</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Summary (Considerations for Altibase Backup Policy)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter summarizes the characteristics of each backup type, which are organized in the following tables.</p><h1 id="id-3.Summary(ConsiderationsforAltibaseBackupPolicy)-Comparisonbybackuptype"><span style="color: rgb(0,0,0);">Comparison by backup type</span></h1><div><hr /><p>The following is a table comparing the pros and cons of each backup type.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th rowspan="2" class="confluenceTh">Classification</th><th colspan="2" style="text-align: center;" class="confluenceTh">Logical backup</th><th colspan="2" style="text-align: center;" class="confluenceTh">Physical backup</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Incremental backup</th></tr><tr><th colspan="1" style="text-align: center;" class="confluenceTh">aexport</th><th colspan="1" style="text-align: center;" class="confluenceTh">iloader</th><th colspan="1" style="text-align: center;" class="confluenceTh">Online backup</th><th colspan="1" style="text-align: center;" class="confluenceTh">Offline backup</th></tr><tr><th class="confluenceTh">Characteristics</th><td class="confluenceTd"><ul><li>Object-level backup/recovery</li><li>Require backup only when changing object structure</li></ul></td><td class="confluenceTd"><ul><li><p>Table-level</p></li><li><p>Record-level recovery is possible</p></li><li><p>When point-in-time recovery is unnecessary</p></li><li>When need to recover while the Altibase server is running</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>When to minimize data loss</li><li>When point-in-time recovery is required</li><li>When there is no burden on the archive log mode operation</li><li>When need to prepare for physical loss of files such as data files and log anchor files</li></ul></td><td class="confluenceTd"><ul><li>When Altibase server downtime for backup can be secured</li><li>When to minimize recovery time</li></ul></td><td class="confluenceTd"><ul><li>When to minimize data loss</li><li>When point-in-time recovery is required</li><li>When there is no burden on the archive log mode operation</li><li>When to prepare for physical loss of files such as data files and log anchor files</li><li>When the DB performance degradation due to activating the 'Page Change Tracking&quot; function can be sustained</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">Pros</th><td colspan="1" class="confluenceTd"><ul><li>Altibase server operation possible during recovery<br /><br /></li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Altibase server operation possible during recovery</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Point-in-time recovery is possible</li><li>Possible to prepare for the physical failure of data files and log anchor files</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Minimize recovery time</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Point-in-time recovery is possible</li><li>Possible to prepare for the physical failure of data files and log anchor files</li><li>Save backup time compared to online backup</li><li>Save backup space compared to online backup</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">Cons</th><td colspan="1" class="confluenceTd"><ul><li>-</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Point-in-time recovery is unable</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Manage archive log files</li><li>Operating Altibase server is unable during recovery</li></ul></td><td colspan="1" class="confluenceTd"><ul><li style="list-style-type: none;background-image: none;"><ul><li>Operating Altibase server is unable during recovery</li></ul></li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Manage archive log files</li><li>Operating Altibase server is unable during recovery</li></ul></td></tr></tbody></table></div><p> </p><p>The following is a table comparing the features of each backup method in detail.</p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" rowspan="2" style="text-align: center;" class="confluenceTh"><p style="text-align: left;">Backup type</p></th><th colspan="2" style="text-align: center;" class="confluenceTh">Altibase server running status</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Database mode</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Backup file</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Recovery point</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Recovery target</th><th rowspan="2" style="text-align: center;" class="confluenceTh">Etc.</th></tr><tr><th colspan="1" style="text-align: center;" class="confluenceTh">      Backup    </th><th colspan="1" style="text-align: center;" class="confluenceTh">Recovery</th></tr><tr><th rowspan="2" class="confluenceTh">Logical backup</th><th class="confluenceTh">aexport</th><td colspan="1" style="text-align: center;" class="confluenceTd">Running</td><td colspan="1" style="text-align: center;" class="confluenceTd">Running</td><td rowspan="2" style="text-align: center;" class="confluenceTd">Irrelevant</td><td class="confluenceTd"><ul><li>Database object creation script (.sql extension)</li><li>Automation script (.sh extension)</li></ul></td><td class="confluenceTd"><ul><li>Backup point</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Object-level</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th class="confluenceTh">iloader</th><td style="text-align: center;" class="confluenceTd">Running</td><td colspan="1" style="text-align: center;" class="confluenceTd"><span>Running</span></td><td class="confluenceTd"><ul><li>FORM file for each table</li><li>Data file in text format</li></ul></td><td class="confluenceTd"><ul><li>Backup point</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Table-level</li><li>Record-level</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th rowspan="2" class="confluenceTh">Physical backup</th><th class="confluenceTh">Online backup</th><td colspan="1" style="text-align: center;" class="confluenceTd">Running</td><td colspan="1" class="confluenceTd"><p style="text-align: center;">Running</p><p style="text-align: center;">(Control step)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">Archive mode</td><td class="confluenceTd"><ul><li>Disk data file</li><li>1 memory checkpoint image file</li><li>Log anchor file</li><li>Archive log file</li></ul></td><td class="confluenceTd"><ul><li>Complete recovery</li><li>Incomplete recovery</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>All databases</li><li>Tablespace-level</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Require archive log file management</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">Offline backup</th><td colspan="1" style="text-align: center;" class="confluenceTd">Stopped</td><td colspan="1" style="text-align: center;" class="confluenceTd">-</td><td colspan="1" style="text-align: center;" class="confluenceTd">Irrelevant</td><td colspan="1" class="confluenceTd"><ul><li>Disk data file</li><li>Memory checkpoint image file</li><li>Log anchor file</li><li>Online log file</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Backup point</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>All databases</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th colspan="2" class="confluenceTh">Incremental backup</th><td colspan="1" style="text-align: center;" class="confluenceTd">Running</td><td colspan="1" class="confluenceTd"><p style="text-align: center;">Running</p><p style="text-align: center;">(Control step)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">Archive mode</td><td colspan="1" class="confluenceTd"><ul><li>Disk data file</li><li>1 memory checkpoint image file</li><li>Log anchor file</li><li>Archive log file</li><li>backupInfo file</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Complete recovery</li><li>Incomplete recovery</li></ul><p> </p></td><td colspan="1" class="confluenceTd"><ul><li>All databases</li><li>Tablespace-level</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>Neet to active 'Page Change Tracking&quot; function</li><li>Require Archive log file</li></ul></td></tr></tbody></table></div><p> </p></div></div></div></div><h1 id="id-3.Summary(ConsiderationsforAltibaseBackupPolicy)-Relateddocuments">Related documents</h1><ul><li>Technical document &quot; Altibase Capacity Guide&quot;</li><li>Technical document &quot;Volume Configuration Guide Considering disk I/O&quot;</li><li>Administrator Manual -&gt; 10. Backup and Recovery</li><li>Administrator Manual -&gt; 11. Incremental backup and Recovery</li><li>Utilities Manual -&gt; 1. aexport</li><li>iLoader User's Manual</li><li>Manual page: <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals</a></li></ul><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

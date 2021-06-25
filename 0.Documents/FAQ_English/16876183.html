@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ODBC function, SQLFreeStmt</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ODBC_16876179.html">ODBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ODBC function, SQLFreeStmt
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 23, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146790 {padding: 0px;}
+div.rbtoc1624409146790 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146790 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146790'>
+<ul class='toc-indentation'>
+<li><a href='#ODBCfunction,SQLFreeStmt-Overview'>Overview</a></li>
+<li><a href='#ODBCfunction,SQLFreeStmt-Version'>Version</a></li>
+<li><a href='#ODBCfunction,SQLFreeStmt-SQLFreeStmtoptions'>SQLFreeStmt options</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="ODBCfunction,SQLFreeStmt-Overview">Overview</h1><hr /><p>This document describes how to use the ODBC function and SQLFreeStmt.</p><p> </p><h1 id="ODBCfunction,SQLFreeStmt-Version">Version</h1><hr /><ul><li>This document is written based on ALTIBASE HDB version 6.3.1</li><li>For additional information or updates, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or in a comment section on this page.</li></ul><p> </p><h1 id="ODBCfunction,SQLFreeStmt-SQLFreeStmtoptions">SQLFreeStmt options</h1><hr /><p>The following four options are described.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_CLOSE</span></td><td class="confluenceTd">Close the cursor associated with stmt and discard all pending results. The application can reopen this cursor later by executing the SELECT statement again using the same or different variables. If no cursor is open, this option has no effect on the application.</td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_DROP</span></td><td class="confluenceTd">The resources associated with the input statement handle are dropped and the handle is invalidated. If there is an open cursor, it is closed and all pending results are discarded.</td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_UNBIND</span></td><td class="confluenceTd">All rows bound by the previous SQLBindCol() call on this statement handle are dropped.</td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_RESET_PARAMS</span></td><td class="confluenceTd">All parameters set by the previous SQLBindParameter() call on this statement handle are dropped. The association between the application variable or file reference and the SQL statement parameter marker in the statement handle is broken.</td></tr></tbody></table></div><p><span style="color: rgb(0,0,0);">Among these, SQL_CLOSE and SQL_DROP are mainly used.</span></p><ol><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">SQLFreeStmt(stmt, SQL_DROP): </span></span><br /><span style="color: rgb(0,0,0);">This means that the resources for the prepared stmt (statement handle) are completely freed.</span><br /><span style="color: rgb(0,0,0);">That is, it only calls when that stmt is not being reused.</span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">SQLFreeStmt(stmt, SQL_CLOSE): </span></span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">If all the retrieved data have not been fetched, an error will occur if you execute SQLExecute again without SQLFreeStmt(SQL_CLOSE).</span></span><br /><span style="color: rgb(0,0,0);">If SQLFreeStmt(stmt, SQL_CLOSE) is used, the existing stmt can be used without doing SQLAllocStmt().</span><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></li></ol><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

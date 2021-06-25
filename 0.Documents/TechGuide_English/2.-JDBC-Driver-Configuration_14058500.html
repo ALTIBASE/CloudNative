@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. JDBC Driver Configuration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. JDBC Driver Configuration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409359961 {padding: 0px;}
+div.rbtoc1624409359961 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409359961 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409359961'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.JDBCDriverConfiguration-HowtogettheALTIBASEJDBCdrivefile'>How to get the ALTIBASE JDBC drive file</a></li>
+<li><a href='#id-2.JDBCDriverConfiguration-HowtochecktheALTIBASEJDBCdriverversion'>How to check the ALTIBASE JDBC driver version</a></li>
+<li><a href='#id-2.JDBCDriverConfiguration-LocationofJDBCdrivefileinTOMCAT'>Location of JDBC drive file in TOMCAT</a></li>
+</ul>
+</div></p><hr /><p>In the TOMCAT, the ALTIBASE JDBC driver must be placed in an appropriate location to integrate with ALTIBASE.</p><h2 id="id-2.JDBCDriverConfiguration-HowtogettheALTIBASEJDBCdrivefile"><strong>How to get the ALTIBASE JDBC drive file</strong></h2><p>The JDBC driver provided by ALTIBASE is Altibase.jar. This file is located in the $ALTIBASE_HOME/lib directory of the server where ALTIBASE is installed.</p><div>Starting from Altibase version 5 or later, Altibase.jar and Altibase5.jar files exist in the $ALTIBASE_HOME/lib directory. Altibase.jar is a JDBC driver file, and Altibase5.jar is used when integrating Altibase version 5 and lower. Therefore, in order to integrate with one ALTIBASE DB or multiple ALTIBASE DBs of the same version, $ALTIBASE_HOME/lib/Altibase.jar file can be used.</div><div><h2 id="id-2.JDBCDriverConfiguration-HowtochecktheALTIBASEJDBCdriverversion"><strong>How to check the ALTIBASE JDBC driver version</strong></h2><p>To check the ALTIBASE JDBC driver version, execute the following command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[altibase@dev lib]$ java -jar Altibase.jar
+ JDBC Driver Info : Altibase Ver = 6.3.1.2.1 for JavaVM v1.4, CMP:7.1.1, Aug 18 2014 15:36:32</pre>
+</div></div><p>In order to check whether the ALTIBASE DB server and the ALTIBASE JDBC Driver that are to be integrated are compatible, checking the ALTIBASE DB server version is required. In this case, if the cm protocol version of the ALTIBASE DB server and the CMP of the ALTIBASE JDBC Driver is the same, they are compatible.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[altibase@dev lib]$ altibase -v
+version 6.3.1.2.1 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.2.1-release-GCC3.4.6
+(x86_64-unknown-linux-gnu) Aug 18 2014 15:45:00, binary db version 6.2.1,
+meta version 6.3.1, cm protocol version 7.1.1, replication protocol version 7.4.1</pre>
+</div></div><p>As the version is upgraded, there is a possibility that a bug related to JDBC has been fixed. Generally, it is recommended to match the ALTIBASE DB server version with the ALTIBASE JDBC driver version or use the latest ALTIBASE JDBC driver file.</p><h2 id="id-2.JDBCDriverConfiguration-LocationofJDBCdrivefileinTOMCAT"><strong>Location of JDBC drive file in TOMCAT</strong></h2><p>In order to integrate ALTIBASE and TOMCAT, the ALTIBASE JDBC drive (Altibase.jar) should be located in an appropriate place so that it can be recognized automatically by TOMCAT.</p><p>1. Add Altibase.jar to CLASSPATH.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[tomcat@dev ~]$ cd $CATALINA_HOME/bin
+[tomcat@dev bin]$ vi catalina.sh
+CLASSPATH=/app/db/ALTIBASE/lib/Altibase.jar
+ 
+[tomcat@dev bin]$ catalina.sh stop
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/db/ALTIBASE/lib/Altibase.jar:
+/app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+[tomcat@dev bin]$ catalina.sh start
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/db/ALTIBASE/lib/Altibase.jar:
+/app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+Tomcat started.</pre>
+</div></div><p>2. Altibase.jar is located in the $CATALINA_HOME/lib directory.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[tomcat@dev ~]$cd $CATALINA_HOME/lib
+[tomcat@dev lib]$ cp /app/db/ALTIBASE/lib/Altibase.jar ./
+[tomcat@dev lib]$</pre>
+</div></div><p> </p><div><strong><br /></strong></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

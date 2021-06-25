@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Session</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Session
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-heading md-focus"><span class="md-plain md-expand"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409353689 {padding: 0px;}
+div.rbtoc1624409353689 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409353689 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409353689'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.Session-Session'>Session</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.Session-[SS01]TotalNumberofSessions'>[SS01] Total Number of Sessions</a></li>
+<li><a href='#id-1.Session-[SS02]SessionInformation'>[SS02] Session Information</a></li>
+<li><a href='#id-1.Session-[SS03]SessionInformationConnectedWithSYSDBAAuthority'>[SS03] Session Information Connected With SYSDBA Authority</a></li>
+</ul>
+</li>
+</ul>
+</div><br /></span></p><p class="md-end-block md-heading md-focus"><span class="md-plain md-expand"><br /></span></p><h2 class="md-end-block md-heading md-focus" id="id-1.Session-Session"><span class="md-plain md-expand">Session<br /></span></h2><hr /><p>The query corresponding to each monitoring element to check the session status is as follows. <span class="md-plain">To monitor only information about a specific session, add the 'id' column of v</span><span>$</span><span class="md-plain">session to the WHERE clause.</span></p><h4 class="md-end-block md-heading" id="id-1.Session-[SS01]TotalNumberofSessions"><span class="md-plain">[SS01] Total Number of Sessions</span></h4><ul><li class="md-end-block md-p"><p><span class="md-plain">This shows the number of sessions connected to the Altibase server.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT COUNT(*) TOTAL_SESSION_CNT FROM V$SESSION ;</pre>
+</div></div></li></ul><h4 class="md-end-block md-heading md-focus" id="id-1.Session-[SS02]SessionInformation"><span class="md-plain">[SS02] Session Information</span></h4><ul><li class="md-end-block md-p"><span class="md-plain">The user can view session related information such as session client information and login time.</span></li><li class="md-end-block md-p"><p><span class="md-plain">The following query can be used in Altibase version 5 or later, but can also be used in Altibase version 4 by deleting or commenting the CLIENT_APP_INFO column.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 5 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> SELECT A.ID SESSION_ID
+     , A.DB_USERNAME USER_NAME
+     , REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP
+     , A.CLIENT_APP_INFO             -- Delete it if using Altibase v4
+     , A.CLIENT_PID
+     , A.SESSION_STATE
+     , DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;YY/MM/DD HH:MI:SS&#39;)) LOGIN_TIME
+     , DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;YY/MM/DD HH:MI:SS&#39;)) IDLE_TIME
+     , NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+  FROM V$SESSION A LEFT OUTER JOIN V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID ;</pre>
+</div></div></li></ul><ul class="ul-list"><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain md-expand">Main Column Description</span></p></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column Name</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Remarks</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CLIENT_IP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The ip address of the client application associated with the session</span></span></td><td class="confluenceTd"> </td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CLIENT_PID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The process ID of the client application related to the session can identify the related process in the OS in which the client application runs.</span></span></td><td class="confluenceTd"> </td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CLIENT_APP_INFO</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the client application associated with the session</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Column added starting from Altibase v5</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SESSION_STATE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">As a string representing the state of the session, there are 7 states: INIT, AUTH, SERVICE READY, SERVICE, END, ROLLBACK, and UNKNOWN</span></span></td><td class="confluenceTd"> </td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">IDLE_TIME</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain">The time at which the session started doing nothing, which is the basis for idle_timeout. </span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">The unit is Unix time.</span></span></td><td class="confluenceTd"> </td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CURRENT_QUERY</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The query that was last performed or currently running in the session</span></span></td><td class="confluenceTd"> </td></tr></tbody></table></div><p class="md-end-block md-heading"><span class="md-plain"><br /></span></p><h4 class="md-end-block md-heading" id="id-1.Session-[SS03]SessionInformationConnectedWithSYSDBAAuthority"><span class="md-plain">[SS03] Session Information Connected With SYSDBA Authority</span></h4><ul><li class="md-end-block md-p"><span class="md-plain">The user can check the information of the connected session with SYSDBA authority.</span></li><li class="md-end-block md-p"><span class="md-plain">The following query can be used starting from Altibase v5, but it can also be used in the Altibase v4 by deleting or commenting on the CLIENT_APP_INFO column.</span></li><li class="md-end-block md-p md-focus"><p><span class="md-plain">The column used in the SELECT clause is the same as [SS02] Session Information, so refer to the column description of the query.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.ID SESSION_ID
+     , A.DB_USERNAME USER_NAME
+     , REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP
+     , A.CLIENT_APP_INFO              -- Delete it if using Altibase v4
+     , A.CLIENT_PID
+     , A.SESSION_STATE
+     , DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME
+     , DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) +A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME
+     , NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+  FROM V$SESSION A LEFT OUTER JOIN V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID
+ WHERE A.SYSDBA_FLAG = 1 ;</pre>
+</div></div></li></ul><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p><p><strong><br /></strong></p><p> </p><p class="md-end-block md-p"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

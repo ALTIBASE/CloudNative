@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. References</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Responding-to-Failures-Guide-for-Altibase_15138818.html">Responding to Failures Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. References
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h1 id="id-3.References-TechnicalSupportSystem">Technical Support System</h1><hr /><p>Altibase has its technical support system for (24x7) non-stop service for users with a maintenance contract as follows.</p><p><img class="confluence-embedded-image" src="attachments/15138869/15335433.png" data-image-src="attachments/15138869/15335433.png"></p><p>Altibase operates the following website for users to fully understand and use our products.</p><p>From <a href="http://support.altibase.com/en/," class="external-link" rel="nofollow">http://support.altibase.com/en/,</a> users can receive and process technical support requests, remote support, the latest patch version, licenses, other Q&amp;A, and technical documents.</p><h1 id="id-3.References-Altibasetracelog">Altibase trace log</h1><hr /><p>Altibase trace logs are located in the &quot;trc&quot; directory among the subdirectories of the path where Altibase is installed ($ALTIBASE_HOME/trc).</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr style="margin-left: 30.0px;"><td class="highlight-grey confluenceTd" data-highlight-colour="grey"><strong>Major trace log file</strong><p> </p></td><td class="highlight-grey confluenceTd" data-highlight-colour="grey"><p><strong>Description<br /></strong></p></td></tr><tr><td class="confluenceTd"><p>altibase_boot.log</p></td><td class="confluenceTd"><p>This trace log file records the status of the Altibase server operation.</p><p>The information recorded in this file includes details about the system information created when Altibase starts up and shuts down.</p></td></tr><tr><td class="confluenceTd">altibase_error.log</td><td class="confluenceTd">This trace log file records error messages created by the server. Also, when Altibase is abnormally terminated, the call stack of the Altibase process is recorded.</td></tr><tr><td class="confluenceTd">altibase_dump.log</td><td class="confluenceTd"><p>This trace log file is a file in which working memory is dumped at the time When the Altibase is abnormally terminated.</p><p>This trace log file is used to diagnose and debug errors in the Altibase program.</p><p> </p></td></tr><tr><td class="confluenceTd"><p>altibase_sm.log</p></td><td class="confluenceTd"><p>These are files in which warning messages or trace messages created from the storage manager module are recorded.</p></td></tr><tr><td class="confluenceTd"><p>altibase_rp.log</p></td><td class="confluenceTd">These are files in which warning messages or trace messages created from the replication module are recorded.<p> </p></td></tr><tr><td class="confluenceTd"><p>altibase_qp.log</p></td><td class="confluenceTd">These are files in which warning messages or trace messages created from the query processing module are recorded.<p> </p></td></tr><tr><td colspan="1" class="confluenceTd">altibase_mm.log</td><td colspan="1" class="confluenceTd">These are files in which warning messages or trace messages created from the main module are recorded.</td></tr><tr><td class="confluenceTd">altibase_dk.log</td><td class="confluenceTd">These are files in which warning messages or trace messages created from the database link module are recorded.</td></tr></tbody></table></div><h1 id="id-3.References-Basicitemstobemonitoredbyusers">Basic items to be monitored by users</h1><hr /><p>The basic items to monitored for users to operate Altibase are as follows. </p><p>Each command can be classified into two methods: </p><ol><li>Using the command of the OS</li><li>Obtaining the information inside the DB with iSQL provided by Altibase</li></ol><p>The part marked &quot;Shell&gt;&quot; can be executed at the prompt in the user's account to obtain the result, and the part marked &quot;iSQL&gt;&quot; executes iSQL to access the DB and executes the SQL statement to obtain information.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr style="margin-left: 30.0px;"><td class="highlight-grey confluenceTd" data-highlight-colour="grey"><p><strong>Monitoring item</strong></p></td><td class="highlight-grey confluenceTd" data-highlight-colour="grey"><p><strong>Method</strong></p></td><td class="highlight-grey confluenceTd" data-highlight-colour="grey"><strong>Analysis result</strong><p> </p></td></tr><tr><td class="confluenceTd"><p>Existence of Altibase process</p></td><td class="confluenceTd"><p>Shell&gt; ps -ef | grep &quot;altibase -p boot from&quot; | grep -v grep</p></td><td class="confluenceTd">1 or more<p> </p></td></tr><tr><td class="confluenceTd"><p>System free memory</p></td><td class="confluenceTd"><p>vmstat or command to view memory usage by each OS</p></td><td class="confluenceTd"><p>Surveillance to maintain 20% margin</p></td></tr><tr><td class="confluenceTd"><p>Altibase memory usage</p></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT SUM(MAX_TOTAL_SIZE)
+FROM   V$MEMSTAT
+;</pre>
+</div></div></td><td class="confluenceTd">Monitors of sudden increase compared to usual usage<p> </p></td></tr><tr><td class="confluenceTd"><p>Altibase memory DB allocation</p></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TRUNC((MEM_ALLOC_PAGE_COUNT*32*1024)
+       /MEM_MAX_DB_SIZE*100.0, 2)
+FROM V$DATABASE
+;</pre>
+</div></div><p> </p><p> </p></td><td class="confluenceTd"><p>In the form of monitoring memory DB allocation, the occupancy rate does not exceed 90%</p></td></tr><tr><td class="confluenceTd"><p>System disk usage</p></td><td class="confluenceTd"><p>Shell&gt; df –k</p></td><td class="confluenceTd">Monitors the usage of directories used by Altibase and whether or not it increases sharply compared to the usual usage<p> </p></td></tr><tr><td class="confluenceTd"><p>Altibase disk DB allocation</p></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.NAME,
+       A.ALLOCATED_PAGE_COUNT,
+       SUM(B.MAXSIZE)
+FROM   V$TABLESPACES A,
+       V$DATAFILES B
+WHERE  A.ID = B.SPACEID
+GROUP  BY A.NAME,
+          A.ALLOCATED_PAGE_COUNT
+;</pre>
+</div></div></td><td class="confluenceTd"><p>Monitors disk DB allocation</p><p>Since only the currently allocated space is monitoring relative to the total availability, it is not actual usage. However, it is possible to determine whether to take additional actions when physical data files are insufficient.</p><p> </p></td></tr><tr><td class="confluenceTd"><p>Altibase trace log</p></td><td class="confluenceTd"><p>Check for the existence of error messages beginning with &quot;ERR-&quot;<br class="atl-forced-newline" />Shell&gt; tail –f altibase_boot.log | grep &quot;ERR-&quot;</p></td><td class="confluenceTd"><p>Take an action based on the severity of the ERR error</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Monitors whether the following messages are periodically displayed in altibase_sm.log<br class="atl-forced-newline" /><strong>Remove Online Log File at LFG</strong> [0]: File[11252 ~ 11253]</p></td><td class="confluenceTd"><p>Monitors the normal operation of the checkpoint and whether the log file is deleted normally, and if the number part is continuously displayed as None, it is necessary to check.</p></td></tr><tr><td class="confluenceTd"><p>Altibase replication status</p></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT REP_NAME,
+       REP_GAP
+FROM   V$REPGAP
+;</pre>
+</div></div></td><td class="confluenceTd"><p>Monitors whether the REP_GAP item continues to increase</p></td></tr></tbody></table></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138869/15335433.png">Reference.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

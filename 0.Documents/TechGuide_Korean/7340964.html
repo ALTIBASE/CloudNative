@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 9. 부록 - HelloSpring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340945.html">Altibase Spring 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 9. 부록 - HelloSpring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409847104 {padding: 0px;}
+div.rbtoc1624409847104 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409847104 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409847104'>
+<ul class='toc-indentation'>
+<li><a href='#id-9.부록-HelloSpring-HelloSpring구현'>HelloSpring 구현</a>
+<ul class='toc-indentation'>
+<li><a href='#id-9.부록-HelloSpring-1.HelloSpring프로젝트생성'>1. HelloSpring 프로젝트 생성</a></li>
+<li><a href='#id-9.부록-HelloSpring-2.sample자바파일구현'>2. sample 자바 파일 구현</a></li>
+<li><a href='#id-9.부록-HelloSpring-3.bean설정파일정의'>3. bean 설정 파일 정의</a></li>
+<li><a href='#id-9.부록-HelloSpring-4.HelloApp클래스정의'>4. HelloApp 클래스 정의</a></li>
+<li><a href='#id-9.부록-HelloSpring-5.관련jar파일들추가'>5. 관련 jar 파일들 추가</a></li>
+<li><a href='#id-9.부록-HelloSpring-6.HelloSpring프로젝트를실행한다.'>6. HelloSpring 프로젝트를 실행한다.</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>sample 예제를 바탕으로 Spring을 사용하는 방법에 대해 좀 더 자세하게 설명한다.<br /> 부록에서 설명하는 sample 프로젝트의 이름은 HelloSpring이며 Eclipse에서 작성하였다.<br /> HelloSpring 프로젝트는 인사말 메시지를 print 하는 간단한 프로그램으로 Spring 컨테이너(BeanFactory)로부터 bean 설정파일(applicationContext.xml)에 정의되어 있는 bean(greetingService)을 가져와 bean에 정의되어 있는 인사말 메시지를 print한다.</p><h2 id="id-9.부록-HelloSpring-HelloSpring구현"><strong>HelloSpring 구현</strong></h2><h3 id="id-9.부록-HelloSpring-1.HelloSpring프로젝트생성"><strong>1. HelloSpring 프로젝트 생성</strong></h3><hr /><p>1-1. 메뉴 – File – Java Project 클릭<br /> 1-2. Project name : 에 HelloSpring 입력<br /> 1-3. Finish 버튼을 클릭</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766119.png" data-image-src="attachments/7340964/7766119.png"></p><h3 id="id-9.부록-HelloSpring-2.sample자바파일구현"><strong>2. sample 자바 파일 구현</strong></h3><hr /><p>다음의 클래스 및 인터페이스를 구현한다.</p><p><strong>2-1. GreetingService 인터페이스</strong></p><p>서비스를 정의해 놓은 인터페이스이다.</p><p>HelloSpring 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Interface를 클릭한다.</p><p>Package: 에 com.altibase.hello 를 입력하고 Name: 에 GreetingService를 입력한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766120.png" data-image-src="attachments/7340964/7766120.png"></p><p>GreeingService.java 파일이 생성되면 다음과 같이 소스를 작성한다.</p><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>GreeingService.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">package com.altibase.hello;
+
+public interface GreetingService {
+	public void sayGreeting();
+}
+</pre>
+</div></div><p><strong>2-2. GreetingServiceImp 클래스</strong></p><p>GreetingServie 인터페이스를 구현한 클래스이다.</p><p>HelloSpring 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.</p><p>Package: 에 com.altibase.hello 를 입력하고 Name: 에 GreetingServiceImp를 입력한다.</p><p>Interfaces: 옆에 Add 버튼을 클릭하여 GreetingService를 입력한 후 OK 버튼을 클릭한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766121.png" data-image-src="attachments/7340964/7766121.png"></p><p>GreeingServiceImp.java 파일이 생성되면 다음과 같이 소스를 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>GreeingServiceImp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">package com.altibase.hello;
+
+public class GreetingServiceImp implements GreetingService{
+	private String greeting;
+	public GreetingServiceImp(){
+
+	}
+	public GreetingServiceImp(String greeting){
+		this.greeting = greeting;
+	}
+	public void sayGreeting() {
+		System.out.println(greeting);
+	}
+	public void setGreeting(String greeting){
+		this.greeting = greeting;
+	}
+}
+</pre>
+</div></div><h3 id="id-9.부록-HelloSpring-3.bean설정파일정의"><strong>3. bean 설정 파일 정의</strong></h3><hr /><p>bean 설정 파일(applicationContext.xml)에 GreetingServiceImp에 대한 bean을 정의한다.</p><p>HelloSpring 프로젝트에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다.</p><p>File name: 에 applicationContext.xml을 작성한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766122.png" data-image-src="attachments/7340964/7766122.png"></p><p>applicationContext.xml 파일에 다음과 같이 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>applicationContext.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd&quot;&gt;
+
+  &lt;bean id=&quot;greetingService&quot; class=&quot;com.altibase.hello.GreetingServiceImp&quot;&gt;
+		&lt;property name=&quot;greeting&quot;&gt;
+			&lt;value&gt;Hello&lt;/value&gt;
+		&lt;/property&gt;
+  &lt;/bean&gt;
+
+&lt;/beans&gt;
+</pre>
+</div></div><p>greetingService는 bean의 이름으로 java 프로그램에서 해당 이름으로 bean 가져와 사용할 수 있다.<br /> class에는 서비스를 담당하는 GreetingServiceImp 클래스의 full name으로 명시해 주고, property에 GreetingServiceImp에 정의되어 있는 멤버 변수 greeting에 setting될 메시지를 넣어주면 된다.</p><h3 id="id-9.부록-HelloSpring-4.HelloApp클래스정의"><strong>4. HelloApp 클래스 정의</strong></h3><hr /><p>main 클래스로 BeanFactory로부터 GreetingServiceImp가 정의되어있는 bean을 가져와 서비스 메소드(sayGreeting())를 호출한다.</p><p>HelloSpring 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.</p><p>Package: 부분은 공락으로 나두고 Name: 에 HelloApp를 입력한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766123.png" data-image-src="attachments/7340964/7766123.png"></p><p>HelloApp.java 파일이 생성되면 다음과 같이 소스를 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>HelloApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.altibase.hello.GreetingService;
+public class HelloApp {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+        @SuppressWarnings(&quot;resource&quot;)
+		ApplicationContext factory = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+
+        GreetingService greetingService = (GreetingService)factory.getBean(&quot;greetingService&quot;);
+        greetingService.sayGreeting();
+	}
+}
+</pre>
+</div></div><p>위의 소스 applicationConext.xml은 위에 정의한 bean 설정 파일이고, greetingService는 applicationContext.xml에 정의된 GreetingServiceImp 클래스에 대한 bean 이름을 나타낸다.</p><h3 id="id-9.부록-HelloSpring-5.관련jar파일들추가"><strong>5. 관련 jar 파일들 추가</strong></h3><hr /><p>Spring관련 jar 파일을 HelloSpring에 추가한다.</p><p>HelloSpring 프로젝트에서 마우스 오른쪽 버튼 클릭하여 Properties를 클릭 – Java Build Path – Libraries 에서 Add External</p><p>JARS를 클릭하여 Spring Framework의 jar 파일 중 spring.jar 파일과 common-logging.jar 파일을 추가한다.</p><p>해당 파일의 위치는 DriverManagerDataSource 설명 부분을 참조한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766124.png" data-image-src="attachments/7340964/7766124.png"></p><h3 id="id-9.부록-HelloSpring-6.HelloSpring프로젝트를실행한다."><strong>6. HelloSpring 프로젝트를 실행한다.</strong></h3><p>HelloSpring 프로젝트를 클릭한 후 메뉴에서 Run을 실행하거나 Run 실행 단추를 클릭한다.</p><p>Console창에 Hello 문자열이 print된다.</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340964/7766125.png" data-image-src="attachments/7340964/7766125.png"></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766119.png">additional_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766120.png">additional_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766121.png">additional_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766122.png">additional_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766123.png">additional_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766124.png">additional_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340964/7766125.png">additional_7.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

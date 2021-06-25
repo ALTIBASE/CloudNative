@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11118 The update log size &#39;10485760&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11118 The update log size &#39;10485760&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409150448 {padding: 0px;}
+div.rbtoc1624409150448 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409150448 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409150448'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Version'>Version</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Cause'>Cause</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Action'>Action</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Version">Version</h2>
+
+<p>4.3.9 or above</p>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Explanation">Explanation</h2>
+
+<p>Unable to execute an UPDATE statement.</p>
+
+
+
+
+
+<h2 id="ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Cause">Cause</h2>
+
+<p>This error occurs when the size of the redo log which is generated when executing an UPDATE statement exceeds TRX_UPDATE_MAX_LOGSIZE.</p>
+
+<p>The size of the redo log generated when executing an UPDATE statement can be much bigger than the record.</p>
+
+
+
+<h2 id="ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Action">Action</h2>
+
+<p>1. To fix this error, modify TRX_UPDATE_MAX_LOGSIZE with the following command:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 20480000;</pre>
+</div></div>
+<p>2. Reduce the number of updates by using the LIMIT clause in the UPDATE statement and repeatedly execute smaller update operations.</p>
+
+<p>    For example, if there are 100,000 records to be updated, the LIMIT10000 clause repeatedly performs 10 update operations.</p>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;10485760&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE-Reference">Reference</h2>
+
+<p>1. If TRX_UPDATE_MAX_LOGSIZE is set to a high value, memory usage can increase to store images of previous versions of data using MVCC.</p>
+
+<p>2. mem_gc can be delayed until the update is complete.</p>
+
+<p>3. If TRX_UPDATE_MAX_LOGSIZE is set to a higher value than LOCK_ESCALATION_MEMORY_SIZE, a lock escalation can occur during an UPDATE operation.</p>
+
+<p>    In a lock escalation scenario, a SELECT operation fails if an IX lock converts to an X lock and as a consequence, all services may have to wait.</p>
+
+<p>    Therefore, the user is recommended to reduce the number of update operations, rather than increase TRX_UPDATE_MAX_LOGSIZE.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

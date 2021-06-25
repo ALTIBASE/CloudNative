@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ALTIBASE HDB 5.3.3, 5.3.5</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7342005.html">디스크 테이블스페이스 사용량</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ALTIBASE HDB 5.3.3, 5.3.5
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Apr 20, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053907 {padding: 0px;}
+div.rbtoc1624409053907 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053907 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053907'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.3.3,5.3.5-개요'>개요</a></li>
+<li><a href='#ALTIBASEHDB5.3.3,5.3.5-디스크테이블스페이스사용량조회'>디스크 테이블스페이스 사용량 조회</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB5.3.3,5.3.5-개요"><strong>개요</strong></h1><hr /><ul><li>ALTIBASE HDB 5.3.3 버전부터는  X$SEGMENT의 TOTAL_USED_SIZE  칼럼 정보를 이용해서  테이블스페이스의 실 사용량을 확인할 수 있습니다.</li><li>X$SEGMENT의 TOTAL_USED_SIZE  칼럼은 <a href="https://altra.altibase.com/altimis-2.0/app_bug_new/bug_view.jsp?pk=31372" class="external-link" rel="nofollow">BUG-31372</a> 에서 추가되었습니다.</li><li>BUG-31372 가 반영된 버전은 아래와 같습니다.<ul><li>ALTIBASE HDB 5.3.3.33</li><li>ALTIBASE HDB 5.3.5.15</li><li>ALTIBASE HDB 5.5.1.0.3</li></ul></li><li>따라서 BUG-31372 가 변영되지 않은 ALTIBASE HDB 5.3.3, 5.3.5, 5.5.1 버전에서는 아래 쿼리 사용 시 에러가 발생할 수 있습니다.</li><li>이 버전에서는 언두 테이블스페이스와 임시 테이블스페이스의 실 사용량을 구할 수 없습니다.</li></ul><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB5.3.3,5.3.5-디스크테이블스페이스사용량조회"><strong>디스크 테이블스페이스 사용량 조회</strong></h1><hr /><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>디스크 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT NAME TBS_NAME                                                                                                            -- TBS_NAME : 디스크 테이블스페이스 이름
+     , TO_CHAR(D.MAX * PAGE_SIZE / 1024 /1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;                                                          -- MAX(M)   : 테이블스페이스 최대 크기
+     , TO_CHAR(TOTAL_PAGE_COUNT*PAGE_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;                                                  -- TOTAL(M) : 현재까지 할당된 총 페이지 크기
+     , DECODE(TYPE, 7, TO_CHAR((SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)*PAGE_SIZE)/1024/1024
+                          FROM V$UDSEGS)+ (SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)*PAGE_SIZE)/1024/1024
+                          FROM V$TSSEGS), &#39;999,999,999&#39;) , /* UNDO */
+                       TO_CHAR((ALLOCATED_PAGE_COUNT*PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;)) &#39;ALLOC(M)&#39;                           -- ALLOC(M) : 현재까지 할당받은 페이지 중 &#39;빈 페이지&#39;를 제외한 &#39;사용 중인 페이지&#39;만의 합계
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;),
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;) /* SYS_TEMP */
+                     , LPAD(&#39;-&#39;, 12)) &#39;USED(M)&#39;                                                                                 -- USED(M)  : 사용 중인 페이지 중에서 데이터가 적재된 크기. TEMP와 UNDO 는 USED 를 구할 수 없음.
+     , DECODE(TYPE, 7, TO_CHAR(((SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)
+                                  FROM V$UDSEGS)+ (SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)
+                                  FROM V$TSSEGS)) / D.MAX* 100,  &#39;99.99&#39;) ,          /* UNDO */
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100,  &#39;99.99&#39;) ,
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100,  &#39;99.99&#39;) ,   /* TEMP */
+                       TO_CHAR(ALLOCATED_PAGE_COUNT / D.MAX * 100,  &#39;99.99&#39;) ) &#39;USAGE(%)&#39;                                       -- USAGE(%) : MAX대비 USED. TEMP, UNDO 의 경우 MAX대비 ALLOC
+     , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE     -- STATE    : 테이블스페이스 상태
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN (SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                          FROM X$SEGMENT
+                                         GROUP BY SPACE_ID ) DS ON DS.SPACE_ID = T.ID
+     ,(SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+ WHERE T.ID = D.SPACEID
+;
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)           TOTAL(M)         ALLOC(M)         USED(M)                   USAGE(%)         STATE           AUTOEXTEND  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_DATA                      2,048              217              217              211               10.32           ONLINE          ON   
+SYS_TBS_DISK_UNDO                      2,048              323              322                -               15.73           ONLINE          ON   
+SYS_TBS_DISK_TEMP                      2,048              100                0                -                 .01           ONLINE          ON   
+USER_DATA                              2,048            2,048              310              309               15.07           ONLINE          OFF  
+USER_IDX                               2,048            2,048               47               46                2.24           ONLINE          OFF  
+PART_DATA                              1,024            1,024              173              171               16.72           ONLINE          OFF  
+PART_DATA_DEF                          1,024            1,024               10                9                 .92           ONLINE          OFF  
+PART_IDX                               3,072            3,072               70               69                2.23           ONLINE          OFF  
+8 rows selected.</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7342011/8618044.txt">ALTIBASE_HDB_5.3.x_disk_tablespace_usage.txt</a> (text/plain)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

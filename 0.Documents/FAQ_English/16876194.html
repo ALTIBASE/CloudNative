@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to manage Spring+iBatis transaction</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to manage Spring+iBatis transaction
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146498 {padding: 0px;}
+div.rbtoc1624409146498 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146498 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146498'>
+<ul class='toc-indentation'>
+<li><a href='#HowtomanageSpring+iBatistransaction-Overview'>Overview</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-Howtomanage'>How to manage</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-Detaileddescription'>Detailed description</a>
+<ul class='toc-indentation'>
+<li><a href='#HowtomanageSpring+iBatistransaction-Commonapplication'>Common application</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-1-1.WhenusingDataSourceTransactionManagerdirectly'>1-1. When using DataSourceTransactionManager directly</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-1-2.WhentouseTransactionTemplate'>1-2. When to use TransactionTemplate</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-2-1.Methodusing&lt;tx:advice&gt;tag'>2-1. Method using &lt;tx:advice&gt; tag</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-2-2.MethodusingTransactionProxyFactoryBeantag'>2-2. Method using TransactionProxyFactoryBean tag</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-2-3Methodusingthe@Transactionalannotation'>2-3 Method using the @Transactional annotation</a></li>
+</ul>
+</li>
+<li><a href='#HowtomanageSpring+iBatistransaction-Reference'>Reference</a></li>
+<li><a href='#HowtomanageSpring+iBatistransaction-Samplecode'>Sample code</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="HowtomanageSpring+iBatistransaction-Overview">Overview</h1><hr /><p>This document describes how to manage Spring+iBatis transactions.</p><p> </p><h1 id="HowtomanageSpring+iBatistransaction-Howtomanage">How to manage</h1><hr /><p><strong>1. Bean Managed Transaction (BMT), explicit transaction management (how to consider transaction processing in the source)</strong></p><p>1-1 When directly using DataSourceTransactionManager</p><p>1-2 When using TransactionTemplate</p><p> </p><p><strong>2. CMT (Container Managed Transaction), declarative transaction management (using a configuration file and reducing consideration for transaction processing in the source)</strong></p><p><strong><br /></strong>2-1 Method using &lt;tx:advice&gt; tag</p><p>2-2. Method using TransactionProxyFactoryBean tag</p><p>2-3 Method using the @Transactional annotation</p><p> </p><h1 id="HowtomanageSpring+iBatistransaction-Detaileddescription">Detailed description</h1><hr /><h2 id="HowtomanageSpring+iBatistransaction-Commonapplication">Common application</h2><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>applicationContext.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot; &gt;
+   &lt;property name=&quot;driverClassName&quot;&gt;&lt;value&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;url&quot;&gt;&lt;value&gt;jdbc:Altibase://192.168.1.82:20300/mydb&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;username&quot;&gt;&lt;value&gt;sys&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;password&quot;&gt;&lt;value&gt;manager&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxActive&quot;&gt;&lt;value&gt;20&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxIdle&quot;&gt;&lt;value&gt;30000&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxWait&quot;&gt;&lt;value&gt;100&lt;/value&gt;&lt;/property&gt;
+  &lt;/bean&gt; 
+ 
+  &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+   &lt;property name=&quot;dataSource&quot;&gt;&lt;ref local=&quot;dataSource&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;</pre>
+</div></div><p> </p><h2 id="HowtomanageSpring+iBatistransaction-1-1.WhenusingDataSourceTransactionManagerdirectly">1-1. When using DataSourceTransactionManager directly</h2><hr /><ul><li>Configuration file: There is no additional configuration.</li><li>Commit and rollback are processed directly on the source.<br />SetAutoCommit(false) must be called in order to process as a transaction.<br /><span style="color: rgb(255,0,0);">Note that setAutoCommit(false) must be called when selecting blobs.</span></li></ul><h2 id="HowtomanageSpring+iBatistransaction-1-2.WhentouseTransactionTemplate">1-2. When to use TransactionTemplate</h2><hr /><ul><li><p>Configuration file</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">  &lt;bean id=&quot;transactionTemplate&quot; class=&quot;org.springframework.transaction.support.TransactionTemplate&quot;&gt;
+   &lt;property name=&quot;transactionManager&quot;&gt;&lt;ref local=&quot;transactionManager&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;bean id=&quot;xxxService&quot; class=&quot;…&quot;&gt;
+   &lt;property name=&quot;transactionTemplate&quot;&gt;&lt;ref local=&quot; transactionTemplate&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;</pre>
+</div></div></li><li>The user must use functions such as transactionTemplate.execute() and doInTransaction() on the source.</li><li>Note that when selecting blobs, Oracle did not process transactions, but when using Altibase, the user must use functions such as transactionTemplate.execute() and doInTransaction() on the source to process transactions.</li></ul><h2 id="HowtomanageSpring+iBatistransaction-2-1.Methodusing&lt;tx:advice&gt;tag">2-1. Method using &lt;tx:advice&gt; tag</h2><hr /><ul><li><p>Configuration file</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+&lt;/bean&gt;     
+&lt;tx:advice id=&quot;txAdvice&quot; transaction-manager=&quot;transactionManager&quot;&gt;
+    &lt;tx:attributes&gt;
+      &lt;!-- all methods starting with &#39;get&#39; are read-only --&gt;
+      &lt;tx:method name=&quot;get*&quot; read-only=&quot;true&quot; rollback-for=&quot;Exception&quot;/&gt;
+      &lt;!-- other methods use the default transaction settings (see below) --&gt;
+      &lt;tx:method name=&quot;*&quot; propagation=”REQUIRED”/&gt;
+    &lt;/tx:attributes&gt;
+&lt;/tx:advice&gt;</pre>
+</div></div></li><li>There is no need for transaction-related code on the source.</li></ul><h2 id="HowtomanageSpring+iBatistransaction-2-2.MethodusingTransactionProxyFactoryBeantag">2-2. Method using TransactionProxyFactoryBean tag</h2><hr /><ul><li><p>Configuration file</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;"> &lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+ &lt;/bean&gt;     
+ &lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot; class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+   &lt;property name=&quot;transactionManager&quot;&gt;
+    &lt;ref local=&quot;transactionManager&quot;&gt;&lt;/ref&gt;   
+   &lt;/property&gt;
+   &lt;property name=&quot;transactionAttributes&quot;&gt;
+    &lt;props&gt;
+     &lt;prop key=&quot;insert*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;update*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;delete*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;save*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;    
+     &lt;prop key=&quot;*&quot;&gt;PROPAGATION_SUPPORTS&lt;/prop&gt;
+    &lt;/props&gt;
+   &lt;/property&gt;
+ &lt;/bean&gt; </pre>
+</div></div></li><li>There is no need for transaction-related code on the source.</li></ul><h2 id="HowtomanageSpring+iBatistransaction-2-3Methodusingthe@Transactionalannotation">2-3 Method using the @Transactional annotation</h2><hr /><ul><li><p>Configuration</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+  &lt;/bean&gt;     
+  &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
+</pre>
+</div></div></li><li>Classes that require transactions on the source require @Transactional(propagation=Propagation.REQUIRED) notation.</li></ul><h1 id="HowtomanageSpring+iBatistransaction-Reference">Reference</h1><hr /><ul><li><span style="color: rgb(255,0,0);">If AltibaseClobStringTypeHandler is applied guided by the standard framework, an error may occur when CLOB is 0 byte.</span><br /><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">In this case, the user can check that it is normally searched by adding annotations without using TypeHandle.</span></span></li></ul><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></p><h1 id="HowtomanageSpring+iBatistransaction-Samplecode"><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Sample code</span></span></h1><hr /><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Sample code for handling LOB data.</span></span></p><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"> </span></span></p><ul><li><a href="https://aid.altibase.com/download/attachments/9109742/LobSpringIbatisSample.zip?version=1&amp;modificationDate=1447388295000&amp;api=v2" class="external-link" rel="nofollow">LobSpringIbatisSample.zip</a><a href="https://aid.altibase.com/download/attachments/9109742/LobSpringIbatisSample.zip?version=1&amp;modificationDate=1447388295000&amp;api=v2" class="external-link" rel="nofollow"></a></li></ul><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

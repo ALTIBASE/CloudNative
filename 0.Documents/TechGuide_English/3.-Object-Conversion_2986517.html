@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Object Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Object Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409344333 {padding: 0px;}
+div.rbtoc1624409344333 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409344333 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409344333'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-OBJECTConversion'>OBJECT Conversion</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-DATATYPES'>DATA TYPES</a></li>
+<li><a href='#id-3.ObjectConversion-OBJECTComparison'>OBJECT Comparison</a></li>
+<li><a href='#id-3.ObjectConversion-CREATETABLESPACE'>CREATE TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-DATATABLESPACE'>DATA TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-Exampleofconvertingtablespace-statement'>Example of converting tablespace-statement</a></li>
+</ul>
+</li>
+<li><a href='#id-3.ObjectConversion-TEMPORARYTABLESPACE'>TEMPORARY TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-Exampleofconvertingtemptablespacestatement'>Example of converting temp tablespace statement</a></li>
+</ul>
+</li>
+<li><a href='#id-3.ObjectConversion-UNDOTABLESPACE'>UNDO TABLESPACE</a></li>
+</ul>
+</li>
+<li><a href='#id-3.ObjectConversion-CREATETABLE'>CREATE TABLE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-COLUMNDEFINITION'>COLUMN DEFINITION</a></li>
+<li><a href='#id-3.ObjectConversion-SEGMENTATTRIBUTES'>SEGMENT ATTRIBUTES</a></li>
+<li><a href='#id-3.ObjectConversion-STORAGE'>STORAGE</a></li>
+<li><a href='#id-3.ObjectConversion-LOBSTORAGE'>LOB STORAGE</a></li>
+<li><a href='#id-3.ObjectConversion-TABLEPARTITIONING'>TABLE PARTITIONING</a></li>
+<li><a href='#id-3.ObjectConversion-TABLEPROPERTIES'>TABLE PROPERTIES</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-Exampleofconverting&quot;CREATETABLE&quot;statement'>Example of converting &quot;CREATE TABLE&quot; statement</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#id-3.ObjectConversion-CREATEINDEX'>CREATE INDEX</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ObjectConversion-Exampleofconvertingindex-statement'>Example of converting index-statement</a></li>
+</ul>
+</li>
+<li><a href='#id-3.ObjectConversion-CREATEVIEW'>CREATE VIEW</a></li>
+<li><a href='#id-3.ObjectConversion-CREATETRIGGER'>CREATE TRIGGER</a></li>
+<li><a href='#id-3.ObjectConversion-CREATESEQUENCE'>CREATE SEQUENCE</a></li>
+<li><a href='#id-3.ObjectConversion-CREATESYNONYM'>CREATE SYNONYM</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1 id="id-3.ObjectConversion-OBJECTConversion">OBJECT Conversion</h1>
+
+<p>We explain some considerations about conversion between ORACLE and ALTIBASE HDB.</p>
+
+<h2 id="id-3.ObjectConversion-DATATYPES">DATA TYPES</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Types</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHAR Type </p></td>
+<td class="confluenceTd"><p> CHAR </p></td>
+<td class="confluenceTd"><p> CHAR </p></td>
+<td class="confluenceTd"><p> Maximum-Size 32K </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> VARCHAR2,VARCHAR </p></td>
+<td class="confluenceTd"><p> VARCHAR2, VARCHAR </p></td>
+<td class="confluenceTd"><p> Maximum-Size 32K <br class="atl-forced-newline" />
+This column is displayed as VARCHAR after the execution of &quot;desc table&quot; command in ALTIBASE HDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> NCHAR </p></td>
+<td class="confluenceTd"><p> NCHAR </p></td>
+<td class="confluenceTd"><p> Maximum-Size 16000B(UTF16), Maximum-Size 10666B(UTF8) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> NVARCHAR2 </p></td>
+<td class="confluenceTd"><p> NVARCHAR </p></td>
+<td class="confluenceTd"><p> Maximum-Size 16000B(UTF16), Maximum-Size 10666B(UTF8) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> LONG </p></td>
+<td class="confluenceTd"><p> CLOB </p></td>
+<td class="confluenceTd"><p> Maximum-Size 2G </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOB Type </p></td>
+<td class="confluenceTd"><p> BLOB </p></td>
+<td class="confluenceTd"><p> BLOB </p></td>
+<td class="confluenceTd"><p> Maximum-Size 2G </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> CLOB </p></td>
+<td class="confluenceTd"><p> CLOB </p></td>
+<td class="confluenceTd"><p> Maximum-Size 2G </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> NCLOB </p></td>
+<td class="confluenceTd"><p> CLOB </p></td>
+<td class="confluenceTd"><p> Maximum-Size 2G </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NUMERIC Type </p></td>
+<td class="confluenceTd"><p> NUMERIC(p, s) </p></td>
+<td class="confluenceTd"><p> NUMERIC(p, s) </p></td>
+<td class="confluenceTd"><p> We recommend you to use ALTIBASE HDB native data type.  Because it reduces overhead during internal data type conversion. <br class="atl-forced-newline" />
+SMALLINT, INTEGER, BIGINT, REAL, DOUBLE data types belong to the native data type ALTIBASE HDB supports. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> NUMBER (<em>p</em>, <em>s</em>) </p></td>
+<td class="confluenceTd"><p> NUMBER(p, s) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> DECIMAL(p, s) </p></td>
+<td class="confluenceTd"><p> DECIMAL(p, s) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> FLOAT(p), BINARY_FLOAT </p></td>
+<td class="confluenceTd"><p> FLOAT(p) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> SMALLINT </p></td>
+<td class="confluenceTd"><p> SMALLINT </p></td>
+<td class="confluenceTd"><p> 2 byte </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INT </p></td>
+<td class="confluenceTd"><p> INTEGER </p></td>
+<td class="confluenceTd"><p> 4 byte </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> REAL </p></td>
+<td class="confluenceTd"><p> REAL </p></td>
+<td class="confluenceTd"><p> 4 byte </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> BINARY_DOUBLE </p></td>
+<td class="confluenceTd"><p> DOUBLE </p></td>
+<td class="confluenceTd"><p> 8 byte </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATE Type </p></td>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> ALTIBASE DATE data type can express up to micro-second. (1/1,000,000) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INTERVAL YEAR TO MONTH </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> No Feature in ALTIBASE HDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> INTERVAL DAY TO SECOND </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> TIMESTAMP WITH TIME ZONE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> TIMESTAMP WITH LOCAL TIME ZONE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> TIMESTAMP </p></td>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB Date Type and ORACLE TimeStamp(6) are alike. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BINARY Type </p></td>
+<td class="confluenceTd"><p> BFILE </p></td>
+<td class="confluenceTd"><p> BLOB </p></td>
+<td class="confluenceTd"><p> Maximum-Size 2G </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> RAW (<em>size</em>) </p></td>
+<td class="confluenceTd"><p> BLOB </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> LONG RAW </p></td>
+<td class="confluenceTd"><p> BLOB </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.ObjectConversion-OBJECTComparison">OBJECT Comparison</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Cluster </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Constraint </p></td>
+<td class="confluenceTd"><p> CHECK, REF constraint does not support. <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Among them listed on the left, CHECK constraint will be added <br class="atl-forced-newline" />
+as a new functionality at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Database link <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> At ALTIBASE HDB V7, It will be adopted. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Database trigger <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> BEFORE UPDATE and DDL TRIGGER Not Supported </p></td>
+<td class="confluenceTd"><p> BEFORE UPDATE functionality will be adopted as a new functionality at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Dimension </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> External procedure library </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Index-organized table <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Index </p></td>
+<td class="confluenceTd"><p> Only supports BTREE, RTREE.  BITMAP, CLUSTER, <br class="atl-forced-newline" />
+Function based, Domain, Global partitioned INDEX Not Supported </p></td>
+<td class="confluenceTd"><p> A function based index functionality <br class="atl-forced-newline" />
+will be adopted at ALTIBASE HDB V7. <br class="atl-forced-newline" />
+In addition, A global partitioned index is the same. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Indextype </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> JAVA Object </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Materialized view / Materialized view log </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> This functionality will be begun to be supported at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object table <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object type </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object view </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Operator </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Package </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> A package functionality will be applied at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Sequence </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Stored Function / Procedure <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Synonym </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Table </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> View </p></td>
+<td class="confluenceTd"><p> Supported. <br class="atl-forced-newline" />
+But M-View, Updatable-view Not Supported </p></td>
+<td class="confluenceTd"><p> M-View functionalities will be adopted at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Context </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Directory </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Edition <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Not Supported <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Restore points </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Profile </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Role <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Rollback Segment <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB has only one UNDO Tablespace. <br class="atl-forced-newline" />
+User can't control undo tablespace <br class="atl-forced-newline" />
+except an ALTER operation.(CREATE / DROP). </p></td>
+<td class="confluenceTd"><p> iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_UNDO <br class="atl-forced-newline" />
+ADD DATAFILE 'undo002.dbf' SIZE 100M; </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Tablespace </p></td>
+<td class="confluenceTd"><p> Supported <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> User </p></td>
+<td class="confluenceTd"><p> Supported </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.ObjectConversion-CREATETABLESPACE">CREATE TABLESPACE</h2>
+
+<p>ALTIBASE HDB has two types of tablespace.</p>
+
+<p>They are Memory tablespace and Disk tablespace.</p>
+
+<p>ORACLE's tablespace is disk tablespace.</p>
+
+<p>Therefore, When converting ORACLE to ALTIBASE HDB, user utilizes statement as &quot;CREATE [ DISK ] [ DATA ] TABLESPACE&quot;.</p>
+
+<p>The majority of ALTIBASE HDB syntax includes ORACLE syntax.</p>
+
+<p>And ALTIBASE HDB syntax is more simple than ORACLE's one.</p>
+
+<p>First, we explain through example of converting tablespace statement and then explain considerations about tablespace.</p>
+
+<h3 id="id-3.ObjectConversion-DATATABLESPACE">DATA TABLESPACE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BIGFILE|SMALLFILE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATAFILE file specification </p></td>
+<td class="confluenceTd"><p> DATAFILE file specification </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MINIMUM EXTENT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BLOCKSIZE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING </p></td>
+<td class="confluenceTd"><p> NOLOGGING </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FORCE LOGGING </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DEFAULT STORAGE CLAUSE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE </p></td>
+<td class="confluenceTd"><p> OFFLINE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXTENT MANAGEMENT LOCAL </p></td>
+<td class="confluenceTd"><p> DICTIONARY </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SEGMENT SPACE MANAGEMENT AUTO|MANUAL </p></td>
+<td class="confluenceTd"><p> SEGMENT MANAGEMENT AUTO|MANUAL </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FLASHBACK ON|OFF </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h4 id="id-3.ObjectConversion-Exampleofconvertingtablespace-statement">Example of converting tablespace-statement</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE TABLESPACE TESTDATA DATAFILE <br class="atl-forced-newline" />
+'testdata01.dbf' <br class="atl-forced-newline" />
+SIZE 1024M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED <br class="atl-forced-newline" />
+LOGGING ONLINE EXTENT MANAGEMENT LOCAL AUTOALLOCATE <br class="atl-forced-newline" />
+BLOCKSIZE 8K SEGMENT SPACE MANAGEMENT MANUAL FLASHBACK ON </p></td>
+<td class="confluenceTd"><p> CREATE TABLESPACE TESTDATA DATAFILE <br class="atl-forced-newline" />
+'testdata01.dbf' <br class="atl-forced-newline" />
+SIZE 1024M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED <br class="atl-forced-newline" />
+SEGMENT MANAGEMENT MANUAL </p></td>
+</tr>
+</tbody></table></div>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p><strong>SEGMENT MANAGEMENT MANUAL</strong><br />
+convert SEGMENT phase to SEGMENT MANAGEMENT AUTO|MANUAL and other phase is not supported</p>
+                    </div>
+    </div>
+
+
+<h3 id="id-3.ObjectConversion-TEMPORARYTABLESPACE">TEMPORARY TABLESPACE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE HDB</strong> </p></th>
+<th class="confluenceTh"><p> <strong>Consideration</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE GROUP </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXTENT MANAGEMENT LOCAL|DICTIONARY </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h4 id="id-3.ObjectConversion-Exampleofconvertingtemptablespacestatement">Example of converting temp tablespace statement</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE TEMPORARY TABLESPACE tbs_temp_02 <br class="atl-forced-newline" />
+TEMPFILE 'temp02.dbf' SIZE 5M AUTOEXTEND ON <br class="atl-forced-newline" />
+TABLESPACE GROUP tbs_grp_01 </p></td>
+<td class="confluenceTd"><p> CREATE TEMPORARY TABLESPACE tbs_temp_02 <br class="atl-forced-newline" />
+TEMPFILE 'temp02.dbf' SIZE 5M AUTOEXTEND ON </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p><strong>TABLESPACE GROUP</strong> Not supported</p>
+                    </div>
+    </div>
+
+
+
+<h3 id="id-3.ObjectConversion-UNDOTABLESPACE">UNDO TABLESPACE</h3>
+
+<p>In Altibase, user can not control undo tablespace. (CREATE/DROP)<br />
+User only can use &quot;SYS_TBS_DISK_UNDO TABLESPACE&quot;.</p>
+
+<p>Alteration operation can be executed by using &quot;ALTER TABLESPACE..&quot; statement.
+<br class="atl-forced-newline" /></p>
+
+<p>iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE 'undo002.dbf' SIZE 100M;</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_UNDO
+ADD DATAFILE &#39;undo002.dbf&#39; SIZE 100M;</pre>
+</div></div>
+
+<h2 id="id-3.ObjectConversion-CREATETABLE">CREATE TABLE</h2>
+
+<p>ALTIBASE doesn't provide objects like &quot;TEMPORARY TABLE, OBJECT TABLE, XMLType TABLE&quot;.</p>
+
+<p>But, ALTIBASE provides memory-table.<br />
+Therefore, user need to consider which table convert to memory-table.</p>
+
+
+<h3 id="id-3.ObjectConversion-COLUMNDEFINITION">COLUMN DEFINITION</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SORT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DEFAULT </p></td>
+<td class="confluenceTd"><p> DEFAULT </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENCRYPT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Constraint </p></td>
+<td class="confluenceTd"><p> Constraint </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB provides constraints except &quot;CHECK&quot; <br class="atl-forced-newline" />
+A Check Constraint will be adopted as a new functionality at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Ref Constraint </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ORGANIZATION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLUSTER </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPRESS </p></td>
+<td class="confluenceTd"><p> NOCOMPRESS </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>When defining PRIMARY KEY, UNIQUE Constraint, user have to use &quot;USING INDEX&quot; phase.<br />
+When defining index-attibutes, user can use only &quot;TABLESPACE, PARALLEL/NOPARALLEL , LOGGING/NOLOGGING&quot; phase.</p>
+                    </div>
+    </div>
+
+
+<h3 id="id-3.ObjectConversion-SEGMENTATTRIBUTES">SEGMENT ATTRIBUTES</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTFREE </p></td>
+<td class="confluenceTd"><p> PCTFREE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTUSED </p></td>
+<td class="confluenceTd"><p> PCTUSED </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INITRANS </p></td>
+<td class="confluenceTd"><p> INITRANS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAXTRANS </p></td>
+<td class="confluenceTd"><p> MAXTRANS </p></td>
+<td class="confluenceTd"><p> 255=&gt;120 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING | NOLOGGING </p></td>
+<td class="confluenceTd"><p> LOGGING | NOLOGGING </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-3.ObjectConversion-STORAGE">STORAGE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INITIAL </p></td>
+<td class="confluenceTd"><p> INITEXTENTS </p></td>
+<td class="confluenceTd"><p> bytes =&gt; The number of extent </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NEXT </p></td>
+<td class="confluenceTd"><p> NEXTEXTENTS </p></td>
+<td class="confluenceTd"><p> bytes =&gt; The number of extent </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MINEXTENTS </p></td>
+<td class="confluenceTd"><p> MINEXTENTS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAXEXTENTS </p></td>
+<td class="confluenceTd"><p> MAXEXTENTS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTINCREASE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FREELISTS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FREELIST </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OPTIMAL </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BUFFER POOL </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-3.ObjectConversion-LOBSTORAGE">LOB STORAGE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STORAGE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHUNK </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTVERSION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RETENTION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FREEPOOLS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CACHE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STORAGE IN ROW </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING| NOLOGGING </p></td>
+<td class="confluenceTd"><p> LOGGING| NOLOGGING </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-3.ObjectConversion-TABLEPARTITIONING">TABLE PARTITIONING</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PARTITION BY RANGE </p></td>
+<td class="confluenceTd"><p> PARTITION BY RANGE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PARTITION BY HASH </p></td>
+<td class="confluenceTd"><p> PARTITION BY HASH </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PARTITION BY LIST </p></td>
+<td class="confluenceTd"><p> PARTITION BY LIST </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Composite partitioning 구문 </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-3.ObjectConversion-TABLEPROPERTIES">TABLE PROPERTIES</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong>  HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENABLE|DISABLE ROW MOVEMENT </p></td>
+<td class="confluenceTd"><p> ENABLE|DISABLE ROW MOVEMENT </p></td>
+<td class="confluenceTd"><p> Only Partitioned TABLE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NOPARALLEL| PARALLEL </p></td>
+<td class="confluenceTd"><p> NOPARALLEL| PARALLEL </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENABLE|DISABLE VALIDATE|NOVALIDATE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h4 id="id-3.ObjectConversion-Exampleofconverting&quot;CREATETABLE&quot;statement">Example of converting &quot;CREATE TABLE&quot; statement</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE TABLE &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;EMPNO&quot; NUMBER(4,0), <br class="atl-forced-newline" />
+&quot;ENAME&quot; VARCHAR2(10 <span style="color: rgb(255,0,0);">BYTE</span>), <br class="atl-forced-newline" />
+&quot;JOB&quot; VARCHAR2(9 BYTE), &quot;MGR&quot; NUMBER(4,0), <br class="atl-forced-newline" />
+&quot;HIREDATE&quot; DATE, &quot;SAL&quot; NUMBER(7,2), &quot;COMM&quot; NUMBER(7,2), <br class="atl-forced-newline" />
+&quot;DEPTNO&quot; NUMBER(2,0), CONSTRAINT &quot;PK_EMP&quot; <br class="atl-forced-newline" />
+PRIMARY KEY (&quot;EMPNO&quot;) USING INDEX <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">STORAGE</span> <span style="color: rgb(255,0,0);">(INITIAL 65536 NEXT 1048576 MINEXTENTS 1</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">MAXEXTENTS 2147483645</span> <span style="color: rgb(255,0,0);">PCTINCREASE 0 FREELISTS 1</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">FREELIST GROUPS 1 BUFFER_POOL DEFAULT</span>) <br class="atl-forced-newline" />
+TABLESPACE &quot;USERS&quot; <span style="color: rgb(255,0,0);">ENABLE</span>, <br class="atl-forced-newline" />
+CONSTRAINT &quot;FK_DEPTNO&quot; FOREIGN KEY (&quot;DEPTNO&quot;) <br class="atl-forced-newline" />
+REFERENCES &quot;SCOTT&quot;.&quot;DEPT&quot; (&quot;DEPTNO&quot;) <span style="color: rgb(255,0,0);">ENABLE</span> ) <br class="atl-forced-newline" />
+PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS <span style="color: rgb(255,0,0);">255</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">NOCOMPRESS LOGGING</span> STORAGE(<span style="color: rgb(255,0,0);">INITIAL 65536 NEXT 1048576</span> <br class="atl-forced-newline" />
+MINEXTENTS 1 MAXEXTENTS 2147483645 <span style="color: rgb(255,0,0);">PCTINCREASE 0</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT</span>) <br class="atl-forced-newline" />
+TABLESPACE &quot;USERS&quot; ; </p></td>
+<td class="confluenceTd"><p> CREATE TABLE &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;EMPNO&quot; NUMBER(4,0), <br class="atl-forced-newline" />
+&quot;ENAME&quot; VARCHAR2(10), &quot;JOB&quot; VARCHAR2(9), &quot;MGR&quot; <br class="atl-forced-newline" />
+NUMBER(4,0), &quot;HIREDATE&quot; DATE, &quot;SAL&quot; NUMBER(7,2), <br class="atl-forced-newline" />
+&quot;COMM&quot; NUMBER(7,2), &quot;DEPTNO&quot; NUMBER(2,0), <br class="atl-forced-newline" />
+CONSTRAINT &quot;PK_EMP&quot; PRIMARY KEY (&quot;EMPNO&quot;) <br class="atl-forced-newline" />
+USING INDEX TABLESPACE &quot;USERS&quot; , CONSTRAINT &quot;FK_DEPTNO&quot; <br class="atl-forced-newline" />
+FOREIGN KEY (&quot;DEPTNO&quot;) REFERENCES &quot;SCOTT&quot;.&quot;DEPT&quot; (&quot;DEPTNO&quot;) ) <br class="atl-forced-newline" />
+TABLESPACE &quot;USERS&quot; PCTFREE 10 PCTUSED 40 INITRANS 1 <br class="atl-forced-newline" />
+MAXTRANS 120 STORAGE (INITEXTENTS 1 NEXTEXTENTS 1 MINEXTENTS <br class="atl-forced-newline" />
+1 MAXEXTENTS 2147483645) LOGGING ; </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="id-3.ObjectConversion-CREATEINDEX">CREATE INDEX</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> TABLESPACE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING|NOLOGGING </p></td>
+<td class="confluenceTd"><p> LOGGING|NOLOGGING </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NOPARALLEL|PARALLEL </p></td>
+<td class="confluenceTd"><p> NOPARALLEL|PARALLEL </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPUTE STATISTICS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REVERSE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SORT </p></td>
+<td class="confluenceTd"><p> NOSORT </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPRESS </p></td>
+<td class="confluenceTd"><p> NOCOMPRESS </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTFREE, PCTUSED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not Supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INITRANS </p></td>
+<td class="confluenceTd"><p> INITRANS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAXTRANS </p></td>
+<td class="confluenceTd"><p> MAXTRANS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Storage Clause </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h3 id="id-3.ObjectConversion-Exampleofconvertingindex-statement">Example of converting index-statement</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE INDEX &quot;SCOTT&quot;.&quot;EMP_IDX1&quot; <br class="atl-forced-newline" />
+ON &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;DEPTNO&quot;, &quot;SAL&quot;) <br class="atl-forced-newline" />
+PCTFREE 10 INITRANS 2 MAXTRANS 255 <br class="atl-forced-newline" />
+COMPUTE STATISTICS <br class="atl-forced-newline" />
+STORAGE(INITIAL 65536 NEXT 1048576 <br class="atl-forced-newline" />
+ MINEXTENTS 1 MAXEXTENTS 2147483645 <br class="atl-forced-newline" />
+PCTINCREASE 0 FREELISTS 1 <br class="atl-forced-newline" />
+FREELIST GROUPS 1 BUFFER_POOL DEFAULT) <br class="atl-forced-newline" />
+TABLESPACE &quot;USERS&quot; ; </p></td>
+<td class="confluenceTd"><p> CREATE INDEX &quot;SCOTT&quot;.&quot;EMP_IDX1&quot; <br class="atl-forced-newline" />
+ON &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;DEPTNO&quot;, &quot;SAL&quot;) <br class="atl-forced-newline" />
+TABLESPACE &quot;USERS&quot; <br class="atl-forced-newline" />
+INITRANS 2 MAXTRANS 30 <br class="atl-forced-newline" />
+STORAGE(INITEXTENTS 1 NEXTEXTENTS 1 <br class="atl-forced-newline" />
+MINEXTENTS 1 MAXEXTENTS 2147483645) <strong>;</strong> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.ObjectConversion-CREATEVIEW">CREATE VIEW</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> HDB </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WITH READ ONLY </p></td>
+<td class="confluenceTd"><p> WITH READ ONLY </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB only supports WITH READ ONLY clause. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> [NO] FORCE </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WITH CHECK OPTION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XMLType view </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object view </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.ObjectConversion-CREATETRIGGER">CREATE TRIGGER</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>ORACLE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>Comments</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE TRIGGER </p></td>
+<td class="confluenceTd"><p> CREATE TRIGGER </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BEFORE|AFTER| INSTEAD OF </p></td>
+<td class="confluenceTd"><p> BEFORE|AFTER </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB have begun to support &quot;before trigger&quot; functionality at Version 6.  <br class="atl-forced-newline" />
+Before trigger functionality will be applied to ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DML Event </p></td>
+<td class="confluenceTd"><p> DML Event </p></td>
+<td class="confluenceTd"><p> ALTIBASE doesn't support more than one event with &quot;OR&quot;. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DDL Event </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WHEN Conditions </p></td>
+<td class="confluenceTd"><p> WHEN Conditions </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FOR EACH ROW </p></td>
+<td class="confluenceTd"><p> FOR EACH ROW </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REFERENCING </p></td>
+<td class="confluenceTd"><p> REFERENCING </p></td>
+<td class="confluenceTd"><p> DELETE event can't refer a &quot;NEW&quot; and INSERT-event can't refer &quot;OLD&quot; </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Trigger body </p></td>
+<td class="confluenceTd"><p> Trigger body </p></td>
+<td class="confluenceTd"><p> ALTIBASE Trigger body have to start &quot;AS BEGIN&quot; and <br class="atl-forced-newline" />
+:old (x) -&gt; old(o) </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.ObjectConversion-CREATESEQUENCE">CREATE SEQUENCE</h2>
+
+<ul>
+	<li>ALTIBASE HDB doesn't support &quot;ORDER, NOORDER&quot;.</li>
+	<li>A sequence has a range between -9223372036854775807 and 9223372036854775806 in ALTIBASE HDB.</li>
+</ul>
+
+
+<h2 id="id-3.ObjectConversion-CREATESYNONYM">CREATE SYNONYM</h2>
+
+<p>It's similar to ORACLE.</p>
+
+<p>. </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

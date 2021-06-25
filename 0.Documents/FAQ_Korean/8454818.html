@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-11118 (  69912) The update log size &#39;?????&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;?????&#39;</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-11118 (  69912) The update log size &#39;?????&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;?????&#39;
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> heejung lee</span> on Nov 07, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055529 {padding: 0px;}
+div.rbtoc1624409055529 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055529 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055529'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-개요'>개요</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-버전'>버전</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-현상'>현상</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-원인'>원인</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-조치'>조치</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-UPDATE대상레코드수줄이기'>UPDATE 대상 레코드 수 줄이기</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-TRX_UPDATE_MAX_LOGSIZE프로퍼티설정값변경'>TRX_UPDATE_MAX_LOGSIZE 프로퍼티 설정값 변경</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-참고'>참고</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-관련버그'>관련 버그</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-개요"><strong>개요</strong></h1><hr /><p>메모리 테이블에 변경 트랜잭션 수행 중 발생하는 에러에 관해 설명합니다.</p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-버전"><strong>버전</strong></h1><hr /><p>Altibase 4.3.9  이상</p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-현상"><strong>현상</strong></h1><hr /><p>메모리 테이블에 대해 변경 트랜잭션 수행 중 발생할 수 있는 에러입니다. </p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>에러 발생 예) 테이블 T5 는 메모리 테이블</b></div><div class="panelContent">
+<div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="sql plain">iSQL&gt; </code><code class="sql keyword">update</code> <code class="sql plain">t5 </code><code class="sql keyword">set</code> <code class="sql plain">c1=</code><code class="sql string">'xxxxxxxxx'</code> <code class="sql plain">;</code></div><div class="line number2 index1 alt1"><code class="sql plain">[ERR-11118 : The </code><code class="sql keyword">update</code> <code class="sql plain">log </code><code class="sql keyword">size</code> <code class="sql string">'10486749'</code> <code class="sql keyword">is</code> <code class="sql plain">bigger than TRX_UPDATE_MAX_LOGSIZE </code><code class="sql string">'10485760'</code><code class="sql plain">]</code></div><div class="line number3 index2 alt2"><code class="sql plain">iSQL&gt;</code></div></div>
+</div></div><p> </p><p>Altibase 버전에 따라 에러 코드에 차이가 있습니다.</p>    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">알티베이스 버전에 따른 에러 코드 차이</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p><strong>Altibase 5 이상</strong></p><p>ERR-<span style="color: rgb(51,102,255);">11118 (  69912)</span> The update log size '?????' is bigger than TRX_UPDATE_MAX_LOGSIZE '?????'</p><p><br /><strong>Altibase 4.3.9</strong></p><p>ERR-<span style="color: rgb(51,102,255);">110C3 (  69827)</span> The update log size '?????' is bigger than TRX_UPDATE_MAX_LOGSIZE '?????'</p>
+                    </div>
+    </div>
+<p> </p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-원인"><strong>원인</strong></h1><hr /><p><span style="color: rgb(0,0,0);">하나의 변경 트랜잭션에 의해 생성되는 온라인 트랜잭션 로그의 크기가 TRX_UPDATE_MAX_LOGSIZE 설정 값을 초과하여 발생하는 에러입니다. </span></p><p><span style="color: rgb(0,0,0);">TRX_UPDATE_MAX_LOGSIZE는 알티베이스 서버 프로퍼티로, 대량</span>의 변경 트랜잭션에 의해 생성되는 메모리 테이블의 버전닝으로 인해 메모리를 과도하게 사용하는 것을 막기 위한 역할을 합니다.</p><p> </p><h4 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-메모리테이블의버전닝?">메모리 테이블의 버전닝?</h4><p>알티베이스는 동시성 제어를 위해 다중 버전 동시성 제어 (MVCC, Multi-Version Concurrency Control) 기법을 사용합니다. MVCC란 하나의 레코드에 대해 DML구문이 발생할 경우 그 레코드는 원래 상태 그대로 둔 채, 그 레코드의 복사본에 DML 구문을 실행하여 그 레코드의 새로운 버전을 만드는 것을 말합니다. 이 기법으로 하나의 레코드에 대한 조회 트랜잭션은 변경 트랜잭션에 영향을 받지 않습니다. </p><p>디스크와 메모리는 각각이 가지고 있는 특성 상 디스크 테이블은 in-place, 메모리 테이블은 Out-place기법으로 서로 다른 MVCC 기법이 사용됩니다.</p><p> </p><p>메모리 테이블의 Out-place MVCC는 하나의 레코드에 update가 일어나면, 기존 레코드는 그대로 두고 새 공간에 새 버전을 추가함으로서 여러 버전을 유지합니다. 이로 인해 메모리가 증가하는 등 시스템에 부하가 발생하는 것을 방지하기 위해 TRX_UPDATE_MAX_LOGSIZE 및 LOCK_ESCALATION_MEMORY_SIZE 프로퍼티를 제공합니다.</p><p><a name="9003794" rel="nofollow"></a></p><p>INSERT는 이전 버전이 없기 때문에 버저닝이 발생하지 않고, DELETE는 새로운 버전이 없기 때문에 delete flag 만 세팅하므로 여러 버전의 버저닝이 발생하지 않습니다.</p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-조치"><strong>조치</strong></h1><hr /><p>이 에러가 발생할 경우 아래의 방법 중 하나로 조치할 수 있습니다.</p><p> </p><h2 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-UPDATE대상레코드수줄이기"><strong>UPDATE 대상 레코드 수 줄이기</strong></h2><hr /><p>UPDATE문에 의해 한번에 변경되는 레코드 수를 줄여 하나의 트랜잭션에 의해 생성되는 트랜잭션 로그의 양을 줄입니다.</p><p> </p><ul><li><h4 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-한테이블에변경해야할레코드가많은경우">한 테이블에 변경해야 할 레코드가 많은 경우</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Autocommit 모드의 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT ON; 
+iSQL&gt; UPDATE T1 SET C1=100 LIMIT 1000;        -- limit 구문으로 UPDATE 대상 범위를 줄이고 UPDATE 문을 반복 수행합니다. 
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Non Autocommit 모드의 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF; 
+iSQL&gt; UPDATE T1 SET C1=100 LIMIT 1000;        -- limit 구문으로 UPDATE 대상 범위를 줄이고 UPDATE 문을 반복 수행합니다. 
+iSQL&gt; COMMIT;                                 -- commit 주기도 짧게 수행합니다. 
+</pre>
+</div></div></li><li><p><strong>하나의 트랜잭션에서 여러 테이블에 UPDATE를 수행하는 경우</strong></p><p><span style="color: rgb(0,0,0);">TRX_UPDATE_MAX_LOGSIZE</span>프로퍼티는 트랜잭션 단위로 적용되므로 아래와 같이 하나의 트랜잭션에 여러 문장이 사용된 경우, COMMIT 또는 ROLLBACK을 수행할 때까지 <span style="color: rgb(0,0,0);">TRX_UPDATE_MAX_LOGSIZE</span>가 증가할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF;
+iSQL&gt; UPDATE T1 SET C1 = 100;
+iSQL&gt; COMMIT;                                 -- commit 주기를 짧게 가져간다.
+iSQL&gt; UPDATE T2 SET C1 = 200; 
+iSQL&gt; COMMIT;</pre>
+</div></div></li></ul><p> </p><p> </p><p> </p><h2 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-TRX_UPDATE_MAX_LOGSIZE프로퍼티설정값변경"><strong>TRX_UPDATE_MAX_LOGSIZE 프로퍼티 설정값 변경</strong></h2><hr /><p>TRX_UPDATE_MAX_LOGSIZE 프로퍼티의 기본값은 10M입니다. 이 값이 너무 작다고 판단될 경우 세션 또는 시스템 레벨에서 값을 변경할 수 있습니다.</p><p>먼저, 특정 트랜잭션에서 생성하게 될 트랜잭션 로그의 크기를 산정하는 방법과 TRX_UPDATE_MAX_LOGSIZE 변경 시 주의사항에 관해 설명한 후 변경 방법에 관해 설명합니다.</p><p> </p><p> </p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-트랜잭션의TRX_UPDATE_MAX_LOGSIZE값산정">트랜잭션의 <strong>TRX_UPDATE_MAX_LOGSIZE</strong> 값 산정</h3><ul><li><p>TRX_UPDATE_MAX_LOGSIZE를 변경하기 위해 특정 트랜잭션에서 사용할 트랜잭션 로그의 양을 산정하는 방법입니다.<br /><br /></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">세션1 - UPDATE 문 수행</th><th class="confluenceTh">세션2 - 성능 뷰 조회</th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF;
+iSQL&gt; UPDATE ORDER_LINE SET OL_DELIVERY_D = SYSDATE LIMIT 1;    -- limit 1 주고 수행
+</pre>
+</div></div></td><td class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p>아래 쿼리문을 수행하여 나온 결과 중 UPDATE_SIZE * 'update 대상 레코드 수' 가 해당 트랜잭션에서 생성하게 될 트랜잭션 로그의 크기입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT ST.SESSION_ID SESSION_ID, TX.ID TX_ID
+           , TX.UPDATE_SIZE
+           , SUBSTR(ST.QUERY, 1, 100) QUERY
+        FROM V$TRANSACTION TX, V$STATEMENT ST
+       WHERE TX.ID = ST.TX_ID AND TX.UPDATE_SIZE &lt;&gt; 0 ;</pre>
+</div></div></td></tr><tr><td colspan="1" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ROLLBACK;</pre>
+</div></div></td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div></li></ul><p> </p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-TRX_UPDATE_MAX_LOGSIZE변경시주의사항"><strong>TRX_UPDATE_MAX_LOGSIZE</strong> 변경 시 주의사항</h3><ul><li><span style="color: rgb(255,0,0);">TRX_UPDATE_MAX_LOGSIZE는 LOCK_ESCALATION_MEMORY_SIZE 보다 작게 설정할 것을 권장합니다.</span> <br />메모리 테이블 MVCC로 인해 메모리가 증가하는 것을 방지하기 위해 TRX_UPDATE_MAX_LOGSIZE와 LOCK_ESCALATION_MEMORY_SIZE 프로퍼티를 제공하고 있습니다.</li></ul><ul><li>하나의 트랜잭션에서 생성하는 트랜잭션 로그의 크기가 <br />TRX_UPDATE_MAX_LOGSIZE를 초과할 경우 해당 트랜잭션을 에러 처리하고 롤백합니다. <br />LOCK_ESCALATION_MEMORY_SIZE를 초과할 경우 해당 트랜잭션의 LOCK 모드가 레코드 레벨 IX_LOCK에서 테이블 레벨 X LOCK으로 전환됩니다. <br /><br /></li><li>X LOCK의 경우 대상 테이블에 대한 조회 트랜잭션도 대기하게 하므로 서비스에 문제를 발생시킬 수도 있습니다.</li><li>이런 문제를 방지하기 위해서는 TRX_UPDATE_MAX_LOGSIZE를 LOCK_ESCALATION_MEMORY_SIZE보다 작게 설정하여 X LOCK으로 전환하는 일이 발생하지 않도록 해야 합니다. <br /><br /></li></ul><p> </p><p> </p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-변경방법">변경 방법</h3><ul><li><p><strong>프로퍼티 설정값 확인 방법</strong></p><p><span style="color: rgb(0,0,0);">TRX_UPDATE_MAX_LOGSIZE는 LOCK_ESCALATION_MEMORY_SIZE 보다 작게 설정해야 하므로 두 프로퍼티를 같이 확인합니다. </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>TRX_UPDATE_MAX_LOGSIZE 및 LOCK_ESCALATION_MEMORY_SIZE 설정값 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 데이터베이스 전역에 설정된 프로퍼티의 값을 확인하는 방법입니다.
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;TRX_UPDATE_MAX_LOGSIZE&#39;, &#39;LOCK_ESCALATION_MEMORY_SIZE&#39;);                      </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>세션 별 TRX_UPDATE_MAX_LOGSIZE 설정 값 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- TRX_UPDATE_MAX_LOGSIZE 프로퍼티는 세션 단위로 설정할 수도 있습니다. 
+
+-- 세션 별 설정값을 보고 싶은 경우
+iSQL&gt; SELECT ID SESSION_ID, COMM_NAME, TRX_UPDATE_MAX_LOGSIZE FROM V$SESSION;                            
+
+-- 내 세션의 설정값을 보고 싶은 경우. Altibase 5.3.3 이상 가능.
+iSQL&gt; SELECT ID SESSION_ID, COMM_NAME, TRX_UPDATE_MAX_LOGSIZE FROM V$SESSION WHERE ID = SESSION_ID();    </pre>
+</div></div><p><br /><br /></p></li><li><p><strong>세션 단위 변경 방법</strong></p><p>ALTER SESSION 수행 후 수행하는 트랜잭션에 적용됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 52428800;        -- 값은 byte 단위</pre>
+</div></div></li></ul><ul><li><p><strong>시스템 레벨 변경 방법</strong></p><p>ALTER SYSTEM 수행 후 신규 세션에서 수행하는 트랜잭션부터 영향을 받습니다. ALTER SYSTEM 으로 변경한 값은 Altibase 서버 구동 중에만 적용되며 Altibase 서버를 재구동하면 기본값으로 되돌아갑니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET TRX_UPDATE_MAX_LOGSIZE = 52428800;  </pre>
+</div></div><p><br />변경값을 Altibase 서버에 영구적으로 반영하고 싶을 경우 altibase.properties 파일도 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET TRX_UPDATE_MAX_LOGSIZE = 52428800;  
+
+shell&gt; vi $ALTIBASE_HOME/conf/altibase.properties                  -- altibase.properties 파일을 열고 TRX_UPDATE_MAX_LOGSIZE를 찾아 값을 변경 후 저장.
+TRX_UPDATE_MAX_LOGSIZE = 52428800                               </pre>
+</div></div><p>위와 같이 수행하면 Altibase 서버 재구동을 하여도 변경값을 유지할 수 있습니다.</p></li></ul><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-참고"><strong>참고</strong></h1><hr /><h2 style="margin-left: 0.0px;" id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-관련버그"><strong>관련 버그</strong></h2><hr /><p style="margin-left: 0.0px;">몇몇 버전에서 TRX_UPDATE_MAX_LOGSIZE 관련 버그로 인해 TRX_UPDATE_MAX_LOGSIZE의 설정값을 변경하여도 정상적으로 동작하지 않는 경우가 있습니다. </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th style="text-align: left;" class="confluenceTh"><div class="tablesorter-header-inner"><p style="margin-left: 0.0px;">Altibase 서버 버전</p></div></th><th style="text-align: left;" class="confluenceTh"><div class="tablesorter-header-inner"><p style="margin-left: 0.0px;">현상</p></div></th><th style="text-align: left;" class="confluenceTh"><div class="tablesorter-header-inner"><p style="margin-left: 0.0px;">버그</p></div></th></tr></thead><tbody><tr><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">4.3.9.103 ~ 4.3.9.133</p></td><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">TRX_UPDATE_MAX_LOGSIZE의 기본값이 10M인데 V$SESSION의 TRX_UPDATE_MAX_LOGSIZE 컬럼 값이 0(무제한)으로 설정된 현상.</p></td><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">BUG-20511</p></td></tr><tr><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">4.3.9.163 ~ 4.3.9.165</p></td><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">TRX_UPDATE_MAX_LOGSIZE를 잘못 읽는 버그로 TRX_UPDATE_MAX_LOGSIZE로 인해 에러가 발생해야 할 상황에서 에러가 발생하지 않는 현상.</p></td><td style="text-align: left;" class="confluenceTd"><p style="margin-left: 0.0px;">BUG-26311</p></td></tr></tbody></table></div><p> </p><p><strong><br /></strong></p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

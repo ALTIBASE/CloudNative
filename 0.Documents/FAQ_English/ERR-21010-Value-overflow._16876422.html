@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-21010 Value overflow.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-21010 Value overflow.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148565 {padding: 0px;}
+div.rbtoc1624409148565 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148565 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148565'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-21010Valueoverflow.-Version'>Version</a></li>
+<li><a href='#ERR-21010Valueoverflow.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-21010Valueoverflow.-Cause'>Cause</a></li>
+<li><a href='#ERR-21010Valueoverflow.-Solution'>Solution</a></li>
+<li><a href='#ERR-21010Valueoverflow.-Notes/Considerations'>Notes/Considerations</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-21010Valueoverflow.-Version">Version</h1><hr /><p>All the versions of Altibase</p><p> </p><h1 id="ERR-21010Valueoverflow.-Symptom">Symptom</h1><hr /><p>The following error occurs when executing INSERT/UPDATE, etc.</p><p>[ERR-21010: Value overflow]</p><p> </p><h1 id="ERR-21010Valueoverflow.-Cause">Cause</h1><hr /><p>The description of the error can be checked using the altierr utility as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x21010</p><p>0x21010 ( 135184) mtERR_ABORT_VALUE_OVERFLOW Value overflow</p><p># *Cause:  Value overflow</p><p># *Action: Please change the value or data type.</p>
+</div></div><p>In other words, it is an error that occurs when the input value exceeds the range supported by the data type.</p><p> </p><p># Example</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create table test(i1 integer);
+Create success.
+iSQL&gt; insert into test values(2147483648);
+[ERR-21010 : Value overflow
+0001 : insert into TEST values(2147483648)
+                              ^         ^
+]
+iSQL&gt; insert into test values(2147483647);
+1 row inserted.</pre>
+</div></div><p>The range of integer type values is <u><strong>-2,147,483,647 ~ 2,147,483,647</strong></u> integer values.</p><p>Therefore, the error occurred because the value to be stored in the column is out of the range of the integer value.</p><p> </p><h1 id="ERR-21010Valueoverflow.-Solution">Solution</h1><hr /><p>Check if the input value to be saved in a specific column exceeds the maximum size of the column data type.</p><p>If it exceeds the maximum size, it is necessary to modify the input value or change the data type of the column.</p><p> </p><h1 id="ERR-21010Valueoverflow.-Notes/Considerations">Notes/Considerations</h1><hr /><p>The range of values for each data type supported by Altibase can be found in the General Reference manual at <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a><a href="http://support.altibase.com/en/manual." class="external-link" rel="nofollow">/</a> or GitHub: <a href="https://github.com/ALTIBASE/Documents" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents</a><a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">.</a></p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

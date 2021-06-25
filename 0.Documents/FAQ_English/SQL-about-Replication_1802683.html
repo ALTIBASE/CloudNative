@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : SQL about Replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : SQL about Replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 06, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153276 {padding: 0px;}
+div.rbtoc1624409153276 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153276 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153276'>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutReplication-ReplicationSender'>Replication Sender</a></li>
+<li><a href='#SQLaboutReplication-ReplicationReceiver'>Replication Receiver</a></li>
+<li><a href='#SQLaboutReplication-Replicationgap'>Replication gap</a></li>
+<li><a href='#SQLaboutReplication-Replicationstatus'>Replication status</a></li>
+<li><a href='#SQLaboutReplication-LogbufferorfilestatusoccupiedbyanunsentXLOG'>Log buffer or file status occupied by an unsent XLOG</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutReplication-ALTIBASEHDBV4'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutReplication-ALTIBASEHDBV5'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutReplication-Replicationtablelist'>Replication table list</a></li>
+</ul>
+</div>
+
+<h1 id="SQLaboutReplication-ReplicationSender">Replication Sender</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the replication sender status.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_NAME </p></td>
+<td class="confluenceTd"><p> the name of replication object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_IP </p></td>
+<td class="confluenceTd"><p> the IP address of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_REP_PORT </p></td>
+<td class="confluenceTd"><p> the port number of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATUS </p></td>
+<td class="confluenceTd"><p> the status of replication sender </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NETWORK </p></td>
+<td class="confluenceTd"><p> check whether network error or not </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XSN </p></td>
+<td class="confluenceTd"><p> XLOG Sequence Number : the final position in a log file from which logs were transmitted by the replication sender </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	REP_NAME,
+        PEER_IP REMOTE_IP,
+        PEER_PORT REMOTE_REP_PORT,
+        DECODE(STATUS, 0, &#39;STOP&#39;, 1, &#39;RUN&#39;, 2, &#39;RETRY&#39;) AS STATUS,
+        DECODE(NET_ERROR_FLAG, 0, &#39;OK&#39;, &#39;ERROR&#39;) AS NETWORK,
+        XSN
+FROM V$REPSENDER ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutReplication-ReplicationReceiver">Replication Receiver</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_NAME </p></td>
+<td class="confluenceTd"><p> the name of replication object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_IP </p></td>
+<td class="confluenceTd"><p> the IP address of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_REP_PORT </p></td>
+<td class="confluenceTd"><p> the port number of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> APPLY_XSN </p></td>
+<td class="confluenceTd"><p> applied XLOG Sequence Number : the final position in a log file from which logs were applied by the replication receiver </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	REP_NAME,
+	      PEER_IP REMOTE_IP,
+	      PEER_PORT REMOTE_REP_PORT,
+	      APPLY_XSN
+FROM V$REPRECEIVER ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutReplication-Replicationgap">Replication gap</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_NAME </p></td>
+<td class="confluenceTd"><p> the name of replication object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_IP </p></td>
+<td class="confluenceTd"><p> the IP address of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_REP_PORT </p></td>
+<td class="confluenceTd"><p> the port number of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> APPLY_XSN </p></td>
+<td class="confluenceTd"><p> applied XLOG Sequence Number : the final position in a log file from which logs were applied by the replication receiver </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	REP_NAME,
+ 		    REP_SN,
+ 		    REP_LAST_SN,
+ 		    REP_GAP,
+ 		    READ_FILE_NO,
+ 		    START_FLAG
+FROM    V$REPGAP ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutReplication-Replicationstatus">Replication status</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_NAME </p></td>
+<td class="confluenceTd"><p> the name of replication object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_IP </p></td>
+<td class="confluenceTd"><p> the IP address of remote replicated server </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_GAP </p></td>
+<td class="confluenceTd"><p> the interval between the log record that was most recently written due to a transaction on the local server and the log record that is currently being sent by the replication Sender thread. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RESTART_XSN </p></td>
+<td class="confluenceTd"><p> the XSN from which the Sender thread must begin sending logs when replication is started. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SENDER </p></td>
+<td class="confluenceTd"><p> the sender status </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RECEIVER </p></td>
+<td class="confluenceTd"><p> the receiver status </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	A.REPLICATION_NAME REP_NAME,
+        D.HOST_IP REMOTE_IP,
+        NVL(TO_CHAR(E.REP_GAP), &#39;-&#39;) AS REP_GAP,
+        A.XSN RESTART_XSN,
+        DECODE(B.PEER_PORT, NULL, &#39;OFF&#39;, &#39;ON&#39;) AS SENDER,
+        DECODE(C.PEER_PORT, NULL, &#39;OFF&#39;, &#39;ON&#39;) AS RECEIVER
+FROM    SYSTEM_.SYS_REPL_HOSTS_ D ,
+        SYSTEM_.SYS_REPLICATIONS_ A LEFT OUTER JOIN
+        V$REPSENDER B ON A.REPLICATION_NAME = B.REP_NAME
+        LEFT OUTER JOIN V$REPRECEIVER C ON A.REPLICATION_NAME = C.REP_NAME LEFT OUTER JOIN
+        (
+        	SELECT REP_NAME,
+        	       MAX(REP_GAP) REP_GAP
+        	FROM   V$REPGAP
+        	GROUP BY REP_NAME
+         ) E ON A.REPLICATION_NAME = E.REP_NAME
+WHERE 	A.REPLICATION_NAME = D.REPLICATION_NAME
+ORDER BY REP_NAME ;
+</pre>
+</div></div>
+
+
+
+
+<h1 id="SQLaboutReplication-LogbufferorfilestatusoccupiedbyanunsentXLOG">Log buffer or file status occupied by an unsent XLOG</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows that the logbuffer/logfile status  which is occupied by an unsent XLOG.</p>
+</div></div>
+
+<h2 id="SQLaboutReplication-ALTIBASEHDBV4">ALTIBASE HDB V4</h2>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>ALTIBASE V4 does not support this feature.</p>
+                    </div>
+    </div>
+
+
+<h2 id="SQLaboutReplication-ALTIBASEHDBV5">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	CASE2((BUFFER_MIN_SN &lt; READ_SN), &#39;REP BUFFER &#39;||ROUND((BUFFER_MAX_SN-READ_SN)/(BUFFER_MAX_SN-BUFFER_MIN_SN)*100,2)||&#39; % LEFT &#39;, (SELECT TO_CHAR(CUR_WRITE_LF_NO - READ_FILE_NO) FROM    V$LFG, V$REPGAP)) LOGFILE_FOR_REP
+FROM 	  V$REPLOGBUFFER ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutReplication-Replicationtablelist">Replication table list</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>The list of tables that participate in a replication.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REP_NAME </p></td>
+<td class="confluenceTd"><p> the name of replication object </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOCAL_TABLE </p></td>
+<td class="confluenceTd"><p> the local table name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REMOTE_TABLE </p></td>
+<td class="confluenceTd"><p> the remote table name </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	REPLICATION_NAME REP_NAME,
+        LOCAL_USER_NAME||&#39;.&#39;||LOCAL_TABLE_NAME LOCAL_TABLE,
+        REMOTE_USER_NAME||&#39;.&#39;||REMOTE_TABLE_NAME REMOTE_TABLE
+FROM    SYSTEM_.SYS_REPL_ITEMS_
+ORDER BY 1, 2 ;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

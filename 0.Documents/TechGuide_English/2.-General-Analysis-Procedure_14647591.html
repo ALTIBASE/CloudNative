@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. General Analysis Procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-CPU-Overload-Analysis-Guide_14647581.html">Altibase CPU Overload Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. General Analysis Procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Generally, there are types of causes that are often analyzed as a cause of increasing CPU utilization. Therefore, a step-by-step check to see if it corresponds to a well-known type of problem can be effective.</p><h1 id="id-2.GeneralAnalysisProcedure-2.1Hasmoretransactionprocessingoccurredthanusual?">2.1 Has more transaction processing occurred than usual?</h1><div>If the items of 'Session', 'Service Thread', and 'Prepare/Execute' corresponding to the 'routine check' items all show increasing values and the CPU usage increases, this is a normal increase pattern.</div><div>Be cautious when distinguishing the following from a normal pattern. The number of service threads may increase due to unverified queries (performed for a long time or causing a large amount of change operation) and services from users.</div><div>This is a type that increases by the service thread's own load-balancing function.</div><div>The pattern itself is a normal case, and it is necessary to find the cause of the query that is increased in this way, however, it is difficult to find out if query. that is executed by the user. As a result, it is necessary to observe the server with the following query.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Search for long run queries with exeuction or time to fetch result set more than 1 second
+SELECT A.SESSION_ID,
+       A.CLIENT_PID,
+       B.QUERY,
+       B.EXECUTE_TIME,
+       B.FETCH_TIME
+  FROM V$SESSION A,
+       V$STATEMENT B
+ WHERE A.ID = B.SESSION_ID
+   AND (B.EXECUTE_TIME &gt; 1000000 OR B.FETCH_TIME &gt; 1000000);</pre>
+</div></div><h1 id="id-2.GeneralAnalysisProcedure-2.2Hasanewlyaddedservice(application)occurred?">2.2 Has a newly added service (application) occurred?</h1><p>As it is most likely to be a direct cause, the execution plan for newly added queries should be analyzed first, and appropriate tuning operation should be performed for queries with high execution time and access cost. Periodic observation is necessary with the method of searching the malignant substances mentioned above.</p><p>As a result, both of the above two items are cases in which the structure of the applications that execute the serve or the query to be executed are implemented incorrectly. (Please refer to the CPU usage of Altibase's query process described below)</p><p>However, if the users check the items in 2.1, 2.2, most users would answer &quot;No&quot;. Then, if there is no change in service configuration and system, and there is not change in the version of Altibase, what is the cause of CPU overload?</p><p>In order to find a problem, it is necessary to analyze the currently running program and DB.</p><h1 id="id-2.GeneralAnalysisProcedure-2.3Problemanalysisoftheapplicationinservice">2.3 Problem analysis of the application in service</h1><p>If a CPU overload occurs even though there is no change in the configuration of any service operation, it can be assumed that the problem that the existing query originally had is revealed as the cause of the increase in data.</p><p>For example, the index used in the past performed properly in a situation where the data size was small,  but the data size increased over time. In this situation, if an existing index was not properly used, it means it may be the cause of the increase in CPU utilization.</p><h1 id="id-2.GeneralAnalysisProcedure-2.4Problemcausedbyqueryexecutioncostincreaseduetoqueryplanchange">2.4 Problem caused by query execution cost increase due to query plan change</h1><p>Altibase version 4, Altibase version 5, and Altibase version 6(version 6.1.1.6.1 or later) or later are versions in which the statistical information collection operation used by the optimizer is automatically executed according to specific conditions.</p><p>Statistical information is often updated mainly due to data increase and DDL execution (index change). In this case, the query optimizer may occasionally select the wrong plan with a higher cost than before while selecting a new query plan.</p><p>Queries executed with such an inefficient plan can significantly increase the access-cost and cause an increase in CPU usage. Generally, in this case, the problem query is often identified with the query that retrieves the long-run query described above.</p><p>Therefore, when an abnormal CPU usage pattern occurs, it is effective to check the long-run query first with the monitoring query.</p><p>The long-run query can be checked if there is a problem with the plan by executing the statement showing the plan when the query is executed and then checking the execution plan of the query in question, or by retrieving the runtime plan stored in V$PLANTEXT.</p><p>To check the status of a query, execute the following query to check the status of a query from the &quot;Altibase Monitoring Guide&quot; document.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>Altibase Monitoring Guide Document &gt;&gt; 3. Monitoring Elements and Monitoring Query &gt;&gt; 2.Statement (Shortcut: <a href="2.-Statement_14058256.html">2. Statement</a></span><span>)</span></p>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

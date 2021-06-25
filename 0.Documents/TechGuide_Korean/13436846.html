@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 운영을 위한 AIX 설정 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 운영을 위한 AIX 설정 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> david.cho</span> on Sep 11, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409834841 {padding: 0px;}
+div.rbtoc1624409834841 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409834841 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409834841'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한AIX설정가이드-개요'>개요 </a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-커널파라미터'>커널 파라미터</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한AIX설정가이드-PosixAIO'>Posix AIO</a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-파일캐시'>파일캐시</a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-리소스제한'>리소스 제한</a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-변경방법'>변경 방법</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한AIX설정가이드-사용자환경설정'>사용자 환경 설정</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한AIX설정가이드-리소스제한.2'>리소스 제한</a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-환경변수'>환경변수</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한AIX설정가이드-요약'>요약</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한AIX설정가이드-설정예제'>설정 예제</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한AIX설정가이드-별첨'>별첨 </a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한AIX설정가이드-AIX메모리관련패치'>AIX 메모리 관련 패치 </a></li>
+<li><a href='#Altibase운영을위한AIX설정가이드-IPC채널개수제한'>IPC 채널 개수 제한 </a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Altibase운영을위한AIX설정가이드-개요">개요 </h1><hr /><p class="0cm">AIX(Advanced Interactive eXecutive) 운영체제(Operating System)에서 Altibase를 설치하고 운영하기 위한 커널파라미터(kernel parameter)의 적절한 설정 값 및 각종 사용자 환경 설정에 대한 가이드를 제시한다.</p><p class="0cm">본 문서에서는 Altibase가 설치되기 전 설정해야 할 운영체제 관련사항에 대해서만 가이드를 제시하며 Altibase 자체 설정을 위한 Altibase 프로퍼티(properties) 설정에 관해서는 별도문서 『Altibase 설정파일 가이드』를 참조하도록 한다</p><p class="0cm">본 문서는 AIX 5.x을 기준으로 설명하며 AIX 4.3 이하는 현재  Altibase에서 지원하지 않기 때문에 언급하지 않는다.</p><p> </p><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul style="text-decoration: none;text-align: left;margin-left: 0.0px;"><li>기술지원포털 : <a href="http://support.altibase.com/" style="text-decoration: none;" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 하며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 알티베이스 재량입니다. 알티베이스는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유합니다.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="Altibase운영을위한AIX설정가이드-커널파라미터">커널 파라미터</h1><hr /><p class="0cm">AIX 운영체제에서 Altibase를 운영할 경우 변경해야 할 커널파라미터의 종류와 어떤 이유로 설정을 변경해야 하는지에 대해 설명하고 커널파라미터를 변경하는 방법에 대해 소개한다.</p><p class="0cm">각 커널파라미터와 관련된 상세한 사항은 IBM에서 제공하는 가이드를 참조하도록 한다.</p><h2 id="Altibase운영을위한AIX설정가이드-PosixAIO">Posix AIO</h2><hr /><p>Posix AIO는 프로세스가 디스크I/O처리와 응용프로그램의 연산을 동시에 처리할 수 있도록 하여 성능개선을 가져오도록 하는 AIX의 커널파라미터이다.</p><p>해당 커널파라미터가 설정되어 있지 않은 경우 Altibase를 사용할 수 없기 때문에 사전에 반드시 설정해야 한다.</p><p>단, AIX6.1부터는 Posix AIO의 기본값이 Available이므로 별도 설정하지 않아도 된다.</p><h2 id="Altibase운영을위한AIX설정가이드-파일캐시">파일캐시</h2><hr /><p>본 커널파라미터는 변경이 필수적인 요소는 아니나, 적절한 파일캐시(file cache) 설정으로 Altibase가 사용하는 메모리 영역에 대한 스왑아웃(swap out) 발생요건을 억제, 스왑핑(swapping)으로 인한 운영체제 계층의 Disk I/O 지연시간이 Altibase의 성능저하로 이어지는 현상을 최소화하기 위해 권고하는 사항이다.</p><p>참고로 AIX5.2 ML03이하는 관련 파라미터가 존재하지 않고, AIX 6.1부터는 특별히 변경할 사항이 없으므로 운영체제 버전에 따라 참고하지 않아도 무방하다.</p><p>파일캐시란 주기억장치와 보조기억장치간의 속도차이로 인한 병목을 해소하기 위해 운영체제차원에서 관리되는 일종의 시스템버퍼이다. 이러한 파일캐시는 운영체제 저마다의 고유한 정책(policy)에 의하여 관리되나 공통적으로 스왑정책과 직접적인 상관관계를 가진다.</p><p>스왑핑 자체는 주기억장치보다 더 큰 응용프로그램이나 데이터 파일을 다룰 수 있게 하는 유용함을 가지고 있으나, DBMS와 같이 장기상주 형의 응용프로그램이 운영되는 시스템에서는 스왑핑으로 인한 운영체제 계층의 Disk I/O 지연시간으로 DBMS의 응답시간이 불규칙해지거나 지연되는 현상이 발생될 수 있기에 파일캐시가 시스템 용도에 따라 고려 요소가 된다.</p><p>따라서, Altibase의 일관적인 응답시간 보장을 위해서는 스왑이 최대한 발생하지 않도록 파일캐시 및 스왑 관련 커널파라미터들을 사전에 설정하는 것을 권장한다.</p><p><strong style="color: rgb(0,0,0);font-size: 16.0px;"><br /></strong></p><p><strong style="color: rgb(0,0,0);font-size: 16.0px;">AIX에서의 설정</strong></p><p>AIX의 메모리관리자는 기본적으로 사용되지 않는 메모리영역을 최대한 파일캐시로 전환하는 것을 정책으로 한다.</p><p>이러한 상태에서 추가적인 메모리 할당요청이 발생하였는데 때마침 여유메모리가 부족하다면 프로세스가 사용중인 메모리 혹은 파일캐시 영역에서 잘 접근되지 않는 영역을 스왑아웃시킨 후 할당하게 된다.</p><p>따라서,  Altibase와 같이 장기 메모리 상주 형 프로세스의 경우 자주 접근되지 않는 데이터영역이 의도하지 않게 운영체제에 의해 디스크로 스왑아웃 된 상태가 되고 해당 메모리영역이 파일캐시로 사용되고 있을 수 있다.</p><p>이 때, 스왑아웃 된 영역에 접근하는 트랜잭션이 발생할 경우 성능이 일정하지 않게 나타나는 현상이 발생하는 것이다.</p><p>이렇게 메모리관리자가 추가적인 메모리를 할당하기 위해 프로세스가 사용중인 메모리 혹은 파일캐시에서 요청된 메모리를 확보하는 과정을 스틸링(stealing)이라고 하는데 스틸링 대상은 파일캐시 관련 커널파라미터 lru_file_repage로 지정할 수 있다.</p><p>일반적으로 lru_file_repage는 물론, 아래와 같은 총 세 개의 커널파라미터를 변경한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p align="center" style="text-align: center;">커널파라미터</p></th><th class="confluenceTh"><p style="text-align: center;">설정값</p></th><th class="confluenceTh"><p style="text-align: center;">비고</p></th></tr><tr><td class="confluenceTd"><p>minperm</p></td><td class="confluenceTd"><p>10%</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>lru_file_repage</p></td><td class="confluenceTd"><p>0</p></td><td class="confluenceTd"><p>AIX 5.2 ML5, AIX 5.3 ML2 이상부터 지원</p></td></tr><tr><td class="confluenceTd"><p>strict_maxclient</p></td><td class="confluenceTd"><p>0</p></td><td class="confluenceTd"><p>AIX 5.2 ML4 이상부터 지원</p></td></tr></tbody></table></div><p>위와 같이 설정하면 전체 메모리 대비 파일캐시 점유율이 minperm 이상으로 사용될 경우에 스틸링은 파일캐시에서만 발생하게 된다.</p><p>본 설정은 AIX 운영 중에 확인이 가능하기 때문에 성능이나 기타 문제가 발생하면 AIX 엔지니어와 협의 하에 변경을 권고한다.</p><h2 id="Altibase운영을위한AIX설정가이드-리소스제한">리소스 제한</h2><hr /><p>AIX의 경우, 리소스 제한 항목 중 일부는 일반적으로 흔히 사용하는 ulimit을 사용한 사용자 환경설정파일 설정이 아닌 아래와 같은 커널파라미터 변경을 통하여 설정한다.</p><p>Altibase는 단일프로세스, 멀티쓰레드(multi-thread)기반의 응용프로그램이므로 해당 시스템이 Altibase외에는 특별히 구동하는 응용프로그램이 없다면 사용자단위 프로세스 개수 제한을 특별히 고려하지 않아도 되나, 시스템의 용도에 따라 동시에 구동 가능한 프로세스 개수를 예측하여 사용자단위 프로세스 개수 제한을 적절하게 확장하여야 하는 경우가 있다.</p><p>관련 커널 파라미터는 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p align="center" style="text-align: center;">커널파라미터</p></th><th class="confluenceTh"><p style="text-align: center;">설명</p></th><th class="confluenceTh"><p style="text-align: center;">권장 값</p></th></tr><tr><td class="confluenceTd"><p>Maximum number of PROCESSES allowed per user</p></td><td class="confluenceTd"><p>사용자당 생성 가능한 프로세스의 개수</p></td><td class="confluenceTd">동시에 구동 가능한 프로세스 개수 이상 </td></tr></tbody></table></div><h2 id="Altibase운영을위한AIX설정가이드-변경방법">변경 방법</h2><hr /><p>파일캐시관련 커널파라미터 변경은 가상메모리 관련 커널유틸리티인 vmo를 사용, 그 외의 변경은 시스템 커널관련 유틸리티인 smit을 사용한 변경방법을 기술한다.</p><p>기본적으로 root 계정으로의 접속을 필요로 하며 실시간으로 적용되는 커널파라미터라 할지라도 올바르게 적용하기 위해서 변경 후 시스템을 재 구동을 하는 것을 권장한다.</p><h3 id="Altibase운영을위한AIX설정가이드-PosixAIO.1">Posix AIO</h3><p>smit을 구동 후 “Devices”, “Asynchronous I/O”, “Posix Asynchronous I/O” 순으로 항목을 이동하여 “Configure Defined Asynchronous I/O”의 Defined 상태를 Available로 변경한다.</p><p>하지만, 이 과정만 수행하였을 때는 시스템 재 구동 시 이전 Posix AIO 설정인 Defined로 재설정될 수 있으므로 아래의 과정도 반드시 같이 수행해야만 한다.</p><p>smit을 구동 후 “Devices”, “Asynchronous I/O”, “Posix Asynchronous I/O”, “Change / Show Characteristics of Asynchronous I/O” 순으로 항목을 이동하여 “STATE to be configured at system restart”의 항목을 Available로 변경한다.</p><p>AIO 관련 커널파라미터의 현재 설정 상태는 아래와 같이 확인 할 수 있다.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AIO 관련 커널파라미터 설정 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># lsdev –C | grep aio
+aio0         Available               Asynchronous I/O (Legacy)
+posix_aio0  Available               Posix Asynchronous I/O</pre>
+</div></div><h3 id="Altibase운영을위한AIX설정가이드-파일캐시.1">파일캐시</h3><p>변경방법은 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>파일캐시 변경방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># vmo -p -o minperm%=10
+# vmo -p -o lru_file_repage=0
+# vmo -p -o strict_maxclient=0</pre>
+</div></div><p>확인 방법은 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>파일캐시 확인방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># vmo –L</pre>
+</div></div><h3 id="Altibase운영을위한AIX설정가이드-리소스제한.1">리소스 제한</h3><p>smit을 구동 후 “System Environments “, “Change / Show Characteristics of Operating System” 항목 순으로 이동하여 “Maximum number of PROCESSES allowed per user” 값을 동시에 구동 가능한 프로세스 개수 이상으로 변경한다.</p><h1 id="Altibase운영을위한AIX설정가이드-사용자환경설정">사용자 환경 설정</h1><hr /><p class="0cm">AIX 운영체제에서 Altibase 운영을 위한 시스템 내의 사용자계정의 리소스 제한, 환경변수 및 각종 환경설정에 대해 설명한다.</p><p class="0cm">설정과 관련된 명령어 및 구체적인 사항은 IBM에서 제공하는 가이드를 참조하도록 하는 것으로 대체한다.</p><h2 id="Altibase운영을위한AIX설정가이드-리소스제한.2">리소스 제한</h2><hr /><p>유닉스 운영체제에서는 사용자계정 단위로 사용 가능한 리소스에 대한 논리적인 제한 값을 설정한다.</p><p>이 리소스 제한 항목 중, 안정적인 서비스 운영을 위해 확장시켜야 하는 일반적인 유닉스 운영체제에서의 항목들은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p style="text-align: center;">항목</p></th><th class="confluenceTh"><p style="text-align: center;">설명</p></th><th class="confluenceTh"><p style="text-align: center;">권장 값</p></th></tr><tr><td class="confluenceTd"><p>data seg size(data)</p></td><td class="confluenceTd"><p>하나의 프로세스 데이터영역의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>file size (fsize)</p></td><td class="confluenceTd"><p>생성될 수 있는 파일의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>open files (nofiles)</p></td><td class="confluenceTd"><p>하나의 프로세스가 동시에 접근 가능한 파일의 최대개수</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>max memory size (rss)</p></td><td class="confluenceTd"><p>사용 가능한 메모리의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>virtual memory (memory)</p></td><td class="confluenceTd"><p>사용 가능한 가상메모리의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>max user process</p></td><td class="confluenceTd"><p>사용자당 생성 가능한 프로세스의 개수</p></td><td class="confluenceTd"><p>unlimited</p></td></tr></tbody></table></div><p>어디까지나 특정 사용자가 사용하는 메모리 및 데이터파일 영역 확장 시 물리적인 리소스가 풍부한데도 논리적인 제한으로 인해 발생할 수 있는 문제를 사전에 제거하기 위한 것으로, 이 설정으로 인해 다른 프로세스에게 끼치는 영향은 없기에 해당 운영체제에서 허용하는 최대값(가능하다면 unlimited)으로 설정하는 것을 권고한다.</p><p>예를 들어, open files의 의미는 프로세스가 접근하는 파일뿐만 아니라 통신소켓의 개수까지 포함하고 있다. 만일, 이 값이 10으로 제한된 환경에서 Altibase 를 운영할 경우 동시에 접속 가능한 세션은 10개 이상은 불가능하다는 의미이다. (실제로 Altibase가 사용하는 파일까지 고려하면 접속 가능한 세션이 없을 수도 있다.)</p><p>변경방법은 ulimit 명령을 사용한 환경설정파일 편집 및 시스템 리소스 설정파일 편집 또는 해당 운영체제 별로 제공하는 커널관련 유틸리티 활용이 있다.</p><h3 id="Altibase운영을위한AIX설정가이드-Hard-Limit&amp;Soft-Limit"><strong>Hard-Limit &amp; Soft-Limit</strong></h3><p>리소스 제한 값은 hard-limit, soft-limit 이라는 개념으로 구분된다. hard-limit은 시스템어드민계정(root)외에는 변경할 수 없는 커널차원의 리소스 제한 최대값을 의미하며 soft-limit은 현재 사용자계정 내에서는 hard-limit까지 변경이 가능하다는 것을 의미한다.(상세한 내용은 ulimit –S / -H 옵션을 참고한다.)</p><p>soft-limit은 사용자가 접속을 하여 세션을 유지하는 동안 유효하며 변경을 하면 즉시 반영된다. 하지만 동일 사용자계정의 다른 세션이 연결되면 기존의 soft-limit이 반영되기 때문에 편의상 ulimit 명령어를 사용자계정의 환경설정파일에 추가하곤 한다.</p><p>하지만, 이러한 방법은 전역적인 hard-limit에 의해 의도한 설정이 되지 않을 수 있으므로 환경설정파일을 이용한 사용자계정 단위 적용보다는 시스템 차원의 리소스 설정파일 편집을 통하여 체계적으로 적용하는 것을 권고한다.</p><p>참고로 AIX에서 사용자 리소스 제한관련 시스템 설정파일은 /etc/security/limits 이다.</p><h2 id="Altibase운영을위한AIX설정가이드-환경변수">환경변수</h2><hr /><h3 id="Altibase운영을위한AIX설정가이드-멀티쓰레드응용프로그램위한설정">멀티쓰레드 응용프로그램 위한 설정</h3><p>멀티쓰레드(multi-thread)기반의 응용프로그램인 Altibase를 위해 별도 환경변수 설정이 필요하다. 참고로 본 문서에서는 대표적인 것만 언급을 하나, AIX에서 지원하는 멀티쓰레드 관련 환경변수는 모두 고려할 필요가 있음을 유의해야 한다.</p><p>아래 항목들은 멀티쓰레드로 운영되는 SMP시스템에서 성능저하를 방지하기 위해 권장되는 환경변수들로 설정하지 않고도 Altibase를 구동할 수는 있으나 이후 알 수 없는 원인으로 인한 장애가 유발될 수 있으므로 반드시 설정하도록 해야 한다</p><p>아래 요소는 모두 필수적인 사항이다. 그 중에서도 MxN 쓰레드모델관련 환경변수인 PTHREAD_FORCE_SCOPE_SYSTEM는 반드시 설정하도록 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p style="text-align: center;">환경변수</p></th><th class="confluenceTh"><p style="text-align: center;">설명</p></th></tr><tr><td class="confluenceTd"><p>AIXTHREAD_MNRATIO</p></td><td class="confluenceTd"><p>n개의 유저쓰레드 처리를 위한 k개의 커널쓰레드의 개수</p></td></tr><tr><td class="confluenceTd"><p>AIXTHREAD_SCOPE</p></td><td class="confluenceTd"><p>쓰레드모델을 1:1로 설정</p></td></tr><tr><td class="confluenceTd"><p>AIXTHREAD_MUTEX_DEBUG</p></td><td rowspan="3" class="confluenceTd"><p>pthread 라이브러리가 사용중인 mutex, condition 변수,</p><p>디버거에서 사용하는 read/write lock에 대한 오버헤드를</p><p>제거하기 위해 설정</p></td></tr><tr><td class="confluenceTd"><p>AIXTHREAD_RWLOCK_DEBUG</p></td></tr><tr><td colspan="1" class="confluenceTd">AIXTHREAD_COND_DEBUG</td></tr><tr><td colspan="1" class="confluenceTd">SPINLOOPTIME</td><td colspan="1" class="confluenceTd">CPU자원 획득상태에서 Lock을 획득하기 위해 시도하는 횟수</td></tr><tr><td colspan="1" class="confluenceTd">YIELDLOOPTIME</td><td colspan="1" class="confluenceTd">Lock을 가진 상태에서 CPU자원을 양보하는 횟수</td></tr><tr><td colspan="1" class="confluenceTd">MALLOCMULTIHEAP</td><td colspan="1" class="confluenceTd">malloc을 많이 사용하는 멀티쓰레드 환경에 설정</td></tr><tr><td colspan="1" class="confluenceTd">AIXTHREAD_MUTEX_FAST</td><td colspan="1" class="confluenceTd"><p>운영체제의 내부적인 mutex_locking 동작방식을 변경하는 옵션으로</p><p>mutex_contention이 심한 경우 ON으로 설정하여 성능개선 효과를</p><p>나타낼 수 있다. AIX5.2이상에서 제공된다.</p></td></tr></tbody></table></div><p>환경변수에 대한 보다 상세한 사항은 IBM 웹사이트에서 확인할 수 있다. </p><h1 id="Altibase운영을위한AIX설정가이드-요약">요약</h1><hr /><p class="0cm">AIX 운영체제에서 Altibase의 안정적인 운영을 위해서는 커널파라미터 설정 및 사용자 환경 설정을 사전에 수행해야만 한다. 설정을 올바르게 수행하지 않은 경우, 시스템의 리소스가 충분함에도 불구하고 각각의 제한 값들에 의해 문제가 발생 할 수 있으므로 주의해야 한다.</p><h2 id="Altibase운영을위한AIX설정가이드-설정예제">설정 예제</h2><hr /><h3 id="Altibase운영을위한AIX설정가이드-커널파라미터.1">커널파라미터</h3><p>아래 표를 참조, 적절한 커널파라미터를 설정하도록 한다. 참고로 AIX에서는 리소스 제한 항목 중 일부를 커널파라미터를 변경으로 조절한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>분류</p></th><th class="confluenceTh"><p>커널파라미터</p></th><th class="confluenceTh"><p>권장 값</p></th><th class="confluenceTh"><p>비고</p></th></tr><tr><td class="confluenceTd"><p>Posix AIO</p></td><td class="confluenceTd"><p>Configure Defined Asynchronous I/O</p></td><td class="confluenceTd"><p>Available</p></td><td class="confluenceTd"><p>AIX6.1 미만 시 필수</p></td></tr><tr><td rowspan="3" class="confluenceTd"><p>파일캐시</p></td><td class="confluenceTd"><p>lru_file_repage</p></td><td class="confluenceTd"><p>0</p></td><td rowspan="3" class="confluenceTd"><p>AIX6.1 미만 시 고려</p><p>(lru_file_repage 필수)</p></td></tr><tr><td class="confluenceTd"><p>strict_maxclient</p></td><td class="confluenceTd"><p>0</p></td></tr><tr><td class="confluenceTd"><p>minperm</p></td><td class="confluenceTd"><p>10</p></td></tr><tr><td class="confluenceTd"><p>리소스 제한</p></td><td class="confluenceTd"><p>Maximum number of PROCESSES allowed per user</p></td><td class="confluenceTd"><p>동시에 구동 가능한 프로세스 개수 이상</p></td><td class="confluenceTd"><p>max user process 에 대응</p></td></tr></tbody></table></div><h3 id="Altibase운영을위한AIX설정가이드-사용자리소스제한"><br />사용자 리소스 제한</h3><p>아래 표를 참조, 가능하다면 모두 무제한으로 설정하도록 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>항목</p></th><th class="confluenceTh"><p>설명</p></th><th class="confluenceTh"><p>권장 값</p></th></tr><tr><td class="confluenceTd"><p>data seg size(data)</p></td><td class="confluenceTd"><p>프로세스 데이터영역의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>file size (fsize)</p></td><td class="confluenceTd"><p>생성되는 파일의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>open files (nofiles)</p></td><td class="confluenceTd"><p>하나의 프로세스가 동시에 접근 가능한 파일의 최대개수</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>max memory size (rss)</p></td><td class="confluenceTd"><p>사용 가능한 메모리의 최대크기</p></td><td class="confluenceTd"><p>unlimited</p></td></tr><tr><td class="confluenceTd"><p>max user process</p></td><td class="confluenceTd"><p>사용자당 생성 가능한 프로세스의 개수</p></td><td class="confluenceTd"><p>Maximum number of PROCESSES allowed per user</p></td></tr></tbody></table></div><h3 id="Altibase운영을위한AIX설정가이드-사용자환경변수">사용자 환경변수</h3><p>sh, bash, ksh의 경우, 환경설정파일을 이용한 필수 환경변수 설정예제는 아래와 같다. csh의 경우는 export 대신 setenv 와 같은 쉘 명령어를 통해 선언한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>사용자 환경변수 설정 예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">#For Multi-Threaded Application
+AIXTHREAD_MNRATIO=1:1; export AIXTHREAD_MNRATIO
+AIXTHREAD_SCOPE=S; export AIXTHREAD_SCOPE
+AIXTHREAD_MUTEX_DEBUG= OFF; export AIXTHREAD_MUTEX_DEBUG
+AIXTHREAD_RWLOCK_DEBUG=OFF; export AIXTHREAD_RWLOCK_DEBUG
+AIXTHREAD_COND_DEBUG = OFF; export AIXTHREAD_COND_DEBUG
+SPINLOOPTIME = 1000; export SPINLOOPTIME
+YIELDLOOPTIME = 50; export YIELDLOOPTIME
+MALLOCMULTIHEAP=1; export MALLOCMULTIHEAP
+
+# For Resource Limitation
+ulimit –d unlimited  #data segment size, data
+ulimit –f unlimited  #file size, fsize
+ulimit –n unlimited  #file descriptor(open files), nofiles
+ulimit –m unlimited  #max memory size, rss</pre>
+</div></div><p>참고로 ksh의 경우, 환경변수가 미리 정의되지 않은 상태에서 환경변수를 사용하여 또 다른 환경변수를 정의 시 오류가 발생할 수 있다.</p><p> </p><div><h1 id="Altibase운영을위한AIX설정가이드-별첨">별첨 </h1><hr /><h2 id="Altibase운영을위한AIX설정가이드-AIX메모리관련패치">AIX 메모리 관련 패치 </h2><hr /><p><span style="color: rgb(0,0,0);">AIX 플랫폼에서 제공하는 heapmin 함수에서 메모리누수가 발생할 수 있는 버그가 존재한다.</span></p><p><span style="color: rgb(0,0,0);">관련 IBM의 공식 문헌은 아래와 같다.</span></p><p><a href="http://www-01.ibm.com/support/docview.wss?uid=swg1IV28577" class="external-link" rel="nofollow">http://www-01.ibm.com/support/docview.wss?uid=swg1IV28577</a></p><p><span style="color: rgb(0,0,0);">이에 대한 조치로  AIX 버그 IV28577 가 해결된 AIX native compiler 로 patch 또는 upgrade 하여야 한다.</span></p><p><span style="color: rgb(0,0,0);">patch 여부 확인은 아래와 같은 명령어로 확인할 수 있다.</span><span style="color: rgb(0,0,0);"> </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>heapmin 관련 패치여부 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">-bash-3.2$ instfix -i | grep IV28577
+All filesets for IV28577 were found.</pre>
+</div></div><p>만약 패치가 안되어 있다면 아무런 리턴값이 나타나지 않음으로 AIX 엔지니어가 patch 또는 upgrade 를 수행할 수 있도록 권고한다.</p><p>이 외에도 AIX 에서 알려진 각종 문제를 피하기 위해 최신 패치 적용을 권고한다. </p><h2 id="Altibase운영을위한AIX설정가이드-IPC채널개수제한">IPC 채널 개수 제한 </h2><hr /><p>AIX 의 세마포어 파라미터 중 semume 값은<span style="color: rgb(0,0,0);"> </span></p><p>기본적으로 세마포어의 undo entry 갯수를 제한하는 값으로서 AIX 에서 자동적으로 설정되어 1024로 셋팅되어 있으며 사용자가 변경할 수 없다.</p><br /><p>Altibase 에서 IPC 연결간 자원을 보장 하기 위해 undo entry 를 사용하며</p><p>Altibase 5.1.5.72 버전 이상부터 IPC 채널 하나당 undo entry 를 기존 2개에서 변경되어 3개씩 사용하게 된다.</p><br /><p>semume(undo entry 자원 갯수)가 1024 로 고정 되어 있고,</p><p>Altibase 에서 IPC 채널 하나당 undo entry 를</p><p>5.1.5.72 버전을 기준으로 2개 or 3개씩 사용하기 때문에 사용할 수 있는 IPC 채널 최대 사용 개수는 제한적이다.</p><p> </p><p>따라서 버전별 사용할 수 있는 IPC 채널 최대 사용 개수는 아래와 같다.</p><p> </p><p>5.1.5.72 버전 미만에서는 IPC 채널을 최대 512개 ( = 1024 / 2 ) 까지 사용가능</p><p>5.1.5.72 버전 이상에서는 IPC 채널을 최대 341개 ( = 1024 / 3 ) 까지 사용가능</p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

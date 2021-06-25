@@ -1,0 +1,51 @@
+
+
+SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT NAME TBS_NAME                                                                                                            -- TBS_NAME : 디스크 테이블스페이스 이름
+     , TO_CHAR(D.MAX * PAGE_SIZE / 1024 /1024, '999,999,999') 'MAX(M)'                                                          -- MAX(M)   : 테이블스페이스 최대 크기
+     , TO_CHAR(TOTAL_PAGE_COUNT*PAGE_SIZE/1024/1024, '999,999,999') 'TOTAL(M)'                                                  -- TOTAL(M) : 현재까지 할당된 총 페이지 크기
+     , DECODE(TYPE, 7, TO_CHAR((SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)*PAGE_SIZE)/1024/1024
+                          FROM V$UDSEGS)+ (SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)*PAGE_SIZE)/1024/1024
+                          FROM V$TSSEGS), '999,999,999') , /* UNDO */
+                       TO_CHAR((ALLOCATED_PAGE_COUNT*PAGE_SIZE)/1024/1024, '999,999,999')) 'ALLOC(M)'                           -- ALLOC(M) : 현재까지 할당받은 페이지 중 '빈 페이지'를 제외한 '사용 중인 페이지'만의 합계
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, '999,999,999'),
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, '999,999,999') /* SYS_TEMP */
+                     , LPAD('-', 12)) 'USED(M)'                                                                                 -- USED(M)  : 사용 중인 페이지 중에서 데이터가 적재된 크기. TEMP와 UNDO 는 USED 를 구할 수 없음.
+     , DECODE(TYPE, 7, TO_CHAR(((SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)
+                                  FROM V$UDSEGS)+ (SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT)
+                                  FROM V$TSSEGS)) / D.MAX* 100,  '99.99') ,          /* UNDO */
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100,  '99.99') ,
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100,  '99.99') ,   /* TEMP */
+                       TO_CHAR(ALLOCATED_PAGE_COUNT / D.MAX * 100,  '99.99') ) 'USAGE(%)'                                       -- USAGE(%) : MAX대비 USED. TEMP, UNDO 의 경우 MAX대비 ALLOC
+     , DECODE(STATE, 1, 'OFFLINE', 2, 'ONLINE', 5, 'OFFLINE BACKUP', 6, 'ONLINE BACKUP', 128, 'DROPPED', 'DISCARDED') STATE     -- STATE    : 테이블스페이스 상태
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN (SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                          FROM X$SEGMENT
+                                         GROUP BY SPACE_ID ) DS ON DS.SPACE_ID = T.ID
+     ,(SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, 'ON', 'OFF') 'AUTOEXTEND'
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+ WHERE T.ID = D.SPACEID
+;
+
+
+
+
+
+
+-- 출력 예
+
+TBS_NAME                        MAX(M)           TOTAL(M)         ALLOC(M)         USED(M)                   USAGE(%)         STATE           AUTOEXTEND
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_DATA                      2,048              217              217              211               10.32           ONLINE          ON
+SYS_TBS_DISK_UNDO                      2,048              323              322                -               15.73           ONLINE          ON
+SYS_TBS_DISK_TEMP                      2,048              100                0                -                 .01           ONLINE          ON
+USER_DATA                              2,048            2,048              310              309               15.07           ONLINE          OFF
+USER_IDX                               2,048            2,048               47               46                2.24           ONLINE          OFF
+PART_DATA                              1,024            1,024              173              171               16.72           ONLINE          OFF
+PART_DATA_DEF                          1,024            1,024               10                9                 .92           ONLINE          OFF
+PART_IDX                               3,072            3,072               70               69                2.23           ONLINE          OFF
+8 rows selected.

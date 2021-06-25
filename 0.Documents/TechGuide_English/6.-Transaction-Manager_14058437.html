@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 6. Transaction Manager</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 6. Transaction Manager
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358714 {padding: 0px;}
+div.rbtoc1624409358714 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358714 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358714'>
+<ul class='toc-indentation'>
+<li><a href='#id-6.TransactionManager-DataSourceTransactionManagerConfiguration'>DataSourceTransactionManager Configuration</a></li>
+<li><a href='#id-6.TransactionManager-DeclarativetransactionprocessingusingTransacitonProxyFactoryBean'>Declarative transaction processing using TransacitonProxyFactoryBean</a></li>
+<li><a href='#id-6.TransactionManager-DistributedTransactionProcess'>Distributed Transaction Process</a></li>
+</ul>
+</div></p><hr /><p>Using the Spring Framework, there are various ways to process transactions. First, specify the transaction manager in the bean configuration file and process the transaction. Transaction processing can be implemented directly in the source as needed, or declaratively in the bean configuration file.</p><p>Spring Framework provides implementation classes of PlatformTransactionManager interfaces according to the database integrating technology. These classes can be specified as TransactionManager. For example, the DataSourceTransaction Manager class can be specified as TrnasactionManager to process local transactions, and JtaTransactionManager class as TransactionManager to process the distributed transaction. </p><p>In order to declaratively process the transaction after specifying the TransactionManager, define the bean that processes the transaction in the bean configuration file. At this time, specify the TransactionProxyFactoryBean class for this bean to specify how to process the transaction for each method name.</p><p>This chapter describes how to set these classes as TransactionManager and how to process transactions declaratively using bean files.</p><h2 id="id-6.TransactionManager-DataSourceTransactionManagerConfiguration"><strong>DataSourceTransactionManager Configuration</strong></h2><p>Among the PlatformTransactionManager implementation class, TransactionManager can be specified by using the DataSourceTransaction Manager class. Simply specify org.springframework.jdbc.datasource.DataSourceTransactionManager class in transactionManager bean in the bean configuration file (applicaitonContext.xml). Then, when processing the transaction declaratively, Specify the transactionManager bean defined for the transaction properties among the properties of the bean that processes the transaction.</p><p>Ex) applicationContext.xml file of DataSourceTransactionManager</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;transactionManager&quot;
+class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot;
+class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+    &lt;property name=&quot;transactionManager&quot;  ref=&quot;transactionManager&quot; /&gt;
+    &lt;property name=&quot;transactionAttributes&quot;&gt;
+       &lt;props&gt;
+      &lt;prop key=&quot;get*&quot;&gt;PROPAGATION_REQUIRED, readOnly &lt;/prop&gt;
+      &lt;prop key=&quot;add*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+       &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;accountService&quot; parent=&quot;txProxyTemplate&quot;&gt;
+&lt;property name=&quot;target&quot;&gt;
+        &lt;bean class=&quot;com.altibase.banking.AccountService&quot;&gt;
+            &lt;property name=&quot;accountDao&quot; ref=&quot;accountDao&quot;/&gt;
+        &lt;/bean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>In order to process the transaction, the user needs to know how to manage the transaction (TransactionManager) and how to process the transaction. The above example uses the springframework.transaction.interceptor.TransactionProxyFactoryBean class among the transaction processing methods to configure the bean configuration file (applicationConext.xml) as a method to process transactions declaratively (the details are described below).</p><h2 id="id-6.TransactionManager-DeclarativetransactionprocessingusingTransacitonProxyFactoryBean"><strong>Declarative transaction processing using TransacitonProxyFactoryBean</strong></h2><p>TransactionProxyFactoryBean class is a class that provides various properties to process transactions. The bean of TransactionProxyFactoryBean class can be set in the bean configuration file (applicationContext.xml), and defines the method of handling the transaction each method to process transactions declaratively. Transaction related properties specified in &lt;property&gt; of bean for processing this transaction are as follows.</p><ol><li>target<br />Sets the object to which the transaction applies with properties</li><li>transactionManager<br />Sets the TransactionManager defined above</li><li>transactionAttributes<br />Sets the properties object used when setting transaction properties. At this time, the transaction property is defined by using the &lt;prop&gt; tag in the unit of the method to which the transaction is applied</li></ol><p>The tag value of &lt;prop&gt; is specified in the following format.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">PROPAGATION, ISOLATION_NAME, readOnly, timeout, +Exception, -Exception</pre>
+</div></div><p>Description of each item of &lt;prop&gt; tag value is as follows</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>PROPAGATION</p></td><td class="confluenceTd"><p>Specify transaction propagation rules. Required.<br class="atl-forced-newline" />PROPAGATION_REQUIRED(Default value),<br class="atl-forced-newline" />PROPAGATION_REQUIRES_NEW,<br class="atl-forced-newline" />PROPAGATION_MANDATORY,<br class="atl-forced-newline" />PROPAGATION_SUPPORTS,<br class="atl-forced-newline" />PROPAGATION_NOT_SUPPORTED,<br class="atl-forced-newline" />PROPAGATION_NEVER,<br class="atl-forced-newline" />PROPAGATION_NESTED</p></td></tr><tr><td class="confluenceTd"><p>ISOLATION_NAME</p></td><td class="confluenceTd"><p>Set ISOLATION property. Optional.<br class="atl-forced-newline" />DEFAULT,<br class="atl-forced-newline" />READ_COMMITTED,<br class="atl-forced-newline" />READ_UNCOMMITTED,<br class="atl-forced-newline" />REPETABLE_READ,<br class="atl-forced-newline" />SERIALIZABLE.</p><p>ALTIBASE only supports READ_COMMITTED, SERIALIZABLE, and REPETABLE_READ.</p></td></tr><tr><td class="confluenceTd"><p>readOnly</p></td><td class="confluenceTd"><p>Set transaction read-only when readOnly is used.</p></td></tr><tr><td class="confluenceTd"><p>timeout</p></td><td class="confluenceTd"><p>Set the transaction timeout time in seconds</p></td></tr><tr><td class="confluenceTd"><p>+,-Exception</p></td><td class="confluenceTd"><p>Set ROLLBACK rule. +Exception executes COMMIT even if the corresponding Exception occurs, and --Exception performs ROLLBACK when the corresponding Exception occurs.</p></td></tr></tbody></table></div><p>The following is a bean configuration file (applicationContext.xml) that defines transaction properties by using the TransactionProxyFactoryBean class.</p><p>Ex) applicationContext.xml file of DataSourceTransactionManager</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;transactionManager&quot;
+class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot;
+class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+    &lt;property name=&quot;transactionManager&quot;  ref=&quot;transactionManager&quot; /&gt;       
+    &lt;property name=&quot;transactionAttributes&quot;&gt;
+       &lt;props&gt;
+      &lt;prop key=&quot;get*&quot;&gt;PROPAGATION_REQUIRED, readOnly &lt;/prop&gt;
+      &lt;prop key=&quot;add*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+       &lt;/props&gt;
+    &lt;/property&gt;      
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;accountService&quot; parent=&quot;txProxyTemplate&quot;&gt;
+&lt;property name=&quot;target&quot;&gt;
+        &lt;bean class=&quot;com.altibase.banking.AccountService&quot;&gt;
+            &lt;property name=&quot;accountDao&quot; ref=&quot;accountDao&quot;/&gt;
+        &lt;/bean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+ 
+…</pre>
+</div></div><h2 id="id-6.TransactionManager-DistributedTransactionProcess"><strong>Distributed Transaction Process</strong></h2><p>In the Spring, the JOTM (Javan Open Transaction Manager) can be used to process distributed transactions. At this time, in order to integrate with JOTM, JotmFactoryBean provided by Spring must be registered first. In addition, as TransactionManager, JtaTransaction Manager which provides distributed transactions can be used.</p><p>In addition, to process distributed transactions, DataSource that provides distributed transactions must be used. org.enhydra.jdbc.pool.StandardXAPoolDataSource provided by JOTM can be used, but this document, it describes how to process distributed transactions by using the ALTIBASE.jdbc.driver.</p><p>The following is an example of processing distributed transactions by using org.springframework.transaction.jta.JtaTransactionManager and Altibase.jdbc.driver.AltibaseXaDataSource.</p><ol><li>Specify DataSource by using the AltibaseXADataSource</li><li>Specify JotmFactoryBean</li><li>Specify JtaTransactionmanager as TransactionManager</li><li>Specify the bean that processes the declarative transaction by using the TransactionProxyFactoryBean class.</li></ol><p>Ex) applicationContext.xml file of XAConnection</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource1&quot; class=&quot;Altibase.jdbc.driver.AltibaseXADataSource&quot;&gt;
+   &lt;!-- connection url--&gt;
+   &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+   &lt;!-- DB user account setting --&gt;
+   &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+   &lt;!-- DB user password setting --&gt;
+   &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;dataSource2&quot; class=&quot;Altibase.jdbc.driver. AltibaseXADataSource &quot;&gt;
+   &lt;!-- connection url--&gt;
+   &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://127.0.0.1:20300/mydb&quot;/&gt;
+   &lt;!-- DB user account setting --&gt;
+&lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+   &lt;!-- DB user password setting --&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;accountDao1&quot; class=&quot;com.altibase.banking.AccountDao&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource1&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;accountDao2&quot; class=&quot;com.altibase.banking.AccountDao&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource2&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;jotm&quot; class=&quot;org.springframework.transaction.jta.JotmFactoryBean&quot;/&gt;
+     
+&lt;bean id=&quot;transactionManager&quot;
+    class=&quot;org.springframework.transaction.jta.JtaTransactionManager&quot;&gt;
+&lt;property name=&quot;userTransaction&quot; ref=&quot;jotm&quot;/&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot; class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+   &lt;property name=&quot;transactionManager&quot;  ref=&quot;transactionManager&quot; /&gt;       
+   &lt;property name=&quot;transactionAttributes&quot;&gt;
+    &lt;props&gt;
+        &lt;prop key=&quot;get*&quot;&gt;PROPAGATION_REQUIRED, readOnly&lt;/prop&gt;
+        &lt;prop key=&quot;add*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+    &lt;/props&gt;
+   &lt;/property&gt;   
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;accountService&quot; parent=&quot;txProxyTemplate&quot;&gt;
+&lt;property name=&quot;target&quot;&gt;
+       &lt;bean class=&quot;com.altibase.banking.AccountService&quot;&gt;
+            &lt;property name=&quot;accountDao1&quot; ref=&quot;accountDao1&quot;/&gt;
+            &lt;property name=&quot;accountDao2&quot; ref=&quot;accountDao2&quot;/&gt;
+       &lt;/bean&gt;
+   &lt;/property&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>In order to run the XAConnection project included in the example, jar files for JOTM must be added in addition to the jar files previously added.</p><p><img class="confluence-embedded-image" src="attachments/14058437/14221653.png" data-image-src="attachments/14058437/14221653.png"></p><p>The files related to JOTM can be downloaded from <a href="http://forge.ow2.org/projects/jotm/." class="external-link" rel="nofollow">http://forge.ow2.org/projects/jotm/.</a></p><p>After downloading and extracting, there are jar files. Among them, carol-2.0.5.jar, connector-1_5.jar, howl-0.1.11.jar, jotm.jar, jta-spec1_0_1.jar, and xapool-1.5.0.jar files Just add it to the project. (The name of the jar file above may be different depending on the downloaded version of JOTM.)</p><p>Other cglib-nodep-2.1.3.jar files are required separately.</p><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058437/14221653.png">transaction_1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

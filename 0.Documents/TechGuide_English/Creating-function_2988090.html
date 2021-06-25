@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Creating function</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Creating function
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 16, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346754 {padding: 0px;}
+div.rbtoc1624409346754 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346754 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346754'>
+<ul class='toc-indentation'>
+<li><a href='#Creatingfunction-Overview'>Overview</a></li>
+<li><a href='#Creatingfunction-Notices'>Notices </a></li>
+<li><a href='#Creatingfunction-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Creatingfunction-Overview">Overview</h2>
+
+<p>In common with the procedure in ORACLE, ALTIBASE HDB Function statement is almost equal to that of ORACLE.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="Creatingfunction-Notices">Notices </h2>
+
+<ul>
+	<li>Using return statement, Unless a user specify an column length for varchar or char data type, column length might be implicitly set to 1.</li>
+	<li>LOB type value is prohibited to use as parameter value or return value.</li>
+</ul>
+
+
+<h2 id="Creatingfunction-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION half_of_square(original NUMBER) <br class="atl-forced-newline" />
+RETURN NUMBER IS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+RETURN (original * original)/2 + (original * 4); <br class="atl-forced-newline" />
+END half_of_square; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION half_of_square(original NUMBER) <br class="atl-forced-newline" />
+RETURN NUMBER IS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+RETURN (original * original)/2 + (original * 4); <br class="atl-forced-newline" />
+END half_of_square; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE FUNCTION row_count (tab_name <span style="color: rgb(0,0,255);"><strong>VARCHAR2</strong></span>) RETURN NUMBER AS <br class="atl-forced-newline" />
+rows NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || tab_name INTO rows; <br class="atl-forced-newline" />
+RETURN rows; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE FUNCTION row_count (tab_name <span style="color: rgb(0,0,255);"><strong>VARCHAR2(40)</strong></span>) RETURN NUMBER AS <br class="atl-forced-newline" />
+rows NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || tab_name INTO rows; <br class="atl-forced-newline" />
+RETURN rows; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> If you omit column size for char data type(char, varchar etc..), <br class="atl-forced-newline" />
+it is regarded as 1 byte length of char data type((e.g) char(1), <br class="atl-forced-newline" />
+varchar2(1)) in ALTIBASE HDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION get_rate <br class="atl-forced-newline" />
+(p1 IN <span style="color: rgb(255,102,0);"><strong>CHAR</strong></span>, p2 IN <span style="color: rgb(255,102,0);"><strong>CHAR</strong></span>, p3 IN <span style="color: rgb(255,102,0);"><strong>VARCHAR</strong></span>) <br class="atl-forced-newline" />
+RETURN NUMBER <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_rate NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT NVL(SUM(rate), 0) <br class="atl-forced-newline" />
+INTO v_rate <br class="atl-forced-newline" />
+FROM (SELECT rate <br class="atl-forced-newline" />
+FROM t1 <br class="atl-forced-newline" />
+WHERE start_date = TO_DATE(p1) <br class="atl-forced-newline" />
+AND end_date = TO_DATE(p2) <br class="atl-forced-newline" />
+AND user_id = '000000' || p3 <br class="atl-forced-newline" />
+AND seq_no = 0); <br class="atl-forced-newline" />
+RETURN v_rate; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION get_rate <br class="atl-forced-newline" />
+(p1 IN CHAR(30), p2 IN CHAR(30), p3 IN VARCHAR(9)) <br class="atl-forced-newline" />
+RETURN NUMBER <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_rate NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT NVL(SUM(rate), 0) <br class="atl-forced-newline" />
+INTO v_rate <br class="atl-forced-newline" />
+FROM (SELECT rate <br class="atl-forced-newline" />
+FROM t1 <br class="atl-forced-newline" />
+WHERE start_date = TO_DATE(p1) <br class="atl-forced-newline" />
+AND end_date = TO_DATE(p2) <br class="atl-forced-newline" />
+AND user_id = '000000' || p3 <br class="atl-forced-newline" />
+AND seq_no = 0); <br class="atl-forced-newline" />
+RETURN v_rate; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> As parameter variable, column size for char data type should be <br class="atl-forced-newline" />
+omitted in ORACLE as above. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

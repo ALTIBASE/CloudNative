@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : View</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : View
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 21, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345223 {padding: 0px;}
+div.rbtoc1624409345223 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345223 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345223'>
+<ul class='toc-indentation'>
+<li><a href='#View-Overview'>Overview</a></li>
+<li><a href='#View-Thecomparisonofeachclauseregardingview'>The comparison of each clause regarding view</a></li>
+<li><a href='#View-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="View-Overview">Overview</h2>
+
+<p>ALTIBASE HDB View is similar to Oracle's one. The majority of ALTIBASE HDB syntax includes Oracle syntax.</p>
+
+<p>ALTIBASE HDB does not support views listed below.</p>
+<ul>
+	<li>view constraints</li>
+	<li>updatable view</li>
+	<li>editioning view</li>
+	<li>object view</li>
+	<li>XMLType View (not support XML type)</li>
+	<li>materialized view</li>
+</ul>
+
+
+
+<h2 id="View-Thecomparisonofeachclauseregardingview">The comparison of each clause regarding view</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WITH READ ONLY </p></td>
+<td class="confluenceTd"><p> WITH READ ONLY </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WITH CHECK OPTION </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> guarantees that inserts and updates result in tables that the defining <br class="atl-forced-newline" />
+table subquery can select. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FORCE|NO FORCE </p></td>
+<td class="confluenceTd"><p> FORCE|NO FORCE </p></td>
+<td class="confluenceTd"><p> This functionality will be provided in ALTIBASE HDB V7. </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>The materialized view functionality will be provided in ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="View-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE VIEW emp_view AS <br class="atl-forced-newline" />
+SELECT last_name, salary*12 annual_salary <br class="atl-forced-newline" />
+FROM employees <br class="atl-forced-newline" />
+WHERE department_id = 20; </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE VIEW emp_view AS <br class="atl-forced-newline" />
+SELECT last_name, salary*12 annual_salary <br class="atl-forced-newline" />
+FROM employees <br class="atl-forced-newline" />
+WHERE department_id = 20; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE VIEW emp_sal <span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">(emp_id, last_name,</span></strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">email UNIQUE RELY DISABLE NOVALIDATE,</span></strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">CONSTRAINT id_pk PRIMARY KEY (emp_id)</span></strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">RELY DISABLE NOVALIDATE)</span></strong></span><br class="atl-forced-newline" />
+AS SELECT employee_id, last_name, email <br class="atl-forced-newline" />
+FROM employees; </p></td>
+<td class="confluenceTd"><p> CREATE VIEW emp_sal </p></td>
+<td class="confluenceTd"><p> AS SELECT employee_id, last_name, email <br class="atl-forced-newline" />
+FROM employees; </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> The statement on the left side creates a <br class="atl-forced-newline" />
+restricted view of the sample table employees and <br class="atl-forced-newline" />
+defines a unique constraint on the email view column <br class="atl-forced-newline" />
+and a primary key constraint for the view on the emp_id <br class="atl-forced-newline" />
+view column </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE VIEW clerk AS <br class="atl-forced-newline" />
+SELECT employee_id, last_name, department_id, job_id <br class="atl-forced-newline" />
+FROM employees <br class="atl-forced-newline" />
+WHERE job_id = 'PU_CLERK' <br class="atl-forced-newline" />
+or job_id = 'SH_CLERK' <br class="atl-forced-newline" />
+or job_id = 'ST_CLERK' <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">WITH CHECK OPTION;</span></strong></span> </p></td>
+<td class="confluenceTd"><p> CREATE VIEW clerk AS <br class="atl-forced-newline" />
+SELECT employee_id, last_name, department_id, job_id <br class="atl-forced-newline" />
+FROM employees <br class="atl-forced-newline" />
+WHERE job_id = 'PU_CLERK' <br class="atl-forced-newline" />
+or job_id = 'SH_CLERK' <br class="atl-forced-newline" />
+or job_id = 'ST_CLERK'; </p></td>
+<td class="confluenceTd"><p> You cannot <br class="atl-forced-newline" />
+subsequently insert a new row into clerk <br class="atl-forced-newline" />
+if the new employee is not a clerk. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

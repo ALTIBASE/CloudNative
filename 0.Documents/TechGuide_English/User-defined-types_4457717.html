@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : User-defined types</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Overview-of-ALTIBASE-Stored-Procedures_2988067.html">Overview of ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : User-defined types
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_heerock</span>, last modified on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346571 {padding: 0px;}
+div.rbtoc1624409346571 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346571 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346571'>
+<ul class='toc-indentation'>
+<li><a href='#User-definedtypes-Overview'>Overview</a></li>
+<li><a href='#User-definedtypes-RECORD'>RECORD</a></li>
+<li><a href='#User-definedtypes-ASSOCIATIVEARRAY'>ASSOCIATIVE ARRAY</a></li>
+<li><a href='#User-definedtypes-REFCURSOR(CursorVariables)'>REF CURSOR(Cursor Variables)</a></li>
+</ul>
+</div>
+
+<h2 id="User-definedtypes-Overview">Overview</h2>
+
+<p>RECORD types and associative arrays, the user-defined types provided for use with stored procedures, make it possible to organize data into logical units for processing.</p>
+
+<p>They can also be used as parameters or return values when stored procedures and functions call other stored procedures and functions.</p>
+
+<p>Note however that values that have user-defined types cannot be passed to clients.</p>
+
+<h2 id="User-definedtypes-RECORD">RECORD</h2>
+
+<p>RECORD is user-defined datatypes consisting a set of columns.
+<br class="atl-forced-newline" /></p>
+
+<p>A user can process a variety of data respectively in a logical units.</p>
+
+<p>As processing a variety of data including name, payroll, department in a single form of &quot;employee&quot;, it can be handled as a single record type.</p>
+
+<p>To declare a record datatype, A user need to refer to the contents in the DECLARE TYPE section.</p>
+
+<p>Basic usages of the rest are the same as one in the DECLARE TYPE section except %ROWTYPE.TYPE type_name IS RECORD (col_name datatype <a class="unresolved" href="#">, &hellip;</a>);</p>
+
+
+<h2 id="User-definedtypes-ASSOCIATIVEARRAY">ASSOCIATIVE ARRAY</h2>
+
+<p>An associative array, INTEGER OR VARCHAR data type is used as an identifier to access an element of an array, is similar to the hash table.</p>
+
+
+
+<p>It can be used to combine data items of the same type into a single data item for processing, regardless of the amount of data.</p>
+
+
+
+<p>For instance, When processing &quot;employees&quot; data ranged from 1 to 100, An associative array can hold up to 100 data.</p>
+
+
+
+<p>To declare an associative array, we recommend you to refer to the declare type section in a manual.</p>
+
+
+
+<p>To access an array element, use a square branket as below.
+<br class="atl-forced-newline" /></p>
+
+<p>예) V1[ 1 ] := 1; TYPE type_name IS TABLE OF datatype INDEX BY INTEGER|VARCHAR(size);</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+h3. TYPE type_name IS TABLE OF datatype      INDEX BY INTEGER\|VARCHAR(size)</pre>
+</div></div>
+
+<h2 id="User-definedtypes-REFCURSOR(CursorVariables)">REF CURSOR(Cursor Variables)</h2>
+
+<p>A Cursor Variables are the variables for processing the dynamic SQL statements which retrieving multiple records.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<p>This cursor variables is even more flexible than cursor(explicit cursor) since it is not subordinate to a certain SQL statement.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<p>It can be passed as parameters between the stored procedures, and delivers value to the client.</p>
+
+
+<p>It is different with explicit cursor in that a ref cursor refers to another statement even when cursor is open, but explicit cursor only refers to the same statement all the time.TYPE type_name IS REF CURSOR;</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+h3. TYPE type_name IS REF CURSOR</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

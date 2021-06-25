@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Makefile for AIX xlc</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="15630378.html">Altibase APRE(SES) *C/C++ Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Makefile for AIX xlc
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Previously, we discussed how to add the basic APRE library in the &quot;How to make a basic Makefile&quot; chapter. This chapter describes the library and compile options that must be additionally described in Makefile in the environment in which the AIX xlc compiler is used.</p><h1 id="MakefileforAIXxlc-LibraryandcompileoptionsforAPREcompileinAIXenvironment">Library and compile options for APRE compile in AIX environment</h1><h2 id="MakefileforAIXxlc-LibrarytobeaddedtoMakefile">Library to be added to Makefile</h2><p>As previously explained, the basic APRE library &quot;-lapr -lodbccli&quot; should be described in Makefile.</p><p>When compiling only with the basic library added, there are system libraries referenced by the APRE library and a reference error occurs. Therefore, system libraries used in APRE must be specified in Makefile as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Library type</th><th class="confluenceTh">Makefile added library name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Thread library</td><td class="confluenceTd"><strong>-lpthreads</strong></td><td class="confluenceTd">Thread library for POSIX thread function</td></tr><tr><td class="confluenceTd">Math related library</td><td class="confluenceTd"><strong>-lm</strong></td><td class="confluenceTd">Library for using math function</td></tr><tr><td class="confluenceTd">C++ library</td><td class="confluenceTd"><strong>-lC</strong></td><td class="confluenceTd">Add when compiling using the C compiler in version 5.3.3 or earlier</td></tr></tbody></table></div><h2 id="MakefileforAIXxlc-CompileOptions">Compile Options</h2><p>It is necessary to specify the following options to improve performance and specify the compile bit type.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Option</th><th class="confluenceTh">Option display</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Option to specify the maximum memory segment size</td><td class="confluenceTd">-bmaxdata</td><td class="confluenceTd">When compiling a 32bit program, specify the maximum usable memory segment size (default 256M)</td></tr><tr><td rowspan="2" class="confluenceTd">Option to specify the 32bit/64 compile mode</td><td class="confluenceTd">-q32</td><td class="confluenceTd">When compiling a 32bit program</td></tr><tr><td class="confluenceTd">-q64</td><td class="confluenceTd">When compiling a 64bit program</td></tr><tr><td class="confluenceTd">Compiler optimizzation mode</td><td class="confluenceTd">-O2</td><td class="confluenceTd">Using the Compiler Optimization Level 2</td></tr><tr><td class="confluenceTd">Option to use inline function</td><td class="confluenceTd">-qinline</td><td class="confluenceTd">Enable inline function instead of the function call to improve the performance</td></tr><tr><td class="confluenceTd">Option for runtime linking</td><td class="confluenceTd"><span>-brtl</span></td><td class="confluenceTd"><span>Option for runtime linking, set when using a shared library</span></td></tr><tr><td colspan="1" class="confluenceTd">Option for symbol export</td><td colspan="1" class="confluenceTd">-bexpall</td><td colspan="1" class="confluenceTd">Option to export the global symbol when creating a shared library</td></tr></tbody></table></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><span>By referring to the $ALTIBASE_HOME/install/<a href="http://altibase_env.mk" class="external-link" rel="nofollow">altibase_env.mk</a> file and $ALTIBASE_HOME/sample/APRE/Makefile, it can be referred to the optimized compile and link options when compiling APRE.</span></p>
+                    </div>
+    </div>
+<h1 id="MakefileforAIXxlc-ExampleofsimpleMakefile">Example of simple Makefile</h1><p>The simplest Makefile that can compile ARE in AIX xlc environment is completed as follows. In addition, if there is an additional library referenced by the program, the library must be additionally described in Makefile.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>$(ALTIBASE_HOME)/include</strong><br />ALTI_LIBRARY=<strong>$(ALTIBASE_HOME)/lib</strong><br />LIBS=<strong>-lapre -lodbccli -lpthreads -lm</strong><br />LFLAGS=<strong>-O2 -qinline -q64 #64bit compile mode</strong></p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><strong><a class="external-link" href="http://connect1.sc/" rel="nofollow"><span style="color: rgb(0,0,0);">$(ALTIBASE_HOME)/bin/apre -t c </span></a><a class="external-link" href="http://connect1.sc/" rel="nofollow"><span style="color: rgb(0,0,0);">connect1.sc</span></a></strong></p><p>connect1:connect1.c</p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p><p> </p>
+</div></div><h1 id="MakefileforAIXxlc-ExampleofMakefilefor32-bitcompile">Example of Makefile for 32-bit compile</h1><p>An example of Makefile for 32bit compile is as follows. Specify &quot;-q32&quot; as a compile option, and specify the path where 32bit APRE library is installed in the path referencing the Header file and Library. In addition, the APRE Precompiler also specifies the path to execute 32bit APRE. If necessary, increase the memory segment to be used in the program, such as &quot;-bmaxdata:0x80000000&quot;. In case of &quot;bmaxdata:0x80000000&quot;, it can be used up to 2G.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>/alticlient32/include</strong><br />ALTI_LIBRARY=<strong>/alticlient32/lib</strong><br />LIBS=-lapre -lodbccli -lpthreads -lm<br />LFLAGS= -O2 -qinline <strong>-q32 -bmaxdata:0x80000000</strong> <strong>-L. #32bit compile mode, setting the maximum memory segement size</strong></p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow"><strong>/alticlient32/bin/apre</strong> -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><h1 id="MakefileforAIXxlc-ExampleofMakefileusingAPRESharedLibrary(libapre_sl.so)">Example of Makefile using APRE Shared Library(<a href="http://libapre_sl.so" class="external-link" rel="nofollow">libapre_sl.so</a>)</h1><p>In $ALTIBASE_HOME/library, there are liapre_sl.so and libodbccli_sl.so provided in the form of shared library in addition to libapre.a, which is a static library.</p><p>Using a shared library has the following advantages compared to using a static library:</p><ul><li>Can reduce the size of the executable file.</li><li>After loading the library into memory, it can be shared, reducing the memory usage of the program</li><li>When the used library is changed, only the library needs to be replaced and there is no need to recompile the executable file.</li></ul><p>The following is an example of Makefile using a shared library using the xlc compiler in AIX. To use runtime linking, &quot;brtl&quot; was added as a link option and APRE shared library was added as a library.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=$(ALTIBASE_HOME)/include<br />ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS=<strong>-lapre_sl -lodbccli_sl</strong> -lc -lpthreads -lm<br />LFLAGS=-O2<strong> -brtl -</strong>qinline -q64 #64bit compile mode<br />connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow">$(ALTIBASE_HOME)/bin/apre -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><h1 id="MakefileforAIXxlc-ExampleofMakefileforSharedlibrarybuildusingAPREsource">Example of Makefile for Shared library build using APRE source</h1><p>If necessary, there is a case that a shared library consisting of a function that searches DB with APRE must be created and used by calling it from a program. The example below is an example of Makefile for creating a shared library with APRE.</p><div>First, write a C source for creating a library as follows.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>connect1.sc</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* connect1.sc */
+int contest_db();
+int contest_db()
+{
+    /* declare host variables */
+    EXEC SQL BEGIN DECLARE SECTION;
+    char usr[10];
+    char pwd[10];
+    char conn_opt1[100];
+    char conn_opt2[100];
+    char conn_opt3[100];
+    EXEC SQL END DECLARE SECTION;
+    .................
+    EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt3;
+    ....
+}</pre>
+</div></div><p>Makefile for creating libconn_sl.so, which is to be used by calling the program using connect1.sc, is as follows.</p><p><strong style="color: rgb(0,0,0);font-size: 16.0px;"><span>Example of Makefile for shared library build</span></strong></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p> ALTI_INCLUDE=$(ALTIBASE_HOME)/include</p><p>ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS= -lc -lpthreads -lm # <strong>-lapre_sl -lodbccli_sl must be linked when building an executable file.</strong><br />LFLAGS=-O2 -lc -q64 #64bit compile mode</p><p>SHLLIB=<strong><a href="http://libconn_sl.so/" class="external-link" rel="nofollow">libconn_sl.so</a></strong><br />OBJS=connect1.o</p><p>all: $(SHLLIB)</p><p>$(SHLLIB):$(OBJS)</p><p style="margin-left: 30.0px;">xlc_r<strong> -G -</strong>o $(SHLLIB) $(OBJS) <strong>-b64 -bexpall</strong> -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>connect1.o:connect1.c</p><p style="margin-left: 30.0px;">xlc_r $(LFLAGS) -c connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>connect1.c:<a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;">$(ALTIBASE_HOME)/bin/apre -t c <a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p>clean:</p><p style="margin-left: 30.0px;">rm *.o</p>
+</div></div><h3 id="MakefileforAIXxlc-ExampleofMakefilethatcompilestheprogramusedbycallingSharedLibrarymadewithAPREfunction">Example of Makefile that compiles the program used by calling Shared Library made with APRE function</h3><p>First, create &quot;alticonn.h&quot; as a header file for APRE shared library.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>alticonn.h</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* alticonn.h */
+ int contest_db();</pre>
+</div></div><p>The user program is used by calling contest_db() registered in libconn_sl.so. The source of the user program is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>test.c</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> /* test.c */
+#include &quot;alticonn.h&quot;
+extern int contest_db();
+int main()
+{
+  contest_db();
+}
+</pre>
+</div></div><h3 id="MakefileforAIXxlc-ExampleofMakefileforExecutionProgramBuild">Example of Makefile for Execution Program Build</h3><p>The Makefile to compile the user program used by calling contest_db() function registered in libconn_sl.so is as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=$(ALTIBASE_HOME)/include</p><p>ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS=<strong>-lapre_sl -lodbccli_sl</strong> -lc -lpthreads -lm<br />LFLAGS=-O2<strong> -brtl -qinline -q64</strong> #64bit compile mode</p><p>INC_ALL=-I. -I$(ALTI_INCLUDE)<br />LIB_ALL=-L. -L$(ALTI_LIBRARY)</p><p>all:test</p><p>test:</p><p style="margin-left: 30.0px;">xlc_r $(LFLAGS) -o test test.c $(INC_ALL) $(LIB_ALL)<strong> -lconn_sl</strong> $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><h2 id="MakefileforAIXxlc-Considerationswhenbuildingsharedlibrary">Considerations when building shared library</h2>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>In AIX, when creating and using more than one shared library, do not add -lapre_sl and -lodbccl_sl when building a shared library.</p><p>In the shared library of AIX, the global variables in the apre_sl and odbccli_sl libraries are recognized as different variables, so shared libraries cannot be shared. Therefore, when creating a shared library, do not link the APRE libraries (apre_sl, odbccli_sl), but link the APRE library when creating the executable binary.</p><p>For example, if the connection-related shared library is con.so and the select-related shared library is sel.so, and binary is built and executed, an error occurs because sel.so cannot refer to connection-related object in con.so. To prevent this error, apre_sl and odbccli_sl should be added as links only when creating an executable binary.</p>
+                    </div>
+    </div>
+<p><br /><br /></p><p> </p></div><div><span style="color: rgb(0,0,0);font-size: 16.0px;font-weight: bold;"><br /></span></div><div><span style="color: rgb(0,0,0);font-size: 16.0px;font-weight: bold;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Disk I/O Optimization</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-Configuration-Guide-for-Altibase_14647508.html">Disk Configuration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Disk I/O Optimization
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>As previously mentioned, database performance is closely related to the disk I/O performance of storage. this chapter describes a few methods to increase the disk I/O performance of storage.</p><h1 id="id-5.DiskI/OOptimization-ChangingtheFileCacheConfigurationofOS">Changing the File Cache Configuration of OS</h1><p>By configuring the appropriate file cache, the requirement for swap out the memory area used by ALTIBASE is suppressed. It is recommended to minimize the subsequent phenomenon.</p><p>This file cache is a kind of system buffer managed at the operating system level in order to solve the bottleneck caused by the difference in speed between the main memory device and the auxiliary memory device. This file cache is managed by a policy to each operating system, but has a direct correlation with the swap policy in common.</p><p>Swapping itself has the usefulness of being able to handle larger application programs or data files than the main memory. However, in systems where long-term resident application programs such as DBMS are operated, the response time of the DBMS becomes irregular due to the disk I/O delay time of the operating system layer due to swapping, or in the worst case, a phenomenon such as a hang. </p><p>Therefore, in order to guarantee a consistent response time of ALTIBASE, it is recommended to configure the related file cache and swap kernels in advance so that swap does not occur as least as possible.</p><p>It is recommended to refer to the documentation below to properly configure file cache values.</p><ul><li>HPUX Setup Guide for Altibase</li><li>AIX Setup Guide for Altibase</li><li>Solaris Setup Guide for Altibase</li><li>Linux Setup Guide for Altibase</li></ul><h1 id="id-5.DiskI/OOptimization-DirectI/O">Direct I/O</h1><p>The file system of OS has a structure that improves access performance to a slow disk by caching the file blocked accessed when accessing a file by placing a memory area called File Buffer Cache, as in the form of buffered I/O in the figure below.</p><p><img class="confluence-embedded-image" src="attachments/14647545/14778400.png" data-image-src="attachments/14647545/14778400.png"></p><p>However, if data is cache directly at the application level like a DBMS, there may be an overhead of moving data from disk to the file buffer cache and back to the DB's own buffer cache. This is called &quot;double copying&quot; and in this case, it may result in more CPU and memory usage.</p><p>In order for ALTIBASE to I/P data files and log files with the Direct I/O, the following ALTIBASE properties must be configured.</p><ul><li>DIRECT_IO_ENABLED = 1   # 0: Buffered I/O, 1:Direct I/O</li><li>DATABASE_IO_TYPE   = 1  # 0: Buffered I/O, 1:Direct I/O</li><li>LOG_IO_TYPE             = 1   # 0: Buffered I/O, 1:Direct I/O</li></ul><p>Some OS or file systems may not support Direct I/O for files or may not support Direct I/O at the application level. In addition, some operations are required to use Direct I/O.</p><p>In this case, the file system must be mounted using a specific option as in the example below.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>OS</strong></p></th><th class="confluenceTh"><p><strong>File System</strong></p></th><th class="confluenceTh"><p><strong>Required Action</strong></p></th></tr><tr><td rowspan="3" class="confluenceTd"><p>Solaris</p></td><td class="confluenceTd"><p>UFS</p></td><td class="confluenceTd"><p>None</p></td></tr><tr><td class="confluenceTd"><p>VxFS</p></td><td class="confluenceTd"><p>mount with convosync=direct</p></td></tr><tr><td class="confluenceTd"><p>ZFS</p></td><td class="confluenceTd"><p>Direct I/O is not supported</p></td></tr><tr><td rowspan="3" class="confluenceTd"><p>HP</p></td><td class="confluenceTd"><p>HFS</p></td><td class="confluenceTd"><p>None</p></td></tr><tr><td class="confluenceTd"><p>JFS</p></td><td class="confluenceTd"><p>None</p></td></tr><tr><td class="confluenceTd"><p>VxFS</p></td><td class="confluenceTd"><p>mount with convosync=direct</p></td></tr><tr><td rowspan="2" class="confluenceTd"><p>AIX</p></td><td class="confluenceTd"><p>JFS</p></td><td class="confluenceTd"><p>mount with use -o dio</p></td></tr><tr><td class="confluenceTd"><p>VxFS</p></td><td class="confluenceTd"><p>mount with convosync=direct</p></td></tr><tr><td rowspan="2" class="confluenceTd"><p>Windows</p></td><td class="confluenceTd"><p>NTFS</p></td><td class="confluenceTd"><p>None</p></td></tr><tr><td class="confluenceTd"><p>FAT32</p></td><td class="confluenceTd"><p>None</p></td></tr><tr><td class="confluenceTd"><p>Linux(2.4 &gt; K )</p></td><td class="confluenceTd"><p>Ext2/Ext3/Ext4</p></td><td class="confluenceTd"><p>None</p></td></tr></tbody></table></div><h2 id="id-5.DiskI/OOptimization-WhenitisadvantageoustouseDirectI/O"><strong>When it is advantageous to use Direct I/O</strong></h2><p>If the size of the database is larger than the size of the system memory and the size of the disk buffer is large, it may be advantageous to use Direct I/O. For example, in the case of a SAN device, there are cases that support a large capacity buffer by itself. In this case, Direct I/O may be advantageous.</p><p>In a DB where the size of the DB is large and a large amount of modification work occurs frequently, a large amount of disk I/O occurs during the checkpoint process. At this time, CPU usage and memory usage may increase rapidly due to the cost of double copying to the OS file cache and the DB buffer cache.</p><p>In this case, using the Direct I/O can be a solution to this problem.</p><h2 id="id-5.DiskI/OOptimization-WhenitisadvantageoustousebufferedI/O"><strong>When it is advantageous to use buffered I/O</strong></h2><p>In most cases, when using a local disk, using a buffered I/O method is more advantageous in terms of performance than using a direct I/O.</p><p>The buffer I/O of the OS can read in multi-block and prefetch the required disk page to improve the speed of I/O, so performance tends to improve when using the buffer I/O.</p><h1 id="id-5.DiskI/OOptimization-PageSize">Page Size</h1><p>In ALTIBASE, the term page size is used instead of the block size. The page size of ALTIBASE has a fixed value of 32K per page for memory tables and 8K per page for disk tables and cannot be changed.</p><p>In most cases, other DB vendor products may adjust the size of the DB page size when creating the DB in consideration of the block size of the OS for the file I/O efficiency of the DB,  but ALTIBASE has a fixed page size and it cannot be changed. In addition, ALTIBASE does not recommend changing the OS block size to match the DB page size.</p><p>There is no case of performance degradation due to a mismatch between ALTIBASE page size and OS block size.</p><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647545/14778400.png">disIO.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2. PHP 연동을 위한 ODBC 매니저 설치</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341461.html">Altibase PHP 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2. PHP 연동을 위한 ODBC 매니저 설치
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409850121 {padding: 0px;}
+div.rbtoc1624409850121 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409850121 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409850121'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.PHP연동을위한ODBC매니저설치-유닉스와리눅스'>유닉스와 리눅스</a></li>
+<li><a href='#id-2.PHP연동을위한ODBC매니저설치-윈도우'>윈도우</a></li>
+</ul>
+</div></p><hr /><p>유닉스 또는 윈도우 환경에서 PHP로 ALTIBASE HDB에 연동을 하기 위해서는 먼저 ODBC 매니저를 설치해야 한다. 이 절에서는 유닉스, 리눅스와 윈도우에서 ODBC 매니저를 설치하고 사용환경을 설정하는 방법을 설명한다.</p><h2 id="id-2.PHP연동을위한ODBC매니저설치-유닉스와리눅스"><strong>유닉스와 리눅스</strong></h2><p>리눅스 또는 유닉스 환경에서 다음 절차대로 ODBC 매니저를 설치한다.</p><p>1. unixODBC 다운로드한다.</p><p>unixODBC 홈페이지 (<a class="external-link" href="http://www.unixodbc.org" rel="nofollow">http://www.unixodbc.org</a>)에서 다운로드 할 수 있다.</p><p>2. unixODBC 설치한다.</p><p>다운로드한 unixODBC 소스 파일을 컴파일해야 한다. 컴파일된 라이브러리를 특정 위치에 설치하려면, configure할 때 –prefix 옵션으로 경로를 입력한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">./configure -prefix=설치경로 -enable-gui=no -–enable-drivers=no
+make
+make install
+</pre>
+</div></div><p>3. unixODBC 환경을 설정한다.</p><p>ODBCSYSINI 환경변수의 값을 ALTIBASE HDB 설치 계정의 홈 디렉터리 경로로 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">export ODBCSYSINI=~
+</pre>
+</div></div><p>4. unixODBC Driver Manager가 설치된 경로를 다음과 같이 환경변수에 추가한다. 라이브러리 경로를 설정하는 환경변수는 플랫폼과 운영체제의 bit에 따라서 LD_LIBRARY_PATH, LD_LIBRARY_PATH_64, SHLIB_PATH 중의 하나일 수 있다.</p><p>다음은 unixODBC를 /usr/local/odbcDriverManager32 또는 /usr/local/odbcDriverManager64에 설치한 예이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">export LD_LIBRARY_PATH= /usr/local/odbcDriverManager32/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH_64= /usr/local/odbcDriverManager64/lib:$LD_LIBRARY_PATH_64
+</pre>
+</div></div><p>5. ODBCSYSINI 환경변수의 경로에 다음 2개의 파일을 생성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">odbc.ini 
+odbcinst.ini
+</pre>
+</div></div><p>6. odbcinst.ini는 실제 내용이 없는 0 byte 파일이다.</p><p>7. odbc.ini에는 DSN 이름 및 ALTIBASE HDB ODBC 드라이버 파일의 위치, 서버의 IP 주소, 접속 포트 번호를 아래처럼 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">[Altibase]
+Driver = /home/altibase/altibase_home/lib/libaltibase_odbc.so
+Server = 127.0.0.1
+Port = 20300
+</pre>
+</div></div><h2 id="id-2.PHP연동을위한ODBC매니저설치-윈도우"><strong>윈도우</strong></h2><p>윈도우 환경은 ODBC 매니저가 기본으로 설치되어 있어, ALTIBASE HDB를 설치할 때 ODBC 매니저에 ALTIBASE HDB ODBC 드라이버를 자동으로 등록한다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

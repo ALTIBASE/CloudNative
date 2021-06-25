@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Lock 잡고 있는 세션을 강제로 종료하는 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Lock 잡고 있는 세션을 강제로 종료하는 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051231 {padding: 0px;}
+div.rbtoc1624409051231 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051231 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051231'>
+<ul class='toc-indentation'>
+<li><a href='#Lock잡고있는세션을강제로종료하는방법-개요'>개요 </a></li>
+<li><a href='#Lock잡고있는세션을강제로종료하는방법-버전'>버전  </a></li>
+<li><a href='#Lock잡고있는세션을강제로종료하는방법-조치방법'> 조치방법</a></li>
+<li><a href='#Lock잡고있는세션을강제로종료하는방법-참고'>참고 </a></li>
+</ul>
+</div></strong></p><p><strong><br /></strong></p><h1 id="Lock잡고있는세션을강제로종료하는방법-개요"><strong>개요</strong><span style="color: rgb(0,0,0);"><span> </span></span></h1><hr /><p>Lock 잡고 있는 세션을 강제로 종료하는 방법입니다.</p><p> </p><p> </p><p> </p><h1 id="Lock잡고있는세션을강제로종료하는방법-버전"><strong>버전</strong><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(0,0,0);"><span> </span></span></h1><hr /><p><span style="color: rgb(0,0,0);"><span> </span></span><span style="color: rgb(0,0,0);"> ALTIBASE HDB 4 이상</span></p><p> </p><p> </p><p> </p><h1 id="Lock잡고있는세션을강제로종료하는방법-조치방법"><strong> 조치방법</strong></h1><hr /><p><span style="color: rgb(0,0,0);"><span> </span></span><br />sys 계정으로 접속하셔서 수행해야 합니다.<br /><br />1. v$lock 에서 table 이름과 transaction ID, lock 종류를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> Select a.table_name, b.trans_id, b.lock_desc From system_.sys_tables_ a, v$lock b 
+ Where a.table_oid = b.table_oid;</pre>
+</div></div><p>2. 위에서 얻은 trans_id 를 이용하여 session 을 찾습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Select session_id, execute_flag, total_time, execute_time, rpad(query,400)  From v$statement 
+Where tx_id = 위에서 얻은 trans_id;</pre>
+</div></div><p>3. session_id 를 이용하여 session 정보를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Select comm_name, client_app_info From v$session Where id = 위에서 얻은 session_id;</pre>
+</div></div><p>4. session 을 Disconnect  시킵니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; Alter database mydb session close session_id; 
+mydb 는 database name 으로 $ALTIBASE_HOME/conf/altibase.properties 파일을 열어보면 DB_NAME 항목설정으로 확인하시면 됩니다. 
+Session_id 는 물론 위에서 획득한 session_id 를 입력합니다.</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="Lock잡고있는세션을강제로종료하는방법-참고"><strong><span style="color: rgb(0,0,0);">참고</span></strong><span style="color: rgb(0,0,0);"><span> </span></span></h1><hr /><p><span style="color: rgb(0,0,0);"><span>- </span></span><span style="color: rgb(0,0,0);"><span><span> 롤백(Roll back) 이 진행중인 세션은 session close 를 수행해도  Disconnect  되지 않아  롤백이 끝날때까지 대기해야 합니다.</span></span></span></p><p><span style="color: rgb(0,0,0);"><span><span><span><span><span style="color: rgb(0,0,0);"><span>- </span></span><span style="color: rgb(0,0,0);"><span><span> 위의 v$ 뷰 OR SYSTEM_META_TABLE 컬럼에 대한 정보는 Admin 메뉴얼을 참고하시기 바랍니다.<span><span> </span></span></span></span></span></span></span></span></span></span></p><p><span style="color: rgb(0,0,0);"> </span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 설정 파일 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 설정 파일 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 13, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409895592 {padding: 0px;}
+div.rbtoc1624409895592 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409895592 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409895592'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase설정파일가이드-개요'>개요  </a></li>
+<li><a href='#Altibase설정파일가이드-Altibase설정항목'>Altibase 설정 항목 </a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase설정파일가이드-프로퍼티조회및설정'>프로퍼티 조회 및 설정  </a></li>
+</ul>
+</li>
+<li><a href='#Altibase설정파일가이드-Altibase설정권고'> Altibase 설정 권고</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase설정파일가이드-DB생성시점에최소수정해야하는프로퍼티'>DB생성 시점에 최소 수정 해야 하는 프로퍼티 </a></li>
+<li><a href='#Altibase설정파일가이드-DB생성이후변경할수없는프로퍼티'>DB생성 이후 변경할 수 없는 프로퍼티 </a></li>
+<li><a href='#Altibase설정파일가이드-파일경로설정프로퍼티'>파일 경로 설정 프로퍼티</a></li>
+<li><a href='#Altibase설정파일가이드-세션프로퍼티'>세션 프로퍼티</a></li>
+<li><a href='#Altibase설정파일가이드-리소스제한관련프로퍼티'>리소스 제한 관련 프로퍼티</a></li>
+<li><a href='#Altibase설정파일가이드-디스크I/O성능관련프로퍼티'>디스크 I/O 성능 관련 프로퍼티</a></li>
+<li><a href='#Altibase설정파일가이드-PBT(ProblemTracking)관련프로퍼티'>PBT(Problem Tracking) 관련 프로퍼티</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="Altibase설정파일가이드-개요">개요 <span style="color: rgb(0,0,255);"> </span></h1><hr /><p>본 문서는 Altibase의 효과적인 사용을 위해 altibase.properties 파일 내의 속성들을 설명하고 어떻게 값을 지정할 수 있는지 설명한다. 본 문서에서는 Hidden property에 대한 설명은 포함하고 있지 않다.</p><p>본 문서는 Altibase 7 버전 이상을 기준으로 작성되었다. 사용자는 아래 문서를 함께 참조하는 것을 권장한다.</p><ol><li>『Altibase 운영을 위한 시스템 리소스 용량산정 가이드』</li><li>『효율적인 Altibase 이중화 구성 가이드』</li></ol><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul style="text-decoration: none;text-align: left;margin-left: 0.0px;"><li>기술지원포털 : <a href="http://support.altibase.com/" style="text-decoration: none;" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><h1 id="Altibase설정파일가이드-Altibase설정항목">Altibase 설정 항목<span style="color: rgb(0,0,255);"> </span></h1><hr /><p>각각의 프로퍼티에 대한 자세한 설명은 각각의 버전 매뉴얼 General Reference 편을 참고 할 수 있다.</p><p>매뉴얼은 아래 링크를 참고 한다.</p><p><a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></p><p> </p><h2 id="Altibase설정파일가이드-프로퍼티조회및설정">프로퍼티 조회 및 설정 <span style="color: rgb(0,0,255);"> </span></h2><hr /><p>각 프로퍼티는 다음과 같이 조회할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT name, value1 FROM v$property ;</pre>
+</div></div><p>또는, $ALTIBASE_HOME/conf/altibase.properties 파일에서 조회가 가능하다. 다만, 파일을 통한 조회에서는 일부 숨겨 진 속성값들은 알 수 없고 현재 적용된 값을 정확히 조회하기 위해서는 위와 같은 SQL을 통한 조회를 권장한다.</p><p>각 속성값의 변경은 설정 파일에 기술하거나 또는 DCL문(ALTER SYSTEM/ALTER SESSION 구문)을 통해 실시간 변경이 가능하다. 일부 속성은 읽기전용 값으로 운영 단계에서 변경할 수 없는 것들도 존재한다. 그런 속성을 변경할 경우 아래와 같은 오류가 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">[ERR-0104E: The property [propery_name] is read-only.]</pre>
+</div></div><p><span style="color: rgb(0,0,255);"> </span></p><p>설정 파일에 속성을 변경하는 경우는 다음과 같은 형식을 취한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: text; gutter: false" style="font-size:12px;">속성 명 = 속성 값
+Ex) PORT_NO = 20300</pre>
+</div></div><p> </p><p>예를 들어 DCL을 통해 변경할 경우는 다음과 같이 수행 한다. (대/소문자 구분 없음)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET query_timeout = 30;
+iSQL&gt; ALTER SESSION SET query_timeout = 30;</pre>
+</div></div><p>DCL의 경우는 세션 레벨과 시스템 레벨로 나뉘어 변경이 가능한 항목들이 존재한다. 그러나 2가지 경우 모두 Altibase를 재구동 한 경우에는 설정 파일에 기술된 값으로 재설정되기 때문에 영구적으로 반영하고자 할 경우에는 설정 파일을 변경해야 한다. (DB를 한번 생성한 후 변경할 수 없는 항목은 문서 후반에 소개한다.)</p><p>각 프로퍼티에서 &quot;?&quot; 표기의 의미는 &quot;$ALTIBASE_HOME&quot;이라는 환경변수에 정의된 경로를 의미한다.</p><p><span style="color: rgb(0,0,255);"><br /></span></p><p> </p><h1 id="Altibase설정파일가이드-Altibase설정권고"><span style="color: rgb(0,0,255);"> </span>Altibase 설정 권고<span style="color: rgb(0,0,255);"> <br /></span></h1><hr /><p>$ALTIBASE_HOME/conf/altibase.properties 파일에 기술된 각 항목을 각 분류 별로 정리하여 권고안에 대해 설명한다. 사용자의 시스템은 매우 다양한 환경을 갖기 때문에 본 권고안은 일반적인 경험에 의거하여 권고된다. 따라서, 설정 파일의 변경 및 적용은 Altibase 엔지니어와 충분한 사전 협의를 통해 진행할 것을 권고한다.</p><p> </p><h2 id="Altibase설정파일가이드-DB생성시점에최소수정해야하는프로퍼티">DB생성 시점에 최소 수정 해야 하는 프로퍼티<span style="color: rgb(0,0,255);"> </span></h2><hr /><p>DB를 생성하는 시점에 사용자가 최소한 설정해야 하는 항목은 다음과 같다. 설명의 이해를 위해 디스크의 볼륨이 다음과 같이 구성되었다고 가정한다.</p><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">디스크 볼륨</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">/home/altibase</td><td class="confluenceTd">ALTIBASE가 설치된 경로</td></tr><tr><td class="confluenceTd">/home/altidata</td><td class="confluenceTd">데이터파일이 저장될 디렉토리</td></tr><tr><td class="confluenceTd">/home/altilog</td><td class="confluenceTd">트랜잭션 로그파일이 저장될 디렉토리</td></tr></tbody></table></div><p> </p><p>위의 볼륨 구성으로 가정할 경우 아래와 같이 예를 들어 설정할 수 있다.</p><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">DB_NAME</td><td class="confluenceTd">사용자가 임의의 이름으로 설정</td></tr><tr><td class="confluenceTd"><p>MEM_DB_DIR</p></td><td class="confluenceTd"><p>/home/altidata</p></td></tr><tr><td class="confluenceTd"><p>DEFAULT_DISK_DB_DIR</p></td><td class="confluenceTd"><p>/home/altidata</p></td></tr><tr><td class="confluenceTd"><p>LOGANCHOR_DIR</p></td><td class="confluenceTd"><p>/home/altilog</p></td></tr><tr><td class="confluenceTd"><p>LOG_DIR</p></td><td class="confluenceTd">/home/altilog</td></tr><tr><td class="confluenceTd"><p>ARCHIVE_DIR</p></td><td class="confluenceTd"><p>아카이브 모드로 설정했을 경우 백업 디렉토리를 지정할 것을 권장한다. (ex: /home/altibackup/arch_log)</p></td></tr><tr><td class="confluenceTd"><p>MEM_MAX_DB_SIZE</p></td><td class="confluenceTd"><p>용량 산정을 통해 예측한 크기로 설정한다. (ex : 8G)</p></td></tr><tr><td class="confluenceTd"><p>BUFFER_AREA_SIZE</p></td><td class="confluenceTd">디스크 테이블을 사용할 경우 버퍼의 크기는 성능과 밀접한 연관이 있음으로 가용한 물리적 메모리 범위 내에서 크게 설정하도록 한다. 1G 이상을 권장한다.</td></tr><tr><td class="confluenceTd"><p>PORT_NO</p></td><td class="confluenceTd">20300 과 같이 시스템 내에 다른 프로세스가 사용 중이지 않는 포트를 지정하도록 한다.</td></tr><tr><td class="confluenceTd"><p>AUTO_COMMIT</p></td><td class="confluenceTd">1로 설정한 경우 DML수행 후 자동으로 DB에 반영되기 때문에 만일, 사용자가 직접 제어하고자 할 경우에는 0으로 설정하도록 한다.</td></tr><tr><td class="confluenceTd"><p>SQL_PLAN_CACHE</p></td><td class="confluenceTd"><span style="color: rgb(36,41,46);">SQL 플랜 캐시의 최대 크기를 나타낸다</span>. 중복되는 SQL이 많을 수록 SQL 플랜 캐시는 메모리 절약 효과가 있다.</td></tr><tr><td colspan="1" class="confluenceTd">REPLICATION_PORT_NO</td><td colspan="1" class="confluenceTd">이중화 사용이 필요시에 포트를 지정하도록 한다.</td></tr></tbody></table></div><p><span style="color: rgb(0,0,255);"><br /></span></p><h2 id="Altibase설정파일가이드-DB생성이후변경할수없는프로퍼티">DB생성 이후 변경할 수 없는 프로퍼티<span style="color: rgb(0,0,255);"> </span><span style="color: rgb(0,0,255);"> <br /></span></h2><hr /><p><span style="color: rgb(0,0,255);"> </span>Altibase를 한번 생성한 이후 최초 설정한 값에서 어떤 형태로든 변경할 경우 <span style="color: rgb(0,0,255);"> </span>Altibase가 재구동이 안 되는 몇 가지 프로퍼티가 존재한다. 따라서, 이 프로퍼티는 최초에 설정할 때 신중하게 설정하는 것을 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">기본값</th></tr><tr><td colspan="1" class="confluenceTd">DB_NAME</td><td colspan="1" class="confluenceTd">mydb (생성시 지정)</td></tr><tr><td class="confluenceTd"><p>LOG_FILE_SIZE</p></td><td class="confluenceTd">10M (생성시 지정)</td></tr><tr><td class="confluenceTd"><p>EXPAND_CHUNK_PAGE_COUNT</p></td><td class="confluenceTd">128 (생성시 지정)</td></tr><tr><td class="confluenceTd"><p>TRANSACTION_TABLE_SIZE</p></td><td class="confluenceTd">1024 (상향조절만 가능)</td></tr><tr><td class="confluenceTd">CHARACTERSET</td><td class="confluenceTd">DB 생성 시점에 지정</td></tr></tbody></table></div><p><span style="color: rgb(0,0,255);"> <br /></span></p><h2 id="Altibase설정파일가이드-파일경로설정프로퍼티">파일 경로 설정 프로퍼티<span style="color: rgb(0,0,255);"> <br /></span></h2><hr /><p>이 단락에서 파일은 트랜잭션 로그파일과 데이터파일에 대한 경로 설정만을 다룬다. 일반적으로 하나의 디스크에 트랜잭션 로그파일과 데이터파일을 같은 디스크를 사용하도록 지정할 경우 동시다발적인 디스크I/O로 인한 성능 저하가 발생하기 때문에 다음의 문서를 참고로 각각의 설정 항목을 변경하는 것을 권고한다.</p><p>참고 문서 『<span style="color: rgb(0,0,255);"> </span>Altibase 디스크I/O 병목을 고려한 볼륨구성 가이드』</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">LOG_DIR</td><td class="confluenceTd">트랜잭션 로그파일이 생성되는 디렉토리</td></tr><tr><td class="confluenceTd">MEM_DB_DIR</td><td class="confluenceTd">사용자가 명시적으로 지정하지 않을 경우 메모리DB의 데이터파일이 생성되는 디렉토리</td></tr><tr><td class="confluenceTd">DEFAULT_DISK_DB_DIR</td><td class="confluenceTd">사용자가 명시적으로 지정하지 않을 경우 디스크DB의 데이터파일이 생성되는 디렉토리</td></tr></tbody></table></div><p>위 3개의 경로 및 향후에 사용자가 생성할 각각의 데이터파일들은 최소한 LOG_DIR과는 물리적으로 분리된 디스크를 사용하도록 권고한다.</p><p> </p><h2 class="title" id="Altibase설정파일가이드-세션프로퍼티">세션 프로퍼티</h2><hr /><p>세션과 관련된 프로퍼티는 다음 항목들이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">MAX_CLIENT</td><td class="confluenceTd">동시에 DB에 접속할 세션의 제한이기 때문에 만일 이 값보다 더 많이 세션이 접속할 것이 예상되면 이 값을 늘린 후 <span style="color: rgb(0,0,255);"> </span>Altibase 서버를 재구동 하도록 한다.</td></tr><tr><td class="confluenceTd">MULTIPLEXING_THREAD_COUNT</td><td class="confluenceTd">이 값은 서비스 쓰레드의 개수를 지정하는 것이다. 설정하지 않을 경우 CPU의 Core수만큼 쓰레드가 자동으로 구동 단계에서 생성된다. 만일, 접속한 세션들이 많아 서비스 쓰레드가 더 필요하다고 내부적으로 판단할 경우 자동으로 생성이 되지만 생성되는 시점에 태스크의 분배로 일시적인 성능의 지터 현상이 발생할 수 있음으로 미리 충분한 개수를 확보 하는 것도 의미 있는 설정일 수 있다.</td></tr></tbody></table></div><p>MULTIPLEXING_THREAD_COUNT 는 기본적으로 (CPU Core개수 * 2)정도의 수치를 권고하는데 이 값은 상황에 맞게 설정한다</p><p> </p><h2 id="Altibase설정파일가이드-리소스제한관련프로퍼티">리소스 제한 관련 프로퍼티</h2><hr /><p><span style="color: rgb(0,0,255);"> </span>Altibase가 사용하는 리소스(Resource)라 함은 물리적인 메모리/디스크의 공간 및 논리적인 테이블스페이스 공간과 같은 자원을 의미한다. 세션/시스템 레벨에서 대량의 변경 작업과 같이 리소스 부족을 유발할 수 있는 질의 수행을 유연하게 제한하는 각각의 프로퍼티를 설명한다. 이 프로퍼티는 기본 설정을 변경하기 보다는 세션 레벨에서의 설정 변경을 통해 필요가 있는 세션만 변경/적용하도록 운영하는 것을 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd"><p>LOCK_ESCALATION_MEMORY_SIZE</p></td><td class="confluenceTd"><p>메모리DB 테이블에 대량 변경 작업을 수행할 경우 변경되는 레코드의 크기가 이 속성값을 넘으면 테이블 락을 획득하여 질의를 수행한다. (시스템 레벨만 변경 가능)</p></td></tr><tr><td class="confluenceTd"><p>TRX_UPDATE_MAX_LOGSIZE</p></td><td class="confluenceTd"><p>질의 처리로 인해 발생하는 트랜잭션 로그의 양이 이 속성값 이상이면 다음과 같은 에러로 리턴 된다.</p><p>The update log size '10485873' is bigger than TRX_UPDATE_MAX_LOGSIZE '10485760'</p></td></tr><tr><td class="confluenceTd"><p>PREPARE_STMT_MEMORY_MAXIMUM</p></td><td class="confluenceTd"><p>질의 처리 수행 단계 중 Preapre단계에서 사용되는 메모리의 양이 이 속성값 이상이면 다음과 같은 에러로 리턴 된다.</p><p>The memory size allocated for the statement has exceeded the maximum limit ( Name : Query_Prepare, Wanted Memory Size : 1073741832, Max size : 1073741824 )</p></td></tr><tr><td class="confluenceTd"><p>EXECUTE_STMT_MEMORY_MAXIMUM</p></td><td class="confluenceTd"><p>질의 처리 수행 단계 중 Execute단계에서 사용되는 메모리의 양이 이 속성값 이상이면 다음과 같은 에러로 리턴 된다.</p><p>The memory size allocated for the statement has exceeded the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1073807360, Max size : 1073741824 )</p></td></tr><tr><td class="confluenceTd"><p>QUERY_TIMEOUT</p></td><td class="confluenceTd"><p>질의를 개시한 이후 시간이 이 속성값 이상 지나면 다음과 같은 에러로 리턴 한다.</p><p>Client's query exceeded the execution time limit.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>FETCH_TIMEOUT</p></td><td colspan="1" class="confluenceTd"><p>질의가 정상 수행된 이후 만들어 진 결과 셋을 주고 받는 과정에서 이전 통신과 다음 통신간에 이 속성값만큼 시간이 지나도 통신이 발생하지 않으면 해당 세션을 종료시킨다.</p><p>The session has been closed by the server</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>UTRANS_TIMEOUT</p></td><td colspan="1" class="confluenceTd"><p>변경 질의가 수행된 이후 Commit/Rollback의 수행이 이 속성값만큼 시간이 지나도 발생하지 않으면 해당 세션을 종료시킨다.</p><p>The transaction has exceeded the lock timeout specified by the user.</p></td></tr><tr><td colspan="1" class="confluenceTd">IDLE_TIMEOUT</td><td colspan="1" class="confluenceTd"><p>세션이 아무런 동작 없이 이 속성값만큼 유지되면 강제로 종료시킨다.</p>The session has been closed by the server</td></tr></tbody></table></div><p> </p><p>변경 방법은 예는 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 20000000 ;
+iSQL&gt; ALTER SYSTEM  SET TRX_UPDATE_MAX_LOGSIZE = 10000000 ;
+iSQL&gt; ALTER SESSION SET QUERY_TIMEOUT = 3600 ;
+iSQL&gt; ALTER SESSION SET UTRANS_TIMEOUT = 60 ;</pre>
+</div></div><ul style="list-style-type: square;"><li>세션과 관련된 QUERY/IDLE/UTRANS/FETCH Timeout 속성과 관련된 에러는 모두 altibase_boot.log에 기록되기 때문에 발생 시 해당 세션을 찾아 조치하도록 한다.</li><li>ALTER SYSTEM과 ALTER SESSION은 주의할 사항이 ALTER SYSTEM의 변경은 이후 접속하는 세션부터 적용된다. 따라서, 현재 접속한 세션은 적용되지 않기 때문에 개별 접속된 세션들에 대해서는 각각 ALTER SESSION을 수행해야 원하는 결과를 적용할 수 있다.</li></ul><p><span style="color: rgb(0,0,255);"><br /></span></p><p> </p><h2 id="Altibase설정파일가이드-디스크I/O성능관련프로퍼티">디스크 I/O 성능 관련 프로퍼티</h2><hr /><p><span style="color: rgb(0,0,255);"> </span>Altibase의 디스크 I/O 성능 관련된 프로퍼티 항목을 설명한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd"><p>BUFFER_AREA_SIZE</p></td><td class="confluenceTd"><p>디스크DB의 버퍼 크기를 지정한다. 시스템의 메모리가 여유 있다면 가능한 크게 설정하기를 권고한다.</p></td></tr><tr><td class="confluenceTd"><p>BUFFER_FLUSHER_CNT</p></td><td class="confluenceTd"><p>디스크DB의 더티페이지 또는 버퍼의 빈 공간을 확보하기 위해 디스크에 버퍼를 기록하는 쓰레드로 시스템의 CPU개수 또는 디스크I/O성능에 맞게 조절하도록 한다.</p></td></tr><tr><td class="confluenceTd"><p>PREPARE_LOG_FILE_COUNT</p></td><td class="confluenceTd"><p>별도의 쓰레드가 트랜잭션 로그를 기록할 빈 로그파일을 생성하게 되는데 이 값이 너무 작은 경우 트랜잭션 진행이 빈 로그파일 생성을 대기해야 할 경우 성능이 저하될 수 있음으로 v$lfg 의 LF_PREPARE_WAIT_COUNT 값이 이 값보다 크게 나타나는 경우 값을 적절하게 조정해야 한다. 너무 크게 잡는다 하여도 실제 빈 로그파일을 만드는 디스크I/O 부하가 발생할 것임으로 테스트를 통해 신중하게 변경할 것을 권고한다.</p></td></tr><tr><td class="confluenceTd"><p>CHECKPOINT_BULK_WRITE_PAGE_COUNT</p><p>CHECKPOINT_BULK_WRITE_SLEEP_SEC</p><p>CHECKPOINT_BULK_WRITE_SLEEP_USEC</p></td><td class="confluenceTd"><p>메모리DB의 체크포인트가 진행될 때 기록해야 할 페이지가 많아 이 때 발생하는 디스크I/O로 성능이 저하된다고 판단이 될 경우 이 속성값을 통해 체크포인트의 디스크I/O양을 분산시킬 수 있다. 즉, CHECKPOINT_BULK_WRITE_PAGE_COUNT에 지정된 값만큼 페이지를 기록한 이후 (CHECKPOINT_BULK_WRITE_SLEEP_SEC + CHECKPOINT_BULK_WRITE_SLEEP_USEC) 만큼 대기한 이후 다시 쓰기를 진행하도록 동작한다. 이 속성은 디스크 성능이 낮은 장비에서 효과를 거둘 수 있다.</p><p> </p></td></tr><tr><td class="confluenceTd"><p>DIRECT_IO</p><p>DATABASE_IO_TYPE</p></td><td class="confluenceTd">파일캐쉬를 거쳐 데이터파일에 기록하는 과정은 2번에 걸친(파일캐쉬, 디스크Sync) 디스크 쓰기와 언제 파일캐쉬에서 디스크로 Sync될지를 예측하기 어려운 경우가 있을 수 있다. 그로 인해 운영체제가 파일캐쉬를 비우는 시점에 예측하지 못한 성능 저하가 있을 수 있는데 DIRECT IO로 설정할 경우 한번의 쓰기로 완료가 가능하다. 단, 이 설정은 디스크 성능이 충분히 높은 경우에만 설정할 것을 권고한다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>TOTAL_WA_SIZE</p><p>SORT_AREA_SIZE</p><p>HASH_AREA_SIZE</p></td><td colspan="1" class="confluenceTd"><p><span style="color: rgb(36,41,46);">디스크DB의 정렬 또는 해싱 작업이 동시에 수행 될수 있기위해  할당할 수 있는 메모리의 최대 크기를 지정한다. (TOTAL_WA_SIZE)<br />SORT_AREA_SIZE와 HASH_AREA_SIZE를 적절히 높히면 디스크DB의 성능이 향상 될 수 있다.</span></p><p><span style="color: rgb(36,41,46);"><span style="color: rgb(36,41,46);"><br /></span></span></p></td></tr></tbody></table></div><p><span style="color: rgb(0,0,255);"><br /></span></p><h2 id="Altibase설정파일가이드-PBT(ProblemTracking)관련프로퍼티">PBT(Problem Tracking) 관련 프로퍼티</h2><hr /><p><span style="color: rgb(0,0,255);"> </span>Altibase의 문제 상황이 발생할 경우 상세하게 추적하기 위해 필요한 프로퍼티를 설명한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">설정 항목</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd"><p>QP_MSGLOG_FLAG</p></td><td class="confluenceTd"><p>2로 설정하면 모든 DDL수행 기록을 확인할 수 있음으로 문제 발생 시 DDL수행에 의거한 경우 분석에 도움이 될 수 있다.</p></td></tr><tr><td colspan="1" class="confluenceTd">RP_CONFLICT_MSGLOG_FLAG</td><td colspan="1" class="confluenceTd">6으로 설정하면 이중화 충돌 시 발생하는 DML의 로그가 기록되어 분석에 도움이 될 수 있다.</td></tr><tr><td class="confluenceTd">TIMED_STATISTICS</td><td class="confluenceTd"><p>기본값은 0으로 동작하지 않지만 성능과 관련한 각 SQL문들의 수행 시간들을 알아야 할 경우 다음과 같이 실시간으로 활성화 할 수 있다.</p><p>iSQL&gt; ALTER SYSTEM SET timed_statistics = 1 ;</p>활성화 하면 수행되는 모든 SQL문의 수행 시각이 v$statement에 기록되기 시작한다.</td></tr></tbody></table></div><p> </p><p> </p><p><span style="color: rgb(0,0,255);"><br /></span></p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632849">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632850.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632851">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632852.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632853">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632854.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632855">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632856.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632857">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632858.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632847">exam</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632848.png">exam.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632880.gliffy">yong1.gliffy</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632878">prop_disk1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632879.png">prop_disk1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632877.gliffy">yong1.gliffy</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632881">prop_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437165/13632882.png">prop_1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:58</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

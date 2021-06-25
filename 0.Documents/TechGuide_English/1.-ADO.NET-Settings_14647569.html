@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. ADO.NET Settings</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Window-ADO.NET-Development-Guide_14647565.html">Altibase Window ADO.NET Development Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. ADO.NET Settings
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter describes how to donwload and install Altibase.Data.Client.dll for ALTIBASE application development in WINDOW ADO.NET environment. For more detailed information on ADO.net, please refer to the &quot;Application Program Interface User's Manual&quot;.</p><h1 id="id-1.ADO.NETSettings-ADO.NET">ADO.NET </h1><p>ADO.NET refers to a method designed to provide consistent access to data sources such as XML as well as data sources connection with OLEDB and ODBC. Components of ADO.NET can be largely classified into .NET Framework Data Provider and DataSet, and Altibase can provide the ones related to the .NET Framework Data Provider.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Classification</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>.NET Framework Data Provider</p></td><td class="confluenceTd">Components designed for data manipulation and high-speed data access<p> </p></td></tr><tr><td class="confluenceTd"><p>DataSet</p></td><td class="confluenceTd"><p>Components designed to allow access to data regardless of data source</p></td></tr></tbody></table></div><p>The detailed components of .NET Framework Data Provide are as follows.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647569/14778401.png" data-image-src="attachments/14647569/14778401.png"></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Class</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Connection</td><td class="confluenceTd">Provide connectivity to data sources</td></tr><tr><td class="confluenceTd">Command</td><td class="confluenceTd">Query the connected DB</td></tr><tr><td class="confluenceTd">DataReader</td><td class="confluenceTd">Read records from the connected DB</td></tr><tr><td colspan="1" class="confluenceTd">DataAdapter</td><td colspan="1" class="confluenceTd">Fill data in the DataSet object</td></tr></tbody></table></div><p> </p><p>In the source example to be introduced later in this chapter, a brief usage example of Connection, Command, DataReader, DataAdapter provided by ALTIBASe will be explained.</p><h1 id="id-1.ADO.NETSettings-Requirments">Requirments</h1><p>The environment required to use Altibase ADO.NET provided is as follows.</p><ul><li>.NET Framework<br />It is recommended to use the .NET Data Provider included in the Altibase HDB package with .NET Framework 2.0 or later, and Entity Framework with .Net Framework 3.5 SP1 or later.</li><li>Different .NET data provides depending on the ADO.NET version<br />Different library files are provided depending on the ADO.NET version, so appropriate libraries must be used for the ADO.NET version.</li><li>Altibase CLI library<br />Since the Altibase HDB .NET Data Provider connects to the database server using the Altibase CLI library, the Altibase CLI library must be installed. It is provided as standard in the Altibase HDB (server or client) package.</li><li>DTC system service<br />DTC system service must be installed to perform a distributed transaction. In addition, Altibase HDB .Net Data Provider performs a distributed transaction by integrating with XA transaction, the &quot;XA transaction&quot; option must be activated when setting DTC</li></ul><h1 id="id-1.ADO.NETSettings-DownloadingADO.NETDLL">Downloading ADO.NET DLL</h1><p>Go to <a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a>, go to &quot;Download&quot; -&gt; &quot;Product&quot;, download altiadonetX.X.X_32/64bit.zip from the LIBRARY Section, and extract the ADO.NET DLLs.</p><p>In order to get the same version as the server package, use the same version in the &quot;CLIENT&quot; section.</p><p>(If the previous version is not on the website, please contact Q&amp;A bulletin board at <a href="http://support.altibase.com/en)" class="external-link" rel="nofollow">http://support.altibase.com/en)</a></p><p><img class="confluence-embedded-image" src="attachments/14647569/14778402.png" data-image-src="attachments/14647569/14778402.png"><img class="confluence-embedded-image" src="attachments/14647569/14778403.png" data-image-src="attachments/14647569/14778403.png"></p><p>(At the time of writing this document, the altiadonet6.5.1.2_64/32.zip file has been uploaded to the latest.)</p><h1 id="id-1.ADO.NETSettings-InstallingADO.NETDLL">Installing ADO.NET DLL</h1><p>If installing for the first time, download and install the WINDOWS CLIENT package. There is no separate complicated process in the installation file, so it is not described separately in this document.</p><p>In general, after installing the package or extracting the compressed file, the user can check the files named &quot;Altibase.Data.AltibaseClient.dll&quot; and &quot;odbccli_sl.dll&quot;. (Located in %ALTIBASE_HOME%/lib during installation)</p><h1 id="id-1.ADO.NETSettings-CompilingADO.NETApplication">Compiling ADO.NET Application</h1><p>This section describes the process of compiling an application using Altibase ADO.NET Data Provider in the Visual Studio IDE environment.</p><h3 id="id-1.ADO.NETSettings-1.Openanewproject">1.  Open a new project</h3><p>Open the File-&gt;New-&gt;Project menu and create a new project as shown below.</p><div><img class="confluence-embedded-image" src="attachments/14647569/14778404.png" data-image-src="attachments/14647569/14778404.png"></div><div><h3 id="id-1.ADO.NETSettings-2.RegisterAltibaseADO.NETDataProviderbyaddingreference">2. Register Altibase ADO.NET Data Provider by adding reference</h3><p>Add &quot;Altibase.Data.AltibaseClient.dll&quot; by right-clicking on &quot;References&quot; in the left project explorer tree and adding a reference as shown below.</p><p>1) Right-click on a reference and click &quot;Add Reference&quot;</p><p><img class="confluence-embedded-image" src="attachments/14647569/14778405.png" data-image-src="attachments/14647569/14778405.png"><img class="confluence-embedded-image" src="attachments/14647569/17039363.png" data-image-src="attachments/14647569/17039363.png"></p><p>2) In the dialog window, go to the Altibase.Data.AltibaseClient.dll path and complete the setting.</p><p>When the reference addition is completed, the &quot;Altibase.Data.AltibaseClient&quot; Altibase ADO.NET provider is added to the reference tree of the solution explorer as follows.</p><p><img class="confluence-embedded-image" src="attachments/14647569/14778406.png" data-image-src="attachments/14647569/14778406.png"></p></div><div><h3 id="id-1.ADO.NETSettings-3.Makeodbccli_sl.dllbeincludedinthedynamiclibrarypath.">3.  Make odbccli_sl.dll be included in the dynamic library path.</h3><p>ALTIBASE's ADO.NET library always needs the odbccli_sl.dll file. Therefore, it must be located in a path that can refer to odbccli_sl.dll. There are two ways to refer to odbccli_sl.dll as follows.</p><h4 id="id-1.ADO.NETSettings-3.1Toplacetheexecutablefileinthefolder">3.1 To place the executable file in the folder</h4><p>If odbccli_sl.dll is placed in the same folder as the executable file, it is referred to in the current path of the executable file.</p><h4 id="id-1.ADO.NETSettings-3.2Toaddthepathwheretheodbccli_sl.dlllibraryislocatedintheenvironmentvariablePATH">3.2 To add the path where the odbccli_sl.dll library is located in the environment variable PATH</h4><p>This is a method of adding the path where odbccli_sl.dll is located in the environment variable PATH. If odbccli_sl.dll is in C:\altibase_client32\lib, add it to PATH as below. Visual Studio can recognize the changed contents of the PATH environment variable only after rerunning Visual Studio.</p><p><img class="confluence-embedded-image" src="attachments/14647569/14778407.png" data-image-src="attachments/14647569/14778407.png"></p><h1 id="id-1.ADO.NETSettings-Note">Note</h1><h3 id="id-1.ADO.NETSettings-SuitableLibrarymustbeusedforthecompilationbit-typeofVisualStudio.">Suitable Library must be used for the compilation bit-type of Visual Studio.</h3><p>Visual Studio allows the user to select 64bit or 32bit for the application's compilation bit with an option.</p><p><img class="confluence-embedded-image" src="attachments/14647569/14778408.png" data-image-src="attachments/14647569/14778408.png"></p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Altibase ADO.NET suitable library must be used for the compilation bit-type of Visual Studio. If Visual Studio is set to compile to 32bit, download &quot;altiadonetX.XXX_32bit.zip&quot; from <a href="http://support.altibase.com" class="external-link" rel="nofollow">support.altibase.com</a> and use it. If it is set to 64bit compilation mode, download &quot;altiadonetX.XXX_64bit.zip&quot; and use it. If a DLL of a different type is used from the Bit setting of Visual studio, a run time error occurs.</p>
+                    </div>
+    </div>
+<div><div><h1 id="id-1.ADO.NETSettings-PreparationCompleted">Preparation Completed</h1><p>After installing the two files as above, environment preparation for using the ADO.NET provider is completed.</p><p> </p></div></div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778401.png">DataProvider 세부구조.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778402.png">support_download.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778403.png">support_downloadadonet.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778404.png">새프로젝트열기.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778405.png">참조추가.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778406.png">참조추가완료.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778407.png">패스추가하기.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/14778408.png">비트선택.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/17039364.png">참조추가2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647569/17039363.png">참조추가2.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

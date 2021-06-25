@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 6. GC</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 6. GC
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Aug 20, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409833906 {padding: 0px;}
+div.rbtoc1624409833906 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409833906 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409833906'>
+<ul class='toc-indentation'>
+<li><a href='#id-6.GC-GCGC'>GC</a>
+<ul class='toc-indentation'>
+<li><a href='#id-6.GC-[GC01]메모리DBGCgapGC01[맨위로]'>[GC01] 메모리 DB GC gap[맨 위로]</a></li>
+<li><a href='#id-6.GC-[GC02]메모리DBGC가대기하고있는트랜잭션에서수행중인쿼리GC02[맨위로]'>[GC02] 메모리 DB GC가 대기하고 있는 트랜잭션에서 수행중인 쿼리[맨 위로]</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h2 id="id-6.GC-GCGC"><strong>GC<span class="confluence-anchor-link" id="id-6.GC-GC"></span></strong></h2><hr /><p>GC 정보를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><p> </p><h4 id="id-6.GC-[GC01]메모리DBGCgapGC01[맨위로]">[GC01] 메모리 DB GC gap<span class="confluence-anchor-link" id="id-6.GC-GC01"></span><a href="#id-6.GC-GC">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><p>알티베이스 4 이상 버전에서 사용할 수 있다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT GC_NAME
+     , SCNOFTAIL
+     , MINMEMSCNINTXS
+     , ADD_OID_CNT-GC_OID_CNT GC_GAP
+  FROM V$MEMGC ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">GC_NAME</td><td class="confluenceTd">GC의 이름으로 2개가 존재한다. MEM_LOGICAL_AGER는 인덱스의 old version을 삭제하는 GC이며 MEM_DELTHR는 테이블 레코드의 old version을 삭제하는 GC다.</td></tr><tr><td class="confluenceTd">SCNOFTAIL</td><td class="confluenceTd">GC에 의해 확인된 삭제해야 할 old version 중 가장 최신 version의 번호</td></tr><tr><td class="confluenceTd">MINMEMSCNINTXS</td><td class="confluenceTd">가장 오래된 old version의 번호</td></tr><tr><td class="confluenceTd">GC_GAP</td><td class="confluenceTd">각 GC가 삭제해야 할 old version의 양의 의미하는 것으로 이 값이 클수록 삭제해야 할 old version의 양이 많다는 의미이다. 이때 scnoftail &gt; minmemscnintxs 이면 active 트랜잭션 때문에 삭제를 진행하지 못하는 것이고, 반대로 scnoftail &lt; minmemscnintxs 이면 삭제는 계속 진행 중이지만 계속되는 갱신 트랜잭션의 완료로 인해 삭제해야 할 old version이 증가하고 있는 상황으로 판단할 수 있다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-6.GC-[GC02]메모리DBGC가대기하고있는트랜잭션에서수행중인쿼리GC02[맨위로]">[GC02] 메모리 DB GC가 대기하고 있는 트랜잭션에서 수행중인 쿼리<span class="confluence-anchor-link" id="id-6.GC-GC02"></span><a href="#id-6.GC-GC">[&#47592; &#50948;&#47196;]</a></h4><p>GC가 대기하고 있는 트랜잭션이란 '알티베이스에서 가장 오래된 old version'을 참조하는 트랜잭션을 의미한다. 이와 같은 트랜잭션으로 인해 GC가 동작하지 않고 무한히 대기하게 된다면 메모리 사용량 또한 무한히 증가할 수 있으므로 GC gap 증가 시 확인요소 중 한 가지다.</p><p>아래 쿼리를 수행함으로 GC가 대기하고 있는 트랜잭션을 수행하는 세션에서 수행한 쿼리를 확인할 수 있다. 또한, 인덱스 스캔은 하나 분포도가 좋지 않아 풀 스캔이나 다름없어 순간적인 CPU 소모를 하는 쿼리를 검출할 때도 유용하게 활용될 수 있다.<br />주의할 것은 상황에 따라 한 번의 수행으로 검출되지 않을 수 있기에 주기적, 반복적으로 수행하여야 한다는 것이다.</p><ul style="list-style-type: square;"><li><p>Altibase 4 이상 버전에서 사용할 수 있다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT SESSION_ID
+     , TOTAL_TIME
+     , EXECUTE_TIME
+     , TX_ID
+     , QUERY
+  FROM V$STATEMENT
+ WHERE TX_ID IN (SELECT ID
+                   FROM V$TRANSACTION
+                  WHERE MEMORY_VIEW_SCN = (SELECT MINMEMSCNINTXS FROM V$MEMGC LIMIT 1))
+   AND EXECUTE_FLAG = 1
+ ORDER BY 2 DESC ;</pre>
+</div></div></li><li><p>아래 Altibase 5 이상 버전에서 사용할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT ST.SESSION_ID,
+       ST.TX_ID,
+       TOTAL_TIME/1000000 &#39;TOTAL(SEC)&#39;,
+       EXECUTE_TIME/1000000 &#39;EXECUTE(SEC)&#39;,
+       FETCH_TIME/1000000 &#39;FETCH(SEC)&#39;,
+ST.QUERY
+  FROM V$STATEMENT ST,
+       V$TRANSACTION TX
+ WHERE ST.TX_ID = TX.ID
+AND TX_ID IN (SELECT ID
+                   FROM V$TRANSACTION,
+ (SELECT MINMEMSCNINTXS FROM V$MEMGC LIMIT 1) GC
+                  WHERE MEMORY_VIEW_SCN = GC.MINMEMSCNINTXS
+OR MIN_MEMORY_LOB_VIEW_SCN = GC.MINMEMSCNINTXS)
+AND ST.SESSION_ID != SESSION_ID()
+AND TX.SESSION_ID &lt;&gt; SESSION_ID()
+ ORDER BY 3 DESC;</pre>
+</div></div></li></ul><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

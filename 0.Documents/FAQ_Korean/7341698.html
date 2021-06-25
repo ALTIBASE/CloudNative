@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : aexport 를 이용한 데이터베이스 객체 백업</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520903.html">04. 백업 및 복구</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341694.html">aexport 및 iloader 이용</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : aexport 를 이용한 데이터베이스 객체 백업
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> Technical Support 1 Team</span> on Apr 30, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="aexport를이용한데이터베이스객체백업-aexport수행전필수작업">aexport 수행 전 필수 작업</h2><p>aexport.properties 파일에서 아래 설정들의 값을 변경합니다.</p><ul><li>ILOADER_FILED_TERM</li><li>ILOADER_ROW_TERM</li></ul><p>ILOADER_FIELD_TERM 는 필드 구분자, ILOADER_ROW_TERM 는 레코드 구분자를 의미합니다.</p><p>aexport.properties 파일을 한번도 변경한 적이 없다면 이 설정들은 주석이 되어 있고 기본값은 아래와 같이 설정되어 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>구분자 기본값</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep TERM aexport.properties
+#ILOADER_FIELD_TERM = ^
+#ILOADER_ROW_TERM = %n
+</pre>
+</div></div><p>위와 같이 기본값으로 설정되어 있다면 아래와 같이 다소 복잡하게 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>구분자 프로퍼티 설정 값 변경</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep TERM aexport.properties
+ILOADER_FIELD_TERM = ^Cc__Cc^
+ILOADER_ROW_TERM = ^Rr__Rr^%n
+</pre>
+</div></div><p>aexport.properties 파일의 위치는 $ALTIBASE_HOME/conf 입니다. 이 파일이 존재하지 않을 경우 aexport.properties.sample 파일을 복사하여 사용합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ ls -l aexport.properties*
+-rw-r-r- 1 heejung.lee heejung.lee 915 2014-07-21 15:32 aexport.properties.sample
+
+$ cp -p aexport.properties.sample aexport.properties
+</pre>
+</div></div><p>aexport 를 수행하면 다음과 같은 스크립트 들이 생성됩니다.</p><ul><li>데이터베이스 객체 생성 스크립트</li><li>iloader 를 이용한 데이터 다운로드/업로드 스크립트</li></ul><p>iloader 를 이용한 데이터 다운로드/업로드 스크립트에는 iloader 명령어들이 포함되어 있습니다. iloader 는 여러 옵션들을 사용할 수 있는데 위 설정에 따라 옵션에 사용된 값이 달라집니다.<br /> 위 설정은 각각 필드 구분자와 로우 구분자를 의미하는데 기본 값이 단순하게 설정되어 있습니다. 만약 이 설정값이 문자형 데이터 타입 컬럼에 포함된 경우 데이터 업로드 시 데이터가 정상적으로 업로드 되지 않는 문제가 발생할 수 있습니다.<br /> 그러니 이 설정 값은 다소 복잡하게 설정하는 것이 좋습니다.</p><h2 id="aexport를이용한데이터베이스객체백업-aexport수행">aexport 수행</h2><p>aexport.properties 를 변경한 후 aexport 를 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>aexport 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport
+-----------------------------------------------------------------
+     Altibase Export Script Utility.
+     Release Version 6.3.1.2.7
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write Server Name (default:localhost) :          # 로컬에서 수행하는 경우는 엔터, 원격에 설치된 알티베이스 서버에 접속하는 경우는 IP 입력.
+Write UserID :                                   # 데이터베이스 내 전체 객체를 백업할 경우는 sys 입력, 특정 유저의 객체만 백업할 경우는 해당 USER 입력
+Write Password :                                 # USER 의 패스워드 입력
+
+##### TBS #####
+
+##### USER  #####
+** input user ALTITEST&#39;s password(default - same with USER_NAME):            # UserID 에 sys 를 입력한 경우 데이터베이스 내 생성된 모든 USER 의 패스워드를 입력해야 합니다.
+** input user USER1&#39;s password(default - same with USER_NAME): USER1         # 패스워드를 임의로 입력해도 백업 스크립트는 생성되지만 실제 iloader 백업시 패스워드가 일치하지 않으면 iloader는 실패 합니다. 또한 여기서 입력한 패스워드로 create user ~ identified by ~ 구문을 생성한다는 것을 알고 있어야 합니다.
+** input user USER2&#39;s password(default - same with USER_NAME): USER2
+
+##### SYNONYM #####
+
+##### DIRECTORY #####
+
+##### TABLE #####
+** &quot;ALTITEST&quot;.&quot;ORDERS&quot;
+
+** &quot;SYS&quot;.&quot;CUSTOMERS&quot;
+
+** &quot;SYS&quot;.&quot;DATE_T&quot;
+
+** &quot;SYS&quot;.&quot;DEMO_EX1&quot;
+
+** &quot;SYS&quot;.&quot;DEPARTMENTS&quot;
+
+** &quot;SYS&quot;.&quot;DISK_T&quot;
+
+** &quot;SYS&quot;.&quot;DISK_T2&quot;
+
+** &quot;SYS&quot;.&quot;EMPLOYEES&quot;
+
+** &quot;SYS&quot;.&quot;GOODS&quot;
+
+** &quot;SYS&quot;.&quot;MEM_T&quot;
+
+** &quot;SYS&quot;.&quot;ORDERS&quot;
+
+** &quot;SYS&quot;.&quot;PLAN_TEST&quot;
+
+** &quot;SYS&quot;.&quot;T&quot;
+
+** &quot;SYS&quot;.&quot;TEST_EMP_TBL&quot;
+
+** &quot;SYS&quot;.&quot;T_BINARY&quot;
+
+** &quot;SYS&quot;.&quot;T_BLOB&quot;
+
+** &quot;SYS&quot;.&quot;T_BYTES&quot;
+
+** &quot;SYS&quot;.&quot;T_CLOB&quot;
+
+** &quot;SYS&quot;.&quot;T_NIBBLE&quot;
+
+** &quot;SYS&quot;.&quot;VOL_T&quot;
+
+** &quot;USER1&quot;.&quot;T&quot;
+
+
+##### QUEUE #####
+
+##### SEQUENCE #####
+
+##### DATABASE LINK #####
+
+##### VIEW #####
+
+##### MATERIALIZED VIEW #####
+
+##### STORED PROCEDURE #####
+
+##### STORED PACKAGE #####
+
+##### TRIGGER #####
+
+##### LIBRARY #####
+
+##### REPLICATION #####
+
+##### JOB #####
+-------------------------------------------------------
+  ##### The following script files were generated. #####
+  1. run_il_out.sh            : [ iloader formout, data-out script ]
+  2. run_is.sh                : [ isql table-schema script ]
+  3. run_il_in.sh             : [ iloader data-in script ]
+  4. run_is_refresh_mview.sh  : [ isql materialized view refresh script ]
+  5. run_is_index.sh          : [ isql table-index script ]
+  6. run_is_fk.sh             : [ isql table-foreign key script ]
+  7. run_is_repl.sh           : [ isql replication script ]
+  8. run_is_job.sh            : [ isql job script ]
+-------------------------------------------------------</pre>
+</div></div><p>aexport 를 수행하면 다음과 같이 .sh(Windows 시스템의 경우 .bat) 파일들과 .sql 파일들이 생성됩니다. .sql 파일들은 데이터베이스 객체 생성 구문을 담고 있고 .sh 파일들을 .sql 파일들을 한 번에 실행시키는 스크립트들입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">-------------------------------------------------------
+  ##### The following script files were generated. #####
+  1. run_il_out.sh            : [ iloader formout, data-out script ]
+  2. run_is.sh                : [ isql table-schema script ]
+  3. run_il_in.sh             : [ iloader data-in script ]
+  4. run_is_refresh_mview.sh  : [ isql materialized view refresh script ]
+  5. run_is_index.sh          : [ isql table-index script ]
+  6. run_is_fk.sh             : [ isql table-foreign key script ]
+  7. run_is_repl.sh           : [ isql replication script ]
+  8. run_is_job.sh            : [ isql job script ]
+-------------------------------------------------------
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

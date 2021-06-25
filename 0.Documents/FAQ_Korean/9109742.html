@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Spring+iBatis 트랜잭션 관리 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520896.html">07. 개발 및 API</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Spring+iBatis 트랜잭션 관리 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Nov 13, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053277 {padding: 0px;}
+div.rbtoc1624409053277 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053277 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053277'>
+<ul class='toc-indentation'>
+<li><a href='#Spring+iBatis트랜잭션관리방법-개요'>개요</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-방법'>방법</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-상세설명'>상세 설명</a>
+<ul class='toc-indentation'>
+<li><a href='#Spring+iBatis트랜잭션관리방법-공통적용사항'>공통 적용사항</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-1-1.DataSourceTransactionManager를직접사용하는경우'>1-1. DataSourceTransactionManager 를 직접사용하는 경우</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-1-2.TransactionTemplate를사용하는경우'>1-2. TransactionTemplate 를 사용하는 경우</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-2-1.&lt;tx:advice&gt;태그를이용한방법'>2-1. &lt;tx:advice&gt; 태그를 이용한 방법</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-2-2.TransactionProxyFactoryBean태그를이용한방법'>2-2. TransactionProxyFactoryBean 태그를 이용한 방법</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-2-3@Transactional어노테이션을이용한방법'>2-3 @Transactional 어노테이션을 이용한 방법</a></li>
+</ul>
+</li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-참고'>참고</a></li>
+<li><a href='#Spring+iBatis트랜잭션관리방법-샘플코드'>샘플 코드</a></li>
+</ul>
+</div><br /></strong></p><p><strong><br /></strong></p><h1 id="Spring+iBatis트랜잭션관리방법-개요"><strong>개요</strong></h1><hr /><p>Spring+iBatis 트랜잭션 관리 방법에 대해 설명합니다. </p><p> </p><p> </p><h1 id="Spring+iBatis트랜잭션관리방법-방법"><strong>방법</strong></h1><hr /><h5 id="Spring+iBatis트랜잭션관리방법-1.BMT(BeanManagedTransaction),명시적트랜잭션관리(소스에서트랜잭션처리를고려하는방법)"><span style="color: rgb(61,61,61);">1. BMT(Bean Managed Transaction), 명시적 트랜잭션 관리(소스에서 트랜잭션 처리를 고려하는 방법)</span></h5><p><br />   1-1. DataSourceTransactionManager 를 직접사용하는 경우<br />   1-2. TransactionTemplate 를 사용하는 경우</p><h5 id="Spring+iBatis트랜잭션관리방법-2.CMT(ContainerManagedTransaction),선언적트랜잭션관리(설정화일을이용하고,소스에서는트랜잭션처리를위한고려를줄이는방법)"><br />2. CMT(Container Managed Transaction), 선언적 트랜잭션 관리(설정화일을 이용하고, 소스에서는 트랜잭션 처리를 위한 고려를 줄이는 방법)</h5><p><br />   2-1. &lt;tx:advice&gt; 태그를 이용한 방법<br />   2-2. TransactionProxyFactoryBean 태그를 이용한 방법<br />   2-3 @Transactional 어노테이션을 이용한 방법</p><p> </p><p> </p><h1 id="Spring+iBatis트랜잭션관리방법-상세설명"><strong>상세 설명</strong></h1><hr /><h2 id="Spring+iBatis트랜잭션관리방법-공통적용사항"><strong>공통 적용사항</strong></h2><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>applicationContext.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;"> &lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot; &gt;
+   &lt;property name=&quot;driverClassName&quot;&gt;&lt;value&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;url&quot;&gt;&lt;value&gt;jdbc:Altibase://192.168.1.82:20300/mydb&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;username&quot;&gt;&lt;value&gt;sys&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;password&quot;&gt;&lt;value&gt;manager&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxActive&quot;&gt;&lt;value&gt;20&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxIdle&quot;&gt;&lt;value&gt;30000&lt;/value&gt;&lt;/property&gt;
+   &lt;property name=&quot;maxWait&quot;&gt;&lt;value&gt;100&lt;/value&gt;&lt;/property&gt;
+  &lt;/bean&gt; 
+ 
+  &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+   &lt;property name=&quot;dataSource&quot;&gt;&lt;ref local=&quot;dataSource&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;</pre>
+</div></div><p>  </p><h2 id="Spring+iBatis트랜잭션관리방법-1-1.DataSourceTransactionManager를직접사용하는경우"><br /><strong>1-1. DataSourceTransactionManager 를 직접사용하는 경우</strong></h2><hr /><p> </p><ul><li>설정 파일 : 추가적으로 설정할 것이 없습니다. </li><li>소스 상에서 직접 commit, rollback 처리를 해아합니다. <br />트랜잭션으로 처리를 해주기 위해서는 setAutoCommit(false)를 호출해야 합니다. <br /><span style="color: rgb(255,0,0);">주의할점은, blob select시에는 필히 setAutoCommit(false)를 호출해 주어야 한다는 것입니다.</span><br /><br /><br /></li></ul><h2 id="Spring+iBatis트랜잭션관리방법-1-2.TransactionTemplate를사용하는경우"><strong>1-2. TransactionTemplate 를 사용하는 경우</strong></h2><hr /><ul><li><p>설정 파일</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">  &lt;bean id=&quot;transactionTemplate&quot; class=&quot;org.springframework.transaction.support.TransactionTemplate&quot;&gt;
+   &lt;property name=&quot;transactionManager&quot;&gt;&lt;ref local=&quot;transactionManager&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;bean id=&quot;xxxService&quot; class=&quot;…&quot;&gt;
+   &lt;property name=&quot;transactionTemplate&quot;&gt;&lt;ref local=&quot; transactionTemplate&quot;/&gt;&lt;/property&gt;
+  &lt;/bean&gt;</pre>
+</div></div></li><li>소스 상에서 transactionTemplate.execute(), doInTransaction() 등의 함수를 이용하여야 합니다.</li><li>주의할 점은 blob select시에 기존 오라클에서는 트랜잭션 처리를 해주지 않았겠지만 알티베이스로 사용시에는 꼭, 소스상에서 transactionTemplate.execute(), doInTransaction() 등의  함수를 이용하여 트랜잭션 처리를 해주어야 한다는 점입니다.</li></ul><p> </p><h2 id="Spring+iBatis트랜잭션관리방법-2-1.&lt;tx:advice&gt;태그를이용한방법"><strong>2-1. &lt;tx:advice&gt; 태그를 이용한 방법</strong></h2><hr /><ul><li><p>설정 파일</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+&lt;/bean&gt;     
+&lt;tx:advice id=&quot;txAdvice&quot; transaction-manager=&quot;transactionManager&quot;&gt;
+    &lt;tx:attributes&gt;
+      &lt;!-- all methods starting with &#39;get&#39; are read-only --&gt;
+      &lt;tx:method name=&quot;get*&quot; read-only=&quot;true&quot; rollback-for=&quot;Exception&quot;/&gt;
+      &lt;!-- other methods use the default transaction settings (see below) --&gt;
+      &lt;tx:method name=&quot;*&quot; propagation=”REQUIRED”/&gt;
+    &lt;/tx:attributes&gt;
+&lt;/tx:advice&gt;</pre>
+</div></div></li><li>소스 상에는 트랜잭션 관련 코드 필요 없습니다.</li></ul><p> </p><h2 id="Spring+iBatis트랜잭션관리방법-2-2.TransactionProxyFactoryBean태그를이용한방법"><br /><strong>2-2. TransactionProxyFactoryBean 태그를 이용한 방법</strong></h2><hr /><ul><li><p>설정 파일</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;"> &lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+ &lt;/bean&gt;     
+ &lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot; class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+   &lt;property name=&quot;transactionManager&quot;&gt;
+    &lt;ref local=&quot;transactionManager&quot;&gt;&lt;/ref&gt;   
+   &lt;/property&gt;
+   &lt;property name=&quot;transactionAttributes&quot;&gt;
+    &lt;props&gt;
+     &lt;prop key=&quot;insert*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;update*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;delete*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+     &lt;prop key=&quot;save*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;    
+     &lt;prop key=&quot;*&quot;&gt;PROPAGATION_SUPPORTS&lt;/prop&gt;
+    &lt;/props&gt;
+   &lt;/property&gt;
+ &lt;/bean&gt; </pre>
+</div></div></li></ul><ul><li>소스 상에는 트랜잭션 관련 코드 필요 없습니다.</li></ul><p><br class="_mce_tagged_br" /> </p><h2 id="Spring+iBatis트랜잭션관리방법-2-3@Transactional어노테이션을이용한방법"><strong>2-3 @Transactional 어노테이션을 이용한 방법</strong></h2><hr /><ul><li><p>설정 파일</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+     &lt;property name=&quot;configLocation&quot;&gt;&lt;value&gt;sqlmap.xml&lt;/value&gt;&lt;/property&gt;
+     &lt;property name=&quot;dataSource&quot;&gt;&lt;ref bean=&quot;dataSource&quot; /&gt;&lt;/property&gt;
+     &lt;property name=&quot;lobHandler&quot;&gt;&lt;ref bean=&quot;defaultLobHandler&quot;/&gt;&lt;/property&gt;
+     &lt;property name=&quot;transactionConfigProperties&quot;&gt;
+        &lt;props&gt;
+           &lt;prop key=&quot;DefaultAutoCommit&quot;&gt;false&lt;/prop&gt;
+           &lt;prop key=&quot;SetAutoCommitAllowed&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+     &lt;/property&gt;
+  &lt;/bean&gt;     
+  &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;</pre>
+</div></div></li><li>소스 상에서 트랜잭션이 필요한 클래스는 @Transactional(propagation=Propagation.REQUIRED)  표기가 필요합니다. </li></ul><p> </p><p> </p><p> </p><p> </p><h1 id="Spring+iBatis트랜잭션관리방법-참고"><strong>참고</strong></h1><hr /><ul><li><p><span style="color: rgb(255,0,0);">표준프레임워크에서 안내하는 AltibaseClobStringTypeHandler 를 적용하면 CLOB 이 0 byte 인 경우에 오류가 발생할 수 있습니다.</span><br /><span style="color: rgb(0,0,0);">이 경우는 TypeHandler 를 사용하지 않고 어노테이션 추가하여 정상적으로 조회 되는 것을 확인할 수 있습니다. </span></p></li></ul><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><h1 id="Spring+iBatis트랜잭션관리방법-샘플코드"><strong><span style="color: rgb(0,0,0);">샘플 코드</span></strong></h1><hr /><p><span style="color: rgb(0,0,0);">LOB 데이터 처리하는 샘플 코드입니다. </span></p><ul><li style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><a href="attachments/9109742/9404421.zip">LobSpringIbatisSample.zip</a></span></li></ul><p><span style="color: rgb(0,0,0);"><br /></span></p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/9109742/9404421.zip">LobSpringIbatisSample.zip</a> (application/zip)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

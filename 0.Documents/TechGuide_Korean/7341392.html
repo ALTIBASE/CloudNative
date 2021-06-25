@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 5. TOMCAT 연동시 주의사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341030.html">Altibase TOMCAT 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 5. TOMCAT 연동시 주의사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409849142 {padding: 0px;}
+div.rbtoc1624409849142 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409849142 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409849142'>
+<ul class='toc-indentation'>
+<li><a href='#id-5.TOMCAT연동시주의사항-Tomcat사용시JDK환경'>Tomcat 사용시 JDK 환경</a></li>
+<li><a href='#id-5.TOMCAT연동시주의사항-사용한Resource의반납'>사용한 Resource의 반납</a></li>
+<li><a href='#id-5.TOMCAT연동시주의사항-버려진Connection을제거'>버려진 Connection을 제거</a></li>
+</ul>
+</div></p><hr /><p>TOMCAT 연동시 주의사항에 대해 설명한다.</p><h2 id="id-5.TOMCAT연동시주의사항-Tomcat사용시JDK환경"><strong>Tomcat 사용시 JDK 환경</strong></h2><p>DBCP를 이용하여 preparestatement를 처리할 때 고려해야 할 사항이 있는데 성능 향상을 위해 Tomcat 설정 중 testOnBorrow ( default : true), poolPrepareStatements ( default : false) 설정을 변경 사용할 경우 되도록 JDK( JRE ) 1.6 이상의 환경에서<br /> 사용하길 권장한다.</p><p>문제의 증상<br /> Tomcat log (version 6)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">--- Check the statement (query failed).
+
+--- Cause: java.sql.SQLException: [0]:Failure to find statement; nested exception is com.ibatis.common.jdbc.exception.NestedSQLException:
+
+--- The error occurred in maps/CommonSqlMap.xml.
+
+--- The error occurred while applying a parameter map.
+
+--- Check the Common.getIservSp-InlineParameterMap.
+
+--- Check the statement (query failed).
+
+--- Cause: java.sql.SQLException: [0]:Failure to find statement
+</pre>
+</div></div><p>정상적인 경우</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">Tomcat log (version 6)
+
+[0001][14:14:31 386][    2][    0] GET-CONNECTION[org.apache.tomcat.dbcp.dbcp.BasicDataSource.getConnection] [1 ms]
+</pre>
+</div></div><p>확인 방법</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">$CATALINA_HOME/conf/server.xml 파일 내용 중 아래 부분의 주석을 제거하신 후 Tomcat을 재 시작하여 $CATALINA_HOME/logs/tomcat.log 를 확인합니다.
+ 변경전&gt;
+        &lt;!--
+        &lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot;
+                 directory=&quot;logs&quot;  prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+                 pattern=&quot;common&quot; resolveHosts=&quot;false&quot;/&gt;
+        --&gt;
+
+변경후&gt;
+        &lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot;
+                 directory=&quot;logs&quot;  prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+                 pattern=&quot;%a %b %t %s %D %r &quot; resolveHosts=&quot;false&quot;/&gt;
+</pre>
+</div></div><p>참고 : <a href="http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html" class="external-link" rel="nofollow">http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html</a></p><p>권장 Tomcat 설정 값</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p> </p></th><th class="confluenceTh"><p>환경1</p></th><th class="confluenceTh"><p>환경2</p></th><th class="confluenceTh"><p>환경3</p></th></tr><tr><td class="confluenceTd"><p>JDK Ver</p></td><td class="confluenceTd"><p>1.5</p></td><td class="confluenceTd"><p>1.6</p></td><td class="confluenceTd"><p>1.6</p></td></tr><tr><td class="confluenceTd"><p>Tomcat Ver</p></td><td class="confluenceTd"><p>6 (dbcp ver 1.3)</p></td><td class="confluenceTd"><p>6 (dbcp ver 1.3)</p></td><td class="confluenceTd"><p>7 (dbcp ver 1.4)</p></td></tr><tr><td class="confluenceTd"><p>testOnBorrow</p></td><td class="confluenceTd"><p>TRUE 만 권장 (Default)</p></td><td class="confluenceTd"><p>True/False</p></td><td class="confluenceTd"><p>True/False</p></td></tr><tr><td class="confluenceTd"><p>poolPrepareStatements</p></td><td class="confluenceTd"><p>FALSE 만 권장 (Default)</p></td><td class="confluenceTd"><p>True/False</p></td><td class="confluenceTd"><p>True/False</p></td></tr><tr><td class="confluenceTd"><p>Result</p></td><td class="confluenceTd"><p>testOnBorrow=False,<br class="atl-forced-newline" /> poolpreparestatement=true<br class="atl-forced-newline" /> 사용시 권장하지 않음,<br class="atl-forced-newline" /> JRE 또는 JDK1.6으로 업그레이드 권장</p></td><td class="confluenceTd"><p>권장</p></td><td class="confluenceTd"><p>권장</p></td></tr></tbody></table></div><ul><li>testOnBorrow<br /> + connection pool에서 connection을 가져올 때 해당 connection이 유효성 검사 여부<br /> + 기본값은 false이며, 일반적으로 기본값을 사용한다. true설정하게 되면 매번 validationQuery를 수행하기 때문에 약간의 성능저하를 감수해야 한다.</li></ul><ul><li>poolpreparestatement<br /> + DBCP에서 Statement 풀링이 커넥션 별로 유지되고 있기 때문에, 응용서버(App)에서는 질의를 컴파일 한 정보를 계속 유지하게 된다. 이 후 같은 질의에 대해서는 prepare 과정 없이 execute 단계만 반복함으로써 성능 향상을 가져올 수 있다.</li></ul><h2 id="id-5.TOMCAT연동시주의사항-사용한Resource의반납"><strong>사용한 Resource의 반납</strong></h2><p>프로그램에서 할당한 Connection, Statement, ResultSet는 사용이 끝나면 반드시 명시적으로 close해줘야한다. 만약 close해주지 않으면 위의 Resource를 선언한 변수의 life cycle동안 계속 Resource를 할당하고 있기 때문에 불필요한 Resource 소모를 가져오게 된다.</p><p>Connection을 close해주지 않으면 pool로 Connection이 반납되지 않기 때문에 다른 곳에서 Connection을 사용하지 못할 것이다.<br /> Statement는 session이 유지되는 동안 어플리케이션 뿐만 아니라, DB 서버상에도 Statement 정보가 메모리에 할당되어 남아있게 된다. 따라서 Statement를 close해주지 않고 Connection도 close해주지 않는다면, 어플리케이션에서 불필요한 Resource가 계속 할당되는 것도 문제지만, DB 서버의 Query_Prepare 메모리 영역도 증가하게 된다.</p><p>만약 위의 Resource들을 명시적으로 close해주지 않았다면, 해당 Resource를 선언한 변수의 life cycle동안 메모리에 할당되어 있다가 life cycle이 끝나면 해당 Resource를 더 이상 참조하지 않게 되므로, JVM(Java Virtual Machine)의 GC(Garbage Collector)가 후에 해당 Resouce들을 해제하게 될 것이다. 하지만 일반적으로 GC는 우선순위가 가장 낮은 쓰레드이다. 따라서 GC가 Resource를 해제하는 시점이 언제인지는 예측하기가 어렵다. 즉, 어플리케이션에서 변수의 life cycle이 끝나서 더 이상 참조되지 않기 때문에 바로 해제될 수 있는 것이 아니고, GC가 해제하지 않는 이상 DB 서버에서는 계속 해당 Resource에 대한 정보를 가지고 있게 된다.</p><p>따라서, 반드시 사용이 끝난 Resource는 명시적으로 close 해주는 것을 권장한다.</p><h2 id="id-5.TOMCAT연동시주의사항-버려진Connection을제거"><strong>버려진 Connection을 제거</strong></h2><p>DBCP를 이용하여 connection을 처리할때 문제점이 하나 있는데 바로 웹어플리케이션에서 명시적으로 ResultSet, Statement, Connection을 close해줘야 한다는 것이다. 만약 웹어플리케이션에서 이러한 resource를 close하는 것을 실패했다면 이후에 resource들을 재사용할 수 없게 된다. 이러한 현상을 Connection pool leak이라고 부르며, connection pool leak이 지속된다면 최종에는 이용가능한 connection이 모두 없어지게 될 것이다. 이러한 문제를 막기위해 DBCP에서 문제가 발생하여 버려진 connection을 복구하고 로깅하는 방법을 제공하는데 다음의 속성을 설정하면 된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">removeAbandoned=&quot;true&quot;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

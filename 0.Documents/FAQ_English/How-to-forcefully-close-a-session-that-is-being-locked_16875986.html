@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to forcefully close a session that is being locked</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to forcefully close a session that is being locked
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 11, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145158 {padding: 0px;}
+div.rbtoc1624409145158 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145158 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145158'>
+<ul class='toc-indentation'>
+<li><a href='#Howtoforcefullycloseasessionthatisbeinglocked-Overview'>Overview</a></li>
+<li><a href='#Howtoforcefullycloseasessionthatisbeinglocked-Version'>Version</a></li>
+<li><a href='#Howtoforcefullycloseasessionthatisbeinglocked-Solution'>Solution</a></li>
+<li><a href='#Howtoforcefullycloseasessionthatisbeinglocked-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtoforcefullycloseasessionthatisbeinglocked-Overview">Overview</h1><hr /><p>This is a method of forcibly ending a session that is being locked.</p><p> </p><h1 id="Howtoforcefullycloseasessionthatisbeinglocked-Version">Version</h1><hr /><p>ALTIBASE HDB version 4 or later</p><p> </p><h1 id="Howtoforcefullycloseasessionthatisbeinglocked-Solution">Solution</h1><hr /><p>It must be performed by accessing the sys account.</p><p>1. Check the table name, transaction ID, and lock type in v$lock.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> Select a.table_name, b.trans_id, b.lock_desc From system_.sys_tables_ a, v$lock b 
+ Where a.table_oid = b.table_oid;</pre>
+</div></div><p>2. Use the trans_id obtained above to find the session.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Select session_id, execute_flag, total_time, execute_time, rpad(query,400)  From v$statement 
+Where tx_id = trans_id obtained from above;</pre>
+</div></div><p>3. Use the session_id to check the session information.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Select comm_name, client_app_info From v$session 
+Where id = session_id obtained from above;</pre>
+</div></div><p>4. Disconnect the session.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; Alter database mydb session close session_id; 
+For mydb, open the $ALTIBASE_HOME/conf/altibase.properties file as the database name and check it by setting the DB_NAME item.
+Enter the Session_id as well as the session_id obtained above.</pre>
+</div></div><p> </p><h1 id="Howtoforcefullycloseasessionthatisbeinglocked-Reference">Reference</h1><hr /><p>-A session in which rollback is in progress is not disconnected even if session close is performed, so must wait until the rollback is finished.</p><p>-For information on the above v$ view OR SYSTEM_META_TABLE column, refer to the Admin manual.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to create and execute Job objects</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to create and execute Job objects
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145094 {padding: 0px;}
+div.rbtoc1624409145094 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145094 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145094'>
+<ul class='toc-indentation'>
+<li><a href='#HowtocreateandexecuteJobobjects-Overview'>Overview</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-Version'>Version</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-Howtouse'>How to use</a>
+<ul class='toc-indentation'>
+<li><a href='#HowtocreateandexecuteJobobjects-Enablingthetaskschedulerfunction(AltibaseServerPropertySettings)'>Enabling the task scheduler function (Altibase Server Property Settings)</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-Creatingtheprocedure'>Creating the procedure</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-CreatingtheJobobject'>Creating the Job object</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-Enablingthejobobject'>Enabling the job object</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-ChecktheJobobjectandexecutionresult'>Check the Job object and execution result</a></li>
+</ul>
+</li>
+<li><a href='#HowtocreateandexecuteJobobjects-RelatedProperties'>Related Properties</a>
+<ul class='toc-indentation'>
+<li><a href='#HowtocreateandexecuteJobobjects-JOB_SCHEDULER_ENABLE'>JOB_SCHEDULER_ENABLE</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-JOB_THREAD_COUNT'>JOB_THREAD_COUNT</a></li>
+<li><a href='#HowtocreateandexecuteJobobjects-JOB_THREAD_QUEUE_SIZE'>JOB_THREAD_QUEUE_SIZE</a></li>
+</ul>
+</li>
+<li><a href='#HowtocreateandexecuteJobobjects-Reference'>Reference</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="HowtocreateandexecuteJobobjects-Overview">Overview</h1><hr /><p>This document describes how to create and execute Job objects, and how to monitor them.</p><p> </p><h1 id="HowtocreateandexecuteJobobjects-Version">Version</h1><hr /><p>Altibase version 6.3.1 or later</p><p> </p><h1 id="HowtocreateandexecuteJobobjects-Howtouse">How to use</h1><hr /><p>To create a Job object and operate normally, the user must proceed in the following order.</p><ol><li>Enable the task scheduler function</li><li>Create the procedure to register in the Job object</li><li>Create the Job object</li><li>Enable the Job object (only performed on Altibase 6.5.1 or later. Altibase 6.3.1 is not applicable)</li><li>Check the Job object and execution result</li></ol><h3 id="HowtocreateandexecuteJobobjects-Enablingthetaskschedulerfunction(AltibaseServerPropertySettings)">Enabling the task scheduler function (Altibase Server Property Settings)</h3><hr /><p>If the user is using the Job object for the first time, the job scheduler function must be enabled by changing the following Altibase server properties.</p><p>The job scheduler performs a procedure according to the settings registered in the job object.</p><ul><li>JOB_SCHEDULER_ENABLE : Task Scheduler Enable settings</li><li>JOB_THREAD_COUNT         : Number of threads to execute Job object</li></ul><p>Both of the above properties must be set to 1 to use the task scheduler. The default value is 0, so be sure to check if the user is using Task Scheduler for the first time.</p><p>The JOB_SCHEDULER_ENABLE property can be changed even when the Altibase server is running, but to change the value of the JOB_THREAD_COUNT property, the Altibase server must be restarted.</p><p>Therefore, when using the task scheduler for the first time, change the properties according to the procedure below.</p><p>1. Stop the Altibase server</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div><p>2. Find the JOB_SCHEDULER_ENABLE and JOB_THREAD_COUNT properties in the altibase.properties file, change the value to 1, and save.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of Unix/Linux</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties</pre>
+</div></div><p>3. Start the Altibase server</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div><p>4. Check the property setting value</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME IN (&#39;JOB_SCHEDULER_ENABLE&#39;, &#39;JOB_THREAD_COUNT&#39;);</pre>
+</div></div><h3 id="HowtocreateandexecuteJobobjects-Creatingtheprocedure">Creating the procedure</h3><hr /><p>Create a procedure to be registered in the Job object and check if the procedure is executed normally.</p><p>The reason for checking whether the procedure is normally executed is to exclude the possibility of a procedure problem if the Job object does not operate as set by the job scheduler.</p><p> </p><h3 id="HowtocreateandexecuteJobobjects-CreatingtheJobobject">Creating the Job object</h3><hr /><p>Create a JOB object.</p><p>The stored procedure to be executed, execution time, and execution cycle can be set in the JOB object. For the statement of creating a JOB object, refer to the SQL Reference manual. (Manual download page: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a> or <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a>)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE JOB job1
+EXEC proc1
+START sysdate
+END sysdate + 3
+INTERVAL 1 HOUR; </pre>
+</div></div><p> </p><h3 id="HowtocreateandexecuteJobobjects-Enablingthejobobject">Enabling the job object</h3><hr /><p>This operation is an added procedure with the addition of a function to enable/disable a specific JOB in Altibase version 6.5.1.</p><p>In Altibase version 6.3.1, when creating a JOB object, it becomes 'enabled' immediately, but from Altibase 6.5.1, if the ENABLE option is not used in the CREATE JOB statement, it is 'disabled'.</p><p>Therefore, starting from Altibase version 6.5.1, after creating a Job object, in order to make the Job run, it must be changed to the enabled state.</p><p>The change method is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 6.5.1 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER JOB job_name SET ENABLE;  </pre>
+</div></div><p>Starting from Altibase version 6.5.1, it is also possible to set it to &quot;Enabled&quot; immediately when creating a Job object.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE JOB job1
+EXEC proc1
+START sysdate
+END sysdate + 3
+INTERVAL 1 HOUR
+ENABLE;                  </pre>
+</div></div><p> </p><h3 id="HowtocreateandexecuteJobobjects-ChecktheJobobjectandexecutionresult">Check the Job object and execution result</h3><hr /><p>The user can check the job object information and job execution result with the query below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- JOB_NAME  : Name of Job object
+-- PROC_NAME : Name of the procedure registered in the Job object
+-- INTERVAL, INTERVAL_TYPE : Performance cycle
+-- STATE : Check whether Job object is executed. If ING, the user can see that the procedure registered in the Job object is being executed.
+-- EXEC_COUNT : Number of times the job object was executed after creation
+-- ERROR_CODE : Error code when the procedure registered in the Job object fails
+-- START_TIME, END_TIME : Time when the Job object was first executed / Time when it was finished
+-- LAST_EXEC_TIME : Last time the Job object was performed
+SELECT JOB_NAME
+     , DECODE(IS_ENABLE, &#39;T&#39;, &#39;ENABLE&#39;, &#39;F&#39;, &#39;DISABLE&#39;) IS_ENABLE                  -- Delete then use it in Altibase 6.3.1
+     , EXEC_QUERY PROC_NAME
+     , INTERVAL
+     , RPAD(DECODE(INTERVAL_TYPE, &#39;YY&#39;, &#39;YEARLY&#39;, &#39;MM&#39;, &#39;MONTHLY&#39;, &#39;DD&#39;, &#39;DAILY&#39;, &#39;HH&#39;, &#39;HOURLY&#39;, &#39;MI&#39;, &#39;MINUTELY&#39;), 13) INTERVAL_TYPE
+     , RPAD(DECODE(STATE, 0, &#39;-&#39;, 1, &#39;ING&#39;), 5) STATE
+     , RPAD(EXEC_COUNT, 10) EXEC_COUNT
+     , RPAD(ERROR_CODE, 10) ERROR_CODE
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) SYSDATE
+     , TO_CHAR(START_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) START_TIME
+     , TO_CHAR(END_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) END_TIME 
+     , TO_CHAR(LAST_EXEC_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_EXEC_TIME
+  FROM SYSTEM_.SYS_JOBS_; </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example results</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">JOB_NAME              IS_ENABLE  PROC_NAME             INTERVAL    INTERVAL_TYPE         STATE       EXEC_COUNT            ERROR_CODE            SYSDATE               START_TIME            END_TIME              LAST_EXEC_TIME        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+JOB2                  DISABLE  PROC                  1           MINUTELY              -           0                                           2016-08-30 14:15:06   2016-08-30 10:08:22   2016-09-02 10:08:22                         
+JOB1                  ENABLE   PROC                  1           MINUTELY              -           43                                          2016-08-30 14:15:06   2016-08-30 10:11:00                         2016-08-30 14:15:00   
+2 rows selected. </pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">How to check the error message corresponding to the error code</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>The error message corresponding to the error code can be checked by using the altierr utility.</p><p><br />$altierr 0x31129</p><p>0x31129 (201001) qpERR_ABORT_QSV_NOT_EXIST_PROC_SQLTEXT <span style="color: rgb(0,0,255);">Procedure or function not found</span> : &lt;0%s&gt;.<br /># *Cause: <span style="color: rgb(0,0,255);">The specified procedure or function name was not found in the database.</span><br /># *Action: Verify that the procedure or function exists.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="HowtocreateandexecuteJobobjects-RelatedProperties">Related Properties</h1><hr /><h2 id="HowtocreateandexecuteJobobjects-JOB_SCHEDULER_ENABLE">JOB_SCHEDULER_ENABLE</h2><hr /><h5 id="HowtocreateandexecuteJobobjects-Propertydescription">Property description</h5><ul><li>This property is to enable or disable the task scheduler function.</li><li>The default value is 0, which disables the task scheduler.</li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtochangethesetvalue">How to change the set value</h5><ul><li><p>It can be changed by using ALTER SYSTEM.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ALTER SYSTEM SET JOB_SCHEDULER_ENABLE = 1;           -- Enable the job scheduler function
+
+Or,
+ALTER SYSTEM SET JOB_SCHEDULER_ENABLE = 0;           -- Disable the job scheduler fucntion</pre>
+</div></div></li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtocheckthesetvalue">How to check the set value</h5><ul><li><p>The JOB_SCHEDULER_ENABLE set value can be checked with the query below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_SCHEDULER_ENABLE&#39;;</pre>
+</div></div></li></ul><h2 id="HowtocreateandexecuteJobobjects-JOB_THREAD_COUNT">JOB_THREAD_COUNT</h2><hr /><h5 id="HowtocreateandexecuteJobobjects-Propertydescription.1">Property description</h5><ul><li>This property configures the number of threads to process a job.</li><li>The default value is 0. When the Altibase server is started, the thread for executing the task scheduler is not started.</li><li>If JOB_THREAD_COUNT is set to a value other than 0, JobScheduler threads and JobThread threads as many as JOB_THREAD_COUNT are started.</li><li>Job is not executed by the service thread, but are processed by a thread called JobThread. So, if the user wants the job to be executed by the job scheduler, this property must be set.</li><li>Change this property value requires restarting the Altibase server.</li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtochangethesetvalue.1">How to change the set value</h5><ul><li>Stop the Altibase server.</li><li>Find JOB_THREAD_COUNT in $ALTIBASE_HOME/conf/altibase.properties, change the value, and save.</li><li>Start the Altibase server.</li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtocheckthesetvalue.1">How to check the set value</h5><ul><li><p>The JOB_THREAD_COUNT set value can be checked with the query below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_THREAD_COUNT&#39;;</pre>
+</div></div></li></ul><h2 id="HowtocreateandexecuteJobobjects-JOB_THREAD_QUEUE_SIZE">JOB_THREAD_QUEUE_SIZE</h2><hr /><h5 id="HowtocreateandexecuteJobobjects-Propertydescription.2">Property description</h5><ul><li>This property sets the number of queues to process multiple job objects are executed at the same time.<br />For example, when 4 job objects are executed at the same time by the job scheduler, they are processed in the following order according to the number of JOB_THREAD_COUNT and JOB_THREAD_QUEUE_SIZE.<br /><br />- JOB_THREAD_COUNT = 4, JOB_THREAD_QUEUE_SIZE = 1: 4 can be executed at the same time<br />- JOB_THREAD_COUNT = 2, JOB_THREAD_QUEUE_SIZE = 2: Two are executed at the same time, and the other two are executed consecutively.<br />- JOB_THREAD_COUNT = 1 ,JOB_THREAD_QUEUE_SIZE = 4: 1 is executed at the same time and the remaining 3 are executed consecutively.<br /><br /></li><li>The default and minimum values are set large enough to 64, so there is no need for users to set them arbitrarily.</li><li>To change the value of this property with the Read-Only attribute, the Altibase server must be stopped.</li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtochangethesetvalue.2">How to change the set value</h5><ul><li>Stop the Altibase server.</li><li>Save after changing JOB_THREAD_QUEUE_SIZE in $ALTIBASE_HOME/conf/altibase.properties.</li><li>Start the Altibase server.</li></ul><h5 id="HowtocreateandexecuteJobobjects-Howtocheckthesetvalue.2">How to check the set value</h5><ul><li><p>The JOB_THREAD_QUEUE_SIZE set value can be checked with the query below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_THREAD_QUEUE_SIZE&#39;;</pre>
+</div></div></li></ul><h1 id="HowtocreateandexecuteJobobjects-Reference">Reference</h1><hr /><p>The following are manuals for the description of the task scheduler.</p><ul><li><p>Administrator's Manual&gt; 5. Database Objects and Permissions&gt; Job</p></li><li><p>SQL Reference&gt; 3. Data Definition Language&gt; ALTER JOB /</p></li><li><p>SQL Reference&gt; 3. Data Definition Language&gt; CREATE JOB</p></li><li><p>SQL Reference&gt; 3. Data Definition Language&gt; DROP JOB</p></li><li><p>General Reference&gt; 2. ALTIBASE HDB Properties&gt; Other Properties</p></li><li><p>General Reference&gt; 3. Data Dictionary&gt; SYS_JOBS_</p></li></ul><ul><li>Manual Download Page: <a href="http://support.altibase" class="external-link" rel="nofollow">http://support.altibase</a><a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">.com/en/manual</a> or <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a></li></ul><div><strong style="color: rgb(0,0,0);font-size: 20.0px;"><br /></strong></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

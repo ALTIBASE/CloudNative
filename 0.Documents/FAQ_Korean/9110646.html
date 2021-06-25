@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : unix_odbc와 연동하기</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520896.html">07. 개발 및 API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ODBC_6521524.html">ODBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : unix_odbc와 연동하기
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="unix_odbc와연동하기-개요"><strong><span style="color: rgb(0,0,0);">개요</span></strong></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">UNIX_ODBC 와 altibase 연동관련 가이드입니다.</span></p><p><br /><br /></p><h1 id="unix_odbc와연동하기-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 모든 버전</p><p> </p><h1 id="unix_odbc와연동하기-UNIX_ODBC종류및URL"><br /><strong><span style="color: rgb(0,0,0);">UNIX_ODBC 종류 및 URL</span></strong></h1><hr /><p><span style="color: rgb(0,0,0);">unix_odbc 는 open source project 로서 주로  unixODBC 가 사용됩니다.</span><br /><br /><span style="color: rgb(0,0,0);">1. unixODBC는 아래 링크에 다운로드 받으실 수 있습니다.</span><br /><span style="color: rgb(0,0,0);">- </span><a href="http://www.unixodbc.org/" class="external-link" rel="nofollow">http://www.unixodbc.org/</a><br /><br /><span style="color: rgb(0,0,0);"> </span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><h1 id="unix_odbc와연동하기-INSTALL"><strong><span style="color: rgb(0,0,0);">INSTALL</span></strong></h1><hr /><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ mkdir $HOME/ODBC_HOME</p><p>$ gzip -d unixODBC-2.3.2.tar.gz</p><p>$ tar -xvf unixODBC-2.3.2.tar</p><p> $ cd unixODBC-2.3.2</p><p> $ cd $ALTIBASE_HOME/lib</p><div> $ file <a href="http://libaltibase_odbc-64bit-ul64.so/" style="line-height: 1.4285;" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div><div><a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: ELF 64-bit LSB shared object, AMD x86-64, version 1 (SYSV), not stripped</div><div> </div><div>  </div><div>$ ./configure -prefix=/home/wonsik/ODBC_HOME --enable-gui=no --enable-threads=yes</div></div>
+</div></div><p> </p><p> </p><div><div><p> </p>    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">옵션설명</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <div>prefix : unixODBC를 설치할 경로</div><div>enable-gui :  GUI ODBC Administrator를 build 여부 </div><div>enable-threads : <span style="color: rgb(63,63,63);">The default is &quot;yes&quot; if thread-support is found on your machine. All modern Linuxes will have pthreads support in glibc so it is probably best to leave this to default.</span></div><div> </div><div>만일 enable-threads 옵션을 no로 설정할 경우  isql로 접속테스트시 아래 에러가 발생할 수 있습니다.</div><div><div>$ ./isql Altiodbc</div><div>./isql: symbol lookup error: /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: undefined symbol: pthread_sigmask</div></div><div><div>$ ./isql Altiodbc</div><div>./isql: symbol lookup error: /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: undefined symbol: <strong>pthread_sigmask</strong></div></div>
+                    </div>
+    </div>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<div>$ make</div><div> </div><div>$ make install</div><div> </div><div><div>$ cd ODBC_HOME</div><div> </div></div><div><div>$ dltest $ALTIBASE_HOME/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div>SUCCESS: Loaded /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div></div><div><div>  </div><div><div>$ cat odbc.ini</div><div>[ODBC Data Sources] </div><div>Altiodbc = Altibase ODBC Driver </div><div> </div><div>[Altiodbc] </div><div>Driver = /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div>Description = Sample Altibase DSN </div><div>UserName = SYS </div><div>Password = MANAGER </div><div>ServerType = Altibase </div><div>Server = 127.0.0.1 </div><div>User = SYS </div><div>Port = 40501</div><div>Database = mydb </div><div>FetchBufferSize = 64 </div><div>ReadOnly = no </div><div>TraceFile = /home/wonsik/ODBC_HOME/odbc.trace</div><div>Trace = 0</div><div> <span style="color: rgb(0,0,0);">Trace 옵션은 1 (debug) , 0 (normal) 을 의미함</span></div><div> </div><div>$ export ODBCINI=/home/wonsik/odbc.ini</div><div>  </div><div><div>$ cd $HOME/ODBC_HOME/bin</div><div>  </div></div><div><div>$ odbc_config --ulen</div><div>-DSIZEOF_SQLULEN=8</div><div>  </div></div><div> </div><div><div>$ ./isql Altiodbc</div><div>+---------------------------------------+</div><div>| Connected!                             |</div><div>|                                       |</div><div>| sql-statement                         |</div><div>| help [tablename]                     |</div><div>| quit                                   |</div><div>|                                       |</div><div>+---------------------------------------+</div><div>SQL&gt; </div></div></div></div>
+</div></div><p> </p></div><div> </div></div><h1 id="unix_odbc와연동하기-PHP,PERL연동"><strong><span style="color: rgb(0,0,0);">PHP, PERL 연동</span></strong></h1><hr /><p><span style="color: rgb(0,0,0);">PHP, PERL 등에서 unix_odbc 를 지원하므로 위의 방식으로 altibase와 </span><span style="color: rgb(0,0,0);">연동할 수 있습니다.</span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><h1 id="unix_odbc와연동하기-PHP연동가이드"><strong><span style="color: rgb(0,0,0);">PHP 연동 가이드</span></strong></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);"><br /></span></p><ol><li><p><span style="color: rgb(0,0,0);">관련 환경 변수 설정</span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>반드시 사전에 아래 변수를 설정해주시기 바랍니다.</p><p>export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1</p><p>export ODBCINI=odbc.ini 파일 위치 경로</p><p>export LD_LIBRARY_PATH=$APACHE_HOME/<a href="http://modules/user/web/odbc/lib:/user/web/php2/lib" class="external-link" rel="nofollow">modules:unixODBC설치경로/lib:PHP설치경로/lib</a></p>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p></li><li><p><span style="color: rgb(0,0,0);">SQLLEN, SQLULEN 확인</span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>unixODBC 설치 경로중 bin 디렉토리로 이동하여 odbcinst 명령을 이용해 SQLLEN size와 SQLULEN size가 4인지 확인합니다.</p><p>4일 경우 32bit로 설정된 것이며, 8일 경우 64bit로 설정된 것입니다.</p><p>$ ./odbcinst -j</p><p>unixODBC 2.3.2</p><p>DRIVERS............: /home/altibase/phptest/unixodbc/etc/odbcinst.ini</p><p>SYSTEM DATA SOURCES: /home/altibase/phptest/unixodbc/etc/odbc.ini</p><p>FILE DATA SOURCES..: /home/altibase/phptest/unixodbc/etc/ODBCDataSources</p><p>USER DATA SOURCES..: /home/altibase/phptest/unixodbc/etc/odbc.ini</p><p>SQLULEN Size.......: 4</p><p>SQLLEN Size........: 4   &lt;---4이면 32bit   8이면 64bit</p><p>SQLSETPOSIROW Size.: 2</p>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p></li><li><p>unixODBC의 odbc.ini 파일 수정</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span style="color: rgb(0,0,0);">odbc.ini 파일에 LongDataCompat=ON을 추가해줌으로써</span><span style="color: rgb(0,0,0);"> lob </span><span style="color: rgb(0,0,0);">데이터를 처리하도록 설정가능합니다.</span></p>
+</div></div></li><li><p>PHP 컴파일 및 설치 작업</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$&gt; ./configure \<br />--prefix=/user/web/php \<br />--with-config-file-path=/user/web/php/conf \<br />--with-apxs2=/user/web/apache2/bin/apxs \<br />--with-unixODBC=/user/web/odbc \<br />--with-mcrypt \<br />--with-mhash \<br />--with-openssl \<br />--with-kerberos \<br />--with-curl \<br />--enable-dom \<br />--with-iconv=/usr/local \<br />--with-xmlrpc \<br />--enable-libxml \<br />--with-libxml-dir=/usr/lib64 \<br />--with-gd \<br />--with-freetype-dir=/usr \<br />--with-jpeg-dir=/usr/lib64 \<br />--with-png-dir=/usr/lib64 \<br />--with-zlib-dir=/usr/lib64 \<br />--enable-mbstring \<br />--enable-shmop \<br />--enable-sockets \<br />--enable-sigchild \<br />--enable-soap \<br />--enable-zip \<br />--enable-ftp \<br />--enable-sysvmsg \<br />--enable-sysvsem \<br />--enable-sysvshm \<br />--with-regex=php \<br />--with-pcre-regex \<br />--enable-mbregex \<br />--enable-dba=shared \<br />--enable-mod-charset \<br />--with-xml \<br />--with-pcre \<br />--with-gdbm \<br />--with-dbm</p><p> </p><p>$&gt; make</p><p><br />$&gt; make install</p>
+</div></div></li><li><p>php.ini 설정</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>memory_limit=-1</p><p>odbc.defaultbinmode=1</p><p>odbc.defaultlrl=1048576</p>
+</div></div></li></ol>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

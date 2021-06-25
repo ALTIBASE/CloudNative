@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-311E0 The estimated size of the index key exceeds the maximum limit</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-311E0 The estimated size of the index key exceeds the maximum limit
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 19, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409150950 {padding: 0px;}
+div.rbtoc1624409150950 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409150950 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409150950'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Version'>Version</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Explanation'>Explanation</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Cause'>Cause</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Action'>Action</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Version">Version</h2>
+
+<p>6.1.1 or below</p>
+
+<p>This error message is not output for 6.3.1 or above.</p>
+
+
+<h2 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Explanation">Explanation</h2>
+
+<p>This error occurs when an ORDER BY, GROUP BY or JOIN is used for disk tables.</p>
+
+
+<h2 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility:</p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x311E0<br />
+0x311E0 ( 201184) qpERR_ABORT_QDX_MAXIMUM_KEY_SIZE_EXCEED The estimated size of the index key exceeds the maximum limit.</p>
+
+<p># *Cause:</p>
+
+<p>#- The estimated size of the index key exceeds the maximum limit.</p>
+
+<p># *Action:</p>
+
+<p># - Please reduce the number of key columns.</p>
+</div></div>
+<p>The temporary tablespace is used when an ORDER BY, GROUP BY or JOIN is executed on a disk table.</p>
+
+<p>The temporary tablespace is a disk tablespace and has the fixed page size of 8K.</p>
+
+<p>However, this error occurs when a record that is bigger than 8K was created while using the temporary tablespace.</p>
+
+<p>Note: If the size of a single page (8K) of the disk tablespace is exceeded, the data length is approximately greater than or equal to 3000 bytes.</p>
+
+<p># Example</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T1( I1 CHAR(6000) ) TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; insert into t1 values(1);
+1 row inserted.
+iSQL&gt; insert into t1 values(2);
+1 row inserted.
+iSQL&gt; insert into t1 values(3);
+1 row inserted.
+iSQL&gt; SELECT * FROM T1 ORDER BY I1;</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#"><span style="color: rgb(0,0,0);">ERR-311E0 : The estimated size of the index key exceeds the maximum limit.</span></a></p>
+                    </div>
+    </div>
+
+<p># Example(6.3.1)</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T1( I1 CHAR(6000) ) TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; insert into t1 values(1);
+1 row inserted.
+iSQL&gt; insert into t1 values(2);
+1 row inserted.
+iSQL&gt; insert into t1 values(3);
+1 row inserted.
+iSQL&gt; SELECT * FROM T1 ORDER BY I1;
+I1
+--------------
+1
+2
+3
+3 rows selected.</pre>
+</div></div>
+
+
+<h2 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Action">Action</h2>
+
+<p>1. You can use the hint ‘TEMP_TBS_MEMORY’ to avoid the size limit (8K) of disk temporary tablespaces.</p>
+
+<p>When this hint is used, the temporary area is used in memory instead of disk. Thus, query performance is also improved.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT  /*+ TEMP_TBS_MEMORY */ * FROM T1 ORDER BY I1;
+I1
+--------------
+1
+2
+3
+3 rows selected.</pre>
+</div></div>
+<p>2. Upgrade to 6.3.1 or above. This error does not occur in 6.3.1 or above.</p>
+
+<h2 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit-Reference">Reference</h2>
+
+<p>&lt;How to use a hint&gt;</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;SELECT * FROM t1 ORDER BY c2;
+iSQL&gt;SELECT /*+ TEMP_TBS_MEMORY */ * FROM t1 ORDER BY c2;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

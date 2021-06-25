@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# altibase
+#
+# chkconfig: 2345 20 80
+# description: ALTIBASE process startup
+
+user=altibase
+
+start() {
+
+ echo -e "`date +"%Y-%m-%d %H:%M:%S"` : Altibase Server Startup \n" >> /var/log/${user}_altibased.log 2>&1 
+
+ ALTIBASE_STATUS=`ps -ef | grep ${user} | grep 'altibase -p' | grep -v grep | wc -l` 
+
+ if [ $ALTIBASE_STATUS -ne 1 ]; then
+   su - ${user} -c "server start" >> /var/log/${user}_altibased.log 2>&1
+ fi
+}
+
+stop() {
+ echo -e "`date +"%Y-%m-%d %H:%M:%S"` : Altibase Server Shutdown \n" >> /var/log/${user}_altibased.log 2>&1 
+
+ ALTIBASE_STATUS=`ps -ef | grep ${user} | grep 'altibase -p'| grep -v grep | wc -l`
+ if [ $ALTIBASE_STATUS -eq 1 ]; then
+   su - ${user} -c "server stop" >> /var/log/${user}_altibased.log 2>&1
+ fi
+ 
+}
+
+case "$1" in
+ start)
+  start
+  ;;
+ stop) 
+  stop
+  ;;
+esac

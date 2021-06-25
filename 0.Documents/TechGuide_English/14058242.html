@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Major Meta Tables and Performance Views related to tablespace, table, column, index, and constraint</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Altibase-Meta-Table-and-Performance-View-Overview_14058238.html">2. Altibase Meta Table and Performance View Overview</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Major Meta Tables and Performance Views related to tablespace, table, column, index, and constraint
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 14, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">Altibase is able to check tablespace and table information according to the memory or disk (refer to TBS, TABLE box) due to the nature of hybrid DBMS. in the case of a segment, each performance view related to v</span><span>$</span><span class="md-plain">segment (purple) the user can check the detailed resource usage status through. </span></p><p class="md-end-block md-p"><span class="md-plain">However, in the case of an index, as a meta table or performance view for measuring the memory index size is not currently provided, the total number of records in the table should be replaced by multiplying the memory index size for one record by 16 bytes.</span></p><p class="md-end-block md-p"><span class="md-plain">For a disk index, refer to v</span><span>$</span><span class="md-plain">index, and real-time size can be measured through the corresponding segment.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">The following shows the relationship between meta tables and performance views in which only key columns to refer to are used in join queries related to tablespaces, tables, columns, indexes, and constraints.</span></p><p class="md-end-block md-p md-focus"><img class="confluence-embedded-image" width="700" src="attachments/14058242/14221508.png" data-image-src="attachments/14058242/14221508.png"></p><p class="md-end-block md-p"><span class="md-plain">As a special feature, when joining between the main metatable SYS_TABLE_ and another metatable, TABLE_ID is used as the join column, and when joining with the performance view, the alternative key is the TABLE_OID column (blue).</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Although not indicated for reference, all of the metatables except SYS_USERS_ and SYS_TABLES_ have both USER_ID and TABLE_ID columns for the convenience of the query. Performance view v</span><span>$</span><span class="md-plain">segment and v</span><span>$</span><span class="md-plain">index also have a table_OID column considering the sum of each table.</span></p><h2 class="md-end-block md-heading" id="id-2.MajorMetaTablesandPerformanceViewsrelatedtotablespace,table,column,index,andconstraint-MainMetaTables"><span class="md-plain">Main Meta Tables</span></h2><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_COLUMNS_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">As a meta table that stores column information for all tables, detailed information such as the column name (COLUMN_NAME), data type (DATA_TYPE), and column order (COLUMN_ORDER) can be checked.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_CONSTRAINTS_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">As a meta table that stores the constraint information of the table, the constraint type (CONSTRAINT_TYPE) can be checked, and in the case of constraints such as PK, FK, and UK, the index number (INDEX_ID) can be checked. Also, in the case of FK, a reference table (REFERENCED_TABLE_ID) can also be checked.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_CONSTRAINT_COLUMNS</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that can check the column number (COLUMN_ID) of the column that is the target of the constraint and is associated with the related constraint number (CONSTRAINT_ID).</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_INDICES_</span></strong></p><p class="md-end-block md-p md-focus"><span class="md-plain">As a meta table that stores all index information, detailed information such as index name (INDEX_NAME), table space number (TBS_ID), index type (INDEX_TYPE), and the number of constituent columns (COLUMN_CNT) can be checked.</span></p></li></ul><h2 class="md-end-block md-heading" id="id-2.MajorMetaTablesandPerformanceViewsrelatedtotablespace,table,column,index,andconstraint-MainPerformanceViews"><span class="md-plain">Main Performance Views</span></h2><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">tablespaces</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows all tablespace information and is basically used when monitoring tablespace.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">mem_tablspaces</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows detailed information only about the memory tablespace. It is possible to find the physical memory size actually used to operate the memory DB.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">datafiles</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows detailed information of the data files that make up the disk tablespace. The user can check the path, status, and size of the physical data files.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">segment</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows segment information of a disk table. The user can obtain the exact size of disk DB-related objects such as disk tables, disk indexes, undo tablespaces, and temporary tablespaces.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$memtbl_info</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows detailed information only for the memory table, and the size and sum of pure data for each memory table can be obtained.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$disktbl_info</span></strong></p><p class="md-end-block md-p"><span class="md-plain">With the performance view showing detailed information only for the disk table, the corresponding segment. (SEG_PID) can be known, so that the size and sum of pure data for each disk table can be obtained.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">index</span></strong></p><p class="md-end-block md-p md-focus"><span class="md-plain">This is a performance view that shows brief information about all indexes. In the case of a disk index, the corresponding segment (INDEX_SG_PID) can be known to determine the size of the disk index.</span></p></li></ul><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058242/14221508.png">image2016-7-12 17_52_32.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

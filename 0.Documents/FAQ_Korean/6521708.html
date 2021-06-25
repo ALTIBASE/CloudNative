@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : sys 유저 패스워드 변경 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : sys 유저 패스워드 변경 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> JH Choi</span> on Jun 18, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051397 {padding: 0px;}
+div.rbtoc1624409051397 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051397 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051397'>
+<ul class='toc-indentation'>
+<li><a href='#sys유저패스워드변경방법-개요'>개요</a></li>
+<li><a href='#sys유저패스워드변경방법-버전'>버전</a></li>
+<li><a href='#sys유저패스워드변경방법-절차'>절차</a>
+<ul class='toc-indentation'>
+<li><a href='#sys유저패스워드변경방법-1.alteruser명령어수행'>1. alter user 명령어 수행</a></li>
+<li><a href='#sys유저패스워드변경방법-2.altipasswd수행'>2. altipasswd 수행</a></li>
+<li><a href='#sys유저패스워드변경방법-3.sys패스워드가포함된스크립트수정'>3. sys 패스워드가 포함된 스크립트 수정</a></li>
+</ul>
+</li>
+<li><a href='#sys유저패스워드변경방법-문제해결'>문제해결</a>
+<ul class='toc-indentation'>
+<li><a href='#sys유저패스워드변경방법-serverstart시&quot;Invalidpassword&quot;에러발생할경우조치방법'>server start 시 &quot;Invalid password&quot; 에러 발생할 경우 조치방법</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="sys유저패스워드변경방법-개요"><strong>개요</strong></h1><hr /><p>sys 계정의 패스워드 변경 절차에 대한 설명입니다.</p><p> </p><p> </p><p> </p><p> </p><h1 id="sys유저패스워드변경방법-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 4 이상<strong><br /></strong></p><p> </p><p> </p><p> </p><h1 id="sys유저패스워드변경방법-절차"><strong>절차</strong></h1><hr /><p>sys 계정의 패스워드를 변경하기 위해서는 아래 3가지 단계를 수행해야 합니다.</p><p> </p><p> </p><p> </p><h2 id="sys유저패스워드변경방법-1.alteruser명령어수행"><strong>1. alter user 명령어 수행</strong></h2><hr /><p>알티베이스 서버에 sys 유저로 접속 후 alter user 명령어로 패스워드를 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER USER sys IDENTIFIED BY &quot;new_password&quot;;
+</pre>
+</div></div><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h2 id="sys유저패스워드변경방법-2.altipasswd수행"><strong>2. altipasswd 수행</strong></h2><hr /><p>알티베이스 서버 온라인 상태에서 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altipasswd 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ altipasswd
+Previous Password : old_password
+New Password : new_password
+Retype New Password : new_password
+</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">altipasswd 는...</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <br /><ul><li>알티베이스 서버가 shutdown 상태에서는 syspassword 파일을 참고하여 sys 계정의 패스워드를 체크합니다.</li><li>altipasswd 를 수행하면 syspassword 파일 변경됩니다. 이 파일은 $ALTIBASE_HOME/conf 디렉토리 아래에 있습니다.</li></ul>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><p> </p><h2 id="sys유저패스워드변경방법-3.sys패스워드가포함된스크립트수정"><strong>3. sys 패스워드가 포함된 스크립트 수정</strong></h2><hr /><p>아래 세 개 스크립트에는 sys 패스워드가 포함되어 있습니다.</p><p>그래서 sys 패스워드 변경 시 이 스크립트들도 수정해야 합니다.<strong> </strong></p><p><strong><br /></strong></p><ul><li><p><strong>server  스크립트</strong></p><p>$ALTIBASE_HOME/bin/server 스크립트에서 -p 옵션 뒤의 패스워드를 새 패스워드로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/bin
+$ vi server
+ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p manager -sysdba -noprompt&quot;
+ISQL=&quot;${ALTIBASE_HOME}/bin/isql -s localhost -u sys -p manager -silent&quot;</pre>
+</div></div></li></ul><p> </p><ul><li><p><strong>is 스크립트</strong><br />$ALTIBASE_HOME/bin/is 스크립트에서 -p 옵션 뒤의 패스워드를 새 패스워드로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/bin
+$ vi is
+${ALTIBASE_HOME}/bin/isql -s localhost -u sys -p manager $*</pre>
+</div></div></li></ul><p> </p><ul><li><p><strong>il 스크립트</strong></p><p>$ALTIBASE_HOME/bin/il 스크립트에서 -p 옵션 뒤의 패스워드를 새 패스워드로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/bin
+$ vi il
+${ALTIBASE_HOME}/bin/iloader -S localhost -U SYS -P MANAGER $*</pre>
+</div></div></li></ul><p> </p><h1 id="sys유저패스워드변경방법-문제해결"><strong>문제해결</strong></h1><hr /><ol><li><h2 id="sys유저패스워드변경방법-serverstart시&quot;Invalidpassword&quot;에러발생할경우조치방법">server start 시 &quot;Invalid password&quot; 에러 발생할 경우 조치방법</h2></li></ol><ol><li style="list-style-type: none;background-image: none;"><ol><li><p>$ALTIBASE_HOME/bin/server 스크립트를 열어서 아래 부분에 변경한 패스워드로 수정되었는지 확인한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p <span style="color: rgb(255,0,0);">manager</span> -sysdba -noprompt&quot; ISQL=&quot;${ALTIBASE_HOME}/bin/isql -s localhost -u sys -p <span style="color: rgb(255,0,0);">manager</span> -silent&quot;
+</div></div></li><li>위 a는 변경한 패스워드로 적용되어 있는데도 invalid password 에러가 발생한다면 alter user 명령어로만 sys의 패스워드를 변경하고 altipasswd는 실행하지 않았을 가능성이 있다.<br />이때는 altipasswd를 수행하여 변경한 패스워드를 적용해준 후 server start를 시도한다.</li></ol></li></ol><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

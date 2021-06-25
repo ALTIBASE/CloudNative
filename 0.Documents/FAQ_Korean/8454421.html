@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : DB 이름 변경 후 server create 오류발생시</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : DB 이름 변경 후 server create 오류발생시
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> Shin beum-su</span> on Mar 06, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><h1 id="DB이름변경후servercreate오류발생시-내용">내용</h1><hr /><p>5.3.3 이하 버전 까지는 수동으로 DB를 생성 해줘야 합니다.</p><p>server 라는 명령어를 수행하여 아래와 같은 종류의 작업을 수행할 수 있으며   server create 명령을 통해서  DB를 생성할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Usage: server { start | stop | kill | status | create db_charset national_charset | restart }</p><p>$server create MS949 UTF8</p>
+</div></div><p> </p><p>최초 DB 생성시 DB NAME은 mydb로 설정 되어 있으며, 변경은 altibase.properties에서 DB_NAME을 변경하면 됩니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#=================================================================</p><p># Fixed Properties # should not be modified after createdb</p><p>#=================================================================</p><p><strong>DB_NAME       =  <span style="color: rgb(255,0,0);">mydb &lt;--  새로운 DB name을 변경</span></strong></p><p>MEM_DB_DIR    =  ?/dbs</p><p>MEM_DB_DIR    =  ?/dbs</p><p>DEFAULT_DISK_DB_DIR = ?/dbs</p>
+</div></div><p> </p><p>DB_NAME 변경 후 server craete 수행 시 아래와 같은 오류가 발생 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span style="color: rgb(0,51,102);"><strong>$server create MS949 UTF8</strong></span></p><p><span style="color: rgb(0,51,102);"><strong>Connecting to the DB server... Connected.</strong></span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"><strong>TRANSITION TO PHASE : PROCESS</strong></span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"><strong>Command executed successfully.</strong></span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"><strong>FAILURE of createdb.</strong></span><br class="atl-forced-newline" /> <span style="color: rgb(255,0,0);"><strong>Invalid Database Name. Check the properties and retry.</strong></span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"><strong>[ERR-91015 : Communication failure.]</strong></span></p>
+</div></div><p> </p><h1 id="DB이름변경후servercreate오류발생시-해결방법">해결방법</h1><p>이는 $ALTIBASE_HOME/bin/server 스크립트 파일에 DB 이름이 mydb로 되어 있기 때문입니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">'create')</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ $# = 3 ]; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">    rm -f live-altibase.txt;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">    $</span>{ISQL}<span style="color: rgb(0,51,102);">  &lt;&lt; EOF &gt; /dev/null</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">spool  live-altibase.txt;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">EOF</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">    if [ -f live-altibase.txt ]; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">        echo &quot; server is running !!!! \n &quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">        echo &quot; you must shutdown first before server create &quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">        rm -f live-altibase.txt;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">    else</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">            $</span>{ADMIN} <span style="color: rgb(0,51,102);">&lt;&lt; EOF</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">startup process;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">create database</span> <span style="color: rgb(255,0,0);">mydb</span> <span style="color: rgb(0,51,102);">INITSIZE=10M noarchivelog character set $2 national character set $3;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">quit</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">EOF</span></p></th></tr></tbody></table></div><p>altibase.properties 에서 변경한 DB_NAME과 동일하게 변경 후 DB를 생성 합니다.</p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

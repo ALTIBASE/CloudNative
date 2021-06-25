@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : [Linux] How to register Altibase server process auto start script</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : [Linux] How to register Altibase server process auto start script
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144549 {padding: 0px;}
+div.rbtoc1624409144549 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144549 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144549'>
+<ul class='toc-indentation'>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Overview'>Overview</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Version'>Version</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-OS'>OS</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Howtoregister'>How to register</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Sampleofautostartscript'>Sample of autostart script</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Registerthescriptin/etc/init.d'>Register the script in /etc/init.d</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Changethescript'>Change the script </a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Changethescriptexecutionpermission'>Change the script execution permission</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Executechkconfig'>Execute chkconfig</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Checkthechkconfigregistration'>Check the chkconfig registration</a></li>
+<li><a href='#id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Log'>Log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Overview">Overview</h1><hr /><p>This section describes how to automatically start the Altibase server process when booting the OS on the Linux server.</p><h1 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Version">Version</h1><hr /><p>Altibase 4 or later</p><h1 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-OS">OS</h1><hr /><p>Linux</p><h1 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Howtoregister">How to register</h1><hr /><h2 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Sampleofautostartscript">Sample of autostart script</h2><ul><li><a href="https://docs.altibase.com/download/attachments/12517478/altibased?version=1&amp;modificationDate=1536132439000&amp;api=v2">altibased</a></li></ul><p>The automatic startup script was written to run in the following situations.</p><ul><li>One Altibase server running on one server</li><li>Installing Altibase server in OS user altibase and have startup/shutdown privileges</li><li>Running in bash shell</li><li>Using the chkconfig utility</li></ul><p><span style="color: rgb(255,0,0);">This script is a sample file. Depending on the client's OS user's environment settings, it may operate differently than intended, so be sure to test it to check whether it is running properly.</span></p><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Registerthescriptin/etc/init.d"><span style="color: rgb(255,0,0);"><br /></span><span style="color: rgb(0,0,0);">Register the script in /etc/init.d</span></h3><p><span style="color: rgb(0,0,0);">Upload the autostart script altibased file to the /etc/init.d directory.</span></p><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Changethescript"><span style="color: rgb(0,0,0);">Change the script</span> </h3><p><span style="color: rgb(0,0,0);">Change the user variable at the top of the script to suit the client's environment.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/init.d/altibased
+#!/bin/bash
+#
+# altibase
+#
+# chkconfig: 2345 20 80
+# description: ALTIBASE process startup
+user=altibase                         #  Change to a user with privileges to start/stop Altibase server processes</pre>
+</div></div><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Changethescriptexecutionpermission">Change the script execution permission</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ chmod +x altibased
+
+$ ls -l altibased
+-rwxr-xr-x 1 root root 811 Sep  3 13:50 /etc/init.d/altibased</pre>
+</div></div><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Executechkconfig">Execute chkconfig</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ chkconfig --add altibased</pre>
+</div></div><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Checkthechkconfigregistration">Check the chkconfig registration</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ls -l /etc/rc.d/rc*.d/K*alti*
+$ ls -l /etc/rc.d/rc*.d/S*alti*</pre>
+</div></div><h3 id="id-[Linux]HowtoregisterAltibaseserverprocessautostartscript-Log"><br />Log</h3><p>The log is set to remain in /var/log/${user}_altibased.log.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Foreign Key</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Foreign Key
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 22, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345439 {padding: 0px;}
+div.rbtoc1624409345439 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345439 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345439'>
+<ul class='toc-indentation'>
+<li><a href='#ForeignKey-Overview'>Overview</a></li>
+<li><a href='#ForeignKey-EXAMPLE'>EXAMPLE</a></li>
+<li><a href='#ForeignKey-ComparisonofFunctionality'>Comparison of Functionality</a></li>
+</ul>
+</div>
+
+<h2 id="ForeignKey-Overview">Overview</h2>
+
+<p>Creation of foreign key is available at the table level or column level in ALTIBASE HDB.</p>
+
+<p>This is same with Oracle as well.</p>
+
+<p>And Altibase's usage of foreign key has so much similarity to the Oracle's one.
+<br class="atl-forced-newline" /></p>
+
+<p>But, Altibase HDB does not support exceptions Into clause.</p>
+
+<h2 id="ForeignKey-EXAMPLE">EXAMPLE</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER TABLE dept_20 <br class="atl-forced-newline" />
+ ADD CONSTRAINT fk_empid_hiredate <br class="atl-forced-newline" />
+ FOREIGN KEY (employee_id, hire_date) <br class="atl-forced-newline" />
+ REFERENCES hr.job_history(employee_id, start_date) <br class="atl-forced-newline" />
+ <span style="color: rgb(255,0,0);"><strong>EXCEPTIONS INTO wrong_emp;</strong></span> </p></td>
+<td class="confluenceTd"><p> ALTER TABLE dept_20 <br class="atl-forced-newline" />
+ADD CONSTRAINT fk_empid_hiredate <br class="atl-forced-newline" />
+FOREIGN KEY (employee_id, hire_date) <br class="atl-forced-newline" />
+REFERENCES hr.job_history(employee_id, start_date); </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ForeignKey-ComparisonofFunctionality">Comparison of Functionality</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> [NOT] DEFERRABLE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INITIALLY (IMMEDIATE|DEFERRED) </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENABLE|DISABLE </p></td>
+<td class="confluenceTd"><p> ENABLE </p></td>
+<td class="confluenceTd"><p> Partially supported. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DISABLE NOVALIDATE|DISABLE VALIDATE <br class="atl-forced-newline" />
+ENABLE NOVALIDATE|ENABLE VALIDATE </p></td>
+<td class="confluenceTd"><p> ENABLE (VALIDATE|NOVALIDATE) </p></td>
+<td class="confluenceTd"><p> Partially supported. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RELY|NORELY </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ON DELETE (CASCADE|SET NULL) </p></td>
+<td class="confluenceTd"><p> ON DELETE(CASCADE|NO ACTION) </p></td>
+<td class="confluenceTd"><p> Set null functionality will be included in ALTIBASE HDB V7. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

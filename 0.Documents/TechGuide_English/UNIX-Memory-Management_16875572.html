@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : UNIX Memory Management</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : UNIX Memory Management
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Jan 28, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409366975 {padding: 0px;}
+div.rbtoc1624409366975 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409366975 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409366975'>
+<ul class='toc-indentation'>
+<li><a href='#UNIXMemoryManagement-Overview'>Overview</a></li>
+<li><a href='#UNIXMemoryManagement-SolarisSystemAdministrationTechniques'>Solaris System Administration Techniques</a>
+<ul class='toc-indentation'>
+<li><a href='#UNIXMemoryManagement-MemoryAllocation'>Memory Allocation</a></li>
+<li><a href='#UNIXMemoryManagement-InsufficientMemory'>Insufficient Memory</a></li>
+<li><a href='#UNIXMemoryManagement-pmap'>pmap</a></li>
+</ul>
+</li>
+<li><a href='#UNIXMemoryManagement-MemoryManagementPolicyforAIXsystem'>Memory Management Policy for AIX system</a>
+<ul class='toc-indentation'>
+<li><a href='#UNIXMemoryManagement-ClassificationofMemory'>Classification of Memory</a></li>
+<li><a href='#UNIXMemoryManagement-InsufficientMemory.1'>Insufficient Memory</a></li>
+<li><a href='#UNIXMemoryManagement-svmon'>svmon</a></li>
+</ul>
+</li>
+<li><a href='#UNIXMemoryManagement-MemoryManagementPolicyforHP'>Memory Management Policy for HP</a>
+<ul class='toc-indentation'>
+<li><a href='#UNIXMemoryManagement-AllocationofMemory'>Allocation of Memory</a></li>
+<li><a href='#UNIXMemoryManagement-Insufficientmemory'>Insufficient memory</a></li>
+<li><a href='#UNIXMemoryManagement-Checkingmemoryusage'>Checking memory usage</a></li>
+</ul>
+</li>
+<li><a href='#UNIXMemoryManagement-MemoryManagementPolicyforLinux'>Memory Management Policy for Linux</a>
+<ul class='toc-indentation'>
+<li><a href='#UNIXMemoryManagement-LinuxMemoryManagement'>Linux Memory Management</a></li>
+<li><a href='#UNIXMemoryManagement-CheckingLinuxmemory'>Checking Linux memory</a></li>
+<li><a href='#UNIXMemoryManagement-Whydoesn&#39;tthevszdecrease?'>Why doesn&#39;t the vsz decrease?</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="UNIXMemoryManagement-Overview">Overview</h1><hr /><p>This document describes how to manage the memory requested by a process on a UNIX system.</p><p>Therefore, for in-depth understanding, please refer to the documents provided by each vendor.</p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center.</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<h1 id="UNIXMemoryManagement-SolarisSystemAdministrationTechniques">Solaris System Administration Techniques</h1><hr /><p>This section describes the memory management of the Solaris operating system.</p><h2 id="UNIXMemoryManagement-MemoryAllocation">Memory Allocation</h2><hr /><p>Solaris allocates memory in the form of reserved. The reserved area exists in the swap area.</p><p>In other words, when a process requests 10M, it first allocates 10M to the swap area, and when the process actually accesses the memory, 10M is allocated to the physical memory.</p><p>Therefore, Solaris cannot run any process if the swap area is insufficient.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">-bash-4.0$ /usr/sbin/swap -s
+total: 3610640k bytes allocated + 1939792k reserved = 5550432k used, 36742272k available </pre>
+</div></div><p>As in the example of the code box above, when looking at the swap information, it can be seen that the swap area is being written even when the actual physical memory is available. This is because Solaris itself has a policy of unconditionally allocating the reserved area to memory requests. </p><p>The following shows the change of VSZ/swap area on the code.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"> </th><th class="confluenceTh">Memory Allocation</th><th class="confluenceTh">Reserved(Swap)</th><th class="confluenceTh">VSZ</th></tr><tr><td class="confluenceTd"><div>1. Request</div></td><td class="confluenceTd">P = malloc(100M)</td><td class="confluenceTd">100M</td><td class="confluenceTd">0M</td></tr><tr><td class="confluenceTd">2. Actual usage</td><td class="confluenceTd">For (i=0; i&lt;10M;i++)*(p+1) = 1</td><td class="confluenceTd">90M</td><td class="confluenceTd"><p>10M</p></td></tr></tbody></table></div><p>Even if it is allocated in the actual code, the memory does not increase immediately. After that, it can be seen that the memory usage increases at the actual access point.</p><h2 id="UNIXMemoryManagement-InsufficientMemory">Insufficient Memory</h2><hr /><p>By default, Solaris uses free memory for file cache.</p><p>This condition is basically used as a file cache only when the physical memory is more than the value set to lotsfree (1/6 of the total memory).</p><p>(Version earlier than 5.1, when free memory is needed, the file cache option had to be given so that it can be selected first, but from version 5.8 or later, the file cache is also stored in free memory by default. Therefore unlike AIX/HP, there is no need for the user to set a separate setting.)</p><p>However, it if starts to be kept below lotsfree, the system starts searching memory pages to find pages that are not recently used. (These search numbers appear in the sr part of the vmstat information.)</p><p>To keep lotsfree, infrequently accessed pages are loaded into memory and operated to fill the lotsfree level.</p><p>This operation is referred to as swap (swapping). (In vmstat, fr means the number of free pages in the memory, but free means that the page in the memory is updated to disk if there is changed information. It shows a phenomenon that the performance is deteriorated.)</p><h2 id="UNIXMemoryManagement-pmap">pmap</h2><hr /><p>Solaris provides a utility for inquiring about the actual use part of the process as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">-bash-4.0$ pmap -F 22748
+0000000100D22000       8560K rwx--  /home1/hjkim/altibase/5.1.5.72/bin/altibase
+000000010157E000     488320K rwx--    [ heap ]
+FFFFFFFF72EFE000          8K rw--R    [ stack tid=74 ]
+FFFFFFFF730FC000         16K rw--R    [ anon ]
+FFFFFFFF732FC000         16K rw--R    [ anon ]
+FFFFFFFF73C00000      10240K rw-s-  dev:118,46 ino:45717892</pre>
+</div></div><p>The top will be the process memory, and the heap area will be the area where the DB and etc. are located. The meaning of anon refers to an area at the time of initial access to a page with MMAP_PRIVATE mapping. ino and etc. can be seen as the redo log buffer area uploaded by mmp.</p><h1 id="UNIXMemoryManagement-MemoryManagementPolicyforAIXsystem">Memory Management Policy for AIX system</h1><hr /><p>This section describes the memory management policy for the AIX system.</p><h2 id="UNIXMemoryManagement-ClassificationofMemory">Classification of Memory</h2><hr /><p>To understand the memory usage of AIX, first, the definition of the classification of memory will be described.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Classification</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Persistent</td><td class="confluenceTd">Area used for JFS file cache</td></tr><tr><td class="confluenceTd"><span>Client</span></td><td class="confluenceTd">Area used for file cache of CDROM, NFS, JFS2</td></tr><tr><td class="confluenceTd">Computational</td><td class="confluenceTd">Area such as process stack, heap, and share memory</td></tr></tbody></table></div><p>For a better understand, we are going to explain with the result of svmon. (All results of svmon are page units, and 1 page is basically 4K unless otherwise indicated.)</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Shell&gt; svmon –G</p><p><span style="color: rgb(255,0,0);"> size      inuse        free           pin      virtual</span></p><p><span style="color: rgb(255,0,0);">memory      2031616     1779678      251938      474697     1682009</span></p><p><span style="color: rgb(255,0,0);">pg space    4128768      495129</span></p><p>work         pers         clnt        other</p><p>pin          404863            0            0       69834</p><p>in use       1225427             5      554246</p>
+</div></div><p>The above results are first described in the table below.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">items (in the red box)</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">free</td><td class="confluenceTd">number of pages not in use in physical memory</td></tr><tr><td class="confluenceTd">inuse</td><td class="confluenceTd">(Computational + Persistent) number of physical memory pages in actual use</td></tr><tr><td class="confluenceTd">pg space</td><td class="confluenceTd">Usage of paging space</td></tr><tr><td class="confluenceTd">pin</td><td class="confluenceTd">Number of pages of physical memory that cannot be swapped out</td></tr><tr><td class="confluenceTd">size</td><td class="confluenceTd">Number of pages of total physical memory. 1 page is 4,096 bytes, so it is a system with 7936M of memory.</td></tr><tr><td colspan="1" class="confluenceTd">virtual</td><td colspan="1" class="confluenceTd">Number of pages created by VMM (Virtual Memory Manager)</td></tr></tbody></table></div><p>The sum of the pins outside the red text is the same as the capacity of the pins in the red box, and the inuse is also the same. Please note that even if the user is using the same inuse, the user can confirm that some of them are being used as file cache.</p><h2 id="UNIXMemoryManagement-InsufficientMemory.1">Insufficient Memory</h2><hr /><p>Generally, AIX tries to use all of the free memory as file cache.</p><p>Therefore, in the case of insufficient memory, it operates as follows. If the amount of memory being used for the file cache is greater than MAXPERM, the memory is unconditionally stolen from the file cache.</p><p>If it is between MAXPERM AND MINPERM, it will steal from the side that is judged to have less I/O among the file cache and computational memory.</p><p>Therefore, depending on the size of MAXPERM's set value, a part of the memory that has been well used from the perspective of the process may be swapped to the paging space area, causing disk I/O when re-accessing, resulting in jitter in performance.</p><p>When using Altibase, it is recommended to set several properties in AIX5.2ML04 or later to eliminate such jitter as possible.</p><p>For more detailed information, please refer to &quot;Altibase Environment Configuration Guide for AIX&quot; or the technical document related to performance tuning distributed in AIX.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Related property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">MAXPERM</td><td class="confluenceTd">Maximum share of physical memory used for file cache (soft limit)</td></tr><tr><td class="confluenceTd">MINPERM</td><td class="confluenceTd">Minimum share of physical memory used for file cache</td></tr><tr><td class="confluenceTd">NUMPERM</td><td class="confluenceTd">Occupation of the area used as actual file cache (check with vmtune,vmo)</td></tr><tr><td class="confluenceTd">MAXCLIENT</td><td class="confluenceTd">Maximum share of the file cache used by NFS, JFS2, etc.</td></tr><tr><td class="confluenceTd">stric_maxperm</td><td class="confluenceTd">If set to 1, MAXPERM is maintained</td></tr><tr><td class="confluenceTd"><span>lru_file_repage</span></td><td class="confluenceTd">When set to 0, it is forcibly designated to occur only in file cache such as JFS2 for steals that occur when memory is insufficient.</td></tr></tbody></table></div><h2 id="UNIXMemoryManagement-svmon">svmon</h2><hr /><p>On AIX, the actual memory usage of a process can be checked in detail with svmon.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;"> Shell&gt; svmon -P 356528
+-------------------------------------------------------------------------------
+Pid   Command       Inuse      Pin     Pgsp  Virtual 64-bit Mthrd  16MB
+356528 altibase         37992     8380    59579    96475    Y     Y     N
+PageSize      Inuse        Pin       Pgsp    Virtual
+s   4 KB      29224       8332      59579      87707
+m  64 KB       548          3          0        548</pre>
+</div></div><p>Generally, svmon is not the information that provides snapshots and should be viewed as statistical information.</p><p>Therefore, the memory usage and the result of svmon, which are checked with a command such as (psv [process id]), may be different.</p><p>However, the user needs to carefully pay attention to the pgsp item. The fact that this part is increasing means that there is actually insufficient memory or that the computation memory area has been stolen and swapped, and from the standpoint of ALTIBASE, it is a problem that can cause performance degradation, so the user should check and adjust the file cache setting.</p><p>As shown below, The user can also check the actual memory usage by using the ps command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Shell&gt; ps v 356528
+PID    TTY STAT  TIME PGIN  SIZE     RSS   LIM  TSIZ   TRS  %CPU  %MEM 
+356528      - A    29:37  4700  290328  77688    xx  17933  3396    0.1    1.0 </pre>
+</div></div><p>The analysis problem in the results of ps and svmon is that the sum of the issue part of svmon must match the size of the actual ps result, but in the case of page-out, the ps side is actually displayed larger.</p><h1 id="UNIXMemoryManagement-MemoryManagementPolicyforHP">Memory Management Policy for HP</h1><hr /><p>This section describes the memory management of the HP operating system.</p><h2 id="UNIXMemoryManagement-AllocationofMemory">Allocation of Memory</h2><hr /><p>HP's memory allocation policy has something to do with what we call arena.</p><p>For details, check with malloc with man-page. To the point, the system manages a memory pool (arena) to allocate memory. In the case of the threaded program, memory is allocated with this arena.</p><p>If the number of threads increases by a lot, performance can be improved in terms of concurrency by adjusting the number of the arena. (In the case of non-thread, memory is allocated with only one arena.)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Shell&gt; export _M_ARENA_OPT=16:8</pre>
+</div></div><p>If the environment is configured as above, threads are allocated memory with 16 arenas, which means that if the arena's memory pool becomes insufficient, it will operate in the form of expanding the memory pool in unites of (8*4096 bytes).</p><p>(If the expansion unit is too large, the memory may increase rapidly, so many testings are required when setting this environment. The default value is 8:32)</p><h2 id="UNIXMemoryManagement-Insufficientmemory">Insufficient memory</h2><hr /><p>Since the swapping policy is not different from other operating systems, separate explanations are omitted.</p><h2 id="UNIXMemoryManagement-Checkingmemoryusage">Checking memory usage</h2><hr /><p>Commonly, it is possible to check with Glance.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>If branching to &quot;m&quot; after running Shell&gt; glance, the overall system memory status can be checked. If &quot;M&quot; is pressed to designate a process after pressing &quot;s&quot;, the memory usage type of the process can be checked.</p></td></tr></tbody></table></div><p>For versions with pmap, pmap can be used.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">rx6600:[/] pmap 12379
+12379:  /altibase_home/bin/altibase -p boot from admin 
+OFFSET            VSZ    RSZ     TYPE     PRM  FILE 
+0                    4K     4K     SD(170)  r-- [nullderef] 
+4000000000000000  15.1M  11.5M     SC(2)    r-x [text] 
+6000000000000000   901M   658M    PD       rw- [data] 
+9fffffff7d67f000     72K    64K       PD       rw- [uarea] 
+9fffffff7d7af000     72K    64K       PD       rw- [uarea]</pre>
+</div></div><p>In HP, the exact memory usages of a process can be checked with the map command. The result is similar to that of Solaris.</p><p>HP can adjust the settings for file cache in the same way as AIX. Since these values are related to the overall performance, the recommended value is variable depending on the situation, but in general, it is recommended to set 5%(min)/15%(max).</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Kernel property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">dbc_max_pct</td><td class="confluenceTd">Maximum threshold of memory to be used for file cache</td></tr><tr><td class="confluenceTd">dbc_min_pct</td><td class="confluenceTd">Minimum threshold of memory to be used for file cache</td></tr></tbody></table></div><h1 id="UNIXMemoryManagement-MemoryManagementPolicyforLinux"><span style="color: rgb(0,0,0);">Memory Management Policy for Linux</span></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);"> </span></p><p>This section describes the memory management of the Linux operating system.</p><p><span style="color: rgb(0,0,0);"> </span></p><h2 id="UNIXMemoryManagement-LinuxMemoryManagement">Linux Memory Management</h2><hr /><p>Linux has a memory usage policy similar to AIX for the file cache part. In other words, it tries to use all the free memory as a file cache. However, starting with kernel 2.6, there is a limit on this part, and the usage of file cache can be limited.</p><p><span style="color: rgb(0,0,0);"> </span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>Shell&gt; cat /proc/sys/vm/swappiness <br />When configuring, use sysctl.</p></td></tr></tbody></table></div><p><span style="color: rgb(0,0,0);"> </span></p><p>Basically, it is set to 60(%), and there are some complex arithmetic expressions, but when the physical memory starts to be used beyond the value set in swappiness, swapping starts unconditionally.</p><p>This is because the Linux system itself generates swapping in an effort to secure the file cache below the set value.</p><p>However, since this part incurs a cost due to swapping that the user wants or does not want, it can worsen the system performance. Although currently, Altibase does not make any special recommendations, it is recommended to set this kernel value to “0” in MySQL and etc.</p><p><span style="color: rgb(0,0,0);">## Additional conditions to Arena-related matters (when writing)</span></p><ul><li><span style="color: rgb(0,0,0);">This feature was added in red Hat Enterprise Linux 6 to improve performance issues due to memory contention between threads in a multi-threaded application environment.</span></li><li><span style="color: rgb(0,0,0);">The default value is the number of CPU core * MALLOC_ARENA_TEST.</span></li><li><span style="color: rgb(0,0,0);">The default value of MALLOC_ARENA_TEST environment variable</span><ul><li>2 for 32-bit</li><li>8 for 64-bit</li></ul></li><li>The MALLOC_ARENA_MAX environment variable operates properly in glibc2.10 or later.</li></ul><h2 id="UNIXMemoryManagement-CheckingLinuxmemory">Checking Linux memory</h2><hr /><p>The memory usage of a process can be checked with the top or map command.</p><h2 id="UNIXMemoryManagement-Whydoesn&#39;tthevszdecrease?">Why doesn't the vsz decrease?</h2><hr /><p>Generally, the operating system returns the memory area used by the process to the free area only when the process ends.</p><p>In other words, even if a process calls free() on a memory area explicitly allocated by a user, the area is not released immediately.</p><p>This is because kernel cost can have a significant performance impact if the memory manager of the operating system expects the process to reuse the freed memory area by the process to remain in the form of a fragment and reconfigured to a free-list of allocable segments.</p><p>Therefore, even if the process is free(), the operating system sees a phenomenon in which the size of the VSZ does not decrease with an actual monitoring tool, for the reason described above.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 데이터베이스 보안 점검 체크리스트</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 데이터베이스 보안 점검 체크리스트
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> heejung lee</span> on Feb 27, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051522 {padding: 0px;}
+div.rbtoc1624409051522 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051522 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051522'>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-개요'>개요</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-계정관리'>계정 관리</a>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-계정의목록화(비인가자의접근차단을위한사용자계정관리)'>계정의 목록화(비인가자의 접근 차단을 위한 사용자 계정 관리)</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-취약한패스워드사용(기본계정및패스워드변경)'>취약한 패스워드 사용 (기본 계정 및 패스워드 변경)</a></li>
+</ul>
+</li>
+<li><a href='#id-데이터베이스보안점검체크리스트-권한관리'>권한 관리</a>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-DBA권한관리(SystemPrivilege권한제한)'>DBA 권한 관리(System Privilege 권한 제한)</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-WITHGRANTOPTION사용'>WITH GRANT OPTION 사용</a></li>
+</ul>
+</li>
+<li><a href='#id-데이터베이스보안점검체크리스트-환경파일점검'>환경 파일 점검</a>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-altibase.properties파일접근권한설정'>altibase.properties 파일 접근 권한 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-LogAnchor,Logfile,Datafile접근권한설정'>Log Anchor, Logfile, Datafile 접근 권한 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-iSQL명령쉘히스토리검사'>iSQL 명령 쉘 히스토리 검사</a></li>
+</ul>
+</li>
+<li><a href='#id-데이터베이스보안점검체크리스트-DBMS보안설정'>DBMS 보안 설정</a>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-PublicSynonym사용'>Public Synonym 사용</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-로그인실패횟수에따른잠금시간등계정잠금정책설정'>로그인 실패 횟수에 따른 잠금시간 등 계정 잠금 정책 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-패스워드복잡도설정'>패스워드 복잡도 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-패스워드의주기적인변경'>패스워드의 주기적인 변경</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-ALTIBASEHDB서비스포트기본값변경'>ALTIBASE HDB 서비스 포트 기본값 변경</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-세션IDLE_TIMEOUT설정'>세션 IDLE_TIMEOUT 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-기본적인감사(사용자문장,권한,객체등)설정'>기본적인 감사(사용자 문장, 권한, 객체 등) 설정</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-원격에서DB서버로의접속제한'>원격에서 DB 서버로의 접속 제한</a></li>
+<li><a href='#id-데이터베이스보안점검체크리스트-SYSDBA로그인제한설정'>SYSDBA 로그인 제한 설정</a></li>
+</ul>
+</li>
+<li><a href='#id-데이터베이스보안점검체크리스트-보안패치'>보안 패치</a>
+<ul class='toc-indentation'>
+<li><a href='#id-데이터베이스보안점검체크리스트-최신패치적용'>최신 패치 적용</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-개요">개요</h1><hr /><p>DB 취약점 진단 항목 별 점검 방법에 대한 가이드입니다.<br /> 진단 항목은 고객의 문의 항목을 기준으로 작성하였습니다.</p><p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-계정관리">계정 관리</h1><hr /><p> </p><h2 id="id-데이터베이스보안점검체크리스트-계정의목록화(비인가자의접근차단을위한사용자계정관리)">계정의 목록화(비인가자의 접근 차단을 위한 사용자 계정 관리)</h2><hr /><h4 id="id-데이터베이스보안점검체크리스트-점검방법">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 사용자 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME FROM SYSTEM_.SYS_USERS_;</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법">조치 방법</h4><p>데이터베이스 사용자 출력 결과에서 불필요한 계정이 있다면 DBA 또는 어플리케이션 담담자 확인 후 제거합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 사용자 삭제
+DROP USER user_name ;
+
+-- 사용자와 사용자가 생성한 모든 객체 삭제
+DROP USER user_name CASCADE;</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-취약한패스워드사용(기본계정및패스워드변경)">취약한 패스워드 사용 (기본 계정 및 패스워드 변경)</h2><hr /><h4 id="id-데이터베이스보안점검체크리스트-점검방법.1">점검 방법</h4><p>ALTIBASE HDB 설치 시 생성되는 사용자의 디폴트 패스워드는 아래와 같습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>USER</p></th><th class="confluenceTh"><p>PASSWORD</p></th></tr><tr><td class="confluenceTd"><p>SYS</p></td><td class="confluenceTd"><p>MANAGER</p></td></tr><tr><td class="confluenceTd"><p>ALTITEST</p></td><td class="confluenceTd"><p>ALTITEST</p></td></tr></tbody></table></div><p>데이터베이스에 접속하여 디폴트 패스워드 사용 여부를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CONNECT SYS/MANAGER;
+Connect success.
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.1">조치 방법</h4><p>디폴트 패스워드로 접속이 가능하다면 어플리케이션 과의 연관성 확인 후 해당 사용자의 패스워드를 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>패스워드 변경 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER USER user1 IDENTIFIED BY password1234$;
+Alter success.</pre>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>SYS 사용자 패스워드 변경 방법은 <a href="http://aid.altibase.com/x/bINj" class="external-link" rel="nofollow">'sys 유저 패스워드 변경 방법'</a> 페이지를 참고하세요.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-권한관리">권한 관리</h1><hr /><p> </p><h2 id="id-데이터베이스보안점검체크리스트-DBA권한관리(SystemPrivilege권한제한)">DBA 권한 관리(System Privilege 권한 제한)</h2><hr /><p>ALTIBASE HDB 는 오라클의 Role 과 같은 기능이 없습니다.</p><p>데이터베이스 사용자가 가진 권한을 확인하여 불필요한 시스템 권한을 가지고 있다면 삭제합니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.2">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>사용자가 가진 시스템 권한 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME GRANTEE,
+       C.USER_NAME GRANTOR,
+       REPLACE(D.PRIV_NAME, &#39;_&#39;, &#39; &#39;) PRIV_NAME
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_GRANT_SYSTEM_ B,
+       SYSTEM_.SYS_USERS_ C,
+       SYSTEM_.SYS_PRIVILEGES_ D
+ WHERE C.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.GRANTEE_ID = A.USER_ID
+   AND B.GRANTOR_ID = C.USER_ID
+   AND B.PRIV_ID = D.PRIV_ID ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 의 SYSTEM 권한</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT DECODE(PRIV_TYPE, 1, &#39;OBJECT&#39;, &#39;SYSTEM&#39;) PRIV_TYPE, PRIV_NAME       -- PRIV_TYPE 이 SYSTEM 이면 SYSTEM 권한을 의미함.
+  FROM SYSTEM_.SYS_PRIVILEGES_
+ ORDER BY 1;</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.2">조치 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SYSTEM 권한 제거</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">REVODE &#39;시스템 권한&#39; FROM 사용자;
+
+-- 수행 예
+REVOKE CREATE TABLE FROM USER1;</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-WITHGRANTOPTION사용">WITH GRANT OPTION 사용</h2><hr /><p>WITH GRANT OPTION은 객체 접근 권한을 부여 받은 사용자가 해당 권한을 다른 사용자에게 부여할 수 있으므로 객체 접근 권한을 DBA 관리 없이 남용할 수 있습니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.3">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>WITH GRANT OPTION 옵션을 가진 사용자 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT DISTINCT(A.USER_NAME) GRANTEE,      -- WITH GRANT OPTION 을 가진 사용자
+       C.USER_NAME GRANTOR,                -- WITH GRANT OPTION 을 부여한 사용자
+       B.OBJ_TYPE,                         -- 객체 유형(T : 테이블, S : 시퀀스, P : 저장 프로시저 또는 저장 함수, V : 뷰)
+       B.OBJ_ID,                           -- 객체 ID (테이블, 뷰, 시퀀스인 경우는 SYS_TABLES_ 의 TABLE_ID와 매핑, 저장 프로시저, 저장 함수일 경우에는 SYS_PROCEDURES_ 의 PROC_OID와 매핑)
+       D.PRIV_NAME,                        -- 권한 이름
+       B.WITH_GRANT_OPTION                 -- 값이 1이면 WITH GRANT OPTION 가 부여되었음을 의미.
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_GRANT_OBJECT_ B,
+       SYSTEM_.SYS_USERS_ C,
+       SYSTEM_.SYS_PRIVILEGES_ D
+ WHERE A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.GRANTEE_ID = A.USER_ID
+   AND B.GRANTOR_ID = C.USER_ID
+   AND B.PRIV_ID = D.PRIV_ID
+   AND B.WITH_GRANT_OPTION = 1;</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.3">조치 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>WITH GRANT OPTION 제거 후 WITH GRANT OPTION 없이 권한 부여</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- user6 사용자가 employees 테이블의 SELECT, DELETE 권한을 다른 사용자에게 부여할 수 있는 권한을 가지고 있는 경우
+REVOKE SELECT, DELETE ON employees FROM user6;
+GRANT SELECT, DELETE ON employees TO user6;
+</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-환경파일점검">환경 파일 점검</h1><hr /><p> </p><h2 id="id-데이터베이스보안점검체크리스트-altibase.properties파일접근권한설정">altibase.properties 파일 접근 권한 설정</h2><hr /><p>Altibase 중요 파일 중 하나인 altibase.properties 파일을 악의적인 의도로 변경하면 데이터베이스 장애가 발생할 수 있습니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.4">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase.properties 파일 권한을 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/conf/altibase_properties</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.4">조치 방법</h4><p>altibase.properties 파일 권한 설정을 600 또는 640으로 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>파일 권한 설정 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/conf/altibase.properties
+-rw-r--r-- 1 heejung.lee heejung.lee 27652 2014-09-26 12:52 /data/heejung.lee/63119/conf/altibase.properties
+
+$ find $ALTIBASE_HOME -name altibase.properties -exec chmod 600 {} \;
+
+$ ls -l $ALTIBASE_HOME/conf/altibase.properties
+-rw------- 1 heejung.lee heejung.lee 27652 2014-09-26 12:52 /data/heejung.lee/63119/conf/altibase.properties</pre>
+</div></div><p> </p><h2 id="id-데이터베이스보안점검체크리스트-LogAnchor,Logfile,Datafile접근권한설정">Log Anchor, Logfile, Datafile 접근 권한 설정</h2><hr /><p>ALTIBASE HDB 데이터베이스 운용에 중요 파일인 하나인 Log Anchor, Logfile, Datafile 파일을 악의적인 의도로 변경하면 데이터베이스 장애가 발생할 수 있습니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.5">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Log Anchor, Logfile, Datafile 파일들의 권한을 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/logs/loganchor*
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.5">조치 방법</h4><p>Log Anchor, Logfile, Datafile 파일 권한 설정을 600 또는 640으로 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>권한 설정 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/logs/loganchor*
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor0
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor1
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor2
+
+
+$ find $ALTIBASE_HOME --name loganchor* -exec chmod 600 {} \;
+
+$ ls -l $ALTIBASE_HOME/logs/loganchor*
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor0
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor1
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor2</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-iSQL명령쉘히스토리검사">iSQL 명령 쉘 히스토리 검사</h2><hr /><p>iSQL을 사용하여 데이터베이스에 접속 할 때 계정 및 패스워드를 함께 입력하면 쉘 히스토리(.history 또는 .sh_history) 파일에 기록이 남기 때문에 패스워드가 유출될 수 있습니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.6">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>쉘 히스토리 파일에서 isql 수행 기록 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep isql ~/.sh_history
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.6">조치 방법</h4><p>iSQL 접속 시 쉘 프롬프트에 사용자와 패스워드를 입력하지 않습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>쉘 히스토리 파일에서 isql 수행 기록 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -s 127.0.0.1 -port 31109          # 이와 같이 접속하면 사용자 이름과 패스워드가 노출될 수 있습니다.
+
+# 아래와 같이 iSQL 명령만 수행 한 후 계정 및 패스워드를 개별 입력하도록 합니다.
+
+$ isql&amp;nbsp;
+…
+Write Server Name (default:127.0.0.1) :
+Write UserID : sys
+Write Password :
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20300
+iSQL&gt;
+</pre>
+</div></div><p>쉘 히스토리(.history 또는 .sh_history) 파일 보호를 위하여 접근 권한을 600으로 설정합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ chmod 600 ~/.sh_history</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-DBMS보안설정">DBMS 보안 설정</h1><hr /><p> </p><h2 id="id-데이터베이스보안점검체크리스트-PublicSynonym사용">Public Synonym 사용</h2><hr /><h4 id="id-데이터베이스보안점검체크리스트-점검방법.7">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Public Synonym확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT OBJECT_OWNER_NAME, SYNONYM_NAME FROM SYSTEM_.SYS_SYNONYMS_ WHERE OBJECT_OWNER_NAME = &#39;SYSTEM_&#39;;</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.7">조치 방법</h4><p>PUBLIC SYNONYM 은 DB 사용자에게 편의성을 제공하기 위해 데이터베이스 생성 시 생성되는 것으로, dual 테이블 조회 같은 일반적인 쿼리를 사용하거나 print, println 처럼 프로시저 내에서 많이 사용하고 있어 삭제를 권고하지는 않습니다.<br /> 하지만 불가피하게 삭제해야 할 경우 아래와 같이 DROP 구문을 사용하면 됩니다.<br /> 어플리케이션에서 PUBLIC SYNONYM 의 사용 여부를 확인 후 drop 하시기 바랍니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PUBLIC SYNONYM 제거</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DROP PUBLIC SYNONYM synonym_name;</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-로그인실패횟수에따른잠금시간등계정잠금정책설정">로그인 실패 횟수에 따른 잠금시간 등 계정 잠금 정책 설정</h2><hr /><h4 id="id-데이터베이스보안점검체크리스트-적용버전">적용 버전</h4><ul><li>ALTIBASE HDB 4.3.9.211 부터</li><li>ALTIBASE HDB 5.3.3.89 부터</li><li>ALTIBASE HDB 5.5.1.5.1 부터</li><li>ALTIBASE HDB 6.1.1.2.1 부터</li><li>ALTIBASE HDB 6.3.1</li></ul><h4 id="id-데이터베이스보안점검체크리스트-점검방법.8">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 사용자에게 해당 설정이 되어 있는 지 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- FAILED_LOGIN_ATTEMPTS 은 접속 실패 수가 설정 값을 초과하는 경우 해당 사용자의 패스워드가 잠김.
+-- PASSWORD_LOCK_TIME 는 패스워드 잠금 기간(일)을 의미.
+-- 0인 경우 설정되어 있지 않음을 의미.
+SELECT USER_NAME, FAILED_LOGIN_ATTEMPTS, PASSWORD_LOCK_TIME FROM SYSTEM_.SYS_USERS_;</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.8">조치 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>관련 프로퍼티 설정</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- $ALTIBASE_HOME/conf/altibase.properties 에서 FAILED_LOGIN_ATTEMPTS, PASSWORD_LOCK_TIME 프로퍼티 추가 후 ALTIBASE HDB 서버를 재시작 합니다.
+-- 이 프로퍼티 설정 후 데이터베이스 사용자를 생성하면 이 값을 기준으로 패스워드 만료일이 설정됩니다.
+-- 아래는 프로퍼티 설정 확인 방법입니다.
+
+SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;FAILED_LOGIN_ATTEMPTS&#39;, &#39;PASSWORD_LOCK_TIME&#39;);
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 사용자 생성 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE USER user1 IDENTIFIED BY user1 LIMIT (FAILED_LOGIN_ATTEMPTS 3, PASSWORD_LOCK_TIME 3);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTER USER 수행 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER USER USER1 LIMIT (FAILED_LOGIN_ATTEMPTS 3, PASSWORD_LOCK_TIME 3);</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-패스워드복잡도설정">패스워드 복잡도 설정</h2><hr /><h4 id="id-데이터베이스보안점검체크리스트-적용버전.1">적용 버전</h4><ul><li>ALTIBASE HDB 4.3.9.211 부터</li><li>ALTIBASE HDB 5.3.3.89 부터</li><li>ALTIBASE HDB 5.5.1.5.1 부터</li><li>ALTIBASE HDB 6.1.1.2.1 부터</li><li>ALTIBASE HDB 6.3.1</li></ul><h4 id="id-데이터베이스보안점검체크리스트-점검방법.9">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>유저 별  PASSWORD_VERIFY_FUNCTION 가 설정되어 있는 지 확인합니다.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME, PASSWORD_VERIFY_FUNCTION FROM SYSTEM_.SYS_USERS_;         -- PASSWORD_VERIFY_FUNCTION 컬럼이 패스워드 복잡도 설정을 의미하며
+                                                                            -- NULL 인 경우 설정되어 있지 않음을 의미합니다.</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.9">조치 방법</h4><p>데이터베이스 사용자 패스워드 복잡도 설정을 위해 콜백 함수를 생성하고 CREATE USER 또는 ALTER USER 수행 시 LIMIT 절에 PASSWORD_VERIFY_FUNCTION 옵션을 사용합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 사용자 생성 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE USER 사용자명 IDENTIFIED BY 패스워드 LIMIT (PASSWORD_VERIFY_FUNCTION 사용자콜백함수;     -- LIMIT 절에 PASSWORD_VERIFY_FUNCTION 옵션 패스워드 복잡도 설정
+
+-- 수행 예
+CREATE USER user1 IDENTIFIED BY &quot;user1&quot; LIMIT (PASSWORD_VERIFY_FUNCTION pwd_verify_function);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTER USER 수행 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER USER 사용자명 LIMIT (PASSWORD_VERIFY_FUNCTION 사용자콜백함수);
+
+-- 수행 예
+ALTER USER user1 LIMIT (PASSWORD_VERIFY_FUNCTION pwd_verify_function);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>콜백함수 생성</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE FUNCTION pwd_verify_function
+( username varchar(20),
+    password varchar(20))
+RETURN varchar(100)
+AS
+result        varchar(100);
+pwdLength     integer;
+isDigit       boolean;
+isChar        boolean;
+isPunction    boolean;
+digitArray    varchar(20);
+punctionArray varchar(25);
+charArray     varchar(52);
+
+BEGIN
+    digitArray    := &#39;0123456789&#39;;
+    charArray     := &#39;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;;
+    punctionArray :=&#39;!&quot;#$%&amp;()``*+,-/:;&lt;=&gt;?_&#39;;
+
+    -- Check if the password is same as the username
+    IF LOWER(password) = LOWER(username) THEN
+        result := &#39;Password same as or similar to user&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check for the minimum length of the password
+    IF LENGTH(password) &lt; 4 THEN
+        result := &#39;Password length less than 4&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check if the password is too simple.
+    IF LOWER(password) IN (&#39;welcome&#39;, &#39;database&#39;, &#39;account&#39;, &#39;user&#39;, &#39;password&#39;, &#39;altibase&#39;, &#39;computer&#39;, &#39;abcd&#39;) THEN
+        result := &#39;Password too simple&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check if the password contains at least one letter, one digit and one
+    -- punctuation mark.
+    -- 1. Check for the digit
+    isDigit := FALSE;
+    pwdLength := length(password);
+    FOR i IN 1...10 LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(digitArray,i,1) THEN
+        isDigit := TRUE;
+        GOTO findchar;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isDigit = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    -- 2. Check for the character
+    &lt;&lt;findchar&gt;&gt;
+    isChar := FALSE;
+    FOR i IN 1...length(charArray) LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(charArray,i,1) THEN
+        isChar := TRUE;
+        --GOTO findpunct;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isChar = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    -- 3. Check for the punctuation
+    &lt;&lt;findpunct&gt;&gt;
+    isPunction := FALSE;
+    FOR i IN 1...length(punctionArray) LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(punctionArray,i,1) THEN
+        isPunction := TRUE;
+        GOTO endsearch;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isPunction = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    &lt;&lt;endsearch&gt;&gt;
+
+    result := &#39;TRUE&#39;;
+    RETURN result;
+END;
+/</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-패스워드의주기적인변경">패스워드의 주기적인 변경</h2><hr /><p> </p><h4 id="id-데이터베이스보안점검체크리스트-적용버전.2">적용 버전</h4><ul><li>ALTIBASE HDB 4.3.9.211</li><li>ALTIBASE HDB 5.3.3.89</li><li>ALTIBASE HDB 5.5.1.5.1</li><li>ALTIBASE HDB 6.1.1.2.1</li><li>ALTIBASE HDB 6.3.1</li></ul><h4 id="id-데이터베이스보안점검체크리스트-점검방법.10">점검 방법</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>유저 별 PASSWORD_LIFE_TIME가 설정되어 있는 지 확인합니다.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select user_name, PASSWORD_LIFE_TIME  from system_.sys_users_;          -- PASSWORD_LIFE_TIME 의 값은 일 단위이며, 0 인 경우 설정되어 있지 않음을 의미합니다.</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법아래명령어로PASSWORD_LIFE_TIME프로퍼티를확인하여값이0이라면패스워드의만료일이설정되어있지않음을의미합니다.">조치 방법아래 명령어로 PASSWORD_LIFE_TIME 프로퍼티를 확인하여 값이 0 이라면 패스워드의 만료일이 설정되어 있지 않음을 의미합니다.</h4><p>$ALTIBASE_HOME/conf/altibase.properties 에서 PASSWORD_LIFE_TIME 프로퍼티 추가 후 ALTIBASE HDB 서버를 재시작 합니다.<br /> 이 프로퍼티 설정 후 데이터베이스 사용자를 생성하면 이 값을 기준으로 패스워드 만료일이 설정됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PASSWORD_LIFE_TIME 프로퍼티 설정</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;PASSWORD_LIFE_TIME&#39;;
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 사용자 생성 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE USER user1 IDENTIFIED BY user1 LIMIT (PASSWORD_LIFE_TIME 5);     -- LIMIT 절을 사용하여 패스워드 만료일 설정</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTER USER 수행 시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER USER USER1 LIMIT (PASSWORD_LIFE_TIME 7);</pre>
+</div></div><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-ALTIBASEHDB서비스포트기본값변경">ALTIBASE HDB 서비스 포트 기본값 변경</h2><hr /><p>ALTIBASE HDB 서버의 서비스 포트 기본값은 20300 입니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.11">점검 방법</h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>서비스 포트 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;PORT_NO&#39;;
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.10">조치 방법</h4><p>$ALTIBASE_HOME/conf/altibase.properties 에서 PORT_NO 의 값을 변경 후 알티베이스 서버 프로세스를 재시작</p><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-세션IDLE_TIMEOUT설정">세션 IDLE_TIMEOUT 설정</h2><hr /><p>IDLE_TIMEOUT 은 세션 별로 설정 변경이 가능하여 접속 시 ALTIBASE HDB 서버 프로퍼티의 영향을 받더라도 세션에서 변경할 수 있습니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.12">점검 방법</h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>ALTIBASE HDB 서버 설정 값 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;IDLE_TIMEOUT&#39;;
+</pre>
+</div></div><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>세션별 적용된 설정 값</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select DB_USERNAME, IDLE_TIME_LIMIT, COMM_NAME, CLIENT_APP_INFO, CLIENT_PID from v$session;
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.11">조치 방법</h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>프로퍼티 변경 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET IDLE_TIMEOUT = 60;   -- 세션 단위 변경 시. 단위는 초.
+ALTER SYSTEM SET IDLE_TIMEOUT = 60;    -- 모든 세션에 적용 시. 새로 접속하는 세션부터 적용 됨.
+</pre>
+</div></div><ul><li>알티베이스 서버 프로세스 재시작 시에도 변경 값을 반영하려면 $ALTIBASE_HOME/conf/altibase.properties 에서 IDLE_TIMEOUT 프로퍼티의 값을 변경해야 합니다.</li></ul><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-기본적인감사(사용자문장,권한,객체등)설정">기본적인 감사(사용자 문장, 권한, 객체 등) 설정</h2><hr /><p>Audiiting 기능은 ALTIBASE HDB 6.3.1 버전부터 제공합니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.13">점검 방법</h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>점검 방법 - 감사 설정 여부 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT * FROM SYSTEM_.SYS_AUDIT_OPTS_;
+
+--출력 예
+iSQL&gt; SELECT * FROM SYSTEM_.SYS_AUDIT_OPTS_;
+USER_NAME             OBJECT_NAME           OBJECT_TYPE           SELECT_OP  INSERT_OP  UPDATE_OP  DELETE_OP  MOVE_OP  MERGE_OP  ENQUEUE_OP  DEQUEUE_OP  LOCK_TABLE_OP  EXECUTE_OP  COMMIT_OP  ROLLBACK_OP  SAVEPOINT_OP  CONNECT_OP  DISCONNECT_OP  ALTER_SESSION_OP  ALTER_SYSTEM_OP  DDL_OP
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTITEST              AUD1                  TABLE                 -/-  A/A  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-
+1 row selected.
+</pre>
+</div></div><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>점검 방법 - Auditing 활성화 여부</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT * FROM SYSTEM_.SYS_AUDIT_
+
+--출력 예
+iSQL&gt; select * from system_.sys_audit_;                      -- IS_STARTED 의 값이 1 이면 Auditing 기능이 활성화 되어 있음을 의미.
+IS_STARTED  START_TIME  STOP_TIME    RELOAD_TIME
+--------------------------------------------------------
+1           23-JUN-2014               23-JUN-2014
+1 row selected.
+</pre>
+</div></div><ul><li>각 필드에 대한 설명은 <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">General Reference</a> 메뉴얼의 -&gt; 3. 데이터 딕셔너리 부분을 참고.</li></ul><h4 id="id-데이터베이스보안점검체크리스트-조치방법.12">조치 방법</h4><p>감사 설정이 안되어 있는 경우 Administrator's Manual 의 '14. 데이터베이스 감사 (Database Auditing)' 부분과 SQL Reference 매뉴얼의 '5. 데이터 제어' 부분을 참고하여 설정하세요.<br /> 매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></p><p> </p><p> </p><h2 id="id-데이터베이스보안점검체크리스트-원격에서DB서버로의접속제한">원격에서 DB 서버로의 접속 제한</h2><hr /><p>이 기능은 ALTIBASE HDB 5 부터 제공합니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검및조치방법">점검 및 조치 방법</h4><p>$ALTIBASE_HOME/conf/altibase.properties 에서ACCESS_LIST 프로퍼티 확인.</p><p>설정이 안되어 있다면 altibase.properties 파일에서 설정 변경 후 재구동 해야 합니다.</p><h2 id="id-데이터베이스보안점검체크리스트-SYSDBA로그인제한설정">SYSDBA 로그인 제한 설정</h2><p>ALTIBASE HDB 는 SYSDBA 에 대해 로그인 제한이 없고, 원격 접근만 제어할 수 있습니다.<br /> 이 기능은 ALTIBASE HDB 5 버전부터 제공합니다.</p><h4 id="id-데이터베이스보안점검체크리스트-점검방법.14">점검 방법</h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>점검 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REMOTE_SYSDBA_ENABLE&#39;; --value1 = 1 : sysdba의 원격 접속이 가능,  value1 = 0 : sysdba 의 원격 접속이 불가능
+</pre>
+</div></div><h4 id="id-데이터베이스보안점검체크리스트-조치방법.13"><strong>조치 방법</strong></h4><div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>조치 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET REMOTE_SYSDBA_ENABLE = 0;</pre>
+</div></div><ul><li>알티베이스 서버 프로세스 재시작 시에도 변경 값을 반영하려면 $ALTIBASE_HOME/conf/altibase.properties 에서 REMOTE_SYSDBA_ENABLE 프로퍼티의 값을 변경해야 합니다.</li></ul><p> </p><p> </p><p> </p><h1 id="id-데이터베이스보안점검체크리스트-보안패치">보안 패치</h1><hr /><p> </p><h2 id="id-데이터베이스보안점검체크리스트-최신패치적용">최신 패치 적용</h2><hr /><p>ALTIBASE HDB 최신 버전은 <a href="http://support.altibase.com/kr/product" class="external-link" rel="nofollow">고객지원서비스포털</a> 에서 확인할 수 있습니다. </p><p>하지만 패치 패키지는 아래의 경우 외에는 비 정기적으로 업로드하므로 최신 패치 버전은 02-2082-1114 또는 <a href="http://support.altibase.com/kr/" class="external-link" rel="nofollow">고객지원서비스포털</a>에서 서비스 요청으로 문의 주시기 바랍니다. </p><ul><li>메이저 버전 릴리즈 시</li><li>크리티컬한 버그가 반영된 경우</li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

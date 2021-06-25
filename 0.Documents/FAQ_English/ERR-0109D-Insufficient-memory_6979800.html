@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-0109D Insufficient memory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-0109D Insufficient memory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 27, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149453 {padding: 0px;}
+div.rbtoc1624409149453 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149453 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149453'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-0109DInsufficientmemory-Version'>Version</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-Explanation'>Explanation</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-Cause'>Cause</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-Action'>Action</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-0109DInsufficientmemory-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-0109DInsufficientmemory-Explanation">Explanation</h2>
+
+<p>Unable to execute query.</p>
+
+<p>This error occurs when the execution of a certain query fails due to insufficient temporary memory.</p>
+
+
+<p># Example</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">create table t (c1 integer, c2 integer);
+create table t2 (c1 integer, c2 integer);
+create table t3 (c1 integer, c2 integer);
+create index t_idx_01 on t(c1, c2);
+create index t2_idx_01 on t2(c1, c2);
+create index t3_idx_01 on t3(c1, c2);
+insert into t select level, level from dual connect by level &lt; 301;
+insert into t2 select level, level from dual connect by level &lt; 301;
+insert into t3 select level, level from dual connect by level &lt; 301;
+alter system set EXECUTE_STMT_MEMORY_MAXIMUM = 1048576;</pre>
+</div></div>
+<p># 5.5.1 or above</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#"><span style="color: rgb(0,0,0);">ERR-0109D : Insufficient memory</span></a></p>
+                    </div>
+    </div>
+
+<p># 5.3.3</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a href="ERR-0109D-Insufficient-memory_6979800.html">ERR-01067 : The allocated memory size of statement exceeds the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1114112, Max size : 1048576 ).|&quot;linktype=&quot;raw&quot; wikidestination=&quot;&quot; originalalias=&quot;ERR-01067 : The allocated memory size of statement exceeds the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1114112, Max size : 1048576 ).|&quot; class=&quot;linkerror&quot; &gt;ERR-01067 : The allocated memory size of statement exceeds the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1114112, Max size : 1048576 ).|||||||||\</a></p>
+                    </div>
+    </div>
+
+
+<h2 id="ERR-0109DInsufficientmemory-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility:</p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x0109D<br />
+0x0109D (   4253) idERR_ABORT_InsufficientMemory Insufficient memory</p>
+
+<p># *Cause: Insufficient memory</p>
+
+<p># *Action: Please make sure that the system has enough available memory.</p>
+</div></div>
+<p>The temporary area is used when executing a query including a GROUP BY or ORDER BY clause for memory. However, this temporary area also uses memory.</p>
+
+<p>This error occurs due to EXECUTE_STMT_MEMORY_MAXIMUM while allocating memory to execute a query.</p>
+
+
+
+
+<h2 id="ERR-0109DInsufficientmemory-Action">Action</h2>
+
+<p>Altibase uses memory space for temporary memory tables, instead of disk space.</p>
+
+<p>Consequently, the necessary memory space must be secured at query execution with the following property:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXECUTE_STMT_MEMORY_MAXIMUM (default value: 1G)
+</pre>
+</div></div>
+<p>The unit is bytes and an error occurs if more memory than the value specified for this property is used during the execution stage of query execution.</p>
+
+<p>This property is set as the maximum value to prevent unnecessary memory increase.</p>
+
+<p><strong>&lt;How to Fix the Error&gt;</strong></p>
+
+<p>1. Check the increase in Query_Execute.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT * FROM v$memstat WHERE name = &#39;Query_Execute&#39;;
+NAME          ALLOC_SIZE   ALLOC_COUNT   MAX_TOTAL_SIZE
+----------------------------------------------------------------------------------------------------
+Query_Execute  5091105640          75431       5091105640</pre>
+</div></div>
+<p>2. Check the current value of EXECUTE_STMT_MEMORY_MAXIMUM</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set vertical on;
+iSQL&gt; select name, value1 from v$property where name=&#39;EXECUTE_STMT_MEMORY_MAXIMUM&#39;;
+NAME   : EXECUTE_STMT_MEMORY_MAXIMUM
+VALUE1 : 1073741824</pre>
+</div></div>
+<p>3. Using the ALTER statement, set a value (in bytes) larger than ALLOC_SIZE for EXECUTE_STMT_MEMORY_MAXIMUM.</p>
+
+<p>    Set an appropriate value by estimating how much the execution space will extend for the query.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET EXECUTE_STMT_MEMORY_MAXIMUM=5368709120; (5G)
+Alter success.
+</pre>
+</div></div>
+<p>4. To apply the change permanently, the value has to be changed in the altibase.properties file as well($ALTIBASE_HOME/conf/altibase.properties).</p>
+
+<h2 id="ERR-0109DInsufficientmemory-Reference">Reference</h2>
+
+<p>The EXECUTE_STMT_MEMORY_MAXIMUM property specifies the maximum memory that a single statement can use for execution, not the pre-allocation memory that a single statement can use.</p>
+
+<p>Memory usage can increase as much as specified by the property. Therefore, the user is recommended to set an appropriate value.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

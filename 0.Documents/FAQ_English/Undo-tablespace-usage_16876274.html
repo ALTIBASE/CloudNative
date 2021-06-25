@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Undo tablespace usage</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Undo-Tablespace_16876272.html">Undo Tablespace</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Undo tablespace usage
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147718 {padding: 0px;}
+div.rbtoc1624409147718 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147718 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147718'>
+<ul class='toc-indentation'>
+<li><a href='#Undotablespaceusage-Overview'>Overview</a></li>
+<li><a href='#Undotablespaceusage-Version'>Version</a></li>
+<li><a href='#Undotablespaceusage-Undotablespaceusage'>Undo tablespace usage</a></li>
+<li><a href='#Undotablespaceusage-Relatedbug'>Related bug</a>
+<ul class='toc-indentation'>
+<li><a href='#Undotablespaceusage-BUG-39985'>BUG-39985</a></li>
+<li><a href='#Undotablespaceusage-Reflectedversion'>Reflected version</a></li>
+</ul>
+</li>
+<li><a href='#Undotablespaceusage-Reference-V$DISK_UNDO_USAGEperformanceview'>Reference - V$DISK_UNDO_USAGE performance view</a></li>
+</ul>
+</div></p><p> </p><h1 id="Undotablespaceusage-Overview">Overview</h1><hr /><ul><li>Prior to ALTIBASE HDB 5.5.1, only ALLOC of undo tablespace could be checked, but USED could not be checked.</li><li>This chapter describes how to check the actual usage tablespaces  using V$DISK_UNDO_USAGE added from ALTIBASE HDB version 5.5.1.</li></ul><h4 id="Undotablespaceusage-ALLOCandUSEDofundotablespace">ALLOC and USED of undo tablespace</h4><hr /><ul><li>The undo tablespace is made up of segments, and segments are made up of smaller units called extents.</li><li>When a change transaction occurs in a disk table, it is allocated in units of extents. Whenever an extent is newly allocated, the size of the undo tablespace ALLOC increases.</li><li>When the transaction ends, the extent becomes reusable.</li><li>However, if any of the extents within a segment are in use, even if there are reusable extents, all of the extents within that segment become unusable. (UNSTEALABLE EXTENT)</li><li>Either the extent is used because a change transaction is executing, or the UNSTEALABLE extent is counted as USED for the undo tablespace.</li></ul><p> </p><h1 id="Undotablespaceusage-Version">Version</h1><hr /><p>This monitoring query is available in the version below.</p><ul><li>ALTIBASE HDB 5.5.1</li><li>ALTIBASE HDB 6.1.1</li><li>ALTIBASE HDB 6.3.1</li></ul><p> </p><h1 id="Undotablespaceusage-Undotablespaceusage">Undo tablespace usage</h1><hr /><ul><li>ALLOC and USED may increase while a change transaction is being performed on the disk table.</li><li>If the transaction is committed, the USED that is increased during the execution of the transaction is reduced.</li><li>If the transaction is rolled back, the ALLOC and USED that have increased during the execution of the transaction will be reduced.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Undo tablespace usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT T.NAME TBS_NAME
+     , ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2) &#39;MAX(M)&#39;                                                                        -- Max size of undo tablespace
+     , ROUND((TOTAL_PAGE_COUNT * PAGE_SIZE) / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                                                        -- Total size allocated for undo tablespace
+     , ROUND((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, 2) &#39;ALLOC(M)&#39;                                                        -- Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far
+     , ROUND(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, 2) &#39;USED(M)&#39;                   -- Size of the EXTENT that cannot be reused or in use by the change transaction
+     , ROUND((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, 2) &#39;USAGE(%)&#39;    -- 사용량(MAX 대비 USED)
+     , DECODE(STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE               -- Tablespace state
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE FROM V$PROPERTY WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID
+   AND T.ID = 3 ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)      TOTAL(M)    ALLOC(M)    USED(M)     USAGE(%)    STATE           AUTOEXTEND
+---------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_UNDO               2047.99     302         122.25      84.25       4.11        ONLINE          ON
+1 row selected.</pre>
+</div></div><p> </p><h1 id="Undotablespaceusage-Relatedbug">Related bug</h1><hr /><h3 id="Undotablespaceusage-BUG-39985">BUG-39985</h3><h4 id="Undotablespaceusage-Bugcontent">Bug content</h4><ul><li>Improved the problem of calculating undo areas that cannot be reused as usable space. (A problem in which the extent corresponding to the UNSTEALABLE_EXT_CNT column is calculated as the available extent)</li><li>Refer to the description of the V$DISK_UNDO_USAGE performance view below for the UNSTEALABLE_EXT_CNT column.</li></ul><h3 id="Undotablespaceusage-Reflectedversion">Reflected version</h3><ul><li>ALTIBASE HDB 6.1.1.4.9</li><li>ALTIBASE HDB 6.3.1.3.3</li></ul><p> </p><h1 id="Undotablespaceusage-Reference-V$DISK_UNDO_USAGEperformanceview">Reference - V$DISK_UNDO_USAGE performance view</h1><hr /><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>Column name</p></th><th class="confluenceTh"><p>Data type</p></th><th class="confluenceTh"><p>Description</p></th></tr><tr><td class="confluenceTd"><p>TX_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>Number of extents for a segment (Transaction Status Segment, TSS) that stores transaction status information.<br />It is allocated when an update transaction occurs in the disk table.</p></td></tr><tr><td class="confluenceTd"><p>USED_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>Number of extents in the undo segment being used in the transaction.<br />When an update transaction occurs in the disk table, it is allocated as needed.</p></td></tr><tr><td class="confluenceTd"><p>UNSTEALABLE_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>Number of extents that cannot be taken from other undo segments.<br />The extent that belongs to the online undo segment and the extent that has header information. Contains the extent the transaction is accessing.<br />Even if the undo segment has reusable extents, it cannot be taken from other undo segments.</p></td></tr><tr><td class="confluenceTd"><p>REUSABLE_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>Number of reusable extents<br />USED_EXT_CNT used during transaction progress increases as USED_EXT_CNT decreases when the transaction is committed.</p></td></tr><tr><td class="confluenceTd"><p>TOTAL_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>The total number of extents allocated from the undo tablespace.<br />When a transaction is rolled back, the extents used in the transaction are returned to the undo tablespace.<br />When a transaction is committed, the extents used in the transaction are held in the corresponding undo segment.</p></td></tr></tbody></table></div><p><br /><br /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to recover cold backup by changing directory path</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="04.-Backup-and-Recovery_16876100.html">04. Backup and Recovery</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to recover cold backup by changing directory path
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146117 {padding: 0px;}
+div.rbtoc1624409146117 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146117 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146117'>
+<ul class='toc-indentation'>
+<li><a href='#Howtorecovercoldbackupbychangingdirectorypath-Overview'>Overview</a></li>
+<li><a href='#Howtorecovercoldbackupbychangingdirectorypath-Version'>Version</a></li>
+<li><a href='#Howtorecovercoldbackupbychangingdirectorypath-Howtochangedirectorypath'>How to change directory path</a></li>
+<li><a href='#Howtorecovercoldbackupbychangingdirectorypath-Directorypathchangeprocedure'>Directory path change procedure</a></li>
+<li><a href='#Howtorecovercoldbackupbychangingdirectorypath-Reference'>Reference</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="Howtorecovercoldbackupbychangingdirectorypath-Overview">Overview</h1><hr /><p>This document describes how to recover by changing the directory path of major database files such as each data file inevitably after Cold Backup.</p><p> </p><h1 id="Howtorecovercoldbackupbychangingdirectorypath-Version">Version</h1><hr /><p>ALTIBASE HDB version 4 or later</p><p> </p><h1 id="Howtorecovercoldbackupbychangingdirectorypath-Howtochangedirectorypath">How to change directory path</h1><hr /><p>When restoring using Cold Backup database files, if there is no change in the directory path, copy (cp) mydb* (memory db), *.dbf (disk db), logs, and loganchor to the corresponding directory, and then when starting B, DB can be restored to the point of backup.</p><p>However, if the directory must be renamed inevitably, it is resolved by changing the directory path of each database file (memoryDB, logs, loganchor) and copying the file to the changed directory, but the disk DB must perform the renaming of the data file at the control stage.</p><h1 id="Howtorecovercoldbackupbychangingdirectorypath-Directorypathchangeprocedure">Directory path change procedure</h1><hr /><p>1. Create the desired directory and copy the Cold Backup files.</p><p>Copy Cold Backup (mydb*, *.dbf, logs, loganchor) to the desired directory using the OS copy command.</p><p>2. Modify $ALTIBASE_HOME/conf/altibase.properties.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">..Omitted
+MEM_DB_DIR          = /home/cheol2/altibase_home/dbs # Memory DB Directory
+ 
+DEFAULT_DISK_DB_DIR =/home/cheol2/altibase_home/dbs # Disk   DB Directory
+ 
+LOGANCHOR_DIR       =/home/cheol2/altibase_home/logs # LOGANCHOR_DIR1  // 로그앵커
+LOGANCHOR_DIR       = /home/cheol2/altibase_home/logs # LOGANCHOR_DIR2
+LOGANCHOR_DIR       = /home/cheol2/altibase_home/logs # LOGANCHOR_DIR3
+ 
+LOG_DIR = /home/cheol2/altibase_home/logs # Redo log file directory
+ARCHIVE_DIR   =  /home/cheol2/altibase_home/logs # Archive directory
+..Omitted</pre>
+</div></div><p>3. Startup at the Control stage.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[cheol2@as48-x64 ~/altibase_home/conf]$ is -sysdba
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.0.6
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost, PORT_NO = 33889
+iSQL(sysdba)&gt;startup control; 
+TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL 
+Command execute success.</pre>
+</div></div><p>4. Rename datafile in ISQL. (Change directory path)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/system001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/system001.dbf&#39;; 
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/system002.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/system002.dbf&#39;;
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/temp001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/temp001.dbf&#39;;  
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/undo001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/undo001.dbf&#39;;  
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/system001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/system001.dbf&#39;; 
+iSQL(sysdba)&gt;alter database rename  datafile &#39;/home/cheol2/altibase_home/dbs2/system002.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/system002.dbf&#39;; 
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/temp001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/temp001.dbf&#39;; 
+iSQL(sysdba)&gt;alter database rename datafile &#39;/home/cheol2/altibase_home/dbs2/undo001.dbf&#39;  to &#39;/home/cheol2/altibase_home/dbs/undo001.dbf&#39;;  </pre>
+</div></div><p>5. Startup in ISQL.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup service;ISQL_CONNECTION = UNIX, SERVER = localhost, PORT_NO = 33889
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server... Connected.
+ 
+TRANSITION TO PHASE : PROCESS
+ 
+TRANSITION TO PHASE : CONTROL
+ 
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version =&gt; Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database
+  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...
+                            Refining Disk Table
+  [SM] Refine Memory Table : ............................................................................................................ [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:117] ........................................................................................................... [SUCCESS]
+ 
+TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 33889 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : [PASS]
+ 
+--- STARTUP Process SUCCESS ---  
+Command executed successfully.</pre>
+</div></div><p> </p><h1 id="Howtorecovercoldbackupbychangingdirectorypath-Reference">Reference</h1><hr /><p>More detailed information can be found in the Table of Contents of the <strong>General Reference Manual</strong>.</p><p> </p><hr />
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

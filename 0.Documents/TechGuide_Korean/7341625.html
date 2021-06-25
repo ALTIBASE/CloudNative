@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2-1 Object 변환</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341605.html">Altibase Oracle 변환가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341609.html">2. 환경 설정</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2-1 Object 변환
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409850563 {padding: 0px;}
+div.rbtoc1624409850563 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409850563 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409850563'>
+<ul class='toc-indentation'>
+<li><a href='#id-2-1Object변환-데이터타입'>데이터 타입</a></li>
+<li><a href='#id-2-1Object변환-Object비교'>Object 비교</a></li>
+<li><a href='#id-2-1Object변환-CREATETABLESPACE'>CREATE TABLESPACE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2-1Object변환-DATATABLESPACE'>DATA TABLESPACE</a></li>
+<li><a href='#id-2-1Object변환-DATATABLESPACE예제'>DATA TABLESPACE 예제</a></li>
+<li><a href='#id-2-1Object변환-TEMPORARYTABLESPACE'>TEMPORARY TABLESPACE</a></li>
+<li><a href='#id-2-1Object변환-TEMPORARYTABLESPACE예제'>TEMPORARY TABLESPACE 예제</a></li>
+<li><a href='#id-2-1Object변환-UNDOTABLESPACE'>UNDO TABLESPACE</a></li>
+</ul>
+</li>
+<li><a href='#id-2-1Object변환-CREATETABLE'>CREATE TABLE</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2-1Object변환-COLUMNDEFINITION절'>COLUMN DEFINITION 절</a></li>
+<li><a href='#id-2-1Object변환-SEGMENTATTRIBUTES절'>SEGMENT ATTRIBUTES 절</a></li>
+<li><a href='#id-2-1Object변환-STORAGE절'>STORAGE 절</a></li>
+<li><a href='#id-2-1Object변환-LOBSTORAGE절'>LOB STORAGE 절</a></li>
+<li><a href='#id-2-1Object변환-TABLEPARTITION절'>TABLE PARTITION 절</a></li>
+<li><a href='#id-2-1Object변환-TABLEPROPERTIES절'>TABLE PROPERTIES 절</a></li>
+<li><a href='#id-2-1Object변환-TABLE변환예제'>TABLE 변환 예제</a></li>
+</ul>
+</li>
+<li><a href='#id-2-1Object변환-CREATEINDEX'>CREATE INDEX</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2-1Object변환-INDEX변환예제'>INDEX 변환 예제</a></li>
+</ul>
+</li>
+<li><a href='#id-2-1Object변환-CREATEVIEW'>CREATE VIEW</a></li>
+<li><a href='#id-2-1Object변환-CREATETRIGGER'>CREATE TRIGGER</a></li>
+<li><a href='#id-2-1Object변환-CREATESEQUENCE'>CREATE SEQUENCE</a></li>
+<li><a href='#id-2-1Object변환-CREATESYNONYM'>CREATE SYNONYM</a></li>
+<li><a href='#id-2-1Object변환-ALTERTABLE'>ALTER TABLE</a></li>
+</ul>
+</div></p><hr /><h2 id="id-2-1Object변환-데이터타입"><strong>데이터 타입</strong></h2><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th><th class="confluenceTh"><p><strong>비고</strong></p></th></tr><tr><td class="confluenceTd"><p>문자 타입</p></td><td class="confluenceTd"><p>CHAR</p></td><td class="confluenceTd"><p>CHAR</p></td><td class="confluenceTd"><p>최대 32K</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>VARCHAR2,VARCHAR</p></td><td class="confluenceTd"><p>VARCHAR2,VARCHAR</p></td><td class="confluenceTd"><p>최대 32K. DESC로 조회 시 VARCHAR로 조회</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>NCHAR</p></td><td class="confluenceTd"><p>NCHAR</p></td><td class="confluenceTd"><p>문자 길이 최대16000B(UTF16),문자 길이 최대10666B(UTF8)</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>NVARCHAR2</p></td><td class="confluenceTd"><p>NVARCHAR</p></td><td class="confluenceTd"><p>문자 길이 최대16000B(UTF16), 문자 길이 최대 10666B(UTF8)</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>LONG</p></td><td class="confluenceTd"><p>CLOB</p></td><td class="confluenceTd"><p>최대 2G</p></td></tr><tr><td class="confluenceTd"><p>LOB 타입</p></td><td class="confluenceTd"><p>BLOB</p></td><td class="confluenceTd"><p>BLOB</p></td><td class="confluenceTd"><p>최대 2G</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>CLOB</p></td><td class="confluenceTd"><p>CLOB</p></td><td class="confluenceTd"><p>최대 2G</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>NCLOB</p></td><td class="confluenceTd"><p>CLOB</p></td><td class="confluenceTd"><p>최대 2G</p></td></tr><tr><td class="confluenceTd"><p>숫자 타입</p></td><td class="confluenceTd"><p>NUMERIC(p, s)</p></td><td class="confluenceTd"><p>NUMERIC(p, s)</p></td><td class="confluenceTd"><p>데이터가 SMALLINT, INTEGER, BIGINT, REAL, DOUBLE 등 native type으로 지정 가능 하다면 native type으로 지정하는 것이 좋다. 데이터 처리시 변환 비용에 따른 Overhead를 줄일 수 있고, 저장 공간의 효율성이 좋아지기 때문이다.</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>NUMBER (p, s)</p></td><td class="confluenceTd"><p>NUMBER(p, s)</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>DECIMAL(p, s)</p></td><td class="confluenceTd"><p>DECIMAL(p, s)</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>FLOAT(p),BINARY_FLOAT</p></td><td class="confluenceTd"><p>FLOAT(p)</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>SMALLINT</p></td><td class="confluenceTd"><p>SMALLINT</p></td><td class="confluenceTd"><p>2 Byte 정수형 타입</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>INT</p></td><td class="confluenceTd"><p>INTEGER</p></td><td class="confluenceTd"><p>4 Byte 정수형 타입</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>REAL</p></td><td class="confluenceTd"><p>REAL</p></td><td class="confluenceTd"><p>4 Byte 실수형 타입</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>BINARY_DOUBLE</p></td><td class="confluenceTd"><p>DOUBLE</p></td><td class="confluenceTd"><p>8 Byte 실수형 타입</p></td></tr><tr><td class="confluenceTd"><p>날짜 타입</p></td><td class="confluenceTd"><p>DATE</p></td><td class="confluenceTd"><p>DATE</p></td><td class="confluenceTd"><p>ALTIBASE HDB DATE 타입은 ORACLE DATE 타입의 표현 범위를 포함</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>INTERVAL YEARTO MONTH</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>지원 안됨</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>INTERVAL DAYTO SECOND</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>TIMESTAMP WITH TIME ZONE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>TIMESTAMP WITH LOCAL TIME ZONE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>TIMESTAMP</p></td><td class="confluenceTd"><p>TIMESATAMP</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>이진 타입</p></td><td class="confluenceTd"><p>BFILE</p></td><td class="confluenceTd"><p>BLOB</p></td><td class="confluenceTd"><p>최대 2G</p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>RAW (size)</p></td><td class="confluenceTd"><p>BLOB</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>LONG RAW</p></td><td class="confluenceTd"><p>BLOB</p></td><td class="confluenceTd"><p> </p></td></tr></tbody></table></div><h2 id="id-2-1Object변환-Object비교"><strong>Object 비교</strong></h2><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><p>CLUSTER</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>CONSTRAINT</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>DATABASE LINK</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>DATABASE TRIGGER</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>DIMENSION</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>EXTERNAL PROCEDURE LIBRARY</p></td><td class="confluenceTd"><p>지원(C/C++만 가능)</p></td></tr><tr><td class="confluenceTd"><p>INDEX-ORGANIZED TABLE</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>INDEX</p></td><td class="confluenceTd"><p>B-TREE, R-TREE, Function based 지원(BITMAP, CLUSTER, Global Partitioned INDEX는 지원하지 않음)</p></td></tr><tr><td class="confluenceTd"><p>INDEXTYPE</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>JAVA 관련 객체</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>MATERIALIZED VIEW</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>MATERIALIZED VIEW LOG</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>OBJECT TABLE</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>OBJECT TYPE</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>OBJECT VIEW</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>OPERATOR</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>PACKAGE</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>SEQUENCE</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>STORED FUNCTION/PROCEDURE</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>SYNONYM</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>TABLE</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>VIEW</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>CONTEXT</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>DIRECTORY</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>PARAMETER FILE</p></td><td class="confluenceTd"><p>객체로서 지원하지 않음. altibase.properties 파일로 지원</p></td></tr><tr><td class="confluenceTd"><p>PROFILE</p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>ROLE</p></td><td class="confluenceTd"><p>지원</p></td></tr><tr><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p>MEMORY, DISK, VOLATILE, TEMPORARY, UNDO 지원</p></td></tr><tr><td class="confluenceTd"><p>USER</p></td><td class="confluenceTd"><p>지원</p></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATETABLESPACE"><strong>CREATE TABLESPACE</strong></h2><p>Oracle의 Date Tablespace는 모두 Disk Tablespace입니다. ALTIBASE HDB 전환 시 CREATE DISK TABLESPACE 구문 을 이용하여 Disk Tablespace를 생성해야 합니다.</p><h3 id="id-2-1Object변환-DATATABLESPACE">DATA TABLESPACE</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>BIGFILE|SMALLFILE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>DATAFILE File Specification</p></td><td class="confluenceTd"><p>DATAFILE File Specification</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>MINIMUM EXTENT</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>BLOCKSIZE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>FORCE LOGGING</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>DEFAULT Storage 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>ONLINE|OFFLINE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>EXTENT MANAGEMENT LOCAL|DICTIONARY</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>SEGMENT SPACE MANAGEMENT AUTO|MANUAL</p></td><td class="confluenceTd"><p>SEGMENT MANAGEMENT AUTO|MANUAL</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>FLASHBACK ON|OFF</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-DATATABLESPACE예제">DATA TABLESPACE 예제</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> CREATE   TABLESPACE TESTDATA
+DATAFILE   &#39;testdata01.dbf&#39;
+SIZE   1024M
+AUTOEXTEND   ON
+NEXT   50M
+MAXSIZE   UNLIMITED
+LOGGING
+ONLINE
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+BLOCKSIZE 8K
+SEGMENT   SPACE MANAGEMENT MANUAL
+FLASHBACK ON; </pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> CREATE   TABLESPACE TESTDATA
+DATAFILE   &#39;testdata01.dbf&#39;
+SIZE   1024M
+AUTOEXTEND ON
+NEXT   50M
+MAXSIZE   UNLIMITED
+SEGMENT MANAGEMENT MANUAL; </pre>
+</div></div></td></tr></tbody></table></div><p> SEGMENT 절은 SEGMENT MANAGEMENT AUTO|MANUAL 절로 수정하고 그 외의 모든 절은 지원하지 않으므로 삭제</p><h3 id="id-2-1Object변환-TEMPORARYTABLESPACE">TEMPORARY TABLESPACE</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>TABLESPACE GROUP</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>EXTENT MANAGEMENT LOCAL|DICTIONARY</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p> </p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-TEMPORARYTABLESPACE예제">TEMPORARY TABLESPACE 예제</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TEMPORARY TABLESPACE   tbs_temp_02 
+TEMPFILE &#39;temp02.dbf&#39; SIZE   5M AUTOEXTEND ON 
+TABLESPACE GROUP   tbs_grp_01; </pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TEMPORARY TABLESPACE   tbs_temp_02 
+TEMPFILE   &#39;temp02.dbf&#39; SIZE 5M AUTOEXTEND ON; </pre>
+</div></div></td></tr></tbody></table></div><p> TABLESPACE GROUP 절은 지원하지 않으므로 삭제</p><h3 id="id-2-1Object변환-UNDOTABLESPACE">UNDO TABLESPACE</h3><p>ALTIBASE는 시스템에 의해 자동으로 Undo Tablespace를 관리 합니다. Undo Tablespace에 데이터 파일의 추가 및 크기 변경만 가능합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE UNDO TABLESPACE UNDOTBS2 
+DATAFILE ‘undotbs2.dbf&#39; 
+SIZE 500M 
+AUTOEXTEND ON 
+NEXT 5M 
+MAXSIZE UNLIMITED; </pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER TABLESPACE SYS_TBS_DISK_UNDO 
+ADD DATAFILE &#39;undotbs2.dbf&#39; 
+SIZE 500M 
+AUTOEXTEND ON 
+NEXT 5M 
+MAXSIZE UNLIMITED; </pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATETABLE"><strong>CREATE TABLE</strong></h2><p>ALTIBASE HDB는 Temporary Table, Object Table, XMLType Table을 제공하지 않습니다. ALTIBASE HDB는 Memory Table을 제공합니다. 기존의 Table 의 특성을 파악하여 Memory Table 또는 Disk Table로 분리할 수 있습니다. 그러나 Memory Table 생성 시 Oracle에서 사용했던 CREATE TABLE 구문에 사용한 옵션들은 사용할 수 없습니다. 또한 TABLE 생성 시 Segment 관련 내용을 지정할 경우에는 TABLESPACE 지정 -&gt; PCTFREE/PCTUSED 지정 -&gt; INITRANS/MAXTRANS 지정 -&gt; Storage 절 -&gt; Logging 절 순 으로 지정해 줘야 합니다.</p><h3 id="id-2-1Object변환-COLUMNDEFINITION절">COLUMN DEFINITION 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>SORT</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>DEFAULT</p></td><td class="confluenceTd"><p>DEFAULT</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>ENCRYPT</p></td><td class="confluenceTd"><p>ENCRYPT</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>Constraint 구문</p></td><td class="confluenceTd"><p>Constraint 구문</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 Constraint 지정 시 ENABLE/DISABLE 옵션, References 절의 ON DELETE SET NULL(ON DELETE CASCADE는 지원) 옵션을 제공하지 않으므로 삭제. <br class="atl-forced-newline" /> ALTIBASE HDB는 PRIMARY KEY, UNIQUE 지정 시 Using Index 절에는 Tablespace 절, Parallel 절, Logging 절, Force 절만 지정 가능하다. 즉 Index 이름 및 CREATE INDEX 절은 제공하지 않는다.</p></td></tr><tr><td class="confluenceTd"><p>Ref Constraint 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 REF컬럼을 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>ORGANIZATION</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>CLUSTER</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>COMPRESS|NOCOMPRESS</p></td><td class="confluenceTd"><p>COMPRESS|NOCOMPRESS</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>Column의 크기 지정 시 Byte 키워드 명시 가능</p></td><td class="confluenceTd"><p>Column의 크기 지정 시 Byte 키워드 제공하지 않음</p></td><td class="confluenceTd"><p>Oracle은 Column의 크기 지정 시 Byte 키워드를 명시할 수 있지만, ALTIBASE HDB는 크기 지정 시 Byte를 제공하지 않음. <br class="atl-forced-newline" /> ex) ORACLE : c1 VARCHAR2(10 Byte) =&gt; ALTIBASE : c1 VARCHAR2(10)</p></td></tr></tbody></table></div><p> PRIMARY KEY, UNIQUE Constraint을 지정할 때 USING INDEX 절을 이용하여 INDEX 속성을<br /> 지정할 때 ALTIBASE HDB는 TABLESPACE 절, PARALLEL/NOPARALLEL 절, LOGGING/NOLOGGING 절만 지정이 가능합니다. 즉 storage 관련 속성은 지정할 수 없습니다.</p><h3 id="id-2-1Object변환-SEGMENTATTRIBUTES절">SEGMENT ATTRIBUTES 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>PCTFREE</p></td><td class="confluenceTd"><p>PCTFREE</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>PCTUSED</p></td><td class="confluenceTd"><p>PCTUSED</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>INITRANS</p></td><td class="confluenceTd"><p>INITRANS</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>MAXTRANS</p></td><td class="confluenceTd"><p>MAXTRANS</p></td><td class="confluenceTd"><p>255를 120으로 변경한다.Oracle의 MAXTRANS는 Deprecate 되었고, 항상 그 값은 255이다. 반면에 ALTIBASE의 MAXTRANS 값을 최대 120까지 지정할 수 있기 때문에 120으로 변경한다.</p></td></tr><tr><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p> </p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-STORAGE절">STORAGE 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>INITIAL</p></td><td class="confluenceTd"><p>INITEXTENTS</p></td><td class="confluenceTd"><p>Bytes -&gt; extent 개수로 변경</p></td></tr><tr><td class="confluenceTd"><p>NEXT</p></td><td class="confluenceTd"><p>NEXTEXTENTS</p></td><td class="confluenceTd"><p>Bytes -&gt; extent 개수로 변경</p></td></tr><tr><td class="confluenceTd"><p>MINEXTENTS</p></td><td class="confluenceTd"><p>MINEXTENTS</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>MAXEXTENTS</p></td><td class="confluenceTd"><p>MAXEXTENTS</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>PCTINCREASE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>FREELISTS</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>FREELIST</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>OPTIMAL</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>BUFFER POOL</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-LOBSTORAGE절">LOB STORAGE 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p>ALTIBASE의 LOB STORAGE절은 TABLESPACE만 지정 가능</p></td></tr><tr><td class="confluenceTd"><p>STORAGE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>CHUNK</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>PCTVERSION</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>RETENTION</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>FREEPOOLS</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>CACHE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>STORAGE IN ROW</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE HDB는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p> </p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-TABLEPARTITION절">TABLE PARTITION 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>PARTITION BY RANGE</p></td><td class="confluenceTd"><p>PARTITION BY RANGE</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>PARTITION BY HASH</p></td><td class="confluenceTd"><p>PARTITION BY HASH</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>PARTITION BY LIST</p></td><td class="confluenceTd"><p>PARTITION BY LIST</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>Composite partitioning 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-TABLEPROPERTIES절">TABLE PROPERTIES 절</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>ENABLE|DISABLE ROW MOVEMENT</p></td><td class="confluenceTd"><p>ENABLE|DISABLE ROW MOVEMENT</p></td><td class="confluenceTd"><p>Partitioned TABLE에만 지원</p></td></tr><tr><td class="confluenceTd"><p>NOPARALLEL|PARALLEL</p></td><td class="confluenceTd"><p>NOPARALLEL|PARALLEL</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>ENABLE|DISABLE VALIDATE|NOVALIDATE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-TABLE변환예제">TABLE 변환 예제</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE &quot;SCOTT&quot;.&quot;EMP&quot; 
+(	&quot;EMPNO&quot; NUMBER(4,0), 
+	&quot;ENAME&quot; VARCHAR2(10 Byte), 
+	&quot;JOB&quot; VARCHAR2(9 Byte), 
+	&quot;MGR&quot; NUMBER(4,0), 
+	&quot;HIREDATE&quot; DATE, 
+	&quot;SAL&quot; NUMBER(7,2), 
+	&quot;COMM&quot; NUMBER(7,2), 
+	&quot;DEPTNO&quot; NUMBER(2,0), 
+	 CONSTRAINT &quot;PK_EMP&quot; PRIMARY KEY (&quot;EMPNO&quot;)
+USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+TABLESPACE &quot;USERS&quot; ENABLE, 
+	CONSTRAINT &quot;FK_DEPTNO&quot; FOREIGN KEY (&quot;DEPTNO&quot;)
+	REFERENCES &quot;SCOTT&quot;.&quot;DEPT&quot; (&quot;DEPTNO&quot;) ENABLE
+) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+TABLESPACE &quot;USERS&quot; ;
+</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE &quot;SCOTT&quot;.&quot;EMP&quot; 
+(	&quot;EMPNO&quot; NUMBER(4,0), 
+	&quot;ENAME&quot; VARCHAR2(10), 
+	&quot;JOB&quot; VARCHAR2(9), 
+	&quot;MGR&quot; NUMBER(4,0), 
+	&quot;HIREDATE&quot; DATE, 
+	&quot;SAL&quot; NUMBER(7,2), 
+	&quot;COMM&quot; NUMBER(7,2), 
+	&quot;DEPTNO&quot; NUMBER(2,0), 
+	 CONSTRAINT &quot;PK_EMP&quot; PRIMARY KEY (&quot;EMPNO&quot;)
+USING INDEX TABLESPACE &quot;USERS&quot; , 
+	 CONSTRAINT &quot;FK_DEPTNO&quot; FOREIGN KEY (&quot;DEPTNO&quot;)
+	 REFERENCES &quot;SCOTT&quot;.&quot;DEPT&quot; (&quot;DEPTNO&quot;) 
+) 
+TABLESPACE &quot;USERS&quot;
+PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 120 
+  STORAGE(INITEXTENTS 1 NEXTEXTENTS 1 MINEXTENTS 1 MAXEXTENTS 2147483645)
+LOGGING ;
+ 	&quot;ENAME&quot; VARCHAR2(10 Byte)Byte는 삭제
+ 	USING INDEX TABLESPACE &quot;USERS&quot; 
+PK 지정 시 USING INDEX 절에는 TABLESPACE 절, PARALLEL/NOPARALLEL 절, LOGGING/NOLOGGING 절만 지정 가능하므로 TABLESPACE 절 이외의 다른 옵션은 삭제
+ 	REFERENCES &quot;SCOTT&quot;.&quot;DEPT&quot; (&quot;DEPTNO&quot;)
+FK 지정 시 ENABLE 옵션은 지원하지 않으므로 삭제
+ 	PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 120 
+MAXTRANS의 최대 값은 120 이므로 120으로 수정
+ 	STORAGE(INITEXTENTS 1 NEXTEXTENTS 1 MINEXTENTS 1 MAXEXTENTS 2147483645)
+INITIAL과 NEXT는 각각 INITEXTENTS, NEXTEXTENTS로 변경해야 하며 그 값도 extent 의 개수로 수정
+ 	TABLESPACE &quot;USERS&quot;
+PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 120 
+STORAGE...
+LOGGING 
+segment 관련 내용을 지정할 경우에는 TABLESPACE 지정 -&gt; PCTFREE/PCTUSED 지정 -&gt; INITRANS/MAXTRANS 지정 -&gt; Storage 절 -&gt; logging 절 순으로 지정
+</pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATEINDEX"><strong>CREATE INDEX</strong></h2><p>ALTIBASE는 BTREE와 RTREE INDEX만 제공하고 BITMAP, CLUSTER, Function based, REVERSE, Global partitioned INDEX를 제공하지 않습니다. 또한, ALTIBASE INDEX 생성 시 segment 관련 내용 지정할 경우에는 TABLESPACE 지정 -&gt; PARALLEL/ NOPARALLEL 지정 -&gt; LOGGING/NOLOGGING 지정 -&gt; storage 절 순으로 지정해야 합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p>TABLESPACE</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p>LOGGING|NOLOGGING</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>NOPARALLEL|PARALLEL</p></td><td class="confluenceTd"><p>NOPARALLEL|PARALLEL</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>COMPUTE STATISTICS</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>REVERSE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>SORT|NOSORT</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>ONLINE</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>COMPRESS|NOCOMPRESS</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>PCTFREE, PCTUSED,</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지 않으므로 변환 시 해당 옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>INITRANS</p></td><td class="confluenceTd"><p>INITRANS</p></td><td class="confluenceTd"><p><br class="atl-forced-newline" />|</p></td></tr><tr><td class="confluenceTd"><p>MAXTRANS</p></td><td class="confluenceTd"><p>MAXTRANS</p></td><td class="confluenceTd"><p>ALTIBASE는 최대 30까지 지원</p></td></tr><tr><td class="confluenceTd"><p>Storage 구문</p></td><td class="confluenceTd"><p>TABLE의 Storage 구문과 동일</p></td><td class="confluenceTd"><p> </p></td></tr></tbody></table></div><h3 id="id-2-1Object변환-INDEX변환예제">INDEX 변환 예제</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE INDEX &quot;SCOTT&quot;.&quot;EMP_IDX1&quot; ON &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;DEPTNO&quot;, &quot;SAL&quot;) 
+PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+TABLESPACE &quot;USERS&quot; ;
+</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">CREATE INDEX &quot;SCOTT&quot;.&quot;EMP_IDX1&quot; ON &quot;SCOTT&quot;.&quot;EMP&quot; (&quot;DEPTNO&quot;, &quot;SAL&quot;) 
+TABLESPACE &quot;USERS&quot;
+INITRANS 2 MAXTRANS 30 
+STORAGE(INITEXTENTS 1 NEXTEXTENTS 1 MINEXTENTS 1 MAXEXTENTS 2147483645) ;
+1. INITRANS 2 MAXTRANS 30
+MAXTRANS는 30까지 지원하므로 30으로 변경
+2. STORAGE(INITEXTENTS 1 NEXTEXTENTS 1 MINEXTENTS 1 MAXEXTENTS 2147483645) ;
+STORAGE 절에는 INITEXTENTS, NEXTEXTENTS, MINEXTENTS, MAXEXTENTS 만 지정가능 하고, INITIAL과 NEXT는 각각 INITEXTENTS, NEXTEXTENTS로 변경해야 하며 그 값도 extent 의 개수로 수정해야 함
+3. TABLESPACE &quot;USERS&quot;
+INITRANS 2 MAXTRANS 30
+STORAGE ... ;
+segment 관련 내용 지정할 경우에는 TABLESPACE 지정 -&gt; PARALLEL/NOPARALLEL 지정 -&gt; LOGGING/NOLOGGING 지정 -&gt; storage 절 순으로 지정
+</pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATEVIEW"><strong>CREATE VIEW</strong></h2><p>ALTIBASE의 VIEW는 Oracle의 VIEW 생성 구문과 동일하게 CREATE OR REPLACE VIEW 구문으로 생성합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th><th class="confluenceTh"><p><strong>비고</strong></p></th></tr><tr><td class="confluenceTd"><p>WITH READ ONLY</p></td><td class="confluenceTd"><p>WITH READ ONLY</p></td><td class="confluenceTd"><p>ALTIBASE는 WITH READ ONLY 옵션의 VIEW만 제공하므로 해당 옵션이 default임</p></td></tr><tr><td class="confluenceTd"><p>[DOCKI:NO] FORCE</p></td><td class="confluenceTd"><p>[DOCKI:NO] FORCE</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>WITH CHECK OPTION</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지않으므로 변환 시 해당옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>XMLType view 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지않으므로 변환 시 해당옵션 삭제</p></td></tr><tr><td class="confluenceTd"><p>Object view 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 지원하지않으므로 변환 시 해당옵션 삭제</p></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATETRIGGER"><strong>CREATE TRIGGER</strong></h2><p>ALTIBASE의 TRIGGER는 Oracle의 TRIGGER 생성 구문과 동일하게 CREATE OR REPLACE TRIGGER 구문으로 생성합니다. 이중화로 인해 반영되는 데이블 데이터의 변경은 트리거 동작을 발생시키지 않습니다. ALTIBASE는 TRIGGER 대상 TABLE에 LOB 컬럼을 포함할 수 없습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>Oracle</strong></p></td><td class="confluenceTd"><p><strong>ALTIBASE</strong></p></td><td class="confluenceTd"><p><strong>비고</strong></p></td></tr><tr><td class="confluenceTd"><p>CREATE OR REPLACE TRIGGER</p></td><td class="confluenceTd"><p>CREATE OR REPLACE TRIGGER</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>BEFORE|AFTER|INSTEAD OF</p></td><td class="confluenceTd"><p>BEFORE|AFTER</p></td><td class="confluenceTd"><p>ALTIBASE는 INSTEAD OF는 지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>DML 이벤트 구문</p></td><td class="confluenceTd"><p>DML 이벤트 구문</p></td><td class="confluenceTd"><p>DML 이벤트 구문은 Oracle과 동일</p></td></tr><tr><td class="confluenceTd"><p>DDL 이벤트 구문</p></td><td class="confluenceTd"><p>-</p></td><td class="confluenceTd"><p>ALTIBASE는 DDL TRIGGER를 제공하지 않음</p></td></tr><tr><td class="confluenceTd"><p>WHEN 조건</p></td><td class="confluenceTd"><p>WHEN 조건</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>FOR EACH ROW</p></td><td class="confluenceTd"><p>FOR EACH ROW</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>REFERENCING</p></td><td class="confluenceTd"><p>REFERENCING</p></td><td class="confluenceTd"><p>DELETE 이벤트에서 NEW는 REFERENCING 할 수 없고, INSERT 이벤트에서는 OLD는 REFERENCING 할 수 없다. OLD/NEW에 alias를 줄 경우 OLD/NEW는 키워드이므로 alias로 사용할 수 없다.</p></td></tr><tr><td class="confluenceTd"><p>Trigger body 구문</p></td><td class="confluenceTd"><p>Trigger body 구문</p></td><td class="confluenceTd"><p>ALTIBASE Trigger body 구문은 AS BEGIN 구문으로 시작해야 한다. 또한 Oracle의 Trigger body 구문은 DECLARE 절로 시작할 수 있지만, ALTIBASE의 Trigger body는 AS 절에 선언 부분을 지정 해야 하고, DECLARE 절을 명시할 수 없다. <br class="atl-forced-newline" /> OLD/NEW row 사용 시 ‘:’ 사용할 수 없다. Ex) :old (x) -&gt; old(o)</p></td></tr></tbody></table></div><h2 id="id-2-1Object변환-CREATESEQUENCE"><strong>CREATE SEQUENCE</strong></h2><p>ALTIBASE의 CREATE SEQUENCE 구문은 Oracle과 동일합니다. 다만, Oracle에서 제공하는 ORDER, NOORDER 옵션은 지원하지 않습니다<br /> 또한, ORACLE SEQUENCE의 maxvalue 값은 28자리 정수까지 지정할 수 있지만, ALTIBASE SEQUENCE의 maxvalue는 (-9223372036854775807)부터 9223372036854775806까지의 범위 내에서 지정할 수 있습니다.</p><h2 id="id-2-1Object변환-CREATESYNONYM"><strong>CREATE SYNONYM</strong></h2><p>ALTIBASE의 CREATE SYNONYM 구문은 Oracle과 동일합니다.</p><h2 id="id-2-1Object변환-ALTERTABLE"><strong>ALTER TABLE</strong></h2><p>ALTIBASE는 Constraint 추가 시 한번에 1개의 Constraint만 추가 가능합니다.</p><p>Oracle에서 “ALTER TABLE ADD (CONSTRAINT constraint_name constraint_type,…);” 문으로 여러 개의 Constraint를 추가하는 문장은 Constraint별로 나눠서 “ALTER TABLE ADD CONSTRAINT constraint_name constraint_type;” 문으로 Constraint 별로 나눠서 실행해야 합니다.</p><p>Oracle은 PRIMARY KEY와 UNIQUE를 지정 시 INDEX를 미리 생성한 후 지정이 가능하지만, ALTIBASE는 Constraint를 지정하는 시점에 내부적으로 INDEX를 생성하기 때문에 동일 컬럼에 대해 PK Constraint, UNIQUE Constraint, INDEX 생성 중 하나만 가능합니다. 즉, INDEX를 생성한 컬럼에 PK Constraint를 지정할 수 없습니다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

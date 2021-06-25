@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : APRE*C/C++ New Features &amp; Upgrade Guide</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : APRE*C/C++ New Features &amp; Upgrade Guide
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p style="text-align: center;"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409365624 {padding: 0px;}
+div.rbtoc1624409365624 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409365624 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409365624'>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Overview'>Overview</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-APRE*C/C++'>APRE*C/C++</a>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Terms'>Terms</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Background'>Background</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-OverviewofNewFeatures'>Overview of New Features</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-DetailsofNewFeatures'>Details of New Features</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Precautions'>Precautions</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Notes'>Notes</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Changes'>Changes</a>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Changes.1'>Changes</a></li>
+</ul>
+</li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Upgradeprocedures'>Upgrade procedures</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;UpgradeGuide-Considerations'>Considerations</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Overview">Overview</h1><hr /><p>This document describes the net functions, changes, and upgrade procedures of APRE*C/C++, which is the later version of SES*C/C++.</p><p>For details not mentioned in the document, refer to [<a href="https://aid.altibase.com/display/arch/Altibase+Precompiler+Guide" class="external-link" rel="nofollow">Altibase Precompiler Guide</a>].</p><p>The document standard was prepared based on Altibase version 5.3.3, which was initially provided by APRE*C/++, and the execution result in the document was the result performed in version 5.3.3.15.</p><p>It is recommended to refer to the following technical documents to understand the contents of this document.</p><ul><li><a href="https://aid.altibase.com/pages/viewpage.action?pageId=15630378" class="external-link" rel="nofollow">Altibase APRE(SES) *C/C++ Makefile</a></li><li><a href="https://aid.altibase.com/display/arch/Altibase+Precompiler+Guide" class="external-link" rel="nofollow">Altibase Precompiler Guide</a></li></ul>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<h1 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-APRE*C/C++">APRE*C/C++</h1><hr /><p>This section describes Altibase's new Precompiler of Embedded SQL. Please refer to <a href="https://aid.altibase.com/display/arch/Altibase+Precompiler+Guide" class="external-link" rel="nofollow">Altibase Precompiler Guide</a> for specific details such as usage of the function as a summary form.</p><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Terms">Terms</h2><hr /><p><strong><strong>Precompiler of Embedded SQL</strong></strong></p><p>The program that receives source code including embedded SQL and converts the embedded SQL into execution-time library function calls.</p><p><strong>SES*C/C++</strong></p><p>It is an abbreviation of the Precompiler of Embedded SQL for versions lower than Altibase 5.1.5, and supports C and C++ as source code.</p><p><strong>APRE*C/C++<br /></strong></p><p>It is an abbreviation of the Precompiler of Embedded SQL for versions lower than Altibase 5.3.3, and supports C and C++ as source code. Compared to SES*C/C++, the upgrade level function is improved.</p><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Background">Background</h2><hr /><p>SES*C/C++ had a number of restrictions as follows, which caused inconvenience when using it.</p><ul><li>Macro processing restrictions</li><li>Cannot declare host variable outside the DECLARE SECTION</li><li>Host variable declaration method and usage restrictions</li><li>Some standard built-in SQL statements are not supported</li></ul><p>In order to provide development convenience with the Precompiler of Embedded SQL to Altibase users, these restrictions should be improved first.</p><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-OverviewofNewFeatures">Overview of New Features</h2><hr /><p>Many restrictions that existed in SES*C/C++ have been greatly improved.</p><p>The name was also changed to APRE*C/C++ (Altibase C/C++ Precompiler of Embedded SQL) while applying the upgrade.</p><p>The functions newly added to APRE*C/C++ are as follows:</p><ul><li>Partial C Preprocessor for macro processing</li><li>C Parser for host variable declaration </li><li>Function to rewrite the library to alleviate host variable declaration method and usage restrictions</li><li>DECLARE STATEMENT statement support</li></ul><p>In addition, the following improvements were made:</p><ul><li>Function callable when using WHENEVER statement</li><li>APRE*C/C++ executable file (apre) command option has changed and added</li><li>the error message output type has changed</li></ul><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-DetailsofNewFeatures">Details of New Features</h2><hr /><p><strong>Equipped with Partial C Preprocessor</strong></p><p>Most of the macros below can be processed without any restrictions on the declaration area.</p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/> #include, #define #if, #ifdef, #ifndef, #endif, #else, #elif</p><p><img class="confluence-embedded-image" src="attachments/15138963/15335449.png" data-image-src="attachments/15138963/15335449.png"></p><p><strong>Equipped with C Parser</strong></p><p>Only when the source code is written in C, the host variable declaration is possible outside the host variable declaration section (DECLARE SECTION).</p><p><img class="confluence-embedded-image" src="attachments/15138963/15335450.png" data-image-src="attachments/15138963/15335450.png"></p><p><strong>Host variable declaration method and ease of using restrictions</strong></p><p>Many restrictions related to the user of host variables have been removed. Details are as follows.</p><div><ul><li>The initial value can be assigned at the same time as the host variable declaration</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335451.png" data-image-src="attachments/15138963/15335451.png"></p><ul><li>Structure definition available after typedef (reverse also available)</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335452.png" data-image-src="attachments/15138963/15335452.png"></p><ul><li>Array elements can be specified when using array-type host variables in embedded SQL statements.</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335453.png" data-image-src="attachments/15138963/15335453.png"></p><ul><li>Data types other than char * and struct * can be used as pointer type host variables.</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335454.png" data-image-src="attachments/15138963/15335454.png"></p><ul><li>The host variable for output can be used without &quot;:&quot; in INTO clause of the SELECT statement</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335455.png" data-image-src="attachments/15138963/15335455.png"></p><ul><li>Can be used even if the input host variable of the embedded SQL including the FOR clause is not an array type</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335456.png" data-image-src="attachments/15138963/15335456.png"></p><ul><li>The union type host variable can be used</li></ul><p><img class="confluence-embedded-image" src="attachments/15138963/15335457.png" data-image-src="attachments/15138963/15335457.png"></p><p><strong>Additional support for DECLARE STATEMENT </strong></p><p>The DECLARE STATEMENT is supported as a standard embedded SQL statement.</p><p>Identifiers for SQL statements or PL/SQL blocks can be declared so that they can be used in other embedded SQL statements.</p><p><img class="confluence-embedded-image" src="attachments/15138963/15335458.png" data-image-src="attachments/15138963/15335458.png"></p><p><strong>Function callable when using WHENEVER statement</strong></p><p>This has been improved so that a specific function can be called when using the WHENEVER statement in the form of WHENEVER &lt;condition&gt; DO &lt;function&gt;.</p><p><img class="confluence-embedded-image" src="attachments/15138963/15335459.png" data-image-src="attachments/15138963/15335459.png"></p><p><strong>APRE*C/C++ executable file (apre) command option has been changed</strong></p><ol><li>-I<br />The name has been changed to -I as an option provided as -include option in the existing SES*C/C++.<br />This specifies the path of the source doe file included during precompiling.<br />This option operations like EXEC SQL OPTION (INCLUDE=library_path) in code<br /><img class="confluence-embedded-image" src="attachments/15138963/15335460.png" data-image-src="attachments/15138963/15335460.png"></li><li>-keyword<br />This shows reserved keywords.<br /><img class="confluence-embedded-image" src="attachments/15138963/15335461.png" data-image-src="attachments/15138963/15335461.png"></li><li><p>-parse <em><span style="color: blue;">parsing_mode</span></em><br /><span style="color: rgb(0,0,0);">By specifying the parsing mode, the precompile range for the source file is determined.</span><br /><span style="color: rgb(0,0,0);">- The parsing mode and processing range of the -parse option are as follows.</span><br /><span style="color: rgb(0,0,0);">- If the -parse option itself is omitted, the parsing mode is operated as partial.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Parsing mode</th><th style="text-align: center;" class="confluenceTh">Internal SQL <span style="color: rgb(0,0,255);">A</span></th><th style="text-align: center;" class="confluenceTh">Macro <span style="color: rgb(255,0,0);">B</span></th><th class="confluenceTh"><p class="_04xlpA direction-ltr align-center para-style-body" style="text-align: center;"><span class="JsGRdQ">External declaration part/</span></p><p class="_04xlpA direction-ltr align-center para-style-body" style="text-align: center;"><span class="JsGRdQ">host variable</span></p><p class="_04xlpA direction-ltr align-center para-style-body" style="text-align: center;"><span class="JsGRdQ" style="color: rgb(0,255,0);">C</span></p></th><th class="confluenceTh">Remarks</th></tr><tr><td style="text-align: center;" class="confluenceTd">none</td><td style="text-align: center;" class="confluenceTd">O</td><td style="text-align: center;" class="confluenceTd">X</td><td style="text-align: center;" class="confluenceTd">X</td><td class="confluenceTd">Operates the same as SEC*C/C++ #include format header file is not processed</td></tr><tr><td style="text-align: center;" class="confluenceTd">partial</td><td style="text-align: center;" class="confluenceTd">O</td><td style="text-align: center;" class="confluenceTd">O</td><td style="text-align: center;" class="confluenceTd">X</td><td class="confluenceTd">Additional operation of Partial C Processor Process even header files in #include format APRE*C/C++ default parsing mode</td></tr><tr><td style="text-align: center;" class="confluenceTd">full</td><td style="text-align: center;" class="confluenceTd">O</td><td style="text-align: center;" class="confluenceTd">O</td><td style="text-align: center;" class="confluenceTd">O</td><td class="confluenceTd">Additional operation of C Parser Process even header files in #include format However, source code written in C++ style cannot recognize host variables outside the declaration section</td></tr></tbody></table></div><p>In the case of [Processing up to #include type header file], even another header file declared as #include type in the corresponding header file is processed.<br /><img class="confluence-embedded-image" src="attachments/15138963/15335463.png" data-image-src="attachments/15138963/15335463.png"></p><p>For example, after changing the query in the example above to an optional query using macros as shown below.<br /><img class="confluence-embedded-image" src="attachments/15138963/15335464.png" data-image-src="attachments/15138963/15335464.png">When the parsing option is omitted and precompile with partial(the default parsing mode)</p><p><img class="confluence-embedded-image" src="attachments/15138963/15335465.png" data-image-src="attachments/15138963/15335465.png"><br />The actual created codes remain only in the stage that the macro processing is completed as follows. (After the macro processing, the removed part is replaced with a blank space).<br /><img class="confluence-embedded-image" src="attachments/15138963/15335466.png" data-image-src="attachments/15138963/15335466.png">If -parse none is specified to precompile in the same way as the existing SEC*C/C++, a variable duplicate declaration error occurs because the macro processing function does not operate.<br /><img class="confluence-embedded-image" src="attachments/15138963/15335467.png" data-image-src="attachments/15138963/15335467.png"></p></li></ol><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Precautions"><strong>Precautions</strong></h2><hr /><p><strong>Syntax improvement</strong></p><p>In order for existing SES*C/C++ to describe EXEC SQL BEGIN/END DECLARE/ARGUMENT SECTION in the code, it is irrelevant even if the terminator &quot;;&quot; is omitted, but APRE*C/C++ must have &quot;;&quot;.</p><p>This precaution applies the same as other DBMS precompilers.</p><p>The following is an error when the terminator is not specified in the END DECLARE SECTION.</p><p><img class="confluence-embedded-image" src="attachments/15138963/15859713.png" data-image-src="attachments/15138963/15859713.png"></p><div><p><strong>Source code precompile of C++ style</strong></p><p>To use a host variable outside the host variable declaration section, the mode of the parse option must be set to full.</p><p>However, if the parsing mode is set to full, the C parser operates, so the source code of C++ style may cause various parsing errors during preprocessing.</p><p>In other words, source code written in C++ style should declare host variables only in the host variable declaration section such as SES*C/C++, and if the -parse option is used, the parsing mode should be partial or none.</p><p><strong>-D, -I Options</strong></p><p>If the -D and -I options are used in the C/C++ compilation stage, in most cases, correct precompile is possible only when the same option is given in the precompile stage with APRE*C/C++.</p><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Notes"><strong>Notes</strong></h2><hr /><p><strong>-I Option</strong></p><p>It is fine to use -include, but it is recommended to change to a new option in consideration of future maintenance.</p><p><strong>Binary data type change</strong></p><p>The name of the previously used SES_CLOB, SES_BLOB, SES_BINARY, SES_BYTES, and SES_NIBBLE types have changed to APRE_CLOB, APRE_BLOB, APRE_BINARY, APRE_BYTES, and APRE_NIBBLE.</p><p>Since backward compatibility is considered, it is okay to use an existing name.</p><p><strong>precompile execution time</strong></p><p>Compared to SES*C/C++, the precompile execution time is slightly slower.</p><p>The following is the result of measuring the precompile time of the sample example arrays1.sc (about 450 lines) provided while installing Altibase with SES*C/C++ and APRE*C/C++ respectively.</p><p><img class="confluence-embedded-image" src="attachments/15138963/15859714.png" data-image-src="attachments/15138963/15859714.png"></p><div>The above measure results are precompiled on IBM AIX5.3 (Power5 1898 MHz 1EA), and the actual execution speed may vary depending on the OS environment.</div></div><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Changes">Changes</h2><hr /><p>This section describes considerations and procedures when upgrading from SES*C/C++ environment to the ARPE*C/C++ environment.</p><h3 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Changes.1">Changes</h3><hr /><p>As the name was changed from SES*C/C++ to APRE*C/C++, the name of execution file, header file, library file, link option, and execution file command options were partially changed as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><strong>Classification</strong></th><th class="confluenceTh"><strong>SES*C/C++</strong></th><th class="confluenceTh"><strong>APRE*C/C++</strong></th><th class="confluenceTh"><strong>Related file path</strong></th><th class="confluenceTh"><strong>Remarks</strong></th></tr><tr><td class="confluenceTd">Execution file</td><td class="confluenceTd">sesc</td><td class="confluenceTd"><span style="color: rgb(255,0,0);">apre</span></td><td class="confluenceTd">$ALTIBASE_HOME/bin</td><td class="confluenceTd">Changed</td></tr><tr><td class="confluenceTd">Header file</td><td class="confluenceTd">ses.h</td><td class="confluenceTd"><span style="color: rgb(255,0,0);">ulpLibInterface</span>.h</td><td class="confluenceTd">$ALTIBASE_HOME/include</td><td class="confluenceTd">Changed</td></tr><tr><td rowspan="2" class="confluenceTd">Library files</td><td class="confluenceTd">libsesc.a</td><td class="confluenceTd">lib<span style="color: rgb(255,0,0);">apre</span>.a</td><td class="confluenceTd">$ALTIBASE_HOME/lib</td><td class="confluenceTd">Changed</td></tr><tr><td class="confluenceTd">libsesc_sl.so</td><td class="confluenceTd">lib<span style="color: rgb(255,0,0);">apre</span>_sl.so</td><td class="confluenceTd">#ALTIBASE_HOME/lib</td><td class="confluenceTd">Changed</td></tr><tr><td class="confluenceTd">Link option</td><td class="confluenceTd">-lsesc</td><td class="confluenceTd">-l<span style="color: rgb(255,0,0);">apre</span></td><td class="confluenceTd">-</td><td class="confluenceTd">Changed</td></tr><tr><td class="confluenceTd">Execution file command option</td><td class="confluenceTd">-include</td><td class="confluenceTd">-include or -<span style="color: rgb(255,0,0);">I</span></td><td class="confluenceTd"><div><div>-</div></div></td><td class="confluenceTd">Added</td></tr></tbody></table></div><p> </p></div><div>There are no other measures to be taken since the above changes are backward compatible, but it is recommended to change the execution file name and link option to APRE*C/C++ style for future maintenance.</div><div>In addition, although it is not essential, it is recommended to change the -include option to -I.</div><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Upgradeprocedures">Upgrade procedures</h2><hr /><ol><li><p>Check the version of APRE*C/C++.<br /><img class="confluence-embedded-image" src="attachments/15138963/15859715.png" data-image-src="attachments/15138963/15859715.png"><br />Generally, it is recommended to use the latest version of APRE*C/C++, and at least 5.3.3.15 should be used in consideration of the following bugs.</p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/><span>BUG-28392 Memory increases when Direct Execute fails (fixed 5.3.3.5)</span></p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/><span>BUG-28588 Do not release a statement when null fetching (fixed at 5.3.3.6)</span></p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/><span>BUG-29745 Disconnection occurs when using a cursor when there are numbers in the SELECT column clause</span></p><p>BUG-29903 Memory increase when repeating prepare failures (fixed at 5.3.3.15)</p></li><li>Change compilation options<br />Please refer to the table in the Changes section, execute the following statement, link options, and change the options of the compilation file such as makefile.<br /><ol><li>Change the execution file name<br /><img class="confluence-embedded-image" src="attachments/15138963/15859716.png" data-image-src="attachments/15138963/15859716.png"></li><li>Change the link option<br /><img class="confluence-embedded-image" src="attachments/15138963/15859717.png" data-image-src="attachments/15138963/15859717.png"></li><li>makefile<br /><img class="confluence-embedded-image" src="attachments/15138963/15859718.png" data-image-src="attachments/15138963/15859718.png"></li></ol></li></ol><p>If the file related to a change is not easily identified or cannot be changed due to the large amount, the procedure in the example above can be omitted, but it is recommended to do a normal upgrade by changing the related name as much as possible.</p><h2 id="APRE*C/C++NewFeatures&amp;UpgradeGuide-Considerations">Considerations</h2><p><strong>-Adding parse none option</strong></p><p><strong><span style="color: rgb(0,0,255);">APRE*C/C++ -&gt; [Notes] -&gt;</span></strong><span style="color: rgb(0,0,255);"> </span><span style="color: rgb(0,0,255);"><span style="color: rgb(0,0,0);">Although the syntax is not mentioned in the section, the source that was precompiled without any problems in SES*C/C++ may cause an error in APRE*C/C++. In this case, since the parsing mode of APRE*C/C++ is partial, it is likely an error that occurs while macro processing up to the header file included in the #include method.</span></span></p><p><span style="color: rgb(0,0,0);">Therefore, if the cause of the error is not easily specified, it is necessary to check by adding the -parse none option to precompile the same as SES*C/C++.</span></p><p><strong>-Error due to use of the precompiler library</strong></p><p>If the existing source code is written to use the SES*C/C++ library directly, compilation may not be possible due to the change of the precompiler library interface. In this case, all related codes must be removed from the existing source code.</p><div>The library interface of the precompiler is an internal element that is frequently changed, and used directly by the user is prohibited.</div><div>Therefore, Altibase is not responsible for any errors that occur in the future while analyzing the precompiled source code and using the related macros, structures, and functions in the source code arbitrarily.</div><p><span style="color: rgb(0,0,0);"><br /></span></p><p><strong><br /></strong></p><div><strong><br /></strong></div><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335449.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335450.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335451.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335452.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335453.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335454.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335455.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335456.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335457.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335458.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335459.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335460.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335461.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335462.png">스크린샷 2020-09-15 오후 4.55.07.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335463.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335464.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335465.png">partial로 preccompile_할_경우.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335466.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15335467.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859713.png">종결자_누락_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859714.png">sesc_apre_수행시간.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859715.png">apre_버전확인.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859716.png">실행파일명_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859717.png">링크옵션_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138963/15859718.png">makefile.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

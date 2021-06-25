@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 10. Object</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 10. Object
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Mar 28, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409834168 {padding: 0px;}
+div.rbtoc1624409834168 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409834168 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409834168'>
+<ul class='toc-indentation'>
+<li><a href='#id-10.Object-Object'>Object</a>
+<ul class='toc-indentation'>
+<li><a href='#id-10.Object-[OB01]메모리테이블사용량'>[OB01] 메모리 테이블 사용량</a></li>
+<li><a href='#id-10.Object-[OB02]큐'>[OB02] 큐</a></li>
+<li><a href='#id-10.Object-[OB03]Efficiency가낮은메모리테이블'>[OB03] Efficiency 가 낮은 메모리 테이블</a></li>
+<li><a href='#id-10.Object-[OB04]메모리인덱스,큐인덱스사용량'>[OB04] 메모리 인덱스, 큐 인덱스 사용량</a></li>
+<li><a href='#id-10.Object-[OB05]디스크테이블'>[OB05] 디스크 테이블</a></li>
+<li><a href='#id-10.Object-[OB06]디스크인덱스사용량'>[OB06] 디스크 인덱스 사용량</a></li>
+<li><a href='#id-10.Object-[OB07]파티션테이블정보'>[OB07] 파티션 테이블 정보</a></li>
+<li><a href='#id-10.Object-[OB08]시퀀스'>[OB08] 시퀀스</a></li>
+<li><a href='#id-10.Object-[OB09]시노님'>[OB09] 시노님</a></li>
+<li><a href='#id-10.Object-[OB10]PSM'>[OB10] PSM</a></li>
+<li><a href='#id-10.Object-[OB11]PSM생성구문'>[OB11] PSM 생성구문</a></li>
+<li><a href='#id-10.Object-[OB12]VIEW'>[OB12] VIEW</a></li>
+<li><a href='#id-10.Object-[OB13]VIEW생성구문'>[OB13] VIEW 생성구문</a></li>
+<li><a href='#id-10.Object-[OB14]PACKAGE'>[OB14] PACKAGE</a></li>
+<li><a href='#id-10.Object-[OB15]PACKAGE서브프로그램'>[OB15] PACKAGE 서브프로그램 </a></li>
+<li><a href='#id-10.Object-[OB16]PACKAGE생성구문'>[OB16] PACKAGE 생성구문</a></li>
+<li><a href='#id-10.Object-[OB17]트리거'>[OB17] 트리거</a></li>
+<li><a href='#id-10.Object-[OB18]작업(Job)'>[OB18] 작업(Job)</a></li>
+<li><a href='#id-10.Object-[OB19]데이터베이스사용자'>[OB19] 데이터베이스 사용자</a></li>
+<li><a href='#id-10.Object-[OB20]테이블스페이스목록'>[OB20] 테이블스페이스 목록</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h2 id="id-10.Object-Object"><strong>Object</strong></h2><hr /><p>object 정보를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><h4 id="id-10.Object-[OB01]메모리테이블사용량">[OB01] 메모리 테이블 사용량</h4><ul style="list-style-type: square;"><li><p>메모리 테이블의 사용량을 조회하는 쿼리이다. 아래 쿼리는 알티베이스 4 이상 버전에서 사용할 수 있다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.5.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT MT.USER_NAME
+     , MT.TABLE_NAME 
+     , MT.PARTITION_NAME 
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/(MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;     
+  FROM (SELECT U.USER_NAME 
+             , T.TABLE_NAME 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, P.PARTITION_OID) TABLE_OID 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, RPAD(&#39;-&#39;, 14), &#39;T&#39;, P.PARTITION_NAME) PARTITION_NAME 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TBS_ID, &#39;T&#39;, P.TBS_ID) TBS_ID
+          FROM SYSTEM_.SYS_USERS_ U
+             , SYSTEM_.SYS_TABLES_ T LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ P ON T.TABLE_ID = P.TABLE_ID
+         WHERE 1=1
+           AND U.USER_ID &lt;&gt; 1
+           AND U.USER_ID = T.USER_ID
+           AND T.TBS_ID IN (SELECT ID FROM V$TABLESPACES WHERE TYPE IN (1, 2, 8)) 
+       ) MT
+     , V$MEMTBL_INFO MU 
+     , V$TABLESPACES TBS
+ WHERE 1=1
+   AND MT.TABLE_OID = MU.TABLE_OID
+   AND TBS.ID = MT.TBS_ID
+ ORDER BY 1, 2, 3
+   ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 ~ 6.3.1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME
+     , D.NAME TBS_NAME
+     , TO_CHAR((C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((C.FIXED_USED_MEM+C.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((C.FIXED_USED_MEM+C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_TABLES_ B
+     , V$MEMTBL_INFO C
+     , V$TABLESPACES D
+ WHERE 1=1
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.TABLE_TYPE = &#39;T&#39;
+   AND A.USER_ID = B.USER_ID
+   AND B.TABLE_OID = C.TABLE_OID
+   AND B.TBS_ID = D.ID 
+ ORDER BY USER_NAME, TBS_NAME, TABLE_NAME
+;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명<span class="confluence-anchor-link" id="id-10.Object-OB01_col"></span></strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>USER_NAME</p></td><td colspan="1" class="confluenceTd">테이블 소유자</td></tr><tr><td colspan="1" class="confluenceTd"><p>TABLE_NAME</p></td><td colspan="1" class="confluenceTd">테이블 이름</td></tr><tr><td colspan="1" class="confluenceTd"><p>PARTITION_NAME</p></td><td colspan="1" class="confluenceTd">테이블에 파티션드 테이블을 생성했을 경우 파티션드 테이블 이름. 메모리 파티션 테이블은 6.5.1 부터 지원.</td></tr><tr><td colspan="1" class="confluenceTd"><p>TBS_NAME</p></td><td colspan="1" class="confluenceTd">테이블 생성 시 지정한 테이블스페이스 이름</td></tr><tr><td class="confluenceTd">ALLOC(M)</td><td class="confluenceTd">메모리 테이블에서 할당받은 페이지의 합계이다.</td></tr><tr><td class="confluenceTd">USED(M)</td><td class="confluenceTd">메모리 테이블이 할당받은 페이지 중에서 '실제 데이터가 적재된 페이지'의 합계이다. 예를 들어, ALLOC이 100M 크기인 메모리 테이블에 전체 DELELE를 수행하면 ALLOC은 100M로 변함없으나 USED는 0에 가깝게 된다. TRUNCATE 를 수행하면 ALLOC 을 줄일 수 있다.</td></tr><tr><td class="confluenceTd">USAGE(%)</td><td class="confluenceTd">메모리 테이블에 할당된 페이지 중에서 '실제 데이터가 적재된 페이지'에 대한 백분율로 나타낸다. (즉, USED/ALLOC)</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB02]큐">[OB02] 큐</h4><ul style="list-style-type: square;"><li><p>큐 테이블의 사용량을 조회하는 쿼리이다. 아래 쿼리는 알티베이스 4 이상 버전에서 사용할 수 있다.  </p></li><li><p>컬럼 설명은 '<a href="#id-10.Object-OB01_col">&#47700;&#47784;&#47532; &#53580;&#51060;&#48660; &#48143; &#49324;&#50857;&#47049; &#52972;&#47100; &#49444;&#47749;</a>' 참고</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME
+     , D.NAME TABLESPACE_NAME
+     , C.TABLE_OID
+     , TO_CHAR((C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((C.FIXED_USED_MEM+C.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((C.FIXED_USED_MEM+C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_TABLES_ B
+     , V$MEMTBL_INFO C
+     , V$TABLESPACES D
+ WHERE 1=1
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.TABLE_TYPE = &#39;Q&#39;
+   AND A.USER_ID = B.USER_ID
+   AND B.TABLE_OID = C.TABLE_OID
+   AND B.TBS_ID = D.ID ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB03]Efficiency가낮은메모리테이블">[OB03] Efficiency 가 낮은 메모리 테이블</h4><ul style="list-style-type: square;"><li>할당받은 전체 페이지에 비해 실제 사용이 낮은 메모리 테이블을 조회하는 쿼리이다.</li><li><p>메모리 테이블에서 할당받은 페이지의 전체 크기가 1G 이상이고 USAGE가 50% 이하인 메모리 테이블을 출력한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.5.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT MT.USER_NAME
+     , MT.TABLE_NAME 
+     , MT.PARTITION_NAME 
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/(MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;     
+  FROM (SELECT U.USER_NAME 
+             , T.TABLE_NAME 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, P.PARTITION_OID) TABLE_OID 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, RPAD(&#39;-&#39;, 14), &#39;T&#39;, P.PARTITION_NAME) PARTITION_NAME 
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TBS_ID, &#39;T&#39;, P.TBS_ID) TBS_ID
+          FROM SYSTEM_.SYS_USERS_ U
+             , SYSTEM_.SYS_TABLES_ T LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ P ON T.TABLE_ID = P.TABLE_ID
+         WHERE 1=1
+           AND U.USER_ID &lt;&gt; 1
+           AND U.USER_ID = T.USER_ID
+           AND T.TBS_ID IN (SELECT ID FROM V$TABLESPACES WHERE TYPE IN (1, 2, 8)) 
+       ) MT
+     , V$MEMTBL_INFO MU 
+     , V$TABLESPACES TBS
+ WHERE 1=1
+   AND MT.TABLE_OID = MU.TABLE_OID
+   AND TBS.ID = MT.TBS_ID
+   AND ROUND((FIXED_ALLOC_MEM+VAR_ALLOC_MEM)/1024/1024, 2) &gt;= 1024                                -- 메모리 테이블에 할당된 페이지가 1G 이상
+   AND ROUND((FIXED_USED_MEM+VAR_USED_MEM)/(FIXED_ALLOC_MEM+VAR_ALLOC_MEM+0.01)*100, 2) &lt;= 50     -- USAGE가 50% 이하   
+ ORDER BY 1, 2, 3
+   ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT C.USER_NAME
+     , B.TABLE_NAME
+     , TO_CHAR((C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((C.FIXED_USED_MEM+C.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((C.FIXED_USED_MEM+C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;
+  FROM V$MEMTBL_INFO A ,
+       SYSTEM_.SYS_TABLES_ B,
+       SYSTEM_.SYS_USERS_ C
+ WHERE A.TABLE_OID = B.TABLE_OID
+   AND B.USER_ID = C.USER_ID
+   AND ROUND((FIXED_ALLOC_MEM+VAR_ALLOC_MEM)/1024/1024, 2) &gt;= 1024                                -- 메모리 테이블에 할당된 페이지가 1G 이상
+   AND ROUND((FIXED_USED_MEM+VAR_USED_MEM)/(FIXED_ALLOC_MEM+VAR_ALLOC_MEM+0.01)*100, 2) &lt;= 50     -- USAGE가 50% 이하
+   AND B.USER_ID &lt;&gt; 1
+ ORDER BY &#39;FREE(M)&#39; DESC ;</pre>
+</div></div></li><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><span>ALLOC(M)</span></td><td colspan="1" class="confluenceTd"><span>메모리 테이블에서 할당받은 페이지의 합계이다.</span></td></tr><tr><td colspan="1" class="confluenceTd"><span>USED(M)</span></td><td colspan="1" class="confluenceTd"><span>메모리 테이블이 할당받은 페이지 중에서 '실제 데이터가 적재된 페이지'의 합계이다. 예를 들어, ALLOC이 100M 크기인 메모리 테이블에 전체 DELELE를 수행하면 ALLOC은 100M로 변함없으나 USED는 0에 가깝게 된다. <span>TRUNCATE 를 수행하면 ALLOC 을 줄일 수 있다.</span> </span></td></tr><tr><td colspan="1" class="confluenceTd"><span>USAGE(%)</span></td><td colspan="1" class="confluenceTd"><span>메모리 테이블에 할당된 페이지 중에서 '실제 데이터가 적재된 페이지'에 대한 백분율로 나타낸다. (즉, USED/ALLOC)</span></td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB04]메모리인덱스,큐인덱스사용량">[OB04] 메모리 인덱스, 큐 인덱스 사용량</h4><ul style="list-style-type: square;"><li>메모리 테이블의 인덱스와 큐 테이블의 인덱스 사용량을 조회하는 쿼리이다.</li><li><p>버전 별로 쿼리가 다르므로 버전에 맞는 쿼리를 사용해야 한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME, T.TABLE_NAME TABLE_NAME
+     , B.INDEX_NAME
+     , LPAD(I.IS_PARTITIONED, 14) INDEX_PARTITIONED
+     , ROUND(((USED_NODE_COUNT + PREPARE_NODE_COUNT) / 15 * 32768)/1024/1024, 1) AS &#39;SIZE(MB)&#39;
+  FROM V$MEM_BTREE_HEADER B
+     , SYSTEM_.SYS_INDICES_ I
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND B.INDEX_ID = I.INDEX_ID
+   AND I.TABLE_ID = T.TABLE_ID
+   AND B.INDEX_TBS_ID &lt;&gt; 0
+   AND U.USER_ID = T.USER_ID
+ ORDER BY TABLE_NAME, B.INDEX_ID
+;</pre>
+</div></div></li><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><pre>INDEX_PARTITIONED</pre></td><td class="confluenceTd">해당 인덱스가 파티션 인덱스인지 알려준다. F : 논파티션 인덱스 T : 파티션 인덱스 메모리 파티션 인덱스는 알티베이스 6.5.1 부터 지원한다.</td></tr><tr><td class="confluenceTd"><pre>SIZE(MB)</pre></td><td class="confluenceTd">인덱스에 달린 노드 수로 인덱스 크기를 알 수 있다. 인덱스 노드 15개당 하나의 페이지를 사용하며 페이지 크기는 32KB이다. <span style="color: rgb(0,0,0);">알티베이스 서버 버전에 따라 노드 별 사용할 수 있는 슬롯의 개수에 차이가 있다. 이 때문에 같은 데이터일지라도 버전에 따라 인덱스 크기가 다를 수 있다.</span></td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB05]디스크테이블">[OB05] 디스크 테이블</h4><ul style="list-style-type: square;"><li><p>디스크 테이블의 사용량 정보이다. 버전 별로 쿼리가 다르므로 버전에 맞는 쿼리를 사용해야 한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5.3.3 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME
+     , TBL.TABLE_NAME TABLE_NAME
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, TBL.PARTITION_NAME, &#39;F&#39;, &#39;-&#39;) PARTITIONED_TABLE
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999,999&#39;) &#39;MAX(KB)&#39;
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024, &#39;999,999,999,999&#39;) &#39;ALLOC(KB)&#39;
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024, &#39;999,999,999,999&#39;) &#39;USED(KB)&#39;
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TBS_ID, &#39;T&#39;, PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+         WHERE TBL.TABLE_TYPE = &#39;T&#39;
+       ) TBL
+     , (SELECT S.TABLE_OID, SUM(S.TOTAL_EXTENT_COUNT) TOTAL_EXTENT_COUNT, SUM(S.TOTAL_USED_SIZE) TOTAL_USED_SIZE 
+          FROM X$SEGMENT S 
+         WHERE S.SEGMENT_TYPE IN (6, 7) /* 6 : 테이블, 7 : LOB 데이터(6.1.1 이상), 5 : 인덱스 */
+         GROUP BY S.TABLE_OID) SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, TABLE_NAME, PARTITIONED_TABLE
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5.1.5</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME
+     , TBL.TABLE_NAME TABLE_NAME
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, TBL.PARTITION_NAME, &#39;F&#39;, &#39;-&#39;) PARTITIONED_TABLE
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;MAX(MB)&#39;
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(MB)&#39;
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TBS_ID, &#39;T&#39;, PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+       ) TBL
+     , V$SEGMENT SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.SEGMENT_TYPE = &#39;TABLE&#39;  /* &#39;TABLE&#39; : 테이블, &#39;INDEX&#39; : 인덱스 */
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, PARTITIONED, TABLE_NAME, PARTITIONED_TABLE
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME &#39;USER_NAME&#39;                                                                                      
+     , TBL.TABLE_NAME &#39;TABLE_NAME&#39;                                                                                  
+     , TBS.NAME &#39;TBS_NAME&#39;                                                                                          
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024 , &#39;999,999,999&#39;) &#39;TBS_MAX(KB)&#39;                           
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, &#39;999,999,999&#39;) &#39;ALLOC(KB)&#39;  
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT)/1024, &#39;999,999,999&#39;) &#39;USED(KB)&#39;    
+  FROM X$SEGMENT SEG
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND SEG.SPACE_ID = TBL.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND TBL.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = &#39;T&#39;
+   AND SEG.SEGMENT_TYPE = 6
+ ORDER BY USER_NAME, TABLE_NAME
+ ;</pre>
+</div></div></li><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>TABLE_NAME</p></td><td colspan="1" class="confluenceTd">테이블의 이름</td></tr><tr><td class="confluenceTd"><p>PARTITIONED_TABLE</p></td><td class="confluenceTd"><p><span>테이블에 파티션 테이블을 생성한 경우 </span>파티션 테이블의 이름을 보여준다. 논-파티션드 테이블의 경우 '-'</p></td></tr><tr><td class="confluenceTd"><p>TBS_NAME</p></td><td class="confluenceTd">테이블 생성 시 지정한 테이블스페이스를 보여준다. <span>파티션드 테이블에 테이블스페이스를 지정한 경우 파티션드 테이블에서 지정한 테이블스페이스 이름을 보여준다.</span></td></tr><tr><td class="confluenceTd"><p>MAX(MB)</p></td><td class="confluenceTd">테이블이 속한 테이블스페이스의 최대 크기를 의미한다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>ALLOC(MB)</p></td><td colspan="1" class="confluenceTd">테이블이 할당받은 총 크기를 의미한다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>USED(MB)</p></td><td colspan="1" class="confluenceTd">테이블이 할당받은 공간 중 데이터가 포함된 크기를 의미한다. <br />데이터를 DELETE 를 수행하면 DELETE한 공간은 재사용 가능하지만 <span style="color: rgb(255,0,0);">디스크 테이블의 경우 메모리 테이블과는 다르게 DELETE를 수행해도 USED는 줄어들지 않는다. <br /><span style="color: rgb(0,0,0);">DELETE로 재사용 가능한 공간을 제외하고 <strong>실제 USED 를 확인하려면 AGING 작업을 수행해야 한다.</strong> 예) ALTER TABLE <em>table_name</em> AGING ; <br /></span><span style="color: rgb(0,0,0);"><span style="color: rgb(255,0,0);">ALTER TABLE ~ AGING ; 수행 중에는 테이블에 X락을 잡기 때문에 해당 테이블에 대한 다른 요청은 대기 상태가 되므로 수행 시 주의해야 한다.</span> AGING 작업을 수행하지 않으면 ALLOC 과 USED 는 항상 같은 값을 갖는다.</span> </span></td></tr></tbody></table></div><p><br /><br /></p></li></ul><h4 id="id-10.Object-[OB06]디스크인덱스사용량">[OB06] 디스크 인덱스 사용량</h4><ul style="list-style-type: square;"><li><p>디스크 인덱스의 사용량 정보이다. 버전 별로 쿼리가 다르므로 버전에 맞는 쿼리를 사용해야 한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5.3.3 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME                                                                                         
+     , I_LIST.TABLE_NAME                                                                                             
+     , DECODE(I_LIST.PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.PARTITION_NAME) PARTITIONED_NAME                
+     , I_LIST.INDEX_NAME INDEX_NAME                                                                                  
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX   
+     , TBS.NAME TBS_NAME                                                                                             
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;MAX(MB)&#39;                                                
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(MB)&#39;     
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;USED(MB)&#39;                                                                           
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, I.TABLE_ID, &#39;T&#39;, PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, &#39;F&#39;, I.TBS_ID, &#39;T&#39;, PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID ) I_LIST
+     , X$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5.1.5 버전</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> SELECT U.USER_NAME USER_NAME
+     , I_LIST.TABLE_NAME
+     , DECODE(I_LIST.PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.PARTITION_NAME) PARTITIONED_NAME
+     , I_LIST.INDEX_NAME INDEX_NAME
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;MAX(MB)&#39;
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(MB)&#39;
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, I.TABLE_ID, &#39;T&#39;, PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, &#39;F&#39;, I.TBS_ID, &#39;T&#39;, PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID ) I_LIST
+     , V$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME AS &#39;USER_NAME&#39;
+     , TBL.TABLE_NAME AS &#39;TABLE_NAME&#39;
+     , IDX.INDEX_NAME AS &#39;INDEX_NAME&#39;
+     , TBS.NAME AS &#39;TBS_NAME&#39;
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024/1024 , &#39;999,999,999&#39;) AS &#39;TBS_MAX(KB)&#39;
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024/1024, &#39;999,999,999&#39;) AS &#39;ALLOC(MB)&#39;
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT )/1024/1024, &#39;999,999,999&#39;) AS &#39;USED(MB)&#39;
+ FROM  X$SEGMENT SEG
+     , V$INDEX I
+     , SYSTEM_.SYS_INDICES_ IDX
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_DESC = I.INDEX_SEG_DESC
+   AND I.INDEX_ID = IDX.INDEX_ID
+   AND IDX.TABLE_ID = TBL.TABLE_ID
+   AND SEG.SPACE_ID = IDX.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND IDX.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = &#39;T&#39;
+   AND SEG.SEGMENT_TYPE = 5
+ ORDER BY U.USER_NAME, TBL.TABLE_NAME, IDX.INDEX_NAME
+   ;</pre>
+</div></div></li></ul><ul><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>TABLE_NAME</p></td><td colspan="1" class="confluenceTd">테이블 이름</td></tr><tr><td class="confluenceTd"><p>PARTITIONED_TABLE</p></td><td class="confluenceTd"><p>테이블에 파티션드 테이블을 생성했을 경우 파티션 테이블의 이름을 보여준다. 논-파티션드 테이블의 경우 '-'</p></td></tr><tr><td colspan="1" class="confluenceTd"><pre>INDEX_NAME</pre></td><td colspan="1" class="confluenceTd">인덱스 이름</td></tr><tr><td colspan="1" class="confluenceTd"><pre>PARTITIONED_INDEX</pre></td><td colspan="1" class="confluenceTd">인덱스에 파티션드 인덱스를 생성했을 경우 파티션드 인덱스 이름을 보여준다. 논-파티션드 인덱스의 경우 '-'</td></tr><tr><td class="confluenceTd"><pre>TBS_NAME</pre></td><td class="confluenceTd"><span>인덱스 생성 시 지정한 테이블스페이스를 보여준다. 파티션드 인덱스에 테이블스페이스를 지정한 경우 파티션드 인덱스에서 지정한 테이블스페이스 이름을 보여준다.</span></td></tr><tr><td class="confluenceTd"><p>MAX(MB)</p></td><td class="confluenceTd"><span>인덱스가 속한 테이블스페이스의 최대 크기를 의미한다.</span></td></tr><tr><td colspan="1" class="confluenceTd"><p>ALLOC(MB)</p></td><td colspan="1" class="confluenceTd"><span>인덱스에서 할당받은 총 크기를 의미한다.</span></td></tr><tr><td colspan="1" class="confluenceTd"><p>USED(MB)</p></td><td colspan="1" class="confluenceTd"><span>인덱스가 할당받은 공간 중 데이터가 포함된 크기를 의미한다. </span><span> <br /></span><span>데이터를 DELETE 를 수행하면 DELETE한 공간은 재사용 가능하<span style="color: rgb(0,51,102);">지만 </span></span><span style="color: rgb(255,0,0);"><span style="color: rgb(0,51,102);">DELETE를 수행해도 인덱스의 USED는 줄어들지 않는다</span>. <br /><span style="color: rgb(0,0,0);">DELETE로 재사용 가능한 공간을 제외하고 <strong>실제 USED 를 확인하려면 AGING 작업을 수행해야 한다.</strong> 예) ALTER INDEX <em>index_name</em> AGING ; <br /></span><span style="color: rgb(0,0,0);"><span style="color: rgb(255,0,0);">ALTER INDEX ~ AGING ; 수행 중에는 해당 테이블에 X락을 잡기 때문에 해당 테이블에 대한 다른 요청은 대기 상태가 되므로 수행 시 주의해야 한다.</span> AGING 작업을 수행하지 않으면 ALLOC 과 USED 는 항상 같은 값을 갖는다.</span></span></td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB07]파티션테이블정보">[OB07] 파티션 테이블 정보</h4><ul style="list-style-type: square;"><li><p>파티션 테이블의 파티셔닝 방법, 파티셔닝 기준 등 파티션 테이블에 관한 정보를 보여주는 쿼리이다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.5.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME
+     , T.TABLE_NAME
+     , P.PARTITION_NAME
+     , DECODE(PM.PARTITION_METHOD, 0, RPAD(&#39;RANGE&#39;, 16), 1, RPAD(&#39;HASH&#39;, 16), 2, RPAD(&#39;LIST&#39;, 16)) PARTITION_METHOD
+     , RPAD(P.PARTITION_ORDER, 15) PARTITION_ORDER
+     , RPAD(PM.ROW_MOVEMENT, 12) ROW_MOVEMENT
+     , P.PARTITION_MIN_VALUE
+     , P.PARTITION_MAX_VALUE
+     , RPAD(P.PARTITION_ACCESS, 6) &#39;ACCESS&#39;                             -- 알티베이스 6.5.1 이전 버전은 삭제 후 사용
+     , TO_CHAR(P.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED                -- 알티베이스 6.5.1 이전 버전은 삭제 후 사용
+     , TO_CHAR(P.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME    -- 알티베이스 6.5.1 이전 버전은 삭제 후 사용      
+  FROM SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_TABLE_PARTITIONS_ P
+     , SYSTEM_.SYS_PART_TABLES_ PM
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = P.TABLE_ID
+   AND PM.TABLE_ID = T.TABLE_ID ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>PARTITION_METHOD</p></td><td colspan="1" class="confluenceTd">해당 파티션 테이블의 파티셔닝 방법을 보여준다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>PARTITION_ORDER</p></td><td colspan="1" class="confluenceTd">해시 파티션의 경우 파티션의 순서를 보여준다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>ROW_MOVEMENT</p></td><td colspan="1" class="confluenceTd"><a name="9011324" rel="nofollow"></a><a name="9003806" rel="nofollow"></a>파티션드 테이블의 레코드가 갱신되어 파티션 키에 해당하는 컬럼의 값이 다른 파티션에 속하는 값으로 변경된 경우 해당 레코드를 자동으로 다른 파티션으로 이동시키는 것을 허용하는 지를 보여준다. <br />T는 이동을 허가한 것이고 F는 허가하지 않은 것이다. 이 옵션은 파티션 테이블 생성 시 설정하는 옵션이다.</td></tr><tr><td class="confluenceTd">PARTITION_MIN_VALUE</td><td class="confluenceTd"><p><a name="9012476" rel="nofollow"></a>범위(Range)파티션의 경우 해당 파티션 테이블의 최소 기준값을 문자열로 보여준다.</p><p>리스트(List) 파티션의 경우 PARTITION_MIN_VALUE와 PARTITION_MAX_VALUE가 동일하다.</p><p>해시(Hash) 파티션인 경우 PARTITION_MIN_VALUE와  PARTITION_MAX_VALUE가 모두 널(NULL)이다.</p></td></tr><tr><td class="confluenceTd">PARTITION_MAX_VALUE</td><td class="confluenceTd"><p><a name="9012478" rel="nofollow"></a>범위(Range)파티션의 경우 해당 파티션 테이블의 최대 기준값을 문자열로 보여준다.</p><p>리스트(List) 파티션의 경우 PARTITION_MIN_VALUE와 PARTITION_MAX_VALUE가 동일하다.</p><p>해시(Hash) 파티션인 경우 PARTITION_MIN_VALUE와  PARTITION_MAX_VALUE가 모두 널(NULL)이다.</p></td></tr><tr><td class="confluenceTd">ACCESS</td><td class="confluenceTd"><p><a name="9012484" rel="nofollow"></a></p><p>파티션 테이블의 데이터에 대한 접근 모드를 보여준다. <span>이 컬럼은 알티베이스 6.5.1 부터 제공한다. </span></p><p>R : 데이터 읽기 전용 모드<br />W : 데이터 읽기/쓰기 모드 (기본 모드)<br />A : 데이터 읽기/추가 모드</p></td></tr><tr><td class="confluenceTd">CREATED</td><td class="confluenceTd"><p><span>파티션 테이블을 생성한 시각이다. </span>이 컬럼은 알티베이스 6.5.1 부터 제공한다.</p></td></tr><tr><td class="confluenceTd">LAST_DDL_TIME</td><td class="confluenceTd"><p>파티션 테이블에 마지막으로 DDL을 수행한 시각이다. <span>이 컬럼은 알티베이스 6.5.1 부터 제공한다.</span></p></td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB08]시퀀스">[OB08] 시퀀스</h4><ul style="list-style-type: square;"><li><p>시퀀스 객체에 대한 정보를 보여주는 쿼리이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME
+     , TABLE_NAME SEQ_NAME
+     , MIN_SEQ MIN
+     , CURRENT_SEQ
+     , MAX_SEQ MAX
+     , INCREMENT_SEQ INCREMENT
+     , IS_CYCLE
+     , CACHE_SIZE CACHE
+  FROM V$SEQ A
+     , SYSTEM_.SYS_USERS_ B
+     , SYSTEM_.SYS_TABLES_ C
+ WHERE 1=1
+   AND A.SEQ_OID = C.TABLE_OID
+   AND B.USER_ID = C.USER_ID
+   AND B.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB09]시노님">[OB09] 시노님</h4><ul style="list-style-type: square;"><li><p>시노님에 대한 정보를 보여주는 쿼리이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NVL(U.USER_NAME, &#39;PUBLIC&#39;) SYNONYM_OWNER
+     , S.SYNONYM_NAME
+     , S.OBJECT_OWNER_NAME OBJECT_OWNER
+     , S.OBJECT_NAME
+     , TO_CHAR(S.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+  FROM SYSTEM_.SYS_SYNONYMS_ S 
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U ON S.SYNONYM_OWNER_ID = U.USER_ID 
+ WHERE 1=1
+   --AND U.USER_ID &lt;&gt; 0       -- PUBLIC 시노님을 제외하고 싶은 경우 주석 제거하고 사용한다. 
+ ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NVL(U.USER_NAME, &#39;PUBLIC&#39;) SYNONYM_OWNER
+     , S.SYNONYM_NAME
+     , S.SCHEMA_NAME OBJECT_OWNER
+     , S.OBJECT_NAME
+  FROM SYSTEM_.SYS_SYNONYMS_ S LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U ON S.USER_ID = U.USER_ID 
+ ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>SYNONYM_OWNER</p></td><td colspan="1" class="confluenceTd"><p>시노님을 생성한 데이터베이스 사용자.</p><p>이 값이 'PUBLIC'인 경우 데이터베이스 생성 시 누구나 사용할 수 있도록 기본적으로 생성되는 시노님을 의미한다.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>OBJECT_OWNER</p></td><td colspan="1" class="confluenceTd">시노님 대상 객체의 소유자.</td></tr><tr><td colspan="1" class="confluenceTd"><p>OBJECT_NAME</p></td><td colspan="1" class="confluenceTd">새노님 대상 객체의 이름.</td></tr><tr><td class="confluenceTd">LAST_DDL_TIME</td><td class="confluenceTd"><a name="9012253" rel="nofollow"></a>시노님에 대해 <span>마지막으로 DDL을 수행한 시각이다</span>. 알티베이스 5 버전부터 제공하는 컬럼이다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB10]PSM">[OB10] PSM</h4><ul style="list-style-type: square;"><li><p>저장 프로시저와 저장 함수에 대해 실행  정보를 볼 수 있는 쿼리이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , PROC_NAME PSM_NAME
+     , DECODE(OBJECT_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;, 3, &#39;TYPESET&#39;) PSM_TYPE
+     , DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME    -- 알티베이스 4 에서는 삭제 후 사용
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PROCEDURES_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; 
+ ORDER BY 1, 2, 3;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">STATUS</td><td class="confluenceTd">컴파일 상태를 나타낸다. <span>INVALID는</span> 컴파일이 필요한 상태이다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB11]PSM생성구문">[OB11] PSM 생성구문</h4><ul style="list-style-type: square;"><li><p>PROC_NAME 조건에 PSM 이름을 입력하면 해당 PSM 의 생성 구문을 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT PARSE
+  FROM SYSTEM_.SYS_PROC_PARSE_
+ WHERE PROC_OID = (SELECT PROC_OID
+          FROM SYSTEM_.SYS_PROCEDURES_
+         WHERE PROC_NAME = &#39;psm_name&#39;)   -- 조회하고자 하는 psm이름을 입력한다. 
+ ORDER BY SEQ_NO ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB12]VIEW">[OB12] VIEW</h4><ul style="list-style-type: square;"><li><p>VIEW 객체에 대한 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME VIEW_NAME
+     , DECODE(C.STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED                 -- 알티베이스 4 에서는 삭제 후 사용
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME     -- 알티베이스 4 에서는 삭제 후 사용
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_TABLES_ B
+     , SYSTEM_.SYS_VIEWS_ C
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND B.TABLE_ID = C.VIEW_ID
+   AND B.TABLE_TYPE = &#39;V&#39; ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB13]VIEW생성구문">[OB13] VIEW 생성구문</h4><ul style="list-style-type: square;"><li><p>TABLE_NAME 조건에 뷰 이름을 입력하면 해당 뷰의 생성 구문을 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT PARSE
+  FROM SYSTEM_.SYS_VIEW_PARSE_
+ WHERE VIEW_ID = (SELECT TABLE_ID
+          FROM SYSTEM_.SYS_TABLES_
+         WHERE TABLE_NAME = &#39;view_name&#39;)    -- 조회하고자 하는 view이름을 입력한다. 
+ ORDER BY SEQ_NO ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB14]PACKAGE">[OB14] PACKAGE</h4><ul style="list-style-type: square;"><li><p>패키지에 대한 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , PACKAGE_NAME
+     , DECODE(PACKAGE_TYPE, 6, &#39;PACKAGE_SPEC&#39;, 7, &#39;PACKAGE_BODY&#39;) PACKAGE_TYPE
+     , DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PACKAGES_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">PACKAGE_TYPE</td><td class="confluenceTd">패키지 유형. 스펙인지 바디인지를 나타낸다.</td></tr><tr><td class="confluenceTd">STATUS</td><td class="confluenceTd">컴파일 상태를 나타낸다. INVALID는 컴파일이 필요한 상태이다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB15]PACKAGE서브프로그램">[OB15] PACKAGE 서브프로그램 </h4><ul style="list-style-type: square;"><li><p><a name="9010992" rel="nofollow"></a>패키지에 포함된 서브프로그램(저장 프로시저와 저장 함수)에 대한 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME
+     , OBJECT_NAME
+     , PACKAGE_NAME
+     , DECODE(SUB_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;) SUB_TYPE
+     , PARA_NAME
+     , PARA_ORDER
+     , DECODE(INOUT_TYPE, 0, &#39;IN&#39;, 1, &#39;OUT&#39;, 2, &#39;IN OUT&#39;) INOUT_TYPE
+     , DATA_TYPE
+     , SIZE
+     , DEFAULT_VAL
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PACKAGE_PARAS_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">SUB_TYPE</td><td class="confluenceTd">컴파일 상태를 나타낸다. 1 이면 컴파일이 필요한 상태이다.</td></tr><tr><td class="confluenceTd">PARA_NAME</td><td class="confluenceTd">서브프로그램 파라미터 이름</td></tr><tr><td class="confluenceTd">PARA_ORDER</td><td class="confluenceTd">서브프로그램 파라미터 순서. 첫번째일 경우 1을 가짐.</td></tr><tr><td class="confluenceTd">INOUT_TYPE</td><td class="confluenceTd">파라미터의 입출력 여부</td></tr><tr><td class="confluenceTd">DATA_TYPE</td><td class="confluenceTd">파라미터의 데이터 타입</td></tr><tr><td class="confluenceTd">SIZE</td><td class="confluenceTd">파라미터 타입의 크기</td></tr><tr><td colspan="1" class="confluenceTd">DEFAULT_VAL</td><td colspan="1" class="confluenceTd">파라미터의 기본값</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB16]PACKAGE생성구문">[OB16] PACKAGE 생성구문</h4><ul style="list-style-type: square;"><li><p>PACKAGE_NAME 조건에 패키지 이름을 입력하면 해당 패키지의 생성 구문을 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상 </b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT PARSE 
+     , DECODE(PACKAGE_TYPE, 6, &#39;PACKAGE_SPEC&#39;, 7, &#39;PACKAGE_BODY&#39;) PACKAGE_TYPE
+  FROM SYSTEM_.SYS_PACKAGE_PARSE_
+ WHERE PACKAGE_OID IN (SELECT PACKAGE_OID
+                         FROM SYSTEM_.SYS_PACKAGES_
+                        WHERE PACKAGE_NAME = &#39;package_name&#39;)   -- 조회하고자 하는 패키지 이름을 입력한다. 
+ ORDER BY SEQ_NO ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-10.Object-[OB17]트리거">[OB17] 트리거</h4><ul style="list-style-type: square;"><li><p>트리거 생성 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TR.USER_NAME
+     , T.TABLE_NAME
+     , TR.TRIGGER_NAME
+     , RPAD(DECODE(TR.IS_ENABLE, 0, &#39;NO&#39;, 
+                                 1, &#39;YES&#39;), 9) IS_ENABLE
+     , RPAD(DECODE(TR.EVENT_TIME, 1, &#39;BEFORE&#39;, 
+                             2, &#39;AFTER&#39;, 
+                             3, &#39;INSTEAD OF&#39;), 10) EVENT_TIME
+     , RPAD(DECODE(TR.EVENT_TYPE, 1, &#39;INSERT&#39;, 
+                             2, &#39;DELETE&#39;, 
+                             4, &#39;UPDATE&#39;), 10) EVENT_TYPE
+     , DECODE(TR.GRANULARITY, 1, &#39;FOR EACH ROW&#39;, 
+                              2, &#39;FOR EACH STATEMENT&#39;) GRANULARITY
+  FROM SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_TRIGGERS_ TR
+ WHERE 1=1
+   AND TR.TABLE_ID = T.TABLE_ID;</pre>
+</div></div></li><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="1" class="confluenceTd"><p>TABLE_NAME</p></td><td colspan="1" class="confluenceTd">트리거가 정의된 테이블 이름</td></tr><tr><td class="confluenceTd"><p>IS_ENABLE</p></td><td class="confluenceTd">트리거 동작 여부.</td></tr><tr><td class="confluenceTd"><p>EVENT_TIME</p></td><td class="confluenceTd">트리거를 발생시킬 시간</td></tr><tr><td colspan="1" class="confluenceTd"><p>EVENT_TYPE</p></td><td colspan="1" class="confluenceTd"><a name="9012617" rel="nofollow"></a>트리거를 발생시키는 이벤트 종류</td></tr><tr><td colspan="1" class="confluenceTd"><p>GRANULARITY</p></td><td colspan="1" class="confluenceTd"><a name="9012624" rel="nofollow"></a>트리거를 발생시키는 단위</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB18]작업(Job)">[OB18] 작업(Job)</h4><ul style="list-style-type: square;"><li><p>작업(Job) 객체에 대한 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.5.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT JOB_NAME
+     , EXEC_QUERY PROC_NAME
+     , INTERVAL
+     , LPAD(DECODE(INTERVAL_TYPE, &#39;YY&#39;, &#39;YEARLY&#39;, 
+                                  &#39;MM&#39;, &#39;MONTHLY&#39;, 
+                                  &#39;DD&#39;, &#39;DAILY&#39;, 
+                                  &#39;HH&#39;, &#39;HOURLY&#39;, 
+                                  &#39;MI&#39;, &#39;MINUTELY&#39;), 13) INTERVAL_TYPE
+     , LPAD(DECODE(STATE, 0, &#39;-&#39;, 1, &#39;ING&#39;), 5) STATE
+     , LPAD(EXEC_COUNT, 10) EXEC_COUNT
+     , LPAD(ERROR_CODE, 10) ERROR_CODE
+     , TO_CHAR(START_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) START_TIME
+     , TO_CHAR(LAST_EXEC_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_EXEC_TIME
+     , TO_CHAR(END_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) END_TIME
+     , DECODE(IS_ENABLE, &#39;T&#39;, &#39;YES&#39;, &#39;F&#39;, &#39;NO&#39;) IN_ENABLE     -- 알티베이스 6.3.1 에서는 삭제 후 사용한다. 
+  FROM SYSTEM_.SYS_JOBS_;</pre>
+</div></div></li><li><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>JOB_NAME</p></td><td class="confluenceTd">JOB 객체의 이름</td></tr><tr><td class="confluenceTd"><p>PROC_NAME</p></td><td class="confluenceTd">JOB에 등록한 프로시저 이름</td></tr><tr><td class="confluenceTd"><p>INTERVAL, <span>INTERVAL_TYPE</span></p></td><td class="confluenceTd">수행 주기</td></tr><tr><td colspan="1" class="confluenceTd"><p>STATE</p></td><td colspan="1" class="confluenceTd">JOB 진행 상태. <span style="color: rgb(0,0,0);">ING이면 작업 스케줄러에 의해 프로시저가 현재 수행 중임을 의미한다.</span></td></tr><tr><td colspan="1" class="confluenceTd"><p>EXEC_COUNT</p></td><td colspan="1" class="confluenceTd">JOB의 실행 횟수.</td></tr><tr><td colspan="1" class="confluenceTd"><p>ERROR_CODE</p></td><td colspan="1" class="confluenceTd">마지막 JOB 실행 결과.</td></tr><tr><td colspan="1" class="confluenceTd"><p>START_TIME</p></td><td colspan="1" class="confluenceTd">JOB이 처음 수행을 시작한 시각.</td></tr><tr><td colspan="1" class="confluenceTd"><p>LAST_EXEC_TIME</p></td><td colspan="1" class="confluenceTd">마지막으로 JOB을 수행한 시각 가장 최근에 수행된 시각을 의미한다.</td></tr><tr><td colspan="1" class="confluenceTd"><p>END_TIME</p></td><td colspan="1" class="confluenceTd">마지막으로 수행된 JOB이 종료한 시각.</td></tr><tr><td colspan="1" class="confluenceTd"><p>IN_ENABLE</p></td><td colspan="1" class="confluenceTd">작업 스케줄러에 의해 JOB 실행이 가능한 상태인지 알 수 있다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-10.Object-[OB19]데이터베이스사용자">[OB19] 데이터베이스 사용자</h4><ul><li><p>데이터베이스 사용자 정보를 조회하는 문장입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_ID,
+       USER_NAME,
+       TBS.NAME &#39;DEFAULT_TBS&#39;,
+       CREATED
+  FROM SYSTEM_.SYS_USERS_ U,
+       V$TABLESPACES TBS
+ WHERE U.DEFAULT_TBS_ID = TBS.ID;</pre>
+</div></div><p> </p><p> </p></li></ul><h4 id="id-10.Object-[OB20]테이블스페이스목록">[OB20] 테이블스페이스 목록</h4><ul><li><p>테이블스페이스 목록을 조회하는 문장입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> SELECT ID &#39;TBS_ID&#39;
+     ,  NAME &#39;TBS_NAME&#39;
+     ,  DECODE(TYPE, 0, &#39;SYSTEM_TBS&#39;, 1, &#39;SYSTEM_TBS&#39;, 2, &#39;USER_MEM_TBS&#39;, 3, &#39;SYSTEM_TBS&#39;, 4, &#39;USER_DISK_TBS&#39;, 5, &#39;SYSTEM_TBS&#39;, 6, &#39;USER_DISK_TEMP&#39;, 7, &#39;SYSTEM_UNDO&#39;, 8, &#39;USER_VOL_TBS&#39;) &#39;TBS_TYPE&#39;
+  FROM V$TABLESPACES; </pre>
+</div></div><p> </p><p> </p></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

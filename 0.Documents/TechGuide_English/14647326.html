@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2-3 Stored Procedure / Function Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Oracle-Conversion-Guide_14647316.html">Altibase Oracle Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Environment-Setting_14647320.html">2. Environment Setting</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2-3 Stored Procedure / Function Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h2 id="id-2-3StoredProcedure/FunctionConversion-ProcedureprocessinginALTIBASEAUTOCOMMITmode"><strong>Procedure processing in ALTIBASE AUTOCOMMIT mode</strong></h2><div>COMMIT automatically after executing PROCEDURE/FUNCTION. Therefore, after executing DML statements in PROCEDURE/FUNCTION, the result may be different between ALTIBASE and Oracle.</div><div>If ALTIBASE is applied in the NON-AUTOCOMMIT mode, the same results as Oracle's NON-AUTOCOMMIT mode are displayed.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Oracle</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE t1_test( in_t IN INTEGER, in_v IN VARCHAR)
+IS
+BEGIN
+    INSERT INTO t1 VALUES(in_t, in_v);
+    ROLLBACK;
+END;
+/
+EXEC t1_test(4, &#39;000004&#39;);
+SQL&gt; SELECT COUNT(*) FROM t1;
+COUNT(*)
+-----------------
+0</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE t1_test( in_t IN INTEGER, in_v IN VARCHAR(20))
+IS
+BEGIN
+    INSERT INTO t1 VALUES(in_t, in_v);
+    ROLLBACK;
+END;
+/
+EXEC t1_test(4,   &#39;000004&#39;);
+iSQL&gt; SELECT COUNT\(*) FROM t1;
+COUNT
+-----------
+1</pre>
+</div></div><h2 id="id-2-3StoredProcedure/FunctionConversion-TYPEandRETURNTYPEofPARAMETER"><strong><br />TYPE and RETURN TYPE of PARAMETER</strong></h2><p>TYPE of PARAMETER and CHAR, VARCHAR of RETURN TYPE must be sized.</p><p>In ALTIBASE, if PARAMETER or RETURN TYPE of PROCEDURE or FUNCTION is declared as CHAR or VARCHAR like Oracle, it has the same meaning as CHAR(1) and VARCHAR(1). Therefore, if the user wants to use a string rather than a single character, the user must specify its size. If not specified and the string is more than 2 characters, the following error occurs.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ERR-2100D : Invalid length of the data type</pre>
+</div></div><h2 id="id-2-3StoredProcedure/FunctionConversion-FileandOutputprocessing"><strong>File and Output processing</strong></h2><p>ALTIBASE files and outputs related PROCEDUREs are automatically created in the SYSTEM_ user and defined as PUBLIC SYNONYM, so users can call and use only the PROCEDURE name.</p><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Classification</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Oracle</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>ALTIBASE</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Standard output</p></td><td class="confluenceTd"><p>DBMS_OUTPUT.PUT</p></td><td class="confluenceTd"><p>PRINT</p></td></tr><tr><td class="confluenceTd"><p><span>Standard output</span></p></td><td class="confluenceTd"><p>DBMS_OUTPUT.PUT_LINE</p></td><td class="confluenceTd"><p>PRINTLN</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FOPEN</p></td><td class="confluenceTd"><p>FOPEN</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FCLOSE</p></td><td class="confluenceTd"><p>FCLOSE</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FCLOSE_ALL</p></td><td class="confluenceTd"><p>FCLOSE_ALL</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FCOPY</p></td><td class="confluenceTd"><p>FCOPY</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FFLUSH</p></td><td class="confluenceTd"><p>FFLUSH</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FREMOVE</p></td><td class="confluenceTd"><p>FREMOVE</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.FRENAME</p></td><td class="confluenceTd"><p>FRENAME</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.GET_LINE</p></td><td class="confluenceTd"><p>GET_LINE</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.IS_OPEN</p></td><td class="confluenceTd"><p>IS_OPEN</p></td></tr><tr><td class="confluenceTd"><p>File processing</p></td><td class="confluenceTd"><p>UTL_FILE.NEW_LINE</p></td><td class="confluenceTd"><p>NEW_LINE</p></td></tr></tbody></table></div><h2 id="id-2-3StoredProcedure/FunctionConversion-REFCURSOR"><strong>REF CURSOR</strong></h2></div><div>The REF CURSOR of ORACLE is usually declared in PACKAGE, and it is declared as OUT PARAMETER of PROCEDURE and used. However, ALTIBASE does not provide PACKAGE, so it must be created and used as TYPESET.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Oracle</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PACKAGE ref_cursor_pkg
+AS
+TYPE ref_type IS REF CURSOR;
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql IN VARCHAR2);
+END;
+/
+CREATE OR REPLACE PACKAGE BODY ref_cursor_pkg
+AS
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql IN VARCHAR2)
+AS
+BEGIN OPEN v_result FOR v_sql [USING] [Bind Var];
+END;
+/</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE TYPESET my_type
+AS
+TYPE my_cur IS REF CURSOR;
+END;
+/
+CREATE OR REPLACE PROCEDURE opencursor( v_result OUT my_type.my_cur, v_sql IN VARCHAR(200) )
+AS
+BEGIN
+    OPEN y_result FOR v_sql \[USING\] \[Bind Var\];
+END;
+/ </pre>
+</div></div><h2 id="id-2-3StoredProcedure/FunctionConversion-WHERECURRENTOFStatement"><strong><br />WHERE CURRENT OF Statement</strong></h2><p>ALTIBASE does not support the WHERE CURRENT OF statement using CURSOR. However, if there is a PRIMARY KEY in the table, it can be changed as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Oracle</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE proc1
+IS
+ 
+CURSOR emp_list IS
+       SELECT empno FROM employee
+       WHERE empno = 1 FOR UPDATE;
+ 
+BEGIN FOR emplst IN emp_list LOOP
+    UPDATE employee SET empjob = &#39;SALESMAN&#39;
+     WHERE CURRENT OF emp_list;
+END LOOP;
+END;
+/ </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE proc1
+AS
+BEGIN
+DECLARE CURSOR cur1 IS
+SELECT empno FROM employee
+WHERE empno = 1;
+ 
+v_empjob VARCHAR(10);
+v_empno INTEGER;
+ 
+BEGIN
+    OPEN cur1;
+    LOOP FETCH cur1 INTO v_empno, v_empjob;
+    EXIT WHEN cur1%NOTFOUND;
+    UPDATE employee SET empjob = &#39;SALESMAN’ WHERE emp_no = v_empno; //emp_no가 PK이어야 한다.
+END LOOP;
+CLOSE cur1;
+END;
+END;
+/ </pre>
+</div></div><h2 id="id-2-3StoredProcedure/FunctionConversion-EXCEPTION"><strong>EXCEPTION</strong></h2><div>Oracle and ALTIBASE have previously defined EXCEPTIONs that occur in Stored PROCEDURE/FUNCTION in the system.</div><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Oracle</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>ALTIBASE</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p><strong>SQLERRM</strong></p></td><td class="confluenceTd"><p><strong>SQLCODE</strong></p></td><td class="confluenceTd"><p><strong>SQLERRM</strong></p></td><td class="confluenceTd"><p><strong>SQLCODE</strong></p></td></tr><tr><td class="confluenceTd"><p>CURSOR_ALREADY_OPEN</p></td><td class="confluenceTd"><p>-6530</p></td><td class="confluenceTd"><p>CURSOR_ALREADY_OPEN</p></td><td class="confluenceTd"><p>201062</p></td></tr><tr><td class="confluenceTd"><p>DUP_VAL_ON_INDEX</p></td><td class="confluenceTd"><p>-1</p></td><td class="confluenceTd"><p>DUP_VAL_ON_INDEX</p></td><td class="confluenceTd"><p>201063</p></td></tr><tr><td class="confluenceTd"><p>INVALID_CURSOR</p></td><td class="confluenceTd"><p>-1001</p></td><td class="confluenceTd"><p>INVALID_CURSOR</p></td><td class="confluenceTd"><p>201064</p></td></tr><tr><td class="confluenceTd"><p>INVALID_NUMBER</p></td><td class="confluenceTd"><p>-1722</p></td><td class="confluenceTd"><p>INVALID_NUMBER</p></td><td class="confluenceTd"><p>201065</p></td></tr><tr><td class="confluenceTd"><p>NO_DATA_FOUND</p></td><td class="confluenceTd"><p>+100</p></td><td class="confluenceTd"><p>NO_DATA_FOUND</p></td><td class="confluenceTd"><p>100</p></td></tr><tr><td class="confluenceTd"><p>PROGRAM_ERROR</p></td><td class="confluenceTd"><p>-6501</p></td><td class="confluenceTd"><p>PROGRAM_ERROR</p></td><td class="confluenceTd"><p>201067</p></td></tr><tr><td class="confluenceTd"><p>STROAGE_ERROR</p></td><td class="confluenceTd"><p>-6500</p></td><td class="confluenceTd"><p>STROAGE_ERROR</p></td><td class="confluenceTd"><p>201068</p></td></tr><tr><td class="confluenceTd"><p>TIMEOUT_ON_RESOURCE</p></td><td class="confluenceTd"><p>-51</p></td><td class="confluenceTd"><p>TIMEOUT_ON_RESOURCE</p></td><td class="confluenceTd"><p>201069</p></td></tr><tr><td class="confluenceTd"><p>TOO_MANY_ROWS</p></td><td class="confluenceTd"><p>-1422</p></td><td class="confluenceTd"><p>TOO_MANY_ROWS</p></td><td class="confluenceTd"><p>201070</p></td></tr><tr><td class="confluenceTd"><p>VALUE_ERROR</p></td><td class="confluenceTd"><p>-6502</p></td><td class="confluenceTd"><p>VALUE_ERROR</p></td><td class="confluenceTd"><p>201071</p></td></tr><tr><td class="confluenceTd"><p>ZERO_DIVIDE</p></td><td class="confluenceTd"><p>-1476</p></td><td class="confluenceTd"><p>ZERO_DIVIDE</p></td><td class="confluenceTd"><p>201072</p></td></tr><tr><td class="confluenceTd"><p>ACCESS_INTO_NULL</p></td><td class="confluenceTd"><p>-6530</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>CASE_NOT_FOUND</p></td><td class="confluenceTd"><p>-6592</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>COLLECTION_IS_NULL</p></td><td class="confluenceTd"><p>-6531</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>LOGIN_DENIED</p></td><td class="confluenceTd"><p>-1017</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>NOT_LOGGED_ON</p></td><td class="confluenceTd"><p>-1012</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>ROWTYPE_MISMATCH</p></td><td class="confluenceTd"><p>-6504</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>SELF_IS_NULL</p></td><td class="confluenceTd"><p>-30625</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>SUBSCRIPT_BEYOND_COUNT</p></td><td class="confluenceTd"><p>-6533</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>SUBSCRIPT_OUTSIDE_LIMIT</p></td><td class="confluenceTd"><p>-6532</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr><tr><td class="confluenceTd"><p>SYS_INVALID_ROWID</p></td><td class="confluenceTd"><p>-1410</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>Not supported</p></td></tr></tbody></table></div><p> </p></div><div><strong><br /></strong></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

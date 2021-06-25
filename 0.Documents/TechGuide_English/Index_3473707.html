@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Index</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Index
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 15, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345164 {padding: 0px;}
+div.rbtoc1624409345164 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345164 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345164'>
+<ul class='toc-indentation'>
+<li><a href='#Index-Overview'>Overview</a></li>
+<li><a href='#Index-CREATEINDEX'>CREATE INDEX</a></li>
+<li><a href='#Index-Comparisonoffunctionality'>Comparison of functionality</a>
+<ul class='toc-indentation'>
+<li><a href='#Index-EXAMPLE'>EXAMPLE</a></li>
+</ul>
+</li>
+<li><a href='#Index-ALTERINDEX'>ALTER INDEX</a></li>
+<li><a href='#Index-Comparisonoffunctionality.1'>Comparison of functionality</a>
+<ul class='toc-indentation'>
+<li><a href='#Index-EXAMPLE.1'>EXAMPLE</a></li>
+</ul>
+</li>
+<li><a href='#Index-DROPINDEX'>DROP INDEX</a></li>
+<li><a href='#Index-EXAMPLE.2'>EXAMPLE</a></li>
+</ul>
+</div>
+
+<h2 id="Index-Overview">Overview</h2>
+
+<p>Besides B-tree index, because Altibase supports partitioned table, Partitioned index is supported as well.
+<br class="atl-forced-newline" /></p>
+
+<p>ALTIBASE HDB does not support Indexes listed below.(based on ALTIBASE HDB V6)</p>
+<ul>
+	<li>Bitmap index.</li>
+	<li>Function-based index.</li>
+	<li>Reversed index.</li>
+	<li>Clustered index.</li>
+	<li>Global partitioned index.</li>
+	<li>IndexType</li>
+</ul>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>A function-based index will be included as a new feature at ALTIBASE HDB V7.</p>
+
+                    </div>
+    </div>
+
+<p> </p>
+
+<h2 id="Index-CREATEINDEX">CREATE INDEX</h2>
+
+<p> As described previously, Altibase table comprises memory table and disk table. And Altibase Index constitutes memory table index and disk table index. Respectively, memory table index and disk table index are mapped to memory and disk table.</p>
+
+<p>A message below indicates that memory/disk/volatile tablespace should be placed on the same position.(Memory-&gt;Memory, Disk-&gt;Disk)</p>
+
+<p>[ERR-311EC : The type(memory/disk/volatile) of tablespace to create the index on is not same with the one of the table.]</p>
+
+<h2 id="Index-Comparisonoffunctionality">Comparison of functionality</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLUSTERED INDEX </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GLOBAL PARTITIONED INDEX </p></td>
+<td class="confluenceTd"><p> . </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGGING|NOLOGGING </p></td>
+<td class="confluenceTd"><p> LOGGING|NOLOGGING(FORCE|NOFORCE) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTFREE, PCTUSED, INITRANS, MAXTRANS </p></td>
+<td class="confluenceTd"><p> INITRANS, MAXTRANS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPRESS|NOCOMPRESS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INDEXTYPE IS [INDEXTYPE NAME] </p></td>
+<td class="confluenceTd"><p> INDEX TYPE IS [BTREE|RTREE] </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB supports Btree by default. <br class="atl-forced-newline" />
+Rtree is useful for processing multidimensional data. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SORT|NOSORT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Specify NOSORT to indicate to the database that the rows are already stored in the database in ascending order, so that ORACLE Database does not have to sort the rows when creating the index. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REVERSE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Specify REVERSE to store the bytes of the index block in reverse order, excluding the rowid. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Specify ONLINE to indicate that DML operations on the table will be allowed during creation of the index. </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h3 id="Index-EXAMPLE">EXAMPLE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE UNIQUE INDEX emp_idx2 <br class="atl-forced-newline" />
+ON employees (dno DESC); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX idx2 <br class="atl-forced-newline" />
+ON table_user (i1) <br class="atl-forced-newline" />
+TABLESPACE user_data PARALLEL 4; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX emp_idx3 <br class="atl-forced-newline" />
+ON employees (eno ASC) <br class="atl-forced-newline" />
+INDEXTYPE IS [INDEX TYPE NAME];  <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX prod_idx ON products(product_id) LOCAL; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX prod_idx ON products(product_id) <br class="atl-forced-newline" />
+LOCAL <br class="atl-forced-newline" />
+( <br class="atl-forced-newline" />
+PARTITION p_idx1 ON p1 TABLESPACE tbs_disk1, <br class="atl-forced-newline" />
+PARTITION p_idx2 ON p2 TABLESPACE tbs_disk2, <br class="atl-forced-newline" />
+PARTITION p_idx3 ON p3 TABLESPACE tbs_disk3 <br class="atl-forced-newline" />
+); </p></td>
+<td class="confluenceTd"><p> CREATE UNIQUE INDEX emp_idx2 <br class="atl-forced-newline" />
+ON employees (dno DESC); <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX idx2 <br class="atl-forced-newline" />
+ON table_user (i1) <br class="atl-forced-newline" />
+TABLESPACE user_data PARALLEL 4; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX emp_idx3 <br class="atl-forced-newline" />
+ON employees (eno ASC) <br class="atl-forced-newline" />
+INDEXTYPE IS BTREE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX prod_idx ON products(product_id) LOCAL; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE INDEX prod_idx ON products(product_id) <br class="atl-forced-newline" />
+LOCAL <br class="atl-forced-newline" />
+( <br class="atl-forced-newline" />
+PARTITION p_idx1 ON p1 TABLESPACE tbs_disk1, <br class="atl-forced-newline" />
+PARTITION p_idx2 ON p2 TABLESPACE tbs_disk2, <br class="atl-forced-newline" />
+PARTITION p_idx3 ON p3 TABLESPACE tbs_disk3 <br class="atl-forced-newline" />
+); </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="Index-ALTERINDEX">ALTER INDEX</h2>
+
+<p>This statement is used to rebuild or change an existing index.</p>
+
+
+<h2 id="Index-Comparisonoffunctionality.1">Comparison of functionality</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENABLE|DISABLE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB provides &quot;ALL INDEX ENABLE|DISABLE <br class="atl-forced-newline" />
+But it can be used in  &quot;ALTER TABLE&quot; statement </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UNUSABLE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COALESCE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MONITORING|NOMONITORING USAGE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UPDATE BLOCK REFERENCES </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DEALLOCATE UNUSED </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOCATE EXTENT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SHRINK SPACE(COMPACT CASCADE) </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PCTFREE, PCTUSED, INITRANS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REBUILD (PARTITION|SUBPARTITION, <br class="atl-forced-newline" />
+REVERSE|NOREVERSE) </p></td>
+<td class="confluenceTd"><p> REBUILD PARTITION </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB only supports REBUILD PARTITION clause. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPUTE STATISTICS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> In ALTIBASE HDB, rebuilding statistics can be executed using &quot;alter index .. aging&quot; statement. <br class="atl-forced-newline" />
+It might be faster than index rebuilding operation because it only searches the leaf nodes. <br class="atl-forced-newline" />
+When &quot;__DISK_INDEX_REBUILD_STAT&quot; property value is set to 0, <br class="atl-forced-newline" />
+at the time of aging operation using &quot;alter index .. aging&quot;, <br class="atl-forced-newline" />
+index aging operation might be executed. <br class="atl-forced-newline" />
+When &quot;__DISK_INDEX_REBUILD_STAT&quot; property value is set to 1, <br class="atl-forced-newline" />
+at the time of aging operation using &quot;alter index .. aging&quot;, <br class="atl-forced-newline" />
+rebuilding statistics operation might be executed. <br class="atl-forced-newline" />
+During rebuilding statistics, it rebuilds cardinality, min , max value of indexes. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ONLINE </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMPRESS|NOCOMPRESS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RENAME TO </p></td>
+<td class="confluenceTd"><p> RENAME TO </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> AGING </p></td>
+<td class="confluenceTd"><p> This is used to record a transaction commit SCN in an index page and delete old versions of nodes. <br class="atl-forced-newline" />
+This statement is only available for disk-based indexes. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> SET PERSISTENT = ON|OFF </p></td>
+<td class="confluenceTd"><p> To change a non-persistent index into a persistent index. and vice versa. <br class="atl-forced-newline" />
+The use of persistent indexes as memory table <br class="atl-forced-newline" />
+indexes is supported in order to reduce the boot-up time when the system is started. </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="Index-EXAMPLE.1">EXAMPLE</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER INDEX IDX1 REBUILD PARTITION IDX_P5 TABLESPACE TBS1; </p></td>
+<td class="confluenceTd"><p> ALTER INDEX IDX1 REBUILD PARTITION IDX_P5 TABLESPACE TBS1; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER INDEX emp_idx1 RENAME TO emp_idx2; </p></td>
+<td class="confluenceTd"><p> ALTER INDEX emp_idx1 RENAME TO emp_idx2; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER INDEX ord_customer_ix REBUILD <span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">REVERSE;</span></strong></span> </p></td>
+<td class="confluenceTd"><p> ALTER INDEX ord_customer_ix REBUILD; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALTER INDEX ord_customer_ix REBUILD <span style="color: rgb(255,0,0);"><strong><span style="text-decoration: line-through;">PARALLEL;</span></strong></span> </p></td>
+<td class="confluenceTd"><p> ALTER INDEX ord_customer_ix REBUILD; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="Index-DROPINDEX">DROP INDEX</h2>
+
+<p>&quot;DROP INDEX&quot; STATEMENT is almost same in ALTIBASE HDB and ORACLE.</p>
+
+<p>But, the single difference between them is the use of &quot;FORCE&quot; keyword.</p>
+
+<p>It is useful in Oracle for domain indexes.</p>
+
+<p>This clause drops the domain index even if the indextype routine invocation returns an error or the index is marked IN PROGRESS.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="Index-EXAMPLE.2">EXAMPLE</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DROP INDEX ord_customer_ix_demo <span style="color: rgb(255,0,0);"><strong>FORCE</strong></span>; </p></td>
+<td class="confluenceTd"><p> DROP INDEX ord_customer_id_demo; </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

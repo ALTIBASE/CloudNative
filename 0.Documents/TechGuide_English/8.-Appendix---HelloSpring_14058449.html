@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 8. Appendix - HelloSpring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 8. Appendix - HelloSpring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358804 {padding: 0px;}
+div.rbtoc1624409358804 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358804 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358804'>
+<ul class='toc-indentation'>
+<li><a href='#id-8.Appendix-HelloSpring-HelloSpringImplementation'>HelloSpring Implementation</a>
+<ul class='toc-indentation'>
+<li><a href='#id-8.Appendix-HelloSpring-1.CreatingHelloSpringproject'>1. Creating HelloSpring project</a></li>
+<li><a href='#id-8.Appendix-HelloSpring-2.ImplementingsampleJavafile'>2. Implementing sample Java file</a></li>
+<li><a href='#id-8.Appendix-HelloSpring-3.Definingbeanconfiguration'>3. Defining bean configuration </a></li>
+<li><a href='#id-8.Appendix-HelloSpring-4.DefiningHelloAppclass'>4. Defining HelloApp class</a></li>
+<li><a href='#id-8.Appendix-HelloSpring-5.Addingrelatedjarfiles'>5. Adding related jar files</a></li>
+<li><a href='#id-8.Appendix-HelloSpring-6.RunningtheHellSpringproject'>6. Running the HellSpring project</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>Based on the sample example, this appendix describes how to use Spring in more detail.</p><p>The name of the sample projected described in the appendix is HelloSpring and was created in the Eclipse.</p><p>HelloSpring project is a simple program that prints a greeting message. It prints the greeting message defined in the bean by importing the bean (greetingService) defined in the bean configuration file (applicationContext.xml) from the Spring container (BeanFactory).</p><h2 id="id-8.Appendix-HelloSpring-HelloSpringImplementation"><strong>HelloSpring Implementation</strong></h2><h3 id="id-8.Appendix-HelloSpring-1.CreatingHelloSpringproject"><strong>1. Creating HelloSpring project</strong></h3><hr /><p>1-1. Click Menu – File – Java Project<br />1-2. Project name: Enter HelloSpring in<br />1-3. Click the Finish button</p><p><img class="confluence-embedded-image" src="attachments/14058449/14221654.png" data-image-src="attachments/14058449/14221654.png"></p><h3 id="id-8.Appendix-HelloSpring-2.ImplementingsampleJavafile"><strong>2. Implementing sample Java file</strong></h3><hr /><p>Implement the following class and interface.</p><p><strong>2-1. GreetingService interface</strong></p><p>This is the interface that defines the service.</p><p>Right-click the HelloSpring project's src directory and click New – Interface.</p><p>Enter com.altibase.hello for Package: and GreetingService for Name:.</p><p><img class="confluence-embedded-image" src="attachments/14058449/14221655.png" data-image-src="attachments/14058449/14221655.png"></p><p>When the GreetingService.java file is created, write the source as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>GreeingService.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">package com.altibase.hello;
+ 
+public interface GreetingService {
+    public void sayGreeting();
+} </pre>
+</div></div><p><strong>2-2. GreetingServiceImp class</strong></p><p>This class implements the GreetingServie interface.</p><p>Right-click the HelloSpring project's src directory and click New-Class.</p><p>Enter com.altibase.hello for Package: and GreetingServiceImp for Name:</p><div><p>Click Add button next to Interfaces:, enter GreetingService, and then click the OK button.</p><p><img class="confluence-embedded-image" src="attachments/14058449/14221656.png" data-image-src="attachments/14058449/14221656.png"></p><p>When the GreeingServiceImp.java file is created, write the source as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>GreeingServiceImp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> package com.altibase.hello;
+ 
+public class GreetingServiceImp implements GreetingService{
+    private String greeting;
+    public GreetingServiceImp(){
+ 
+    }
+    public GreetingServiceImp(String greeting){
+        this.greeting = greeting;
+    }
+    public void sayGreeting() {
+        System.out.println(greeting);
+    }
+    public void setGreeting(String greeting){
+        this.greeting = greeting;
+    }
+}</pre>
+</div></div><h3 id="id-8.Appendix-HelloSpring-3.Definingbeanconfiguration"><strong>3. Defining bean configuration </strong></h3><hr /><p>Define bean for GreetingServiceImp in the bean configuration file (applicationContext.xml).</p><p>Right-click the HelloSpring project and click New – File.</p><p>Create applicationContext.xml in File name:.</p><p><img class="confluence-embedded-image" src="attachments/14058449/14221658.png" data-image-src="attachments/14058449/14221658.png"></p><p>Write the following in the applicationContext.xml file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>applicationContext.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd&quot;&gt;
+ 
+  &lt;bean id=&quot;greetingService&quot; class=&quot;com.altibase.hello.GreetingServiceImp&quot;&gt;
+        &lt;property name=&quot;greeting&quot;&gt;
+            &lt;value&gt;Hello&lt;/value&gt;
+        &lt;/property&gt;
+  &lt;/bean&gt;
+ 
+&lt;/beans&gt;</pre>
+</div></div><p>greetingService is the name of the bean. This can be used by importing the bean with the corresponding name in the java program.</p><p>In the class, specify the full name of the GreetingServicelmp class in charge of the service, and put the message to be set in the member variable greeting defined in GreetingServicelmp in the property.</p><h3 id="id-8.Appendix-HelloSpring-4.DefiningHelloAppclass"><strong>4. Defining HelloApp class</strong></h3><hr /><p>As the main class, get the bean defined GreetingServiceImp from the BeanFactory and call the service method (sayGreeting()).</p><p>Right-click the HelloSpring project's src directory and click New-Class.</p><p>Leave the Package: part blank and enter HelloApp in Name:.</p><p><strong><img class="confluence-embedded-image" src="attachments/14058449/14221659.png" data-image-src="attachments/14058449/14221659.png"><br /></strong></p><p>When the HelloApp.java file is created, write the source as follows.</p><div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>HelloApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+ 
+import com.altibase.hello.GreetingService;
+public class HelloApp {
+ 
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+ 
+        @SuppressWarnings(&quot;resource&quot;)
+        ApplicationContext factory = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+ 
+        GreetingService greetingService = (GreetingService)factory.getBean(&quot;greetingService&quot;);
+        greetingService.sayGreeting();
+    }
+}</pre>
+</div></div>The source applicationConext.xml above is the bean configuration file defined above, and greetingService represents the bean name for the GreetingServiceImp class defined in applicationContext.xml.<h3 id="id-8.Appendix-HelloSpring-5.Addingrelatedjarfiles"><strong>5. Adding related jar files</strong></h3><hr /><p>Add Spring related jar file to HelloSpring.</p><p>Right-click on HelloSpring project and click Properties – Java Build Path – Add External in Libraries</p><p>Click JARS to add spring.jar file and common-logging.jar file among Spring Framework jar files.</p><p>Please refer to the description of DriverManagerDataSource for the location of the file.</p><p><img class="confluence-embedded-image" src="attachments/14058449/14221662.png" data-image-src="attachments/14058449/14221662.png"></p></div></div><h3 id="id-8.Appendix-HelloSpring-6.RunningtheHellSpringproject"><strong>6. Running the HellSpring project</strong></h3><p>After clicking the HelloSpring project, run Run from the menu or click the &quot;R Run&quot; button.</p><p>The Hello string is printed in the console window.</p><p><strong><img class="confluence-embedded-image" src="attachments/14058449/14221663.png" data-image-src="attachments/14058449/14221663.png"><br /></strong></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221654.png">additional_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221655.png">additional_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221657.png">additional_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221656.png">additional_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221658.png">additional_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221660.png">additional_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221659.png">additional_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221661.png">additional_5 (1).png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221662.png">additional_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058449/14221663.png">additional_7.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

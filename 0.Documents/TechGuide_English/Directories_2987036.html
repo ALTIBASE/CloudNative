@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Directories</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Directories
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347848 {padding: 0px;}
+div.rbtoc1624409347848 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347848 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347848'>
+<ul class='toc-indentation'>
+<li><a href='#Directories-Directorytodevelopanapplicationwithembedded-SQL'>Directory to develop an application with embedded-SQL</a></li>
+</ul>
+</div>
+
+<h1 id="Directories-Directorytodevelopanapplicationwithembedded-SQL">Directory to develop an application with embedded-SQL</h1>
+
+<p>When you install ALTIBASE HDB, a directory structure for developer is created on your system for ALTIBASE HDB.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Directory Name </p></th>
+<th class="confluenceTh"><p> Contents </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> bin </p></td>
+<td class="confluenceTd"><p> Apre (executable binary) converts source-code of embedded-SQL application to C/C++ source style. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> install </p></td>
+<td class="confluenceTd"><p> Sample about GNU Makefile prefix-rule </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> include </p></td>
+<td class="confluenceTd"><p> Header files (User don't need to care about header-file using embedded-SQL.) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> lib </p></td>
+<td class="confluenceTd"><p> Library files for APRE*C/C++ and SQLCLI </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> sample/APRE </p></td>
+<td class="confluenceTd"><p> Sample programs for APRE*C/C++ </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>APRE Binary<br />
+It is located in $ALTIBASE_HOME/bin directory.</p>
+
+<p>Use it as follows.</p>
+
+<p>Shell&gt; apre -mt -t cpp sample1.sc</p>
+<ul>
+	<li>Library files<br />
+APRE needs two library files.</li>
+	<li>One is libapre.a and the other is libodbccli.a.</li>
+	<li>It is located in $ALTIBASE_HOME/lib directory.<br />
+If you need shared-library, you can use libapre_sl.so and libodbccli_sl.so.</li>
+	<li>Header files<br />
+Header files are automatically written into source files by apre.</li>
+	<li>Apre needs a header-file, named &quot;ulpLibInterface.h&quot;.</li>
+</ul>
+
+
+<p>User checks files as follows to develop application using Embedded-SQL.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/altibase_home] ls -lrt bin/apre
+-rwxr-xr-x  1 lim272 lim272 1569593 11월 23 18:30 bin/apre
+
+
+as48-x64#~/altibase_home] ls -lrt lib/libapre*
+-rwxr-xr-x  1 lim272 lim272  83276 11월 23 18:30 lib/libapre_sl.so
+-rw-r--r--  1 lim272 lim272 123300 11월 23 18:30 lib/libapre.a
+
+
+as48-x64#~/altibase_home] ls -lrt lib/libodbccli*
+-rwxr-xr-x  1 lim272 lim272 2306216 11월 23 18:30 lib/libodbccli_sl.so
+-rw-r--r--  1 lim272 lim272 5025604 11월 23 18:30 lib/libodbccli.a
+
+
+as48-x64#~/altibase_home] ls -lrt include/*
+-rw-r--r--  1 lim272 lim272  7404 11월 23 18:30 include/xa.h
+-rw-r--r--  1 lim272 lim272   389 11월 23 18:30 include/ulsPrimTypes.i
+-rw-r--r--  1 lim272 lim272  9765 11월 23 18:30 include/ulsAPI.i
+-rw-r--r--  1 lim272 lim272  3324 11월 23 18:30 include/ulpLibInterface.h
+-rw-r--r--  1 lim272 lim272  5287 11월 23 18:30 include/stdWKBTypes.i
+-rw-r--r--  1 lim272 lim272 11940 11월 23 18:30 include/stdNativeTypes.i
+-rw-r--r--  1 lim272 lim272 21671 11월 23 18:30 include/sqlucode.h
+-rw-r--r--  1 lim272 lim272 11181 11월 23 18:30 include/sqltypes.h
+-rw-r--r--  1 lim272 lim272 78411 11월 23 18:30 include/sqlext.h
+-rw-r--r--  1 lim272 lim272  9754 11월 23 18:30 include/sqlcli.h
+-rw-r--r--  1 lim272 lim272 31945 11월 23 18:30 include/sql.h
+-rw-r--r--  1 lim272 lim272   129 11월 23 18:30 include/ses.h
+-rw-r--r--  1 lim272 lim272  5832 11월 23 18:30 include/iloaderApi.h
+-rw-r--r--  1 lim272 lim272  3078 11월 23 18:30 include/chksvr.h
+-rw-r--r--  1 lim272 lim272 15562 11월 23 18:30 include/alticapi.h
+-rw-r--r--  1 lim272 lim272 10151 11월 23 18:30 include/alaTypes.h
+-rw-r--r--  1 lim272 lim272  7836 11월 23 18:30 include/alaAPI.h
+-rw-r--r--  1 lim272 lim272  2169 11월 23 18:30 include/acsTypes.h
+-rw-r--r--  1 lim272 lim272   591 11월 23 18:30 include/acsAPI.h
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : What is Offline Replicator?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Replication_2555989.html">ALTIBASE HDB Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : What is Offline Replicator?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 30, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409158081 {padding: 0px;}
+div.rbtoc1624409158081 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409158081 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409158081'>
+<ul class='toc-indentation'>
+<li><a href='#WhatisOfflineReplicator?-OfflineReplicator'>Offline Replicator</a>
+<ul class='toc-indentation'>
+<li><a href='#WhatisOfflineReplicator?-Background'>Background</a></li>
+<li><a href='#WhatisOfflineReplicator?-HowtouseOfflineReplicator?'>How to use Offline Replicator?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1 id="WhatisOfflineReplicator?-OfflineReplicator">Offline Replicator</h1>
+
+
+<map id="gliffy-map-1769626-9804" name="gliffy-map-1769626-9804"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 685px;" usemap="#gliffy-map-1769626-9804" src="attachments/1803108/1769627.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h2 id="WhatisOfflineReplicator?-Background">Background</h2>
+
+<p>In the above diagram, some XLogs of SYSTEM A may not be sent to the remote server (SYSTEM B) when the SYSTEM A has a failure. In this case, the system has to fail over to SYSTEM B, but SYSTEM B needs those unsent XLogs to start the service, otherwise, data in between those systems will be inconsistent. This can be achieved if SYSTEM B is able to access the log files of SYSTEM A and apply them locally.</p>
+
+<h2 id="WhatisOfflineReplicator?-HowtouseOfflineReplicator?">How to use Offline Replicator?</h2>
+
+<p>Follow the steps below if you need to use Offline Replicator feature.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> steps </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> Mount a volume with the access enabled for SYSTEM-B </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 2 </p></td>
+<td class="confluenceTd"><p> Create Offline Replicator on SYSTEM-B</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION rep1 OPTIONS OFFLINE &#39;/data1/logfiles&#39;
+WITH &#39;192.168.1.13&#39;, 30300 FROM SYS.table TO SYS.table;
+</pre>
+</div></div> </td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> Execute SQL to start offline replication</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION rep1 START WITH OFFLINE;
+</pre>
+</div></div> </td>
+</tr>
+</tbody></table></div>
+
+<p>Status of Offline Replicator becomes &quot;stop&quot; once it completes its work.<br />
+You can start the fail over procedure after checking this status.</p>
+
+<p>To learn more, <a href="http://atc.altibase.com/sub09/551b/html/Replication/ch03s06.html#CJAEFAJC" class="external-link" rel="nofollow">refer to this manual</a></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769615">eager_for_ha_basic1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769616.png">eager_for_ha_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769628">offline_explan_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769629.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2228245">offline_explan_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2228246.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752746">offline_explan_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752747.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752748">offline_explan_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752749.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752750">offline_explan_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/2752751.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769626">offline_explan_basic1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1803108/1769627.png">offline_explan_basic1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. Creating Altibase Service Container</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Docker-Guide_14647741.html">Altibase Docker Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. Creating Altibase Service Container
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h1 id="id-4.CreatingAltibaseServiceContainer-CreatingContainer"><span style="color: rgb(0,0,0);">Creating Container</span></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">When creating a container with a docker image, use the docker run.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]OPTIONIS :
+          -a, --attach list             Attach to STDIN, STDOUT or STDERR
+          --cpus decimal                Number of CPUs
+          -m, --memory bytes            Memory limit
+          -d, --detach                  Run container in background and print container ID
+          -e, --env list                Set environment variables
+          --env-file list               Read in a file of environment variables
+          -i, --interactive             Keep STDIN open even if not attached
+          --privileged                  Give extended privileges to this container
+          -t, --tty                     Allocate a pseudo-TTY
+          -u, --user string             Username or UID (format: &lt;name|uid&gt;[:&lt;group|gid&gt;])
+          -v, --volume list             Bind mount a volume
+          -w, --workdir string          Working directory inside the container</pre>
+</div></div><p><span style="color: rgb(0,0,0);">More information about OPTION can be found <a href="https://docs.docker.com/engine/reference/run/" class="external-link" rel="nofollow">here</a>.</span></p><h3 id="id-4.CreatingAltibaseServiceContainer-1.CreatingContainer"><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(0,0,0);font-size: 16.0px;">1. Creating Container</span></h3><p>To create a container, use it as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker run -it -e MODE=shell --name altibase_test altitest:0.0 bash-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 7.1.0.1.0
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+ 
+ 
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+ 
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+ 
+    Creating MMDB FILES     [SUCCESS]
+ 
+    Creating Catalog Tables [SUCCESS]
+ 
+    Creating DRDB FILES     [SUCCESS]
+ 
+  [SM] Rebuilding Indices [Total Count:0]  [SUCCESS]
+ ...
+ 
+# ls
+altibase_home  docker-entrypoint.sh  set_altibase.env</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="3" class="confluenceTh">Required Options</th></tr><tr><td rowspan="4" class="confluenceTd">-e MODE</td><td class="confluenceTd">daemon</td><td colspan="1" class="confluenceTd">Run the Altibase database as a daemon and maintain a terminal.</td></tr><tr><td colspan="1" class="confluenceTd">isql</td><td colspan="1" class="confluenceTd">Run the Altibase database and maintain a connection to isql insider the container.</td></tr><tr><td colspan="1" class="confluenceTd">shell</td><td colspan="1" class="confluenceTd">Run the Altibase database and keep the shell connected inside the container</td></tr><tr><td colspan="1" class="confluenceTd">replication</td><td colspan="1" class="confluenceTd"><p>Use when creating additional nodes for the replication connection. Do not select this option when creating a master node.</p></td></tr></tbody></table></div><h3 id="id-4.CreatingAltibaseServiceContainer-2.Externalvolumeconnection"><br />2. External volume connection</h3><p>Docker stores the changed data in the container layer, and this data is also deleted when the container is deleted.</p><p>Therefore, in order to ensure data persistence, a data column in which the host's file system is mounted on a container is used.</p><p>The characteristics of the data column are as follows.</p><ul><li>Data volume can be reused and shared between containers. </li><li>Data volume can be accessed directly from the host. </li><li>Data volume is essentially independent of the container, so they persist even if the container is deleted.</li></ul><p>The method to designate the data volume is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">-v [host directory path]:[container directory path]
+or
+--mount type=[OPTIONS],source=[host directory path],target=[container directory path]</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;"># docker run -it --name altibase_test \--privileged \
+-v ~/work/ALTIBASE_DBS:/home/altibase/altibase_home/dbs \
+-v ~/work/ALTIBASE_LOGS:/home/altibase/altibase_home/logs \
+altitest:0.0 /bin/bash</pre>
+</div></div><h1 id="id-4.CreatingAltibaseServiceContainer-Replicationconnectionbetweencontainers"><br />Replication connection between containers</h1><hr /><ul><li>Altibase Replication<br />A function that provides a non-stop operating environment in which the service can be resumed using an alternate server when unexpected shutdown of the server occurs by keeping the same data in both databases by transferring the log of the operating database to another database and executing it again. The manual for replication can be found <a href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/eng/Replication%20Manual.md" class="external-link" rel="nofollow">here</a>.</li><li>The order of replication connections between containers:</li></ul><ol><li>Create a single Docker network for replication connection.</li><li>Join the master node's container to the created Docker network.</li><li>Join the container of the node to be added to the same Docker network as the master node.</li></ol><ul><li>Replication connection between containers</li></ul><ol><li><p>Create Docker network<br />Docker network is created with the docker network create command<br />The created network can be checked with the docker network ls command, and details can be checked with the docker inspect command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">docker network create [OPTIONS] NETWORKOPTIONIS :
+          --attachable               Enable manual container attachment
+          --config-from string       The network from which copying the configuration
+          -d, --driver string        Driver to manage the Network (default &quot;bridge&quot;)
+          --ipv6                     Enable IPv6 networking
+          --label list               Set metadata on a network
+ 
+docker inspect [OPTIONS] NAME|ID [NAME|ID...]
+OPTIONIS :
+          --format , -f       Format the output using the given Go template
+          --size , -s         Display total file sizes if the type is container
+          --type              Return JSON for specified type</pre>
+</div></div><p>Create a Docker network with the name isolated_network.<br />Check the created network with docker network ls.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker network create --driver bridge isolated_network2bb4d1dc2fc364ed45e69beb3a8b257f5d0e9cd95b5e4676d819386b32ba88d6
+ 
+# docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+09929baadcff        bridge              bridge              local
+1963af1259b9        host                host                local
+2bb4d1dc2fc3        isolated_network    bridge              local
+5f3deeb7fcba        none                null                local</pre>
+</div></div><p>Check the details of the created work.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker inspect 2bb4d1dc2fc3[
+    {
+        &quot;Name&quot;: &quot;isolated_network&quot;,
+        &quot;Id&quot;: &quot;2bb4d1dc2fc364ed45e69beb3a8b257f5d0e9cd95b5e4676d819386b32ba88d6&quot;,
+        &quot;Created&quot;: &quot;2019-10-29T09:50:37.6130865+09:00&quot;,
+        &quot;Scope&quot;: &quot;local&quot;,
+        &quot;Driver&quot;: &quot;bridge&quot;,
+        &quot;EnableIPv6&quot;: false,
+        &quot;IPAM&quot;: {
+            &quot;Driver&quot;: &quot;default&quot;,
+            &quot;Options&quot;: {},
+            &quot;Config&quot;: [
+                {
+                    &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
+                    &quot;Gateway&quot;: &quot;172.18.0.1&quot;
+                }
+            ]
+        },
+        &quot;Internal&quot;: false,
+        &quot;Attachable&quot;: false,
+        &quot;Ingress&quot;: false,
+        &quot;ConfigFrom&quot;: {
+            &quot;Network&quot;: &quot;&quot;
+        },
+        &quot;ConfigOnly&quot;: false,
+        &quot;Containers&quot;: {},
+        &quot;Options&quot;: {},
+        &quot;Labels&quot;: {}
+    }
+]</pre>
+</div></div><p>2. Join the Docker network while creating the container of the master node.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker run -it \--net=isolated_network \
+--hostname=master  \
+-e MODE=shell \
+-e MASTER_REP_PORT=30300 \
+--name altitest_master altitest:0.0 /bin/bash</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">Required Options</th></tr><tr><td class="confluenceTd">--net</td><td class="confluenceTd">Network name on which container will be executed</td></tr><tr><td colspan="1" class="confluenceTd">--hostname</td><td colspan="1" class="confluenceTd">Hostname</td></tr><tr><td colspan="1" class="confluenceTd">-e MASTER_REP_PORT</td><td colspan="1" class="confluenceTd">Replication port number</td></tr></tbody></table></div><p>3. Join the master node's Docker network while creating a container for the additional node.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker run -it \--net=isolated_network \
+--hostname=slave \
+-e MODE=replication \
+-e MASTER_HOST_NAME=master -e MASTER_DB_PORT=20300 -e MASTER_REP_PORT=30300 \
+-e SLAVE_HOST_NAME=slave -e SLAVE_REP_PORT=30310 \
+--name altitest_slave altitest:0.0 /bin/bash altibase</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">Required options</th></tr><tr><td class="confluenceTd">--net</td><td class="confluenceTd">Network name on which container will be executed</td></tr><tr><td class="confluenceTd">--hostname</td><td class="confluenceTd">Hostname</td></tr><tr><td class="confluenceTd">-e MASTER_HOST_NAME</td><td class="confluenceTd">Hostname of the master node</td></tr><tr><td class="confluenceTd">-e MASTER_DB_PORT</td><td class="confluenceTd">Service port number of the master node</td></tr><tr><td class="confluenceTd">-e MASTER_REP_PORT</td><td class="confluenceTd">Replication port number of the master node</td></tr><tr><td colspan="1" class="confluenceTd">-e SLAVE_HOST_NAME</td><td colspan="1" class="confluenceTd">Hostnmae of the slave node</td></tr><tr><td colspan="1" class="confluenceTd">-e SLAVE_REP_PORT</td><td colspan="1" class="confluenceTd">Replication port number of the slave node</td></tr></tbody></table></div><p>3. Join the master node's Docker network while creating a container for the slave node.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker run -it \--net=isolated_network \
+--hostname=slave \
+-e MODE=replication \
+-e MASTER_HOST_NAME=master -e MASTER_DB_PORT=20300 -e MASTER_REP_PORT=30300 \
+-e SLAVE_HOST_NAME=slave -e SLAVE_REP_PORT=30310 \
+--name altitest_slave altitest:0.0 /bin/bash altibase</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">Required options</th></tr><tr><td class="confluenceTd">--net</td><td class="confluenceTd">Network name of which container will be executed</td></tr><tr><td class="confluenceTd">--hostname</td><td class="confluenceTd">Hostname</td></tr><tr><td class="confluenceTd">-e MASTER_HOST_NAME</td><td class="confluenceTd">Hostname of the master node</td></tr><tr><td class="confluenceTd">-e MASTER_DB_PORT</td><td class="confluenceTd">Service port number of the master node</td></tr><tr><td class="confluenceTd">-e MASTER_REP_PORT</td><td class="confluenceTd">Replication port number of the master node</td></tr><tr><td colspan="1" class="confluenceTd">-e SLAVE_HOST_NAME</td><td colspan="1" class="confluenceTd">Hostname of the slave node</td></tr><tr><td colspan="1" class="confluenceTd">-e SLAVE_REP_PORT</td><td colspan="1" class="confluenceTd">Replication port number of the slave node</td></tr></tbody></table></div><p>4. Check the network information.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker inspect 2bb4d1dc2fc3
+[
+    {
+        &quot;Name&quot;: &quot;isolated_network&quot;,
+        &quot;Id&quot;: &quot;2bb4d1dc2fc364ed45e69beb3a8b257f5d0e9cd95b5e4676d819386b32ba88d6&quot;,
+        &quot;Created&quot;: &quot;2019-10-29T09:50:37.6130865+09:00&quot;,
+        &quot;Scope&quot;: &quot;local&quot;,
+        &quot;Driver&quot;: &quot;bridge&quot;,
+        &quot;EnableIPv6&quot;: false,
+        &quot;IPAM&quot;: {
+            &quot;Driver&quot;: &quot;default&quot;,
+            &quot;Options&quot;: {},
+            &quot;Config&quot;: [
+                {
+                    &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
+                    &quot;Gateway&quot;: &quot;172.18.0.1&quot;
+                }
+            ]
+        },
+        &quot;Internal&quot;: false,
+        &quot;Attachable&quot;: false,
+        &quot;Ingress&quot;: false,
+        &quot;ConfigFrom&quot;: {
+            &quot;Network&quot;: &quot;&quot;
+        },
+        &quot;ConfigOnly&quot;: false,
+        &quot;Containers&quot;: {
+            &quot;0ac2165ddda455343ba2b374f18575bfc8e39f51c7fdfc80bfa49482c76e79fe&quot;: {
+                &quot;Name&quot;: &quot;altitest_slave&quot;,
+                &quot;EndpointID&quot;: &quot;db9c1241f322019764f7af4781c359647ec393bfd29a816433e1c3184546b546&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:03&quot;,
+                &quot;IPv4Address&quot;: &quot;172.18.0.3/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            },
+            &quot;964cd5ff922470b9131a23a399029844525aba39eaa500b9f4f3453b902c8461&quot;: {
+                &quot;Name&quot;: &quot;altitest_master&quot;,
+                &quot;EndpointID&quot;: &quot;80390d64486a6eabedc5cbf7e3d2fe9886099cae7678da7a9a55ef64a1130bf4&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:02&quot;,
+                &quot;IPv4Address&quot;: &quot;172.18.0.2/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            }
+        },
+        &quot;Options&quot;: {},
+        &quot;Labels&quot;: {}
+    }
+]</pre>
+</div></div></li></ol><h1 id="id-4.CreatingAltibaseServiceContainer-AltibaseDatabaseConfiguration">Altibase Database Configuration</h1><hr /><ul><li>For description and configuration of properties for effectively using the Altibase database, refer to the Altibase Configuration Guide.</li><li>Altibase database configuration and operation instructions and settings can be found in the Altibase Manual.</li></ul><h1 id="id-4.CreatingAltibaseServiceContainer-AltibaseServerConnection">Altibase Server Connection</h1><hr /><p> </p><h3 id="id-4.CreatingAltibaseServiceContainer-1.ConnecttoAltibaseserverfrominsidethecontainer"><strong>1. Connect to Altibase server from inside the container</strong></h3><div>When connecting to the Altiabse server from inside the container, use the isql command</div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># isql -s localhost -u [user account] -p [user password]# isql -s localhost -u sys -p manager
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 7.1.0.1.0
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL&gt;</pre>
+</div></div><h3 id="id-4.CreatingAltibaseServiceContainer-2.ConnecttoAltibaseserverfromoutsidethecontainer"><strong>2. Connect to Altibase server from outside the container</strong></h3><p>To connect to the Alibase server the container, allocated IP information must be checked and the IP in the -s option of the isql command must be specified.</p><p>IP can be checked with the docker inspect command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker psCONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+dbab08cc5be8        altitest:0.0        &quot;/bin/bash /home/alt…&quot;   18 hours ago        Up 18 hours         20300/tcp, 30300/tcp     altibase_test
+19d325fa6e26        registry            &quot;/entrypoint.sh /etc…&quot;   2 days ago          Up 2 days           0.0.0.0:5000-&gt;5000/tcp   local-registry
+ 
+# docker inspect altibase_test
+[
+    {
+        &quot;Id&quot;: &quot;dbab08cc5be8aac2c005d9f8d1dbc0f0d0569e8c30c59a49fe455cdb06963484&quot;,
+...
+        },
+        &quot;NetworkSettings&quot;: {
+            &quot;Bridge&quot;: &quot;&quot;,
+            &quot;SandboxID&quot;: &quot;2436fb93d9e66afe8649a482775c95c14870d09dbee367a5ebd59695f98a0854&quot;,
+            &quot;HairpinMode&quot;: false,
+            &quot;LinkLocalIPv6Address&quot;: &quot;&quot;,
+            &quot;LinkLocalIPv6PrefixLen&quot;: 0,
+            &quot;Ports&quot;: {
+                &quot;20300/tcp&quot;: null,
+                &quot;30300/tcp&quot;: null
+            },
+            &quot;SandboxKey&quot;: &quot;/var/run/docker/netns/2436fb93d9e6&quot;,
+            &quot;SecondaryIPAddresses&quot;: null,
+            &quot;SecondaryIPv6Addresses&quot;: null,
+            &quot;EndpointID&quot;: &quot;8c2c73671de5b3a55251313f8bc6b1c376685e59feb3ed55163ab9692f85983d&quot;,
+            &quot;Gateway&quot;: &quot;172.17.0.1&quot;,
+            &quot;GlobalIPv6Address&quot;: &quot;&quot;,
+            &quot;GlobalIPv6PrefixLen&quot;: 0,
+            &quot;IPAddress&quot;: &quot;172.17.0.3&quot;,
+            &quot;IPPrefixLen&quot;: 16,
+            &quot;IPv6Gateway&quot;: &quot;&quot;,
+            &quot;MacAddress&quot;: &quot;02:42:ac:11:00:03&quot;,
+            &quot;Networks&quot;: {
+                &quot;bridge&quot;: {
+                    &quot;IPAMConfig&quot;: null,
+                    &quot;Links&quot;: null,
+                    &quot;Aliases&quot;: null,
+                    &quot;NetworkID&quot;: &quot;3b3cdc53d9c0e6ad146b6c7bcc8cb60bcef01ba533fee3fd704e5959a1ef573f&quot;,
+                    &quot;EndpointID&quot;: &quot;8c2c73671de5b3a55251313f8bc6b1c376685e59feb3ed55163ab9692f85983d&quot;,
+                    &quot;Gateway&quot;: &quot;172.17.0.1&quot;,
+                    &quot;IPAddress&quot;: &quot;172.17.0.3&quot;,
+                    &quot;IPPrefixLen&quot;: 16,
+                    &quot;IPv6Gateway&quot;: &quot;&quot;,
+                    &quot;GlobalIPv6Address&quot;: &quot;&quot;,
+                    &quot;GlobalIPv6PrefixLen&quot;: 0,
+                    &quot;MacAddress&quot;: &quot;02:42:ac:11:00:03&quot;,
+                    &quot;DriverOpts&quot;: null
+                }
+            }
+        }
+    }
+]</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># isql -s [server IP] -u [user account] -p [user password]# isql -s 172.17.0.3 -u sys -p manager
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 7.1.0.1.0
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 172.17.0.3, PORT_NO = 20300
+iSQL&gt; </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

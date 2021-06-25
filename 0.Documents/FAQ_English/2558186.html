@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 2. How did we determine that the cause of the problem is the Index Segment ?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cannot-insert-new-records-after-deleting-bulk-records_2557870.html">Cannot insert new records after deleting bulk records</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 2. How did we determine that the cause of the problem is the Index Segment ?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_TaeHun Kim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 16, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+iSQL&gt; select count(*) from temp01;
+COUNT
+-----------------------
+0
+1 row selected.
+iSQL&gt; exec testproc01(1000);
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :TBS_DISK ).
+0008 : INSERT INTO ATTR_SER ( OID_SER, PATH, TAG, FLAG, VR, VALUE )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0,
+100000000004341);
+      ^
+                ^
+]
+iSQL&gt; alter table attr_ser aging;
+Alter success.
+elapsed time : 0.02
+
+iSQL&gt; exec testproc01(1000);
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :TBS_DISK ).
+0008 : INSERT INTO ATTR_SER ( OID_SER, PATH, TAG, FLAG, VR, VALUE )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0,
+100000000004341);
+      ^
+                ^
+]
+</pre>
+</div></div>
+
+<p>We performed aging on the table, but we could still not insert data.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+iSQL&gt; desc attr_ser;
+[ TABLESPACE : TBS_DISK ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+OID_SER                                  BIGINT                      NOT NULL
+PATH                                     VARCHAR(248)                NOT NULL
+TAG                                      INTEGER
+FLAG                                     SMALLINT                    NOT NULL
+VR                                       SMALLINT                    NOT NULL
+VALUE                                    NIBBLE(254)
+LOB                                      BLOB
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_342                         BTREE    UNIQUE        OID_SER ASC,
+                                                                PATH ASC
+ADBS_NU_TBLATTR_SER_OID_SER_TAG          BTREE                  OID_SER ASC,
+                                                                TAG ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+OID_SER, PATH
+iSQL&gt;
+iSQL&gt;
+iSQL&gt; alter index __SYS_IDX_ID_342 aging;
+Alter success.
+elapsed time : 0.02
+
+iSQL&gt; exec testproc01(1000);
+Execute success.
+elapsed time : 0.39
+</pre>
+</div></div>
+
+<p>After performing aging on Index, we were able to insert data.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:46</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

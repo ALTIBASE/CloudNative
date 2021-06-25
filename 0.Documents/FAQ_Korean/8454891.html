@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : MEM_MAX_DB_SIZE 란?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : MEM_MAX_DB_SIZE 란?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Feb 13, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051296 {padding: 0px;}
+div.rbtoc1624409051296 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051296 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051296'>
+<ul class='toc-indentation'>
+<li><a href='#MEM_MAX_DB_SIZE란?-의미'>의미</a></li>
+<li><a href='#MEM_MAX_DB_SIZE란?-최대값'>최대 값</a></li>
+<li><a href='#MEM_MAX_DB_SIZE란?-변경방법'>변경 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#MEM_MAX_DB_SIZE란?-현재값보다크게설정하고자할때'>현재 값 보다 크게 설정하고자 할 때</a></li>
+<li><a href='#MEM_MAX_DB_SIZE란?-현재값보다작게설정하고자할때'>현재 값 보다 작게 설정하고자 할 때</a></li>
+<li><a href='#MEM_MAX_DB_SIZE란?-changeprocedure변경방법'>변경 방법</a></li>
+<li><a href='#MEM_MAX_DB_SIZE란?-설정값확인'>설정 값 확인</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="MEM_MAX_DB_SIZE란?-의미"><strong>의미</strong></h1><hr /><ul><li>물리 메모리에 저장되는 <strong>메모리 테이블스페이스(메모리 테이블 또는 메모리 데이터)로 사용할 수 있는 최대 메모리 크기</strong>를 의미합니다.</li><li><u><span style="color: rgb(0,51,102);">모든 메모리 테이블스페이스를 합한 전체 사용량에 대한 제약</span></u>입니다.</li><li>메모리 테이블스페이스 각각이 사용할 수 있는 최대 크기가 아닙니다.</li><li>메모리 테이블에 생성한 <strong><u>인덱스 크기는 포함되지 않습니다.</u></strong></li><li><u><strong><u>변경 트랜잭션 수행 시 발생하는 과거 데이터도 포함</u></strong>됩니다. <br /></u>변경 트랜잭션이 수행될 경우 트랜잭션이 종료되기 전까지 과거 데이터를 유지하는데(MVCC기법), 메모리 테이블의 경우 메모리 테이블 내에 레코드의 복제본을 생성합니다.<u><span style="color: rgb(0,51,102);"> </span></u></li><li>메모리 테이블스페이스 생성 시 최대값을 지정하지 않으면 MEM_MAX_DB_SIZE 설정 값만큼 자동 확장됩니다.</li></ul><h1 id="MEM_MAX_DB_SIZE란?-최대값"><strong>최대 값</strong></h1><hr /><ul><li><span><span style="color: rgb(0,0,0);"><strong>물리 메모리의 약 60~70% 정도로 설정할 것을 권장</strong></span>합니다<span>.</span></span></li><li><span><span><span><span><span><strong><u>메모리 데이터 뿐 아니라</u> </strong>변경 트랜잭션 수행 시 MVCC 기법에 의해 생성될 <strong><u>레코드 복제본 크기</u></strong>도 고려해야 합니다. <br /></span></span></span></span></span>예를 들어, 1G짜리 메모리 테이블에 변경 트랜잭션이 발생한 경우 틀랜잭션이 완료된 시점에는 해당 테이블의 크기는 2G 가 될 수 있습니다. <span><span><span><span><span><br /></span></span></span></span></span></li><li><span><span><span>메모리는 알티베이스 서버 프로세스 뿐 아니라 OS 및 다른 프로세스에서도 사용해야 할 공유 자원이기 때문에 <strong><u>물리 메모리보다 작게 설정</u></strong>해야 합니다. </span></span></span></li><li><span><span><span><span>물리 메모리보다 크게 <span><span><span><span>MEM_MAX_DB_SIZE를 설정할 수는 있지만 물리 메모리를 초과하여 메모리가 사용될 경우 swap in/out 발생으로 성능 저하 및 시스템에 다양한 문제가 발생할 수 있습니다. </span></span></span></span></span></span></span></span></li></ul><p> </p><h1 id="MEM_MAX_DB_SIZE란?-변경방법"><strong>변경 방법</strong></h1><hr /><h2 id="MEM_MAX_DB_SIZE란?-현재값보다크게설정하고자할때"><strong>현재 값 보다 크게 설정하고자 할 때<br /></strong></h2><hr /><p>MEM_MAX_DB_SIZE 를 현재 값보다 크게 설정하고자 할 때 고려해야 할 부분에 대해 설명합니다.</p><p> </p><h3 id="MEM_MAX_DB_SIZE란?-디스크공간"><strong>디스크 공간</strong></h3><p>메모리 테이블스페이스는 백업 용도로 두 벌의 '메모리 체크포인트 이미지 파일'을 디스크에 저장합니다. 그래서 <strong><span style="color: rgb(0,51,102);"><span style="color: rgb(255,0,0);">메모리 데이터 사용량보다 보다 두 배의 디스크 공간이 필요</span></span></strong>합니다.</p><p>MEM_MAX_DB_SIZE 를 크게 설정하면 디스크 사용량도 증가하므로 MEM_MAX_DB_SIZE 변경 전에 디스크 공간을 여유있게 확보해야 합니다. </p><p>예) MEM_MAX_DB_SIZE 가 60G 일 경우, 120G 의 디스크 공간이 필요. </p><p> </p><h3 id="MEM_MAX_DB_SIZE란?-사용자환경설정(Linux/Unix)">사용자 환경 설정 (Linux/Unix)</h3><p>ulimit -a 로 수행하여 아래 설정들이 <strong><span style="color: rgb(255,0,0);">OS 에서 허용하는 최대 값으로 설정되어 있는 지 확인</span></strong>해야 합니다.</p><p>max memory size<br />virtual memory</p><p> </p><h3 id="MEM_MAX_DB_SIZE란?-커널파라미터(AIX,HP-UX)">커널 파라미터(AIX, HP-UX)</h3><p>AIX 경우 /etc/security/limits 파일 내용에서 data, rss, fsize등에 대해서 -1로 설정이 되어 있는지 확인합니다. <br />HP의 경우 kctune을 통해 maxdsiz_64bit 값이 충분히 크게 설정 되어 있는지 확인합니다. <br />Linux, SunOS 는 해당 없습니다.</p><p><br /><br /></p><p>MEM_MAX_DB_SIZE 변경 방법은 <a href="#MEM_MAX_DB_SIZE란?-changeprocedure">&#50668;&#44592;&#47484;</a> 참고하세요.</p><p> </p><p> </p><h2 id="MEM_MAX_DB_SIZE란?-현재값보다작게설정하고자할때"><strong>현재 값 보다 작게 설정하고자 할 때</strong></h2><hr /><p>MEM_MAX_DB_SIZE 를 현재 값보다 작게 설정하고자 할 때 고려해야 할 부분에 대해 설명합니다.</p><p> </p><ul><li>MEM_MAX_DB_SIZE 는 무조건 작게 설정할 수 없습니다.</li><li><p><strong>증가한 '체크포인트 이미지 파일' 크기를 확인한 후 그보다 크게 설정해야 합니다.</strong><br />아래 문장으로 그 크기를 확인할 수 있습니다.</p><p>TOTAL 이 MAX 보다 작다면 TOTAL 보다는 크면서 기존 값보다는 작게 MEM_MAX_DB_SIZE 를 설정합니다.</p>    <div class="aui-message success shadowed information-macro">
+                    <p class="title">IE 사용자에게</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>IE 에서 SQL 문장을 복사하면 빈 줄이 생길 수 있으니 필요 시 첨부 파일을 사용하시기 바랍니다. <a class="unresolved" href="#">total_memory_tablespaces_usage.txt</a></p>
+                    </div>
+    </div>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;       MAX(M)&#39;,                                       -- MAX(M)   : MEM_MAX_DB_SIZE 설정 값
+       TO_CHAR(MEM_ALLOC_PAGE_COUNT*32/1024, &#39;999,999,999&#39;) &#39;     TOTAL(M)&#39;,                                    -- TOTAL(M) : 메모리 테이블스페이스로 할당 된 전체 페이지 크기. 체크포인트 이미지 파일 크기를 의미하기도 함. 
+       TO_CHAR((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, &#39;999,999,999&#39;) &#39;     ALLOC(M)&#39;,              -- ALLOC(M) : 메모리 테이블스페이스에서 사용하는 메모리 크기
+       (SELECT TO_CHAR(SUM((FIXED_USED_MEM + VAR_USED_MEM))/1024/1024, &#39;999,999,999&#39;)
+          FROM V$MEMTBL_INFO) &#39;      USED(M)&#39;,                                                                  -- USED(M)  : ALLOC 중에서 데이터가 저장된 메모리 크기
+       TO_CHAR((((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE)*100, &#39;99.99&#39;) &#39;USAGE(%)&#39;  -- USAGE(%) : MAX 대비 ALLOC 사용률
+  FROM V$DATABASE ;
+       MAX(M)         TOTAL(M)         ALLOC(M)         USED(M)     USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120              920              621              142      12.13           
+1 row selected.</pre>
+</div></div>
+<div id="expander-1920597746" class="expand-container">
+<div id="expander-control-1920597746" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">TOTAL 은...</span>
+</div>
+<div id="expander-content-1920597746" class="expand-content"><p>TOTAL(M) 은 메모리 테이블스페이스로 할당 된 전체 페이지 크기를 의미합니다.</p><pre>이 값에는 메모리 테이블스페이스의 free page 도 포함합니다. <br />free page 는 물리 메모리에 로딩되지 않을 수도 있습니다. 그래서 이 값을 메모리 테이블스페이스의 물리 메모리 사용량으로 볼 수는 없습니다. <br /><br /></pre><pre>이 값은 체크포인트 이미지 파일의 크기를 의미하기도 합니다. </pre><pre><br /><span>TOTAL 은 <span>DROP TABESPACE 한 경우</span>를 제외하고는 줄어들지 않습니다. </span>알티베이스 서버를 재구동 해도 줄어들지 않습니다. <br /><br /></pre><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>체크포인트 이미지 파일과 비교</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; /
+      MAX(M)         TOTAL(M)         ALLOC(M)          USED(M)    USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120            4,108              158              123       3.10           
+1 row selected.
+
+
+iSQL&gt; ! ls -l $ALTIBASE_HOME/dbs/*MEM* | sort -n | awk &#39;{sum += $5} END{print (sum/1024/1024)/2&quot; MB&quot;}&#39;        -- 체크포인트 수행 시점에 따라 달리 보일 수 있습니다. 
+4108.17 MB                                                                                                    -- 체크포인트가 수행되면 TOTAL과 동일해집니다. </pre>
+</div></div></div>
+</div>
+</li></ul><p> </p><p>MEM_MAX_DB_SIZE 변경 방법은 <a href="#MEM_MAX_DB_SIZE란?-changeprocedure">&#50668;&#44592;&#47484;</a> 참고하세요.</p><p> </p><p> </p><p> </p><h2 id="MEM_MAX_DB_SIZE란?-changeprocedure변경방법"><strong><span class="confluence-anchor-link" id="MEM_MAX_DB_SIZE란?-changeprocedure"></span>변경 방법<br /></strong></h2><ol><li><p><strong>알티베이스 서버 중지</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div></li><li><p><strong>altibase.properties 파일 변경</strong></p><p>알티베이스 서버 프로퍼티 파일($ALTIBASE_HOME/conf/altibase.properties) 에서 MEM_MAX_DB_SIZE 를 변경 후 저장합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+MEM_MAX_DB_SIZE        = 2G # MEM_MAX_DB_SIZE</pre>
+</div></div></li><li><p><strong>알티베이스 서버 구동</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div></li></ol><p> </p><h2 id="MEM_MAX_DB_SIZE란?-설정값확인"><strong>설정 값 확인</strong></h2><hr /><p>아래 두 가지 방법으로 확인 가능합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set linesize 1024
+iSQL&gt; set colsize 20
+iSQL&gt; SELECT NAME, TO_CHAR(VALUE1/1024/1024, &#39;999,999&#39;) AS &#39;VALUE(MB)&#39; FROM V$PROPERTY WHERE NAME = &#39;MEM_MAX_DB_SIZE&#39;;</pre>
+</div></div><p>또는</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999&#39;) AS &#39;MEM_MAX_DB_SIZE(MB)&#39; FROM V$DATABASE;</pre>
+</div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

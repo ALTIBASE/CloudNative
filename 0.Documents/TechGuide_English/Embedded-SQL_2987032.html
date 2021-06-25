@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Embedded-SQL</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Embedded-SQL
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347530 {padding: 0px;}
+div.rbtoc1624409347530 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347530 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347530'>
+<ul class='toc-indentation'>
+<li><a href='#Embedded-SQL-Overview'>Overview</a></li>
+<li><a href='#Embedded-SQL-Precompileroptions'>Precompiler options</a></li>
+<li><a href='#Embedded-SQL-Tomakeabinary'>To make a binary</a></li>
+<li><a href='#Embedded-SQL-Connection'>Connection</a></li>
+<li><a href='#Embedded-SQL-HostVariables'>Host Variables</a></li>
+<li><a href='#Embedded-SQL-Embedded-SQL'>Embedded-SQL</a></li>
+<li><a href='#Embedded-SQL-StatusCodes'>Status Codes</a></li>
+</ul>
+</div>
+
+<h1><a name="Embedded-SQL-Overview"></a>Overview</h1>
+
+<p>ALTIBASE HDB provides APRE*C to develop an application for C/C++.<br/>
+It is similar tool-kit&nbsp;to PRO*C in ORACLE.<br/>
+At first, We recommend you to read a manual about APRE for C/C++.</p>
+
+
+<map id="gliffy-map-3114337-90" name="gliffy-map-3114337-90"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 659px;" usemap="#gliffy-map-3114337-90" src="attachments/2987032/3114338.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>In the above figure,</p>
+<ol>
+	<li>User writes a source code having a extension&nbsp;like ".sc" using embedded-SQL in C/C+&#43; style.<br/>
+(User has to write source-file of extension&nbsp;like "*.sc")</li>
+	<li>User executes APRE provided by Altibase for changing a source to C/C+&#43; style.<br/>
+(Apre changes "xxxx.sc" to "xxxx.c" or "xxxx.cpp" like C/C+&#43; style)</li>
+	<li>User compiles and links an object with altibase-libraries and system-libraries. altibase libraries are libapre.a and libodbccli.a</li>
+	<li>After all steps are done, you can make an application-binary to serve for your customer.</li>
+</ol>
+
+
+<h1><a name="Embedded-SQL-Precompileroptions"></a>Precompiler options</h1>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;h </p></td>
+<td class="confluenceTd"><p> No Option (oracle displays help content when executed without options) </p></td>
+<td class="confluenceTd"><p> display help content about options. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;t </p>
+<div class="error"><span class="error">Unknown macro: {c|cpp}</span> </div>
+<p><br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> like CODE= </p>
+<div class="error"><span class="error">Unknown macro: {ANSI_C|KR_C|CPP}</span> </div>
+<p>option </p></td>
+<td class="confluenceTd"><p> This is used to choose the filename extension of the file created <br class="atl-forced-newline" />
+as a result of the APRE precompiling operation. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;o output_path </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+<td class="confluenceTd"><p> This is used to specify the location of the file(s) created by APRE. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;mt </p></td>
+<td class="confluenceTd"><p> THREADS= </p>
+<div class="error"><span class="error">Unknown macro: {yes|no}</span> <table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> If the file to be precompiled is a multi-threaded program, <br class="atl-forced-newline" />
+this option must be specified. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;I include_path </p></td>
+<td class="confluenceTd"><p> INCLUDE option </p></td>
+<td class="confluenceTd"><p> This option is used to specify the location(s) of the header file(s) <br class="atl-forced-newline" />
+to be used in the precompiling operation. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;parse </p></td>
+<td class="confluenceTd"><p> PARSE= </p>
+<div class="error"><span class="error">Unknown macro: {none|partial|full}</span> </div>
+<p><br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> This option is used to specify the range within the source file(s), <br class="atl-forced-newline" />
+which are specified within the source code using the #include directive, <br class="atl-forced-newline" />
+that is parsed by the precompiler. When this option is not specified, <br class="atl-forced-newline" />
+it&nbsp;is set&nbsp;to partial by default. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;D </p></td>
+<td class="confluenceTd"><p> No option </p></td>
+<td class="confluenceTd"><p> This option is used to specify the name of a macro <br class="atl-forced-newline" />
+during the precompile operation. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;n </p></td>
+<td class="confluenceTd"><p> No option </p></td>
+<td class="confluenceTd"><p> This option is used to indicate that any host variables of type CHAR are not null-padded. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;unsafe_null </p></td>
+<td class="confluenceTd"><p> UNSAFE_NULL= </p></td>
+</tr>
+</tbody></table>
+</div>
+<p><br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> This option is used to prevent an error from being raised <br class="atl-forced-newline" />
+even when a NULL value is fetched and an indicator variable is not being used. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;spill </p></td>
+<td class="confluenceTd"><p> No option </p></td>
+<td class="confluenceTd"><p> This option is specified only when precompiling in an AIX environment. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;keyword </p></td>
+<td class="confluenceTd"><p> No option </p></td>
+<td class="confluenceTd"><p> display reserved keywords. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;nchar_var </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+<td class="confluenceTd"><p> When this option is used, APRE processes the specified <br class="atl-forced-newline" />
+variables using the Altibase national character set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &#45;nchar_utf16 </p></td>
+<td class="confluenceTd"><p> UTF16_CHARSET </p></td>
+<td class="confluenceTd"><p> When this option is used, national character type data are <br class="atl-forced-newline" />
+encoded as UTF-16 during the precompile operation. </p></td>
+</tr>
+</tbody></table>
+
+<ul>
+	<li>ALTIBASE HDB doesn't provide features like other oracle's options except above options.</li>
+</ul>
+
+
+<h1><a name="Embedded-SQL-Tomakeabinary"></a>To make a binary</h1>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Option </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> ORACLE </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> precomiling </p></td>
+<td class="confluenceTd"><p> apre &#45;mt &#45;t </p>
+<div class="error"><span class="error">Unknown macro: {cpp|c}</span> </div>
+<p>sample.sc </p></td>
+<td class="confluenceTd"><p> proc iname=sample.pc </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Definition about path of header-files </p></td>
+<td class="confluenceTd"><p> &#45;I$ </p>
+<div class="error"><span class="error">Unknown macro: {ALTIBASE_HOME}</span> <p>/include &#124; &#45;I$</p>
+<div class="error"><span class="error">Unknown macro: {ORACLE_HOME}</span> <p>/public &#45;I$</p></div>
+<p>/precomp/include &#45;I$</p>
+<div class="error"><span class="error">Unknown macro: {ORACLE_HOME}</span> </div>
+<p>/oracore/public ... &#124;&#124; Definition about path of library-files &#124; &#45;I$ &#124;</p></div>
+<p>/lib </p></td>
+<td class="confluenceTd"><p> &#45;L$ </p>
+<div class="error"><span class="error">Unknown macro: {ORACLE_HOME}</span> <p>/precomp/lib &#45;L${ORACLE_HOME}/lib ... &#124;&#124; Library-files &#124; &#45;lapre &#45;lodbccli &#124; cat `${ORACLE_HOME}/lib/sysliblist` ... &#124;&#42; ORACLE sample</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+
+</pre>
+</div></div>
+<p>Shell&gt; proc iname=sample1.pc <br class="atl-forced-newline" />
+Shell&gt; gcc &#45;m64 &#45;o sample1 sample1.c &#45;I$</p></div>
+<p>/precomp/public &#45;L$</p>
+<div class="error"><span class="error">Unknown macro: {ORACLE_HOME}</span> </div>
+<p>/lib &#45;lclntsh</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+* ALTIBASE HDB
+{code:none}
+Shell&gt; apre -mt -t c sample1.c
+Shell&gt; gcc -m64 -o connect1 connect1.c -I${ALTIBASE_HOME}/include -L${ALTIBASE_HOME}/lib -lapre -lodbccli -lpthread -lm -ldl -lstdc++ -lcrypt -lrt</pre>
+</div></div>
+<p>When compiling, User have to link system-libraries like "-lpthread &#45;lm &#45;ldl &#45;lstdc+&#43; &#45;lcrypt &#45;lrt". (Altibase provides only two-libraries like "libapre", "libodbccli") </p></td>
+</tr>
+</tbody></table>
+
+
+
+<h1><a name="Embedded-SQL-Connection"></a>Connection</h1>
+
+<p><a href="http://aid.altibase.com/x/KZQt" class="external-link" rel="nofollow">See this page</a></p>
+<ul>
+	<li><strong><em>ORACLE</em></strong>&nbsp;
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+EXEC SQL CONNECT {:user IDENTIFIED BY :oldpswd :usr_psw }
+[[ AT { dbname | :host_variable }] USING :connect_string ];
+</pre>
+</div></div></li>
+	<li><strong><em>ALTIBASE HDB</em></strong>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+EXEC SQL [AT {conn_name | :conn_name}]
+CONNECT &lt;:user&gt; IDENTIFIED BY &lt;:passwd&gt;
+[USING &lt;:conn_opt&gt;];
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1><a name="Embedded-SQL-HostVariables"></a>Host Variables</h1>
+
+<p><a href="http://aid.altibase.com/x/UZQt" class="external-link" rel="nofollow">See this page</a></p>
+<ul>
+	<li><strong><em>ORACLE</em></strong>&nbsp;
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+// declare host variables
+EXEC SQL END DECLARE SECTION;
+</pre>
+</div></div></li>
+	<li><strong><em>ALTIBASE HDB</em></strong>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+// declare host variables
+EXEC SQL END DECLARE SECTION;
+</pre>
+</div></div></li>
+	<li>If you uses a option (-parse=full), you can use host-variables without declare-section. (but, this is able to do it in c-style)</li>
+</ul>
+
+
+<h1><a name="Embedded-SQL-Embedded-SQL"></a>Embedded-SQL</h1>
+
+<p>See the&nbsp;follwoing pages linked as follows.</p>
+<ol>
+	<li><a href="http://aid.altibase.com/x/spQt" class="external-link" rel="nofollow">Basic SQL (SELECT,INSERT, UPDATE, DELETE, CURSOR, MOVE) </a></li>
+	<li><a href="http://aid.altibase.com/x/5JQt" class="external-link" rel="nofollow">Call Procedure </a></li>
+	<li><a href="http://aid.altibase.com/x/HZUt" class="external-link" rel="nofollow">Dynamic Method </a></li>
+	<li><a href="http://aid.altibase.com/x/8pQt" class="external-link" rel="nofollow">Error-Handling </a></li>
+	<li><a href="http://aid.altibase.com/x/IJUt" class="external-link" rel="nofollow">LOBs-Handling </a></li>
+	<li><a href="http://aid.altibase.com/x/rZot" class="external-link" rel="nofollow">Queue-Handling </a></li>
+</ol>
+
+
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Entries </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> File Extension </p></td>
+<td class="confluenceTd"><p> source.sc </p></td>
+<td class="confluenceTd"><p> source.pc </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Precompiler </p></td>
+<td class="confluenceTd"><p> apre </p></td>
+<td class="confluenceTd"><p> proc </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Header-File </p></td>
+<td class="confluenceTd"><p> Not needed </p></td>
+<td class="confluenceTd"><p> &#35;include &lt;sqlca.h&gt; </p></td>
+<td class="confluenceTd"><p> ALTIBASE HDB automatically writes a header-file while precompiling. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Default Commit-Mode </p></td>
+<td class="confluenceTd"><p> Auto-Commit </p></td>
+<td class="confluenceTd"><p> Non Auto-Commit </p></td>
+<td class="confluenceTd"><p> ALTIBASE can be using a property located at $ALTIBASE_HOME/conf/altibase.properties </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Fetch-Across-Commit </p></td>
+<td class="confluenceTd"><p> Not Support </p></td>
+<td class="confluenceTd"><p> Support </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Dynamic Method-4 </p></td>
+<td class="confluenceTd"><p> Not Support </p></td>
+<td class="confluenceTd"><p> Support </p></td>
+<td class="confluenceTd"><p>&nbsp;</p></td>
+</tr>
+</tbody></table>
+
+
+
+<h1><a name="Embedded-SQL-StatusCodes"></a>Status Codes</h1>
+
+<p><a href="http://aid.altibase.com/x/8pQt" class="external-link" rel="nofollow">See this page</a></p>
+<ul>
+	<li><strong><em>ORACLE&nbsp;</em></strong>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char SQLSTATE [6];
+...
+if (sqlca.sqlcode != 0)
+   ...
+</pre>
+</div></div></li>
+	<li><strong><em>ALTIBASE HDB</em></strong>&nbsp;
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char SQLSTATE [6];
+...
+if (sqlca.sqlcode != 0)
+   ...
+
+if (SQLCODE != 0)
+   ...
+</pre>
+</div></div></li>
+</ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/4653079">howtoapre</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/4653080.png">howtoapre.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/4653131">howtoapre</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/4653132.png">howtoapre.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/3114337">howtoapre</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2987032/3114338.png">howtoapre.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

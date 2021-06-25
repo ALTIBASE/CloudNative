@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 언두 테이블스페이스 사용량 증가 시 모니터링 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="8454974.html">언두 테이블스페이스(UNDO TABLESPACE)</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 언두 테이블스페이스 사용량 증가 시 모니터링 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jul 14, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054669 {padding: 0px;}
+div.rbtoc1624409054669 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054669 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054669'>
+<ul class='toc-indentation'>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-개요'>개요</a></li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-모니터링항목'>모니터링 항목</a></li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-버전별모니터링방법'>버전 별 모니터링 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-ALTIBASEHDB5.3.3,5.5.1,6.1.1,6.3.1'>ALTIBASE HDB 5.3.3, 5.5.1, 6.1.1, 6.3.1</a></li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-ALTIBASEHDB4.3.9,5.1.5'>ALTIBASE HDB 4.3.9, 5.1.5</a></li>
+</ul>
+</li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-조치방법'>조치 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-언두테이블스페이스크기증가'>언두 테이블스페이스 크기 증가</a></li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-세션강제종료'>세션 강제 종료</a></li>
+<li><a href='#id-언두테이블스페이스사용량증가시모니터링방법-장시간수행하는트랜잭션방지'>장시간 수행하는 트랜잭션 방지</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량증가시모니터링방법-개요">개요</h1><hr /><p>언두 테이블스페이스 사용량이 지속적으로 증가할 경우 모니터링 방법에 대해 설명합니다.</p><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량증가시모니터링방법-모니터링항목">모니터링 항목</h1><hr /><p>언두 테이블스페이스의 사용량이 증가한다면 다음 두 가지 경우를 확인해야 합니다.</p><ul><li><strong>디스크 테이블의 데이터를 변경하는 변경 트랜잭션이 존재하는지</strong></li><li><strong>변경 트랜잭션에서 생성한 old image 를 바라보는 조회 트랜잭션이 존재하는지</strong></li></ul><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량증가시모니터링방법-버전별모니터링방법">버전 별 모니터링 방법</h1><hr /><h2 id="id-언두테이블스페이스사용량증가시모니터링방법-ALTIBASEHDB5.3.3,5.5.1,6.1.1,6.3.1">ALTIBASE HDB 5.3.3, 5.5.1, 6.1.1, 6.3.1</h2><hr /><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-트랜잭션별언두테이블스페이스사용량모니터링쿼리">트랜잭션 별 언두 테이블스페이스 사용량 모니터링 쿼리</h3><p>아래 모니터링 쿼리를 통해 <strong><span style="color: rgb(51,102,255);">TX_STATUS 가 BEGIN 또는 END 상태로 장시간 수행 중인 트랜잭션을 찾아</span></strong> 조치합니다.</p><p>쿼리 결과에서 아래와 같은 정보들을 확인할 수 있습니다.</p><ul><li>언두 테이블스페이스를 사용하거나 접근하고 있는 세션의 정보. (Autocommit mode, Client IP 및 Process id, UTRANS_TIMEOUT 설정 값)</li><li>언두 영역을 사용하는 변경 트랜잭션 존재 여부</li><li>언두 영역에 접근하는 조회 트랜잭션 존재 여부</li><li>변경 트랜잭션에서 사용 중인 언두 사용량</li><li>트랜잭션의 마지막 SQL 문장 및 수행 시각</li><li>SQL 문장 수행 여부</li></ul><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>트랜잭션 별 언두 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>SELECT RPAD(DECODE(TX.LOG_TYPE, 1, REP.REP_NAME, TX.SESSION_ID), 10) SESSION_ID                                                                     -- 트랜잭션을 수행한 세션 ID. 
+     , RPAD(TX.ID, 20) TX_ID                                                                                                                        -- 트랜잭션 ID
+     , RPAD(DECODE(ST.ID, NULL, &#39;REP&#39;&#39;S TX&#39;, ST.ID), 20) STATEMENT_ID                                                                               -- STATEMENT ID
+     , RPAD(DECODE(TX.TSS_RID, 0, &#39;SELECT&#39;, &#39;UPDATE&#39;), 7) TX_TYPE                                                                                   -- 트랜잭션 타입. SELECT : 조회 문장만 있는 트랜잭션. UPDATE : DELETE, UPDATE 등 데이터를 변경한 트랜잭션
+     , RPAD(DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;), 16) TX_STATUS    -- 트랜잭션 상태
+     , RPAD(DECODE(ST.EXECUTE_FLAG, NULL, &#39;REP&#39;&#39;S TX&#39;, 1, &#39;SQL ING&#39;, 0, &#39;SQL END&#39;), 10) SQL_STATUS                                                  -- SQL 상태     
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP &#39;||REP.PEER_IP||&#39;:&#39;||REP.PEER_PORT, S.COMM_NAME||&#39; PID:&#39;||S.CLIENT_PID), 40) CLIENT_IP                      -- 클라이언트 IP와 프로세스 ID
+     , RPAD(DECODE(S.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, 0, &#39;OFF&#39;, NULL, &#39;REP&#39;&#39;S TX&#39;), 10) AUTOCOMMIT                                                         -- AUTOCOMMIT 모드
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP&#39;&#39;S TX&#39;, S.UTRANS_TIME_LIMIT), 15) UTRANS_TIMEOUT                                                            -- 세션의 UTRANS_TIMEOUT 설정값
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) CURRENT_TIME                                                                                         -- 현재 시각
+     , DECODE(ST.LAST_QUERY_START_TIME, NULL, TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;), ST.LAST_QUERY_START_TIME) LAST_QUERY_START_TIME   -- SQL문 시작 시각
+     , RPAD(LTRIM(TXM.SYS_MIN_DISK_VIEWSCN), 10) SYS_MIN_DISK_VIEWSCN                                                                               -- 언두 영역을 보고 있는 SCN 중 가장 작은 SCN
+     , DECODE(TX.DISK_VIEW_SCN, &#39;INFINITE(                  0)&#39;, &#39;-&#39;, LTRIM(TX.DISK_VIEW_SCN)) DISK_VIEW_SCN                                        -- 조회 트랜잭션에서 바라보는 가장 작은 SCN 
+     , DECODE(TX.MIN_DISK_LOB_VIEW_SCN, &#39;INFINITE(                  0)&#39;, &#39;-&#39;, LTRIM(TX.MIN_DISK_LOB_VIEW_SCN)) MIN_DISK_LOB_VIEW_SCN                -- LOB 데이터를 조회하는 트랜잭션에서 바라보는 가장 작은 SCN 
+     , TO_CHAR(((UD_S.TOTAL_EXTENT_COUNT*UD_S.PAGE_COUNT_IN_EXTENT*8192)/1024), &#39;999,999,999&#39;) &#39;UNDO_USED(KB)&#39;                                      -- 변경 트랜잭션에서 사용한 언두 영역 크기.
+     , DECODE(TX.LOG_TYPE, 1, &#39;REMOTE_TX_ID : &#39;||REP_TX.REMOTE_TID, ST.QUERY) QUERY                                                                 -- 언두를 사용하거나 접근한 트랜잭션에서 수행한 마지막 쿼리
+  FROM V$TRANSACTION TX LEFT OUTER JOIN (SELECT SESSION_ID , TX_ID , ID , TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + (LAST_QUERY_START_TIME) / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_QUERY_START_TIME, EXECUTE_FLAG, UNDO_READ_PAGE , UNDO_GET_PAGE , SUBSTR(QUERY, 1, 60) QUERY
+          FROM V$STATEMENT
+         WHERE (SESSION_ID
+                     , TX_ID
+                     , LAST_QUERY_START_TIME) IN (SELECT SESSION_ID
+                     , TX_ID
+                     , MAX(LAST_QUERY_START_TIME) LAST_QUERY_START_TIME
+                  FROM V$STATEMENT
+                 GROUP BY SESSION_ID
+                     , TX_ID)) ST ON TX.ID = ST.TX_ID LEFT OUTER JOIN V$SESSION S ON TX.SESSION_ID = S.ID LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL REP_TX ON TX.ID = REP_TX.LOCAL_TID LEFT OUTER JOIN V$REPRECEIVER REP ON REP_TX.REP_NAME = REP.REP_NAME
+      LEFT OUTER JOIN V$TXSEGS TX_S ON TX.ID = TX_S.TRANS_ID LEFT OUTER JOIN V$UDSEGS UD_S ON TX_S.ID = UD_S.TXSEG_ENTRY_ID               
+     , V$TRANSACTION_MGR TXM
+ WHERE 1=1
+   AND (TX.TSS_RID &lt;&gt; 0
+            OR ST.UNDO_READ_PAGE &lt;&gt; 0
+            OR ST.UNDO_GET_PAGE &lt;&gt; 0)
+ ORDER BY SESSION_ID
+     , TX_ID
+     , LAST_QUERY_START_TIME;</pre>
+</div></div><p> </p><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-출력결과">출력 결과</h3><p>아래는 언두를 사용하는 변경 트랜잭션을 보여주는 출력 예입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4           61397121                   262147                     UPDATE        BEGIN                      SQL_END               TCP 127.0.0.1:45076 PID:1  OFF                   0                          2015-03-11 12:27:11        2015-03-11 09:30:40        800767                -                          -                                   256     UPDATE LOB_T SET C3 = &#39;UN
+                                                                                                                                 11410                                                                                                                                                                                                                          _DO TEST&#39;                     
+6           586566273                  393216                     UPDATE        BEGIN                      SQL_ING               TCP 127.0.0.1:45044 PID:1  OFF                   3600                       2015-03-11 12:27:11        2015-03-11 09:30:30        800767                800767                     800767                           68,864     UPDATE EMP SET JOIN_DATE=  
+                                                                                                                                 11242                                                                                                                                                                                               SYSDATE                    
+2 rows selected.</pre>
+</div></div><ul><li>TX_TYPE 이 UPDATE 인 경우 해당 트랜잭션에 데이터 변경 작업이 한 번이라도 발생했음을 의미합니다.</li><li>SQL_STATUS 가 SQL_END 인 경우 트랜잭션에서 수행한 SQL 문의 수행이 종료하였으나 트랜잭션은 종료되지 않은 상태를 의미합니다.<span style="color: rgb(255,0,0);"> </span><span style="color: rgb(0,0,0);">(아래 결과에서 4번 세션의 TX_ID 61397121)</span> <span style="color: rgb(0,0,0);"><br /></span></li><li>SQL_STATUS 가 SQL_ING 인 경우 트랜잭션에서 수행한 SQL 문장이 수행 중임을 의미합니다.  <span style="color: rgb(255,0,0);"><span style="color: rgb(255,0,0);"> </span><span style="color: rgb(0,0,0);">(아래 결과에서 6번 세션의 TX_ID 61397121)</span></span><span style="color: rgb(255,0,0);"><br /></span></li><li>LAST_QUERY_START_TIME 으로 트랜잭션에서 수행한 마지막 SQL문의 시작 시각을 알 수 있습니다. 현재 시각과 차이로 해당 트랜잭션이 얼마나 오래 수행 중인지 판단할 수 있습니다.</li><li>UTRANS_TIMEOUT 은 변경 트랜잭션이 수행할 수 있는 최대 소요 시간(초 단위)을 의미합니다. </li><li><p>UNDO_USED(KB)는 해당 트랜잭션에서 사용한 언두의 크기를 kbyte 단위로 보여줍니다.</p><p> </p></li></ul><p> </p><p>아래는 변경 트랜잭션에서 언두 영역에 생성한 변경 전 데이터를 바라보는 조회 트랜잭션을 보여주는 출력 결과입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2           7374720                    131072                     SELECT        BEGIN                      SQL_END               TCP 127.0.0.1:45173 PID:1  OFF                   0                          2015-03-11 12:30:25        2015-03-11 09:31:43        800783                -                          800783                                      SELECT * FROM LOB_T
+                                                                                                                                 12123                                                                                                                                                                                                                                                     
+5           1613185                    327681                     SELECT        BEGIN                      SQL_ING               TCP 127.0.0.1:44251 PID:4  ON                    3600                       2015-03-11 12:30:25        2015-03-11 09:33:42        800783                800783                     800783                                      SELECT ENO, C_DATE         
+                                                                                                                                 0252                                                                                                                                                                                                       FROM EMP            
+2 rows selected.
+
+
+
+iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2           7374720                    131072                     SELECT        BEGIN                      SQL_END               TCP 127.0.0.1:45173 PID:1  OFF                   0                          2015-03-11 12:35:12        2015-03-11 09:31:43        800783                -                          800783                                      SELECT * FROM LOB_T
+                                                                                                                                 12123                                                                                                                                                                                                                                                     
+1 rows selected.
+
+
+
+iSQL&gt; /
+SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE         TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9           376196                     589824                     SELECT          BEGIN                      SQL END               TCP 127.0.0.1:21792 PID:2  OFF                   3600                       2015-03-11 16:00:13        2015-03-11 15:54:19        800951                -                          -                                           SELECT DEP_LOCATION FROM   
+                                                                                                                                   20176                                                                                                                                                                                                                          DEPT WHERE DNO BETWEEN &#39;1  
+                                                                                                                                                                                                                                                                                                                                                                  001&#39; AND &#39;                 
+1 rows selected.</pre>
+</div></div><ul><li>TX_TYPE 이 SELECT 인 경우 변경 문장을 한 번도 수행하지 않은 트랜잭션을 의미합니다.<br /><br /></li><li><p><strong>LOB 데이터가 포함되지 않은 SELECT 문</strong>은 데이터베이스로부터 데이터를<strong> fetch 한 후</strong>에는<strong> 언두 이미지를</strong> 더 이상 <strong>바라보지 않습니다</strong>. <br />- Autocommit-Mode 의 트랜잭션은 fetch 를 완료하면 결과에서 사라집니다. (5번 세션의 TX_ID 1613185 참고. DISK_VIEW_SCN 에 SCN 이 표시된 것은 LOB데이터를 포함하지 않음을 의미함.) <br />- Non-autocommit-Mode 의 트랜잭션은  fetch 종료 후 commit 수행 전까지 DISK_VIEW_SCN, MIN_DISK_LOB_VIEW_SCN 이 모두 - 로 표시됩니다. (9번 세션의 TX_ID 376196)<br /><br /></p></li><li><span style="color: rgb(0,0,0);"><strong>LOB 데이터를 포함한 SELECT 문은</strong></span> fetch 가 종료되어도 commit 또는 rollback 을 수행하기 전까지 언두 이미지를 바라봅니다.<br />DISK_VIEW_SCN  - 이고 MIN_DISK_LOB_VIEW_SCN 에 SCN 이 표시되어 있으면 LOB 데이터를 조회하는 트랜잭션을 의미합니다. (2번 세션의 TX_ID 7374720)<br />LOB 데이터의 경우 lob cursor 라는 정보가 존재하는데 이것이 open 된 상태에서는 언두 이미지를 바라보게 됩니다. lob cursor 는 commit 또는 rollback 을 수행해야만 close 됩니다. <br /><strong><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">이 상태의 트랜잭션은 언두 사용을 증가시키는 원인이 될 수 있습니다.</span> </span></strong></li></ul><p> </p><p> </p><p>다음은 언두 영역을 사용하는 이중화 트랜잭션을 보여주는 결과입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SESSION_ID  TX_ID                      STATEMENT_ID               TX_TYPE       TX_STATUS                  SQL_STATUS            CLIENT_IP                  AUTOCOMMIT            UTRANS_TIMEOUT             CURRENT_TIME               LAST_QUERY_START_TIME      SYS_MIN_DISK_VIEWSCN  DISK_VIEW_SCN              MIN_DISK_LOB_VIEW_SCN      UNDO_USED(KB)    QUERY                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+REP1        4417                       REP&#39;S TX                   UPDATE        BEGIN                      REP&#39;S TX              REP 192.168.1.146:55007    REP&#39;S TX              REP&#39;S TX                   2015-03-10 12:35:12        2015-03-10 11:37:40        800791                800791                     800791                            8,192     REMOTE_TX_ID : 58753       
+                                                                                                                                                                                                                                                                                                                                                                
+1 row selected.</pre>
+</div></div><ul><li>CLIENT_IP  로 트랜잭션을 보낸 서버의 IP 를 확인할 수 있습니다.</li><li>SESSION_ID 로 이중화 객체 이름을 알 수 있습니다.</li><li>REP'S TX 라는 값은 로컬에서 확인할 수 없는 값을 의미합니다. (이중화 트랜잭션의 세션, SQL 정보는 로컬에서 확인 불가)</li><li><pre>QUERY에 출력된 REMOTE_TX_ID로 원격 서버의 TX_ID 를 알 수 있습니다.  </pre></li></ul><p> </p><p> </p><p> </p><p> </p><h2 id="id-언두테이블스페이스사용량증가시모니터링방법-ALTIBASEHDB4.3.9,5.1.5">ALTIBASE HDB 4.3.9, 5.1.5</h2><hr /><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-트랜잭션별언두테이블스페이스사용량모니터링쿼리.1">트랜잭션 별 언두 테이블스페이스 사용량 모니터링 쿼리</h3><p>아래 모니터링 쿼리를 통해 언두를 사용하고있거나 접근하고 있는 트랜잭션을 찾아 조치합니다.</p><p>쿼리 결과에서 아래와 같은 정보들을 확인할 수 있습니다.</p><ul><li>언두 테이블스페이스를 사용하거나 접근하고 있는 세션의 정보. (Autocommit mode, Client IP 및 Process id, UTRANS_TIMEOUT 설정 값)</li><li>언두 영역을 사용하는 변경 트랜잭션 존재 여부</li><li>언두 영역에 접근하는 조회 트랜잭션 존재 여부</li><li>트랜잭션의 마지막 SQL 문장 및 수행 시각</li><li>SQL 문장 수행 여부<br /><br /></li></ul><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>트랜잭션 별 언두 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>SELECT RPAD(DECODE(TX.LOG_TYPE, 1, REP.REP_NAME, ST.SESSION_ID), 10) SESSION_ID                                                                         -- 트랜잭션을 수행한 세션 ID.
+     , RPAD(TX.ID, 20) TX_ID                                                                                                                            -- 트랜잭션 ID
+     , RPAD(DECODE(ST.ID, NULL, &#39;REP&#39;&#39;S TX&#39;, ST.ID), 20) STATEMENT_ID                                                                                   -- STATEMENT ID
+     , RPAD(DECODE(TX.TSS_RID, 0, &#39;SELECT&#39;, &#39;UPDATE&#39;), 7) TX_TYPE                                                                                       -- 트랜잭션 타입. SELECT : 조회 문장만 있는 트랜잭션. UPDATE : DELETE, UPDATE 등 데이터를 변경한 트랜잭션
+     , RPAD(DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;), 16) TX_STATUS        -- 트랜잭션 상태
+     , RPAD(DECODE(ST.EXECUTE_FLAG, NULL, &#39;REP&#39;&#39;S TX&#39;, 0, &#39;SQL_END&#39;, 1, &#39;SQL_ING&#39;), 16) SQL_STATUS                                                      -- SQL문 상태
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP &#39;||REP.PEER_IP||&#39;:&#39;||REP.PEER_PORT, S.COMM_NAME||&#39; PID:&#39;||S.CLIENT_PID), 40) CLIENT_IP                          -- 클라이언트 IP와 프로세스 ID
+     , RPAD(DECODE(S.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, 0, &#39;OFF&#39;, NULL, &#39;REP&#39;&#39;S TX&#39;), 10) AUTOCOMMIT                                                             -- AUTOCOMMIT 모드
+     , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP&#39;&#39;S TX&#39;, S.UTRANS_TIME_LIMIT), 15) UTRANS_TIMEOUT                                                                -- 세션의 UTRANS_TIMEOUT 설정값
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) CURRENT_TIME                                                                                             -- 현재 시각     
+     , DECODE(ST.LAST_QUERY_START_TIME, NULL, TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;), ST.LAST_QUERY_START_TIME) LAST_QUERY_START_TIME -- SQL문 시작 시각
+     , DECODE(TX.LOG_TYPE, 1, &#39;REMOTE_TX_ID : &#39;||REP_TX.REMOTE_TID, ST.QUERY) QUERY                                                                     -- 언두를 사용하거나 접근한 트랜잭션에서 수행한 마지막 쿼리
+  FROM V$TRANSACTION TX LEFT OUTER JOIN (SELECT SESSION_ID , TX_ID , ID , TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + (LAST_QUERY_START_TIME) / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_QUERY_START_TIME , UNDO_READ_PAGE , UNDO_GET_PAGE , EXECUTE_FLAG, SUBSTR(QUERY, 1, 60) QUERY
+          FROM V$STATEMENT
+         WHERE (SESSION_ID
+                     , TX_ID
+                     , LAST_QUERY_START_TIME) IN (SELECT SESSION_ID
+                     , TX_ID
+                     , MAX(LAST_QUERY_START_TIME) LAST_QUERY_START_TIME
+                  FROM V$STATEMENT
+                 GROUP BY SESSION_ID
+                     , TX_ID)) ST ON TX.ID = ST.TX_ID LEFT OUTER JOIN V$SESSION S ON ST.SESSION_ID = S.ID LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL REP_TX ON TX.ID = REP_TX.LOCAL_TID LEFT OUTER JOIN V$REPRECEIVER REP ON REP_TX.REP_NAME = REP.REP_NAME
+ WHERE 1=1
+   AND TX.STATUS &lt;&gt; 6
+   AND (TX.TSS_RID &lt;&gt; 0
+            OR ST.UNDO_READ_PAGE &lt;&gt; 0
+            OR ST.UNDO_GET_PAGE &lt;&gt; 0)
+ ORDER BY SESSION_ID
+     , TX_ID
+     , LAST_QUERY_START_TIME; </pre>
+</div></div><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-출력결과.1">출력 결과</h3><p>아래는 언두를 사용하는 변경 트랜잭션을 보여주는 출력 예입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+453698      876975109             0                     UPDATE   BEGIN             SQL_ING           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 14:21:38             2015-03-11 14:07:11             UPDATE EMP SET JOIN_DATE = SYS  
+                                                                                                      PID:12959                                                                                                                   DATE                            
+453832      34379778              0                     UPDATE   BEGIN             SQL_END           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 14:21:38             2015-03-11 14:06:32             UPDATE LOB_T SET C1 = &#39;T&#39;       
+                                                                                                      PID:13015                                                                                                                                                   
+2 rows selected.</pre>
+</div></div><ul><li><strong>TX_TYPE 이 UPDATE</strong> 인 경우 해당 트랜잭션에 데이터 변경 작업이 한 번이라도 발생했음을 의미합니다.</li><li><strong>SQL_STATUS 가 SQL_END</strong> 인 경우 트랜잭션에서 수행한 SQL 문의 수행이 종료하였으나 트랜잭션은 종료되지 않은 상태를 의미합니다.<span style="color: rgb(255,0,0);"> </span><span style="color: rgb(0,0,0);">(아래 결과에서 4번 세션의 TX_ID 61397121)</span> <span style="color: rgb(0,0,0);"><br /></span></li><li><strong>SQL_STATUS 가 SQL_ING</strong> 인 경우 트랜잭션에서 수행한 SQL 문장이 수행 중임을 의미합니다.  <span style="color: rgb(255,0,0);"><span style="color: rgb(255,0,0);"> </span><span style="color: rgb(0,0,0);">(아래 결과에서 6번 세션의 TX_ID 61397121)</span></span><span style="color: rgb(255,0,0);"><br /></span></li><li><strong>LAST_QUERY_START_TIME</strong> 으로 트랜잭션에서 수행한 마지막 SQL문의 시작 시각을 알 수 있습니다. 현재 시각과 차이로 해당 트랜잭션이 얼마나 오래 수행 중인지 판단할 수 있습니다.</li><li><strong>UTRANS_TIMEOUT</strong> 은 변경 트랜잭션이 수행할 수 있는 최대 소요 시간(초 단위)을 의미합니다.</li></ul><p> </p><p> </p><p>다음은 변경 트랜잭션에서 언두 영역에 생성한 변경 전 데이터를 바라보는 조회 트랜잭션을 보여주는 출력 결과입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+462187      34470914              0                     SELECT   BEGIN             SQL_ING           SOCKET-INET-SERVER : 127.0.0.1  OFF         0                2015-03-11 16:31:28             2015-03-11 16:28:27             SELECT JOIN_DATE FROM EMP       
+                                                                                                      PID:16067                                                                                                                                                   
+1 row selected.</pre>
+</div></div><ul><li>TX_TYPE 이 SELECT 인 경우 변경 문장을 한 번도 수행하지 않은 트랜잭션을 의미합니다.</li></ul><p> </p><p> </p><p>다음은 언두 영역을 사용하는 이중화 트랜잭션을 보여주는 결과입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; /
+SESSION_ID  TX_ID                 STATEMENT_ID          TX_TYPE  TX_STATUS         SQL_STATUS        CLIENT_IP                       AUTOCOMMIT  UTRANS_TIMEOUT   CURRENT_TIME                    LAST_QUERY_START_TIME           QUERY                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+REP         16617476              REP&#39;S TX              UPDATE   BLOCKED           REP&#39;S TX          REP 192.168.1.145:27206         REP&#39;S TX    REP&#39;S TX         2015-03-11 14:21:38             2015-03-11 14:21:34             REMOTE_TX_ID : 3875                                                                                                                                                                                                                                                                               
+1 rows selected.</pre>
+</div></div><ul><li>CLIENT_IP 로 트랜잭션을 보낸 서버의 IP 를 확인할 수 있습니다.</li><li>SESSION_ID 로 이중화 객체 이름을 알 수 있습니다.</li><li>REP'S TX 라는 값은 로컬에서 확인할 수 없는 값을 의미합니다. (이중화 트랜잭션의 세션, SQL 정보는 로컬에서 확인 불가)</li><li><pre>QUERY에 출력된 REMOTE_TX_ID로 원격 서버의 TX_ID 를 알 수 있습니다.</pre></li></ul><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량증가시모니터링방법-조치방법">조치 방법</h1><hr /><h2 id="id-언두테이블스페이스사용량증가시모니터링방법-언두테이블스페이스크기증가">언두 테이블스페이스 크기 증가</h2><hr /><p><a name="9002348" rel="nofollow"></a>언두 테이블스페이스의 데이터 파일을 추가하거나 기존 데이터 파일의 크기를 확장해야 합니다.</p><p>언두 사용량이 증가하고 있을 때 조치 할 수 있는 방법 중 하나입니다.</p><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-데이터파일추가"><strong>데이터 파일 추가</strong></h3><p>기존 데이터 파일 이름 확인 후 기존 네이밍 룰에 맞춰 데이터 파일을 추가합니다.</p><div class="preformatted panel" style="border-style: dashed;border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>데이터 파일 이름 확인</b></div><div class="preformattedContent panelContent">
+<pre>SELECT RPAD(T.NAME, 20) SPACE_NAME
+     , RPAD(DECODE(D.AUTOEXTEND, 0, &#39;OFF&#39;, 1, &#39;ON&#39;), 10) AS AUTOEXTEND
+     , DECODE(D.MAXSIZE, 0, ROUND((D.CURRSIZE*T.PAGE_SIZE)/1024/1024), ROUND((D.MAXSIZE*T.PAGE_SIZE)/1024/1024)) AS &#39;MAXSIZE(KB)&#39;
+     , D.NAME DATAFILE
+     , DECODE(D.AUTOEXTEND, 0, &#39;OFF&#39;, 1, &#39;ON&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$TABLESPACES T, V$DATAFILES D
+ WHERE T.ID = D.SPACEID AND T.TYPE = 7
+ ORDER BY 1, 2 ;
+
+
+-- 수행 결과 예
+iSQL&gt; /
+SPACE_NAME            AUTOEXTEND            MAXSIZE(KB) DATAFILE                                            AUTOEXTEND  
+------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_UNDO     ON                    2048        /data/heejung.lee/63138/dbs/undo001.dbf             ON   
+1 row selected.</pre>
+</div></div><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>데이터 파일 추가 방법 : AUTOEXTEND 가 ON 인 경우</b></div><div class="panelContent">
+<div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span> AUTOEXTEND ON NEXT <em><span style="color: rgb(0,0,255);">1M </span></em>MAXSIZE <span style="color: rgb(0,0,255);"><em>2G</em></span>;<br /><br />-- 수행 예<br />ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE <span style="color: rgb(0,0,255);"><em>'undo002.dbf'</em></span> AUTOEXTEND ON NEXT <span style="color: rgb(0,0,255);"><em>1M</em></span> MAXSIZE <span style="color: rgb(0,0,255);"><em>2G</em></span>;</div>
+</div></div><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>데이터 파일 추가 방법 : 데이터 파일 추가 방법 : AUTOEXTEND 가 OFF 인 경우</b></div><div class="panelContent">
+<div class="ALTIBASE__c608_bb38"><a name="9002350" rel="nofollow"></a>ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE <span style="color: rgb(0,0,255);">'<em>datafile_name</em></span>' SIZE <span style="color: rgb(0,0,255);"><em>2G</em></span><span style="color: rgb(0,0,255);"> </span>;<br /> <br />-- 수행 예<br /><p>iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_UNDO ADD DATAFILE '<span style="color: rgb(0,0,255);"><em>undo002.dbf</em></span>' SIZE 2G;<br />Alter success.</p></div>
+</div></div><p>파란색으로 Italic 되어 있는 부분은 사용자 환경에 맞게 변경가능합니다.  구문 설명은 <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a> 에서 SQL Reference 을 참고하세요.</p><p><strong><br /></strong></p><p><strong><br /></strong></p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-기존데이터파일크기확장"><strong>기존 데이터 파일 크기 확장</strong></h3><p>기존 데이터 파일의 이름과 최대 크기를 확인 후  현재 값 보다 크게 최대 크기를 설정합니다.</p><p>데이터 파일 이름과 최대 크기는 위의 쿼리를 이용하여 확인하세요.</p><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>데이터 파일 추가 방법 : AUTOEXTEND 가 ON 인 경우</b></div><div class="panelContent">
+<div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span>  AUTOEXTEND OFF;</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span>  AUTOEXTEND ON NEXT 1M MAXSIZE<span style="color: rgb(0,0,255);"> <em>4G</em></span>;<br /><br />-- 수행 예</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span>  AUTOEXTEND OFF;</div><div class="ALTIBASE__c608_bb38">ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span>  AUTOEXTEND ON NEXT 1M MAXSIZE <span style="color: rgb(0,0,255);"><em>4G</em>;</span><br class="ALTIBASE__c608_bb38" /><span style="color: rgb(0,0,255);"> </span></div>
+</div></div><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>데이터 파일 추가 방법 : 데이터 파일 추가 방법 : AUTOEXTEND 가 OFF 인 경우</b></div><div class="panelContent">
+ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'datafile_name'</em></span>  SIZE<span style="color: rgb(0,0,255);"> <em>4G</em></span>;<br /><br />-- 수행 예<br />ALTER TABLESPACE SYS_TBS_DISK_UNDO ALTER DATAFILE <span style="color: rgb(0,0,255);"><em>'undo001.dbf'</em></span> SIZE <span style="color: rgb(0,0,255);"><em>4G</em>;</span>
+</div></div><p>파란색으로 Italic 되어 있는 부분은 사용자 환경에 맞게 변경가능합니다.  구문 설명은 <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a> 에서 SQL Reference 을 참고하세요.</p><p> </p><p> </p><p> </p><h2 id="id-언두테이블스페이스사용량증가시모니터링방법-세션강제종료">세션 강제 종료</h2><hr /><p>언두 테이블스페이스를 장시간 사용하는 세션을 강제 종료합니다.</p><p>언두 사용량이 증가하고 있을 때 조치 할 수 있는 방법 중 하나입니다.</p><p>세션을 강제 종료하더라도 트랜잭션 종류에 트랜잭션 종료 시점이 다를 수 있습니다. </p><ul><li>조회 트랜잭션의 경우 세션 종료 즉시 트랜잭션이 종료됩니다.</li><li>변경 트랜잭션의 경우 rollback 수행 후 트랜잭션이 종료되므로 언두 사용량 증가 현상이 조치되기까지는 최소 트랜잭션이 진행된 만큼의 시간이 걸릴 수 있습니다.</li></ul><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-세션종료방법">세션 종료 방법</h3><ul><li><p>ALTIBASE HDB 에서 세션 강제 종료</p><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;border-bottom-style: dashed;"><b>SQL 구문</b></div><div class="panelContent">
+<p>iSQL&gt; connect as sysdba<br />Write UserID : sys<br />Write Password :<br />Connect success.<br />iSQL(sysdba)&gt;<br />iSQL(sysdba)&gt; ALTER DATABASE <span style="color: rgb(0,0,255);"><em>database_name</em></span> SESSION CLOSE <span style="color: rgb(0,0,255);"><em>session_id</em></span> ;</p>
+</div></div><p>위 문장은 sysdba 사용자만 수행할 수 있습니다.</p><p><span style="color: rgb(0,0,255);"><em>session_id</em> </span>는 '트랜잭션 별 언두 테이블스페이스 사용량 모니터링 쿼리'  수행 결과에서 SESSION_ID 값을 입력하고,  <span style="color: rgb(0,0,255);"><em>database_name</em></span> 은 아래 쿼리로 확인하세요. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT DB_NAME FROM V$DATABASE;</pre>
+</div></div></li><li><p>클라이언트 프로세스 종료 <br />클라이언트 프로그램에서 제공하는 방법으로 정상 종료하거나  kill 명령어로 강제 종료합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+$ kill -9 <span style="color: rgb(0,0,255);"><em>process_id</em></span>
+</div></div><p><br /><br /></p></li></ul><p> </p><h2 id="id-언두테이블스페이스사용량증가시모니터링방법-장시간수행하는트랜잭션방지">장시간 수행하는 트랜잭션 방지</h2><hr /><p>장시간 수행되는 트랜잭션(bulk 트랜잭션)은 아래와 같은 문제들을 발생시킬 수 있습니다.</p>    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">bulk 트랜잭션으로 인해 발생할 수 있는 문제</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>bulk 트랜잭션(장시간 수행하는 트랜잭션)은 아래와 같은 문제를 야기할 수 있으므로 가능한 피해야 합니다.</p><ul><li>리두 로그 증가로 파일 시스템 풀</li><li>메모리 사용량 증가 (메모리 테이블의 경우)</li><li>CPU 부하 증가</li><li>대기 트랜잭션 발생</li><li>언두 테이블스페이스 사용량 증가</li></ul>
+                    </div>
+    </div>
+<p>bulk 성 트랜잭션으로 인해 언두 테이블스페이스 사용량이 증가하는 현상을 피하기 위해 아래와 같은 사항들을 확인 후 권장 사항 참고하여 변경합니다.</p><p> </p><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-1.작은단위의트랜잭션으로나누어처리">1. 작은 단위의 트랜잭션으로 나누어 처리</h3><p>많은 양의 데이터를 하나의 트랜잭션으로 처리하는 것보다 작은 단위로 나누어 처리하도록 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>올바르지 않은 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT COUNT(*) FROM EMP;
+COUNT                
+-----------------------
+1000000                    
+1 row selected.
+iSQL&gt; DELETE FROM EMP ;
+iSQL&gt; COMMIT:</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>권장 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DELETE FROM EMP WHERE ENO BETWEEN 1 AND 1000;
+COMMIT;
+
+DELETE FROM EMP WHERE ENO BETWEEN 1001 AND 2000;
+COMMIT;
+
+DELETE FROM EMP WHERE ENO BETWEEN 1001 AND 3000;
+COMMIT;
+
+…</pre>
+</div></div><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-2.UTRANS_TIMEOUT설정">2. UTRANS_TIMEOUT 설정</h3><p>UTRANS_TIMEOUT 을 0 이 아닌 값으로 설정하도록 합니다.<br /><a name="9005951" rel="nofollow"></a>변경 연산(UPDATE, INSERT, DELETE)을 수행하는 트랜잭션의 수행 시간이 길어짐에 따라 발생할 수 있는 문제들을 막기 위해 이 값을 설정합니다.<br />수행 시간이 프로퍼티 값보다 커지면 세션을 강제 종료되고 트랜잭션을 롤백됩니다.</p><p> </p><ul><li><h4 id="id-언두테이블스페이스사용량증가시모니터링방법-세션단위변경방법">세션 단위 변경 방법</h4><p>아래 구문을 이용하거나</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>세션 단위 변경 방법 , iSQL 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET UTRANS_TIMEOUT = 3600;     -- 값의 단위는 초(sec)</pre>
+</div></div><p>커넥션 스트링에 UTRANS_TIMEOUT 속성을 사용할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>JDBC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">String sUtrans_timeout = &quot;300&quot;;
+sProps.put( &quot;utrans_timeout&quot;, sUtrans_timeout);
+
+sCon = DriverManager.getConnection( sURL, sProps );</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>APRE</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">strcpy(conn_opt3, &quot;DSN=localhost;CONNTYPE=1;UTRANS_TIMEOUT=300&quot;);
+
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt3;
+
+또는 
+
+EXEC SQL EXECUTE IMMEDIATE ALTER SESSION SET UTRANS_TIMEOUT = 3600;</pre>
+</div></div></li><li><h4 id="id-언두테이블스페이스사용량증가시모니터링방법-시스템단위변경방법">시스템  단위 변경 방법</h4><p>데이터베이스 운용 중에 아래 문장을 수행하면 이후 접속하는 세션은 변경 값이 적용됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>데이터베이스 운용 중 변경 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET UTRANS_TIMEOUT = 3600;     -- 값의 단위는 초(sec)</pre>
+</div></div><p>ALTER SYSTEM 으로 변경한 값은 ALTIBASE HDB  서버슬 재시작하면 altibase.properties 에 설정된 값으로 초기화됩니다. 영구적으로 적용을 원한다면 altibase.properties 파일도 수정해주어야 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 재시작 시 적용 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+UTRANS_TIMEOUT = 3600 </pre>
+</div></div></li></ul><p> </p><h3 id="id-언두테이블스페이스사용량증가시모니터링방법-3.commit수행여부확인">3. commit 수행 여부 확인</h3><p>Non-autocommit 모드로 수행하는 트랜잭션은 반드시 commit 또는 rollback 을 수행해야만 트랜잭션이 종료됩니다.</p><p>어플리케이션에서 Non-autocommit 모드로 트랜잭션을 수행하고 commit 또는 rollback 을 수행하지 않는 부분이 있는 지 확인하여 잘못 처리하는 부분이 있다면 수정해야 합니다.</p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

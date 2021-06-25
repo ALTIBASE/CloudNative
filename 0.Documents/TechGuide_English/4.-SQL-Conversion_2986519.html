@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. SQL Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. SQL Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Oct 09, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345562 {padding: 0px;}
+div.rbtoc1624409345562 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345562 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345562'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.SQLConversion-Overview'>Overview</a></li>
+<li><a href='#id-4.SQLConversion-OUTERJOINexpression'>OUTER JOIN expression</a></li>
+<li><a href='#id-4.SQLConversion-HierarchyQuery'>Hierarchy Query</a></li>
+<li><a href='#id-4.SQLConversion-ROLLUP/CUBE'>ROLLUP / CUBE</a></li>
+<li><a href='#id-4.SQLConversion-PIVOT/UNPIVOT'>PIVOT / UNPIVOT</a>
+<ul class='toc-indentation'>
+<li><a href='#id-4.SQLConversion-PIVOT'>PIVOT </a></li>
+<li><a href='#id-4.SQLConversion-UNPIVOT'>UNPIVOT</a></li>
+</ul>
+</li>
+<li><a href='#id-4.SQLConversion-MERGEstatement'>MERGE statement</a></li>
+<li><a href='#id-4.SQLConversion-RETURNINGclause'>RETURNING clause</a></li>
+<li><a href='#id-4.SQLConversion-AnalyticFeatures'>Analytic Features</a>
+<ul class='toc-indentation'>
+<li><a href='#id-4.SQLConversion-FIRST_VALUE'>FIRST_VALUE</a></li>
+<li><a href='#id-4.SQLConversion-LAST_VALUE'>LAST_VALUE</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="id-4.SQLConversion-Overview">Overview</h2>
+
+<p>Converting SQL queries from ORACLEto ALTIBASE HDB might be easy because ALTIBASE HDB has almost same SQL syntax with ORACLE.</p>
+
+<p>Because of compatibility with ORACLE, ALTIBASE HDB try to accept Oracle syntax and features such as rownum psedocolumn, hierachy query, ORACLE-like bulit-in functions and so on. However,</p>
+
+<p>because ALTIBASE HDB is not identical to ORACLE, you need to convert some SQL queries from ORACLE to ALTIBASE HDB if there're ORACLE proprietary features not provided by ALTIBASE HDB.</p>
+
+<p>From ALTIBASE HDB V6, ALTIBASE HDB supports ORACLE-Style outer join statement.</p>
+
+<p>Besides, Pivot Query, Ranking Functions have been applied at ALTIBASE HDB V6.<br />
+In this chapter, we will discuss</p>
+
+<ul>
+	<li>ORACLE features not provided by ALTIBASE HDB</li>
+	<li>Workarounds when you use ORACLE-supported features not supported by ALTIBASE HDB</li>
+</ul>
+
+
+<h2 id="id-4.SQLConversion-OUTERJOINexpression">OUTER JOIN expression</h2>
+
+<p>ALTIBASE HDB supports three types of outer join: right, left, and full.</p>
+
+<p>The syntax of outer join is  slightly different between ORACLE and ALTIBASE HDB.</p>
+
+<p>Converting example from ORACLE outer join to ALTIBASE HDB outer join is as follows.</p>
+
+<p>Besides workarounds described above, ALTIBASE HDB supports officially ORACLE-Style Outer Join from ALTIBASE HDB V6.</p>
+
+<p>ALTIBASE HDB does support Pivot query from ALTIBASE HDB V6 as well.
+<br class="atl-forced-newline" /></p>
+
+<p>An ORACLE statement shown below is completely compatible with an ALTIBASE HDB statement. </p>
+
+<p><br class="atl-forced-newline" /></p>
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT	E.ENAME, D.DNAME
+FROM	EMPLOYEE E, DEPARTMENT D
+WHERE E.DEPT_ID = D.DEPT_ID(+)
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT	E.ENAME,	D.DNAME
+FROM	EMPLOYEE E LEFT OUTER JOIN DEPARTMENT D
+WHERE E.DEPT_ID = D.DEPT_ID
+</pre>
+</div></div>
+<p>or</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT	E.ENAME,	D.DNAME
+FROM	DEPARTMENT D RIGHT OUTER JOIN EMPLOYEE E
+WHERE E.DEPT_ID = D.DEPT_ID
+</pre>
+</div></div></div></div></div></div>
+<p>Table order specified after FROM clause is important to use ANSI-SQL outer join.</p>
+
+<p>Because in case of the outer join statement, it is bound to execute full table scan by accessing all rows of a Table order specified after FROM clause.<br />
+It frequently causes SQL Tuning issue.</p>
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>To reduce customer efforts converting Oracle-Style outer join, ALTIBASE HDB provides Oracle-Style outer join at ALTIBASE HDB V6.</p>
+                    </div>
+    </div>
+
+
+
+<h2 id="id-4.SQLConversion-HierarchyQuery">Hierarchy Query</h2>
+
+<p>ALTIBASE HDB provides the limited functionality about hierarchy query.</p>
+
+<p>ALTIBASE HDB does not support following features among of those of Oracle provides</p>
+
+<ul>
+	<li>CONNECT_BY_ISCYCLE pseudocolumn</li>
+	<li>CONNECT_BY_ISLEAF pseudocolumn</li>
+	<li>CONNECT_BY_ROOT operator</li>
+	<li>SYS_CONNECT_BY_PATH function</li>
+	<li>SIBLINGS in order by clause</li>
+</ul>
+
+
+<p>Aside from CONNECT_BY_ISCYCLE and SIBLINGS, there're workarounds to replace above features.  </p>
+
+<p><br class="atl-forced-newline" /></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Among the functions described above, The functionalities below will be applied at ALTIBASE HDB V7.</p>
+
+<p>CONNECT_BY_ISCYCLE pseudocolumn</p>
+
+<p>CONNECT_BY_ISLEAF pseudocolumn</p>
+
+<p>SIBLINGS in order by clause</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<p>Assume that we have a table named PC and the table stores data as below.</p>
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:30%;min-width:30%;max-width:30%;">
+<p><br class="atl-forced-newline" /> </p></div>
+<div class="columnMacro">
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ITEM_ID </p></th>
+<th class="confluenceTh"><p> PARENT_ID </p></th>
+<th class="confluenceTh"><p> ITEM_NAME </p></th>
+<th class="confluenceTh"><p> ITEM_QTY </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1001 </p></td>
+<td class="confluenceTd"><p> NULL </p></td>
+<td class="confluenceTd"><p> Computer </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1002 </p></td>
+<td class="confluenceTd"><p> 1001 </p></td>
+<td class="confluenceTd"><p> BODY </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1003 </p></td>
+<td class="confluenceTd"><p> 1001 </p></td>
+<td class="confluenceTd"><p> monitor </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1004 </p></td>
+<td class="confluenceTd"><p> 1001 </p></td>
+<td class="confluenceTd"><p> printer </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1005 </p></td>
+<td class="confluenceTd"><p> 1002 </p></td>
+<td class="confluenceTd"><p> Mother board </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1006 </p></td>
+<td class="confluenceTd"><p> 1002 </p></td>
+<td class="confluenceTd"><p> Lan card </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1007 </p></td>
+<td class="confluenceTd"><p> 1002 </p></td>
+<td class="confluenceTd"><p> Power Supply </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1008 </p></td>
+<td class="confluenceTd"><p> 1005 </p></td>
+<td class="confluenceTd"><p> RAM </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1009 </p></td>
+<td class="confluenceTd"><p> 1005 </p></td>
+<td class="confluenceTd"><p> CPU </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1010 </p></td>
+<td class="confluenceTd"><p> 1005 </p></td>
+<td class="confluenceTd"><p> Graphic device </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1011 </p></td>
+<td class="confluenceTd"><p> 1005 </p></td>
+<td class="confluenceTd"><p> ETC device </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+</tbody></table></div>
+</div></div></div></div>
+
+<ol>
+	<li>CONNECT_BY_ROOT
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT LPAD(&#39; &#39;,2*(LEVEL-1))|| item_name AS item_names,
+       CONNECT_BY_ROOT item_id,
+       CONNECT_BY_ROOT item_name
+FROM   PC
+START WITH parent_id IS NULL
+CONNECT BY PRIOR item_id = parent_id;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT a.item_names,
+       b.connect_by_root_item_id,
+       b.connect_by_root_item_name
+FROM
+(
+       SELECT LPAD(&#39; &#39;,2*(LEVEL-1))|| item_name item_names
+       FROM pc
+       START WITH parent_id IS NULL
+       CONNECT BY PRIOR item_id = parent_id
+) a, (
+       SELECT item_id AS connect_by_root_item_id,
+       item_name AS connect_by_root_item_name
+       FROM pc WHERE LEVEL =1
+       START WITH parent_id IS NULL
+       CONNECT BY PRIOR item_id = parent_id
+) b;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>CONNECT_BY_IS_LEAF
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT LPAD(&#39; &#39;,2*(LEVEL-1))|| item_name AS item_names,
+       CONNECT_BY_ISLEAF
+FROM   pc
+START WITH parent_id IS NULL
+CONNECT BY PRIOR item_id = parent_id;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT a.item_names,
+       DECODE(b.parent_id,NULL,1,0) connect_by_isleaf
+FROM
+(
+      SELECT LPAD(&#39; &#39;,2*(level-1))|| item_name item_names,
+             item_id
+      FROM pc
+      START WITH parent_id IS NULL
+      CONNECT BY PRIOR item_id = parent_id
+) a   LEFT OUTER JOIN
+(
+      SELECT DISTINCT parent_id FROM pc
+) b   ON a.item_id = b.parent_id;
+</pre>
+</div></div></div></div></div></div></li>
+</ol>
+
+
+<p>SYS_CONNECT_BY_PATH<br />
+To convert this pseudocolumn to ALTIBASE, you can use a user-defined function as shown below.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE FUNCTION sys_connect_by_path_pc ( pkey pc.parent_id%TYPE, plevel INTEGER, delim VARCHAR(10) )
+RETURN VARCHAR2(200)
+AS
+path VARCHAR(200);
+BEGIN
+DECLARE CURSOR c1 IS
+SELECT item_name
+FROM pc
+WHERE LEVEL &lt;= plevel
+START WITH item_id = pkey
+CONNECT BY PRIOR parent_id=item_id ;
+
+
+BEGIN
+FOR crec IN c1 LOOP
+path := delim || crec.item_name || path;
+END LOOP;
+RETURN path;
+END ;
+END;
+/</pre>
+</div></div>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT LEVEL,
+       SYS_CONNECT_BY_PATH(item_name,&#39;/&#39;)
+FROM   pc
+START WITH parent_id IS NULL
+CONNECT BY PRIOR item_id = parent_id;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT LEVEL, SYS_CONNECT_BY_PATH_PC ( item_id, LEVEL, &#39;/&#39; )
+FROM pc
+START WITH parent_id IS NULL
+CONNECT BY PRIOR item_id = parent_id;</pre>
+</div></div></div></div></div></div>
+<ul>
+	<li>NOCYCLE in ORACLE<br />
+ALTIBASE has IGNORE LOOP keyword corresponding to NOCYCLE in Oracle. Here's an example.
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p>Oracle</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT num, tri, level
+FROM triple
+WHERE num &lt; 3001
+START WITH num = 1
+CONNECT BY NOCYCLE
+PRIOR tri = num;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p>ALTIBASE HDB</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT num, tri, level
+FROM triple
+WHERE num &lt; 3001
+START WITH num = 1
+CONNECT BY PRIOR tri = num
+IGNORE LOOP;
+</pre>
+</div></div></div></div></div></div></li>
+</ul>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Hierarchy query functionality will be enhanced at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+
+<p>About analytic features regarding ranking functions, Oracle provides ranking functions as follows at ALTIBASE HDB V6.</p>
+<ul>
+	<li>ROW_NUMBER()</li>
+	<li>RANK()</li>
+	<li>DENSE_RANK()</li>
+</ul>
+
+
+<p>But ALTIBASE HDB does not support above functions before ALTIBASE HDB V6.</p>
+
+<p>So, if you wish to use above functions, you need to convert SQL.</p>
+
+<p>Let's assume that we have a table named EMP which stores data as below.</p>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:30%;min-width:30%;max-width:30%;">
+<p><br class="atl-forced-newline" /> </p></div>
+<div class="columnMacro">
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ENAME </p></th>
+<th class="confluenceTh"><p> DEPTNO </p></th>
+<th class="confluenceTh"><p> SAL </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SMITH </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+<td class="confluenceTd"><p> 800 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLEN </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 1600 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> WARD </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 1250 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> JONES </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+<td class="confluenceTd"><p> 2975 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MARTIN </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 1250 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BLAKE </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 2850 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLARK </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+<td class="confluenceTd"><p> 2450 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> KING </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+<td class="confluenceTd"><p> 5000 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TURNER </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 1500 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> JAMES </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+<td class="confluenceTd"><p> 950 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FORD </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+<td class="confluenceTd"><p> 3000 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MILLER </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+<td class="confluenceTd"><p> 1300 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SCOTT </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+<td class="confluenceTd"><p> 3000 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ADAMS </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+<td class="confluenceTd"><p> 1100 </p></td>
+</tr>
+</tbody></table></div>
+</div></div></div></div>
+<p> <br />
+Here're workaround samples when you want to convert ORACLE ranking functions to ALTIBASE HDB.</p>
+
+<p>Besides described below, ALTIBASE HDB ranking functions are almost identical with ORACLE.</p>
+
+<p>Those were applied at ALTIBASE HDB Vesion 6</p>
+
+<ol>
+	<li>ROW_NUMBER()
+<div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal,
+       ROW_NUMBER() OVER (ORDER BY sal DESC) row_num
+FROM emp;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal,
+       rownum row_num
+FROM
+(
+       SELECT ename,
+              sal
+       FROM emp
+       ORDER BY sal DESC
+) x;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>ROW_NUMBER PARTITION BY</li>
+</ol>
+
+
+<div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       deptno,
+       sal,
+       ROW_NUMBER() OVER (PARTITION BY deptno
+                          ORDER BY sal DESC)
+FROM EMP;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong>
+<br class="atl-forced-newline" /></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT ename,
+deptno, (rownum - count_row) dense_rank
+FROM
+(
+SELECT a.deptno,
+a.ename,
+a.sal,
+(SELECT COUNT(*y) count_row
+FROM emp b
+WHERE b.deptno &lt; a.deptno) count_row
+FROM emp a ORDER BY deptno, sal DESC
+) x
+ORDER BY deptno, dense_rank;</pre>
+</div></div></div></div></div></div>
+<ol>
+	<li>RANK()
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal, RANK() OVER (ORDER BY sal DESC) rank
+FROM emp
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal,
+       rank
+FROM
+(
+       SELECT a.ename,
+              a.sal,
+              (SELECT 1+COUNT(*)
+               FROM emp b
+               WHERE b.sal &gt; a.sal) rank
+       FROM emp a
+) x
+ORDER BY x.rank;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>RANK() PARTITION BY
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       deptno,
+       sal,
+       RANK() OVER (PARTITION BY deptno
+                    ORDER BY sal DESC) rank
+FROM EMP;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       deptno,
+       sal,
+       rank
+FROM
+(
+       SELECT a.ename,
+              a.deptno,
+              a.sal,
+              (SELECT 1+COUNT(*)
+               FROM emp b
+               WHERE b.deptno = a.deptno AND b.sal &gt; a.sal) rank
+       FROM emp a
+) x
+ORDER BY x.deptno, x.rank;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>DENSE_RANK()
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal,
+       DENSE_RANK() OVER (ORDER BY sal DESC)
+FROM emp;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       sal,
+       dense_rank
+FROM
+(
+       SELECT ename,
+              a.sal,
+              (SELECT 1+COUNT(DISTINCT sal)
+               FROM emp b
+               WHERE b.sal &gt; a.sal) dense_rank
+       FROM emp a
+) x
+ORDER BY x.dense_rank;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>DENSE_RANK PARTITION BY
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       deptno,
+       sal,
+       DENSE_RANK() OVER (PARTITION BY deptno
+                          ORDER BY sal DESC)
+FROM EMP;
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT ename,
+       deptno,
+       sal,
+       dense_rank
+FROM
+(
+       SELECT a.ename,
+              a.deptno,
+              a.sal,
+              (SELECT 1+COUNT(DISTINCT sal)
+               FROM emp b
+               WHERE b.deptno = a.deptno AND b.sal &gt; a.sal) dense_rank
+       FROM emp a
+) x ORDER BY x.deptno, x.dense_rank;
+</pre>
+</div></div></div></div></div></div></li>
+</ol>
+
+
+<h2 id="id-4.SQLConversion-ROLLUP/CUBE">ROLLUP / CUBE</h2>
+
+<p>Let's assume that we have a table named SALES which stores data as shown below.</p>
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:30%;min-width:30%;max-width:30%;">
+<p><br class="atl-forced-newline" /> </p></div>
+<div class="columnMacro">
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> GROUP_ID </p></th>
+<th class="confluenceTh"><p> SALES_EMP </p></th>
+<th class="confluenceTh"><p> SALES_QTY </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> test1 </p></td>
+<td class="confluenceTd"><p> 5 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> test2 </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> test3 </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> B </p></td>
+<td class="confluenceTd"><p> test4 </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> B </p></td>
+<td class="confluenceTd"><p> test5 </p></td>
+<td class="confluenceTd"><p> 5 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> C </p></td>
+<td class="confluenceTd"><p> test6 </p></td>
+<td class="confluenceTd"><p> 50 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> test1 </p></td>
+<td class="confluenceTd"><p> 5 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> test2 </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+</tr>
+</tbody></table></div>
+</div></div></div></div>
+
+<ol>
+	<li>ROLLUP
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT group_id,
+       sales_emp,
+       SUM(sales_qty)
+FROM   tmp_sales
+GROUP BY ROLLUP(group_id,sales_emp);
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT group_id,
+       sales_emp,
+       SUM(sales_qty)
+FROM
+(
+       SELECT DECODE(no, 1, group_id, 2, group_id) group_id,
+              DECODE(no, 1, sales_emp) sales_emp,
+              sales_qty
+       FROM   tmp_sales,
+              (SELECT LEVEL no
+               FROM   dual
+               CONNECT BY LEVEL &lt;= 3) copy_t
+)
+GROUP BY group_id, sales_emp
+ORDER BY 1, 2;
+</pre>
+</div></div></div></div></div></div></li>
+	<li>CUBE
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT group_id,
+       sales_emp,
+       SUM(sales_qty)
+FROM   tmp_sales
+GROUP BY CUBE(group_id, sales_emp);
+</pre>
+</div></div></div>
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT NVL(group_id,&#39; &#39;),
+       NVL(sales_emp,&#39; &#39;),
+       Sum(sales_qty)
+FROM
+(
+       SELECT DECODE(no, 1, group_id, 2, group_id) group_id,
+              no,
+              DECODE(no, 1, sales_emp, 4, sales_emp) sales_emp,
+              sales_qty
+       FROM   tmp_sales,
+              (SELECT LEVEL no
+               FROM dual
+               CONNECT BY LEVEL &lt;= 4) copy_t
+)
+GROUP BY group_id, sales_emp
+ORDER BY 1, 2;
+</pre>
+</div></div></div></div></div></div></li>
+</ol>
+
+
+<h2 id="id-4.SQLConversion-PIVOT/UNPIVOT">PIVOT / UNPIVOT</h2>
+
+<p>Pivot queries involve transposing rows into columns (pivot) or columns into rows (unpivot) to generate results in crosstab format.</p>
+
+<p>Use sum(decode) function to get appropriate result as follows. 
+<br class="atl-forced-newline" /></p>
+
+<p>For pivotting,  table named pivot_test is described as shown below.  </p>
+
+<p><br class="atl-forced-newline" /></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ID </p></th>
+<th class="confluenceTh"><p> CUSTOMER_ID </p></th>
+<th class="confluenceTh"><p> PRODUCT_CODE </p></th>
+<th class="confluenceTh"><p> QUANTITY </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> 10 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 2 </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> B </p></td>
+<td class="confluenceTd"><p> 20 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> C </p></td>
+<td class="confluenceTd"><p> 30 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 4 </p></td>
+<td class="confluenceTd"><p> 2 </p></td>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> 40 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 5 </p></td>
+<td class="confluenceTd"><p> 2 </p></td>
+<td class="confluenceTd"><p> C </p></td>
+<td class="confluenceTd"><p> 50 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 6 </p></td>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> 60 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 7 </p></td>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> B </p></td>
+<td class="confluenceTd"><p> 70 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 8 </p></td>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> C </p></td>
+<td class="confluenceTd"><p> 80 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 9 </p></td>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> D </p></td>
+<td class="confluenceTd"><p> 90 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 10 </p></td>
+<td class="confluenceTd"><p> 4 </p></td>
+<td class="confluenceTd"><p> A </p></td>
+<td class="confluenceTd"><p> 100 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-4.SQLConversion-PIVOT">PIVOT </h3>
+
+
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT *
+ FROM (SELECT customer_id, product_code, quantity
+     FROM pivot_test) PIVOT(SUM(quantity) AS sum_quantity FOR (product_code)IN (&#39;A&#39; AS a, &#39;B&#39; AS b, &#39;C&#39; AS c, &#39;D&#39; AS d))
+     ORDER BY customer_id;</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT customer_id, SUM(DECODE(product_code, &#39;A&#39;, quantity, NULL)) AS a_sum_quantity,
+	SUM(DECODE(product_code, &#39;B&#39;, quantity, NULL)) AS b_sum_quantity,
+         SUM(DECODE(product_code, &#39;C&#39;, quantity, NULL)) AS c_sum_quantity,
+	SUM(DECODE(product_code, &#39;D&#39;, quantity, NULL)) AS d_sum_quantity
+ FROM pivot_test
+ GROUP BY customer_id
+ ORDER BY customer_id;</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+
+<h3 id="id-4.SQLConversion-UNPIVOT">UNPIVOT</h3>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>UNPIVOT function is not applied at ALTIBASE HDB V6(Zeta).</p>
+
+<p>It should be converted as shown below.
+<br class="atl-forced-newline" /></p>
+                    </div>
+    </div>
+
+<p> <br />
+<strong><em>ORACLE</em></strong>  </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT *
+FROM (SELECT customer_id, product_code, quantity FROM pivot_test) UNPIVOT
+(SUM(quantity) AS sum_quantity
+FOR (product_code)
+IN (&#39;A&#39; AS a, &#39;B&#39; AS b, &#39;C&#39; AS c, &#39;D&#39; AS d))
+ORDER BY customer_id;</pre>
+</div></div>
+
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT customer_id, product_code, quantity as quantity-- altibase
+FROM (SELECT customer_id, decode(product_code,&#39;A&#39;,&#39;A_SUM_QUANTITY&#39;, &#39;B&#39;, &#39;B_SUM_QUANTITY&#39;, &#39;C&#39;, &#39;C_SUM_QUANTITY&#39;, &#39;D&#39;, &#39;D_SUM_QUANTITY&#39;, 0) product_code,
+			sum(quantity) as quantity FROM pivot_test
+			group by customer_id, product_code)
+ORDER BY customer_id, product_code;</pre>
+</div></div>
+
+<h2 id="id-4.SQLConversion-MERGEstatement">MERGE statement</h2>
+
+<p>MERGE statement is convenient way to combine multiple operations.</p>
+
+<p>ALTIBASE HDB does not support MERGE statement yet.</p>
+
+<p>If your application uses MERGE statement, please seperate MERGE statement into INSERT, UPDATE, DELETE statement according to the kinds of transaction or procedure as below.</p>
+
+<p>Merge statement has a workaround using procedure  as follows.</p>
+
+<p>Using this statement to insert row, if it already exists, update or delete operation will be available instead of insert operation.</p>
+
+<p>On the contrary, when no duplication detected, insert operation might be executed instead.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">create or replace procedure proc1
+as
+cursor c1 is
+select i1, i2 from t2;
+
+	v1 varchar(10);
+ 	v2 varchar(10);
+begin
+ 	open c1;
+loop
+ 	fetch c1 into v1, v2;
+	exit when c1%NOTFOUND;
+	update t1 set i2 = v2, i3 = &#39;UPDATE&#39; where i1 = v1;
+
+	if SQL%NOTFOUND then
+ 		insert into t1 (i1, i2, i3) values (v1, v2, &#39;INSERT&#39;);
+	end if;
+end loop;
+
+ 	close c1;
+end;
+/</pre>
+</div></div>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>This statement will be applied at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+
+<h2 id="id-4.SQLConversion-RETURNINGclause">RETURNING clause</h2>
+
+<p>This function is used to return value of the column to the bind variable after the execution of SQL.
+<br class="atl-forced-newline" /></p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>This clause will be applied at ALTIBASE HDB V7. </p>
+                    </div>
+    </div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">create or replace procedure proc1 as
+x1 integer;
+x2 varchar(30);
+x3 integer;
+begin
+delete from employee where eno = 1 return eno, ename, deptno into x1, x2, x3;
+println( &#39;x1=&#39;||x1||&#39;, x2=&#39;||x2||&#39;, x3=&#39;||x3);
+end;
+/</pre>
+</div></div>
+
+<h2 id="id-4.SQLConversion-AnalyticFeatures">Analytic Features</h2>
+
+<p>Here are explanations about aggregate functions except those described at the ranking function above. </p>
+
+<p>This function computes an aggregate value based on a group of rows.</p>
+
+<p>They differ from aggregate functions in that they return multiple rows for each group. </p>
+
+
+<h3 id="id-4.SQLConversion-FIRST_VALUE">FIRST_VALUE</h3>
+
+<p>It returns the first value in an ordered set of values.</p>
+
+<p>If the first value in the set is null, then the function returns NULL unless you<br />
+specify IGNORE NULLS.
+<br class="atl-forced-newline" /></p>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT DNO, E_LASTNAME, SALARY,
+FIRST_VALUE(E_LASTNAME) OVER (PARTITION BY DNO ORDER BY SALARY DESC
+ROWS UNBOUNDED PRECEDING) as DEPT_RICH
+FROM EMPLOYEES;</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p></div>
+<p><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT B.DNO, B.E_LASTNAME, B.SALARY, A.DEPT_RICH
+ FROM (SELECT DNO, E_LASTNAME AS DEPT_RICH
+     FROM EMPLOYEES
+     WHERE (DNO, SALARY) IN (SELECT DNO, MAX(SALARY)
+                  FROM EMPLOYEES
+                   GROUP BY DNO))A, EMPLOYEES B
+ WHERE A.DNO = B.DNO;</pre>
+</div></div></div><br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p></div></div></div>
+
+<h3 id="id-4.SQLConversion-LAST_VALUE">LAST_VALUE</h3>
+
+<p>It returns the last value in an ordered set of values.</p>
+
+<p>If the last value in the set is null, then the function returns NULL unless you<br />
+specify IGNORE NULLS.
+<br class="atl-forced-newline" /></p>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;"><p><br class="atl-forced-newline" /></p>
+
+<p><strong><em> ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT dno, e_lastname, salary,
+&amp;nbsp;&amp;nbsp;&amp;nbsp; LAST_VALUE(E_LASTNAME) OVER
+&amp;nbsp;&amp;nbsp;&amp;nbsp; (PARTITION BY DNO ORDER BY SALARY DESC
+&amp;nbsp;&amp;nbsp;&amp;nbsp; ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) as DEPT_POOR
+&amp;nbsp;FROM employees;</pre>
+</div></div></div>
+<p><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;"><p><br class="atl-forced-newline" /></p>
+
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT B.DNO, B.E_LASTNAME, B.SALARY, A.DEPT_RICH
+ FROM (SELECT DNO, E_LASTNAME AS DEPT_RICH
+     FROM EMPLOYEES
+     WHERE (DNO, SALARY) IN (SELECT DNO, MIN(SALARY)
+                  FROM EMPLOYEES
+                   GROUP BY DNO))A, EMPLOYEES B
+ WHERE A.DNO = B.DNO
+ ORDER BY DNO ASC, SALARY DESC;</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p></div><br class="atl-forced-newline" /></p></div></div></div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

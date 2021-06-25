@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Unix 및 Linux 에서 알티베이스 서버 패치 절차</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520880.html">01. 설치, 패치, 업그레이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Unix 및 Linux 에서 알티베이스 서버 패치 절차
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> heejung lee</span> on Sep 15, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409050525 {padding: 0px;}
+div.rbtoc1624409050525 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409050525 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409050525'>
+<ul class='toc-indentation'>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-개요'>개요</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-패치전확인사항'>패치 전 확인 사항</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-패치절차'>패치 절차</a>
+<ul class='toc-indentation'>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-1.현재버전확인'>1. 현재 버전 확인</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-2.알티베이스서버shutdown**2ndstepforpatch'>2. 알티베이스 서버 shutdown ** </a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-3.기존설치파일백업3rdstepforpatch'>3. 기존 설치 파일 백업</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-4.패치패키지업로드및권한변경'>4. 패치 패키지 업로드 및 권한 변경</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-5.패치수행'>5. 패치 수행</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-6.패치버전확인'>6. 패치 버전 확인</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-7.백업파일에서필요한파일들복사'>7. 백업 파일에서 필요한 파일들 복사</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-8.ALTIBASEHDB서버startup**8thstepforpatch'>8. ALTIBASE HDB 서버 startup**</a></li>
+</ul>
+</li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-주의사항'>주의 사항</a>
+<ul class='toc-indentation'>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-패치전/후meta버전확인'>패치 전/후 meta 버전 확인</a></li>
+<li><a href='#Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB4.3.9.1~4.3.9.50에서4.3.9.51~으로패치할경우**'>ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 에서 4.3.9.51 ~ 으로 패치할 경우**</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="Unix및Linux에서알티베이스서버패치절차-개요"><strong>개요</strong></h1><hr /><ul><li><strong>패치</strong>는 <strong>마이너 버전이 변경되는 것</strong>을 의미합니다. <br />알티베이스 서버 버전은 4자리 숫자 또는 5자리 숫자로 이루어져 있습니다. <br />앞 세 자리는 메이저 버전을 의미하고 뒤의 한 자리 또는 두 자리는 마이너 버전을 의미합니다. <br />앞 세 자리 변경없이 뒷 자리가 변경되는 것을 '패치'라 하고 앞 세 자리가 변경되는 것은 '업그레이드'라 합니다. <br /><br /></li><li>이 페이지에서는 Unix 및 Linux 환경에서의 알티베이스 서버 패치 절차에 대해 설명합니다.</li><li>알티베이스 서버 패치는 알티베이스 서버를 shutdown 한 후에 수행해야 하기 때문에 서비스 중단 시간이 필요합니다.</li><li><span style="color: rgb(255,0,0);">따라서 패치 작업 전 반드시 down time 을 확보해야 합니다.</span></li></ul><p><span style="color: rgb(255,0,0);"><br /></span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><h1 id="Unix및Linux에서알티베이스서버패치절차-패치전확인사항"><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"><strong>패치 전 확인 사항</strong></span></span></h1><hr /><p>패치를 고려하는 경우 아래 사항을 확인 후 진행하도록 합니다.<br /><span style="color: rgb(0,0,0);"> </span></p><ul><li><span style="color: rgb(0,0,0);">알티베이스 서버 down time 확보가 가능한 지? (고객사에서 확인)<br /></span></li><li><span style="color: rgb(0,0,0);">패치 후 meta 버전이 변경되는 지? (알티베이스 엔지니어에게 확인)<br /></span></li><li><span style="color: rgb(0,0,0);">패치 버전이 현 버전이 너무 차이 나는 경우 주의할 점이 있는 지? (알티베이스 엔지니어에게 확인)</span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">예. ALTIBASE HDB 4.3.9.44 에서 ALTIBASE HDB 4.3.9.233 으로 패치해야 할 경우.</span></span></li></ul><p><span style="color: rgb(255,0,0);"><br /></span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><p> </p><p> </p><h1 id="Unix및Linux에서알티베이스서버패치절차-패치절차"><strong>패치 절차</strong></h1><hr /><h2 id="Unix및Linux에서알티베이스서버패치절차-1.현재버전확인"><strong>1. 현재 버전 확인</strong></h2><hr /><ul><li><p>아래 버전 확인 결과를 메모 해 둡니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 서버 버전 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ altibase -v</pre>
+</div></div></li></ul><p> </p><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-2.알티베이스서버shutdown**2ndstepforpatch"><strong> 2. 알티베이스 서버 shutdown <span style="color: rgb(255,0,0);">**</span><span style="color: rgb(255,0,0);"> </span><span class="confluence-anchor-link" id="Unix및Linux에서알티베이스서버패치절차-2ndstepforpatch"></span></strong></h2><hr /><ul><li><p>알티베이스 서버를 shutdown 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 서버 shutdown 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div><p>shutdown 후 알티베이스 서버 프로세스 및 서비스 포트 LISTEN 상태를 확인합니다.<br />아래 두 명령어를 수행했을 때 결과가 아무것도 나오지 않아야 정상적으로 shutdown 된 상태입니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep           # 알티베이스 서버 프로세스 확인 방법
+$ netstat -an | grep 20300                             # 서비스 포트 확인 방법.</pre>
+</div></div></li></ul><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-3.기존설치파일백업3rdstepforpatch"><strong>3. 기존 설치 파일 백업<strong><span class="confluence-anchor-link" id="Unix및Linux에서알티베이스서버패치절차-3rdstepforpatch"></span></strong></strong></h2><hr /><ul><li><p>패치 후 문제 발생 시 원복할 수 있도록 필요한 디렉토리들을 백업합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>디렉토리 백업 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME
+$ cp -Rp bin bin.bak
+$ cp -Rp lib lib.bak
+$ cp -Rp msg msg.bak
+$ cp -Rp conf conf.bak
+$ cp -Rp include include.bak </pre>
+</div></div><p>$ALTIBASE_HOME 디렉토리 크기가 크지 않다면 아래와 같이 $ALTIBASE_HOME 디렉토리를 전체 백업해도 됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cp -Rp altibase_home altibase_home.bak</pre>
+</div></div></li></ul><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-4.패치패키지업로드및권한변경"><strong>4. 패치 패키지 업로드 및 권한 변경</strong></h2><hr /><h3 id="Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB서버5.5.1이상버전(5.5.1,6.1.1,6.3.1및6.3.1이후모든버전)"><strong>ALTIBASE HDB 서버 5.5.1 이상 버전 (5.5.1, 6.1.1, 6.3.1 및 6.3.1 이후 모든 버전)</strong></h3><ul><li>ALTIBASE HDB 서버 설치 유저로 로그인 합니다.</li><li>패치 패키지를 임의의 경로에 업로드 합니다.</li><li>ALTIBASE HDB 서버 5.5.1 버전부터는 자바 기반의 인스톨러를 사용하게 되었고 패키지 이름이 아래와 같이 .run 으로 끝납니다.  <span style="color: rgb(255,0,0);"> </span><span style="color: rgb(0,51,102);"> </span></li><li><p><span style="color: rgb(0,51,102);">패키지를 실행할 수 있도록 실행 권한을 부여합니다.</span><br /><span style="color: rgb(0,51,102);"><span style="color: rgb(0,51,102);"> </span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>실행 권한 변경 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ chmod +x altibase-HDB-server-6.1.1.3.8-LINUX-X86-64bit-release.run</pre>
+</div></div></li></ul><h3 id="Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB서버5.5.1이전버전(4.3.9,5.3.3등5.3.3이하모든버전)"><strong>ALTIBASE HDB 서버 5.5.1 이전 버전(4.3.9, 5.3.3 등 5.3.3 이하 모든 버전)</strong></h3><ul><li>ALTIBASE HDB 서버 설치 유저로 로그인 합니다.</li><li>패치 패키지를 $ALTIBASE_HOME 디렉토리 아래에 업로드 합니다.</li><li><p>ALTIBASE HDB 서버 5.5.1 이전 버전에서는 압축 파일 형태의 파일을 제공합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">altibase-XEON_LINUX_redhat_Enterprise_release5-64bit-5.3.3.84-release-GCC4.1.2.tgz</pre>
+</div></div></li></ul><p> </p><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-5.패치수행"><strong>5. 패치 수행</strong></h2><hr /><h3 id="Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB서버5.5.1이상버전(5.5.1,6.1.1,6.3.1및6.3.1이후모든버전).1"><strong>ALTIBASE HDB 서버 5.5.1 이상 버전 (5.5.1, 6.1.1, 6.3.1 및 6.3.1 이후 모든 버전)</strong></h3><ul><li><p><span style="color: rgb(0,0,0);">아래와 같이 실행 파일을 실행한 후 이후 동작은  메세지에 따라서 진행합니다. </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ./altibase-HDB-server-6.1.1.3.8-LINUX-X86-64bit-release.run</pre>
+</div></div></li></ul><h3 id="Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB서버5.5.1이전버전(4.3.9,5.3.3등5.3.3이하모든버전).1"><strong>ALTIBASE HDB 서버 5.5.1 이전 버전(4.3.9, 5.3.3 등 5.3.3 이하 모든 버전)</strong></h3><ul><li><p>$ALTIBASE_HOME 디렉토리로 이동 후 아래와 같이 압축을 해제 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME
+$ gzip -cd altibase-XEON_LINUX_redhat_Enterprise_release5-64bit-5.3.3.84-release-GCC4.1.2.tgz | tar xvf -</pre>
+</div></div></li></ul><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-6.패치버전확인"><strong>6. 패치 버전 확인</strong></h2><hr /><ul><li><p>패치 실행 완료 후 버전을 확인하여 패치 적용 여부를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 서버 버전 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ altibase -v
+version 5.3.3.29 X86_64_WRS_LINUX_redhat_Enterprise_release5-64bit-5.3.3.29-release-GCC4.1.1 (xeon-redhat-linux-gnu) Nov 15 2010 17:36:40, binary db version 5.4.1, meta version 5.6.1, cm protocol version 5.6.2, replication protocol version 5.4.1</pre>
+</div></div></li></ul><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-7.백업파일에서필요한파일들복사"><strong>7. 백업 파일에서 필요한 파일들 복사</strong></h2><hr /><ul><li>sys 유저의 기본 패스워드(manager)를 변경했을 경우 $ALTIBASE_HOME/bin/server, is, il 스크립트가 변경되었을 것입니다.</li><li><p>이러한 경우 백업한 디렉토리 중 bin 디렉토리에서 server, is, il 를 $ALTIBASE_HOME/bin 으로 복사합니다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd $ALTIBASE_HOME
+$ cp -p bin.bak/server bin/
+$ cp -p bin.bak/is bin/
+$ cp -p bin.bak/il bin/</pre>
+</div></div></li></ul><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-8.ALTIBASEHDB서버startup**8thstepforpatch"><strong>8. ALTIBASE HDB 서버 startup<span style="color: rgb(255,0,0);">**<span class="confluence-anchor-link" id="Unix및Linux에서알티베이스서버패치절차-8thstepforpatch"></span></span></strong></h2><hr /><p> </p><ul><li><p>알티베이스 서버 프로세스 구동 후 프로세스 및 서비스 포트 LISTEN 상태를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div><p>shutdown 후 알티베이스 서버 프로세스 및 서비스 포트 LISTEN 상태를 확인합니다.</p><p>아래 두 명령어를 수행했을 때 결과가 아무것도 나오지 않아야 정상적으로 shutdown 된 상태입니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep           # 알티베이스 서버 프로세스 확인 방법
+altibase 10758 1 0 12:01 ? 00:00:14 /home/altibase/bin/altibase -p boot from admin
+
+
+$ netstat -an | grep 20300                             # 서비스 포트 확인 방법.
+tcp        0      0 0.0.0.0:20300               0.0.0.0:*                   LISTEN </pre>
+</div></div></li></ul><p> </p><p> </p><p> </p><p> </p><h1 id="Unix및Linux에서알티베이스서버패치절차-주의사항"><strong>주의 사항</strong></h1><hr /><h2 id="Unix및Linux에서알티베이스서버패치절차-패치전/후meta버전확인"><strong>패치 전/후 meta 버전 확인</strong></h2><hr /><ul><li><span style="color: rgb(255,0,0);">meta 버전이 변경되면 데이터베이스를 하위 버전으로 되돌릴 수 없습니다.<strong> </strong></span></li><li>상위 버전으로 패치 후 불가피하게 하위 버전으로 되돌려야하는 경우가 있을 수 있는데, meta 버전이 변경되면 이런 작업을 할 수 없습니다.</li><li>따라서 meta 버전이 변경되는 경우는 <span style="color: rgb(255,0,0);">이 점을 숙지하고 패치를 진행</span>해야 하며 <span style="color: rgb(255,0,0);">필요 시 패치 전에 오프라인 전체 백업을 수행</span>해야 합니다.</li><li>오프라인 전체 백업 대상으로는 <u>데이타 파일, 로그 앵커 파일, 로그 파일, 설정 파일</u>이 있습니다.</li></ul><p><strong><br /></strong></p><p> </p><p> </p><h2 id="Unix및Linux에서알티베이스서버패치절차-ALTIBASEHDB4.3.9.1~4.3.9.50에서4.3.9.51~으로패치할경우**"><strong>ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 에서 4.3.9.51 ~ 으로 패치할 경우<span style="color: rgb(255,0,0);">**</span><br /></strong></h2><hr /><p>아래 조건을 만족하는 경우 패치 후 이중화가 동작하지 않는 문제가 발생합니다.</p><ul><li><p>ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 에서 4.3.9.51 ~ 으로 패치하고자 할 때</p></li><li>이중화 환경</li></ul><p> </p><p><strong><span style="color: rgb(255,0,0);">따라서 위 조건을 만족하는 경우 반드시 아래 절차에 따라 패치를 진행해야 합니다.</span> </strong></p><ol><li>알티베이스 서버 down time 확보<br /><br /></li><li>알티베이스 서버 shutdown<br /><a href="#Unix및Linux에서알티베이스서버패치절차-2ndstepforpatch">&#54056;&#52824; &#51208;&#52264; 2&#45800;&#44228;</a> 참고하세요. <br /><br /></li><li><p>서비스 포트 변경<br />알티베이스로의 접근을 확실히 차단하기 위해 패치 작업 중 서비스 포트를 임시로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # altibase.properties 에서 PORT_NO 을 변경함.</pre>
+</div></div></li><li>알티베이스 서버 startup<br /><a href="#Unix및Linux에서알티베이스서버패치절차-8thstepforpatch">&#54056;&#52824; &#51208;&#52264; 8&#45800;&#44228;</a> 를 참고하세요.<br /><br /></li><li><p><span style="color: rgb(255,0,0);">이중화 gap 확인**</span><br /><span style="color: rgb(255,0,0);">반드시 0 임을 확인해야 합니다.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>이중화 gap 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REP_GAP FROM V$REPGAP;</pre>
+</div></div></li><li><p>aexport 를 수행하여 이중화 객체 생성 구문 백업</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport                      # aexport 수행 후 생성된 SYS_CRT_REP.sql 파일에서 이중화 객체 생성 구문을 확인할 수 있습니다. </pre>
+</div></div></li><li><p><span style="color: rgb(255,0,0);">이중화 객체 drop**</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 이중화 객체명 확인
+iSQL&gt; SELECT REPLICATION_NAME FROM SYSTEM_.SYS_REPLICATIONS_;
+
+-- 이중화 stop
+iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- 이중화 객체 drop 
+iSQL&gt; DROP REPLICATION replication_name;</pre>
+</div></div></li><li><p>체크포인트 수행</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM CHECKPOINT;                   -- 4번 정도 반복 수행</pre>
+</div></div></li><li><p>알티베이스 서버 shutdown</p><a href="#Unix및Linux에서알티베이스서버패치절차-2ndstepforpatch">&#54056;&#52824; &#51208;&#52264; 2&#45800;&#44228;</a> 참고하세요. <br class="confluence-link" /><p> </p></li><li>패치 수행<br /><a href="#Unix및Linux에서알티베이스서버패치절차-3rdstepforpatch">&#54056;&#52824; &#51208;&#52264; 3&#45800;&#44228;&#48512;&#53552; 7&#45800;&#44228;&#44620;&#51648;</a> 참고하세요.<br /><br /></li><li><p><span style="color: rgb(255,0,0);">CHECK_LOGFILE 프로퍼티 추가**</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # altibase.properties 파일 마지막 라인에 CHECK_LOGFILE = 0 추가 후 저장.</pre>
+</div></div></li><li>알티베이스 서버 startup<br /><a href="#Unix및Linux에서알티베이스서버패치절차-8thstepforpatch">&#54056;&#52824; &#51208;&#52264; 8&#45800;&#44228;</a> 를 참고하세요.<br /><br /></li><li><p><span style="color: rgb(255,0,0);">CHECK_LOGFILE 프로퍼티 삭제</span>**</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # altibase.properties 파일 마지막 라인에 추가한 CHECK_LOGFILE = 0 삭제 후 저장.</pre>
+</div></div></li><li><p>임시 테이블 생성 후 데이터 insert.<br />이전 버전에서 생성된 로그 파일을 다 쓰고 새로운 로그 파일을 생성시키기 위함입니다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>CREATE TABLE IMSI_T (C1 INTEGER, C2 INTEGER);
+
+CREATE OR REPLACE PROCEDURE IMSI_PROC AS V1 INTEGER;
+BEGIN
+FOR V1 IN 1 .. 300000 LOOP
+INSERT INTO IMSI_T VALUES (V1, V1);
+END LOOP;
+END;
+/</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT CUR_WRITE_LF_NO FROM V$LFG;          -- 수행 결과(숫자) 확인.
+iSQL&gt; EXEC IMSI_PROC;                             -- 임시 테이블에 insert 수행.
+iSQL&gt; SELECT CUR_WRITE_LF_NO FROM V$LFG;          -- 위에서 확인한 결과보다 크면 완료. 만약 위에서 확인한 결과와 달라지지 않았다면, IMSI_PROC 프로시저 재수행.
+iSQL&gt; DROP PROCEDURE IMSI_PROC;                   -- 임시 테이블 및 프로시저 drop.
+iSQL&gt; DROP TABLE IMSI_T;</pre>
+</div></div></li><li><p>체크포인트 수행</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM CHECKPOINT;                   -- 4번 정도 반복 수행</pre>
+</div></div></li><li><p>이중화 객체 생성</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -f SYS_CRT_REP.sql                          # aexport 수행 후 생성된 SYS_CRT_REP.sql 파일 수행.</pre>
+</div></div></li><li><p>이중화 start</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 이중화 객체명 확인
+iSQL&gt; SELECT REPLICATION_NAME FROM SYSTEM_.SYS_REPLICATIONS_;
+
+-- 이중화 stop
+iSQL&gt; ALTER REPLICATION replication_name START;</pre>
+</div></div></li><li>알티베이스 서버 shutdown<br /><a href="#Unix및Linux에서알티베이스서버패치절차-2ndstepforpatch">&#54056;&#52824; &#51208;&#52264; 2&#45800;&#44228;</a> 참고하세요. <br /><br /></li><li><p>서비스 포트 변경<br />임시로 변경한 서비스 포트를 원래대로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # altibase.properties 에서 PORT_NO 을 변경함.</pre>
+</div></div></li><li>알티베이스 서버 startup<br /><a href="#Unix및Linux에서알티베이스서버패치절차-8thstepforpatch">&#54056;&#52824; &#51208;&#52264; 8&#45800;&#44228;</a> 를 참고하세요.<br /><br /></li><li>서비스 확인.</li></ol><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

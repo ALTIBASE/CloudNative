@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : The comparison with ACI(Altibase C Interface)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OCI-Application-conversion_2988051.html">OCI Application conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : The comparison with ACI(Altibase C Interface)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_heerock</span>, last modified on Sep 10, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348543 {padding: 0px;}
+div.rbtoc1624409348543 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348543 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348543'>
+<ul class='toc-indentation'>
+<li><a href='#ThecomparisonwithACI(AltibaseCInterface)-Overview'>Overview</a></li>
+<li><a href='#ThecomparisonwithACI(AltibaseCInterface)-Features'>Features</a></li>
+<li><a href='#ThecomparisonwithACI(AltibaseCInterface)-GeneralFunctions'>General Functions</a>
+<ul class='toc-indentation'>
+<li><a href='#ThecomparisonwithACI(AltibaseCInterface)-PreparedStatementFunctions'> Prepared Statement Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ThecomparisonwithACI(AltibaseCInterface)-Overview">Overview</h2>
+
+<p>From Altibase Version 5.3.5.x,  ALTIBASE HDB provides ACI(Altibase C Interface), which is compared to OCI(ORACLE C Interface).
+<br class="atl-forced-newline" /></p>
+
+<p>The functionality of ACI is based on the mysql connector/c interface.</p>
+
+<p>And this interface was established as a kind of DBC(Database Connectivity) which is more easily to use than CLI.</p>
+
+<p>And it has fewer functions and parameters to call than CLI requires to improve usability.</p>
+
+<p>But most contents of ACI are similar to those of Altibase CLI.</p>
+
+
+<h2 id="ThecomparisonwithACI(AltibaseCInterface)-Features">Features</h2>
+
+<ul>
+	<li>This Interface cannot be worked on the windows platforms.</li>
+	<li>ACI only supports library written in C Language instead of C++. </li>
+	<li>This is not standard interface like as OCI.</li>
+	<li>To use binding functionality in ACI, it is sure to use a prepared statement.</li>
+	<li>Parameter binding is impossible to use In ACI, even in case of the SQLExecDirect() unlike as CLI.<br />
+ </li>
+</ul>
+
+
+<h2 id="ThecomparisonwithACI(AltibaseCInterface)-GeneralFunctions">General Functions</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase ACI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIAttrGet() </p></td>
+<td class="confluenceTd"><p> altibase_affected_rows() </p></td>
+<td class="confluenceTd"><p> returns the number of rows changed, deleted, or inserted by the last statement <br class="atl-forced-newline" />
+if it was an UPDATE, DELETE, or INSERT. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIClientVersion() </p></td>
+<td class="confluenceTd"><p> altibase_client_version() </p></td>
+<td class="confluenceTd"><p> returns a constant that represents the client library version. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerDetach() </p></td>
+<td class="confluenceTd"><p> altibase_close() </p></td>
+<td class="confluenceTd"><p> closes a previously opened connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransCommit() </p></td>
+<td class="confluenceTd"><p> altibase_commit() </p></td>
+<td class="confluenceTd"><p> commits the current trasnaction. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransRollback() </p></td>
+<td class="confluenceTd"><p> altibase_rollback() </p></td>
+<td class="confluenceTd"><p> rolls back the current transaction. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIParamSet() </p></td>
+<td class="confluenceTd"><p> altibase_set_autocommit() </p></td>
+<td class="confluenceTd"><p> sets the autocommit mode to on. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerAttach() </p></td>
+<td class="confluenceTd"><p> altibase_connect() </p></td>
+<td class="confluenceTd"><p> attempts to establish a connection to an Altibase database engine running on <br class="atl-forced-newline" />
+host by using connection string. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_data_seek() </p></td>
+<td class="confluenceTd"><p> seeks to an arbitrary row in a query result set and changes the pointer location <br class="atl-forced-newline" />
+of the resource. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtFetch2() </p></td>
+<td class="confluenceTd"><p> altibase_fetch_row() </p></td>
+<td class="confluenceTd"><p> retrieves a row of a result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIRawResize() <br class="atl-forced-newline" />
+OCIStringResize() </p></td>
+<td class="confluenceTd"><p> altibase_free_result() </p></td>
+<td class="confluenceTd"><p> frees the memory allocated for a result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtExecute() </p></td>
+<td class="confluenceTd"><p> altibase_query() </p></td>
+<td class="confluenceTd"><p> executes the SQL statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIErrorGet() </p></td>
+<td class="confluenceTd"><p> altibase_errno() </p></td>
+<td class="confluenceTd"><p> returns the error code for the most recently invoked API function that can succeed or fail. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIErrorGet() </p></td>
+<td class="confluenceTd"><p> altibase_error() </p></td>
+<td class="confluenceTd"><p> returns error message for the most recently invoked API function. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_sqlstate() </p></td>
+<td class="confluenceTd"><p> returns a null-terminating string containing the SQLSTATE error code for the most <br class="atl-forced-newline" />
+recently executed SQL statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_fetch_lengths() </p></td>
+<td class="confluenceTd"><p> returns the lengths of the columns of the current row within a result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_field() </p></td>
+<td class="confluenceTd"><p> returns the definition of one column of a result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_field_count() </p></td>
+<td class="confluenceTd"><p> returns the number of columns for the most recent query on the connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_get_charset() </p></td>
+<td class="confluenceTd"><p> returns character set name for the current connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIInitialize() </p></td>
+<td class="confluenceTd"><p> altibase_init() </p></td>
+<td class="confluenceTd"><p> allocates or initializes an Altibase object as a connection handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_list_fields() </p></td>
+<td class="confluenceTd"><p> returns a result set consisting of field names in the given table. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_list_tables() </p></td>
+<td class="confluenceTd"><p> returns a result set consisting of table names in the current database. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_next_result() </p></td>
+<td class="confluenceTd"><p> moves the cursor position on the next statement result set to read. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_num_fields() </p></td>
+<td class="confluenceTd"><p> returns the number of columns in a result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_num_rows() </p></td>
+<td class="confluenceTd"><p> returns the number of rows in the result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_proto_version() </p></td>
+<td class="confluenceTd"><p> returns a constant representing the protocol version used by the current <br class="atl-forced-newline" />
+connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_proto_verstr() </p></td>
+<td class="confluenceTd"><p> returns a string representing the protocol version used by the current connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerVersion() </p></td>
+<td class="confluenceTd"><p> altibase_server_version() </p></td>
+<td class="confluenceTd"><p> returns the version number of the server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_set_charset() </p></td>
+<td class="confluenceTd"><p> is used to set the character set for the current connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIUserCallbackRegister() </p></td>
+<td class="confluenceTd"><p> altibase_set_failover_callback() </p></td>
+<td class="confluenceTd"><p> registers failover callbacks for the failover to happen in the current database. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_set_option() </p></td>
+<td class="confluenceTd"><p> enables or disables an option for the connection. </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h3 id="ThecomparisonwithACI(AltibaseCInterface)-PreparedStatementFunctions"> Prepared Statement Functions</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase ACI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_affected_rows() </p></td>
+<td class="confluenceTd"><p> returns the number of rows changed, deleted, or inserted by the last statement if it was an UPDATE, DELETE, or <br class="atl-forced-newline" />
+INSERT. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindByName() <br class="atl-forced-newline" />
+OCIBindByPos() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_bind_param() </p></td>
+<td class="confluenceTd"><p> used to bind input data for the parameter markers in the SQL statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtExecute() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_execute() </p></td>
+<td class="confluenceTd"><p> executes the prepared query associated with the statement handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_bind_result() </p></td>
+<td class="confluenceTd"><p> used to bind output columns in the result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_data_seek() </p></td>
+<td class="confluenceTd"><p> seeks to an arbitrary row in a statememt result set and moves its position. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIErrorGet() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_errno() </p></td>
+<td class="confluenceTd"><p> returns the error code for the most recently invoked statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIErrorGet() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_error() </p></td>
+<td class="confluenceTd"><p> returns error message for the most recently invoked statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtFetch(), OCIStmtFetch2() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_fetch() </p></td>
+<td class="confluenceTd"><p> fetches a row from the result set in a prepared statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_fetch_column() </p></td>
+<td class="confluenceTd"><p> fetches one column from the current result set row. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_fetched() </p></td>
+<td class="confluenceTd"><p> returns the number of the exisitng rows fetched previously after fetching <br class="atl-forced-newline" />
+new result as an array. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_num_rows() </p></td>
+<td class="confluenceTd"><p> returns the number of rows in the result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_sqlstate() </p></td>
+<td class="confluenceTd"><p> returns a null-terminating string containing the SQLSTATE error code for the <br class="atl-forced-newline" />
+most recently invoked prepared statement function that can succeed or fail. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_store_result() </p></td>
+<td class="confluenceTd"><p> is called to buffer the complete result set. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionEnd() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_close() </p></td>
+<td class="confluenceTd"><p> closes the prepared statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_field_count() </p></td>
+<td class="confluenceTd"><p> returns the number of columns for the most recent statement for the <br class="atl-forced-newline" />
+statement handler. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_free_result() </p></td>
+<td class="confluenceTd"><p> returns the number of columns for the most recent statement for the <br class="atl-forced-newline" />
+statement handler. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_param_count() </p></td>
+<td class="confluenceTd"><p> returns the number of parameter markers present in the prepared <br class="atl-forced-newline" />
+statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtPrepare(), <br class="atl-forced-newline" />
+OCIStmtPrepare2() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_prepare() </p></td>
+<td class="confluenceTd"><p> returns the number of parameter markers present in the prepared <br class="atl-forced-newline" />
+statement. <br class="atl-forced-newline" />
+If no parameter marker exists, the function returns 0. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIAttrGet()  </p></td>
+<td class="confluenceTd"><p> altibase_stmt_get_attr() </p></td>
+<td class="confluenceTd"><p> can be used to get the current value for a statement attribute. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIAttrSet() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_init() </p></td>
+<td class="confluenceTd"><p> creates an ALTIBASE_STMT handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_processed() </p></td>
+<td class="confluenceTd"><p> returns the number of rows after using the array binding. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDescriptorFree() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_reset() </p></td>
+<td class="confluenceTd"><p> resets statement handle for a prepared statement on client and server to state <br class="atl-forced-newline" />
+after prepare. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDescribeAny() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_result_metadata() </p></td>
+<td class="confluenceTd"><p> returns the result set metadata for the prepared query. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindArrayOfStruct() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_set_array_bind() </p></td>
+<td class="confluenceTd"><p> specifies the size of array when you want to use the array binding. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDefineArrayOfStruct() </p></td>
+<td class="confluenceTd"><p> altibase_stmt_set_array_fetch() </p></td>
+<td class="confluenceTd"><p> specifies the size of array when you want to fetch an array. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> altibase_stmt_status() </p></td>
+<td class="confluenceTd"><p> returns the results returned after using the array binding or fetching an array. </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

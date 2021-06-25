@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 1. Test case with ALTIBASE HDB 5.3.3</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cannot-insert-new-records-after-deleting-bulk-records_2557870.html">Cannot insert new records after deleting bulk records</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 1. Test case with ALTIBASE HDB 5.3.3
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_TaeHun Kim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 16, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Here is a test case to easily reproduce the ﻿problem with ALTIBASE HDB 5.3.3.</p>
+
+
+<h2 id="id-1.TestcasewithALTIBASEHDB5.3.3-ReproduceStep">Reproduce Step</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+iSQL&gt; create disk tablespace disk01 datafile &#39;disk01.dbf&#39; size 10M autoextend off;
+Create success.
+iSQL&gt; create table temp01(
+    2 i1 BIGINT not null,
+    3 i2 VARCHAR(248) not null,
+    4 i3 INTEGER,
+    5 i4 SMALLINT not null,
+    6 i5 SMALLINT not null,
+    7 i6 NIBBLE(254),
+    8 i7 BLOB)
+    9  tablespace &quot;DISK01&quot;
+    10  pctfree 10
+    11  pctused 80 ;
+Create success.
+iSQL&gt;
+iSQL&gt; alter table temp01 add primary key(i1,i2) using index tablespace DISK01;
+Alter success.
+iSQL&gt; create index temp01_index01 on temp01(i1,i3) tablespace DISK01;
+Create success.
+iSQL&gt;  create or replace procedure testproc01(pcnt integer)
+    2 as
+    3 void_ser integer;
+    4 begin
+    5 for i in 1 .. pcnt loop
+    6   select seq1.nextval into void_ser from dual;
+    7   for j in 1 .. 10 loop
+    8 INSERT INTO temp01 ( i1, i2, i3, i4, i5, i6 )VALUES ( void_ser, to_char(j,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+    9   end loop;
+    10 end loop;
+    11 end;
+    12 /
+Create success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt;
+iSQL&gt;
+iSQL&gt;
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt; select count(*) from temp01;
+COUNT
+-----------------------
+60000
+1 row selected.
+iSQL&gt; set linesize 1000
+iSQL&gt; select name,total_page_count,allocated_page_count from v$tablespaces;
+NAME                                      TOTAL_PAGE_COUNT     ALLOCATED_PAGE_COUNT
+----------------------------------------------------------------------------------------
+SYS_TBS_MEM_DIC                           129                  129
+SYS_TBS_MEM_DATA                          257                  257
+SYS_TBS_DISK_DATA                         12800                32
+SYS_TBS_DISK_UNDO                         32768                16416
+SYS_TBS_DISK_TEMP                         12800                32
+DISK01                                    1280                 1280
+6 rows selected.
+iSQL&gt; delete from temp01 limit 5000;
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+5000 rows deleted.
+iSQL&gt; /
+No rows deleted.
+iSQL&gt; /
+No rows deleted.
+iSQL&gt; select count(*) from temp01;
+COUNT
+-----------------------
+0
+1 row selected.
+iSQL&gt; select table_name,disk_total_page_cnt,disk_page_cnt from v$disktbl_info join system_.sys_tables_ on v$disktbl_info.table_oid = system_.sys_tables_.table_
+oid;
+TABLE_NAME                                DISK_TOTAL_PAGE_CNT  DISK_PAGE_CNT
+----------------------------------------------------------------------------------------
+TEMP01                                    768                  751
+1 row selected.
+iSQL&gt;
+iSQL&gt;  exec testproc01(1000);
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt;
+</pre>
+</div></div>
+
+<p>Although all data from temp01 table have been deleted, the new data cannot be inserted into temp01 table.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:46</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

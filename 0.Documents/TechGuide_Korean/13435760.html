@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : APRE*C/C++ New Features &amp; 업그레이드 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : APRE*C/C++ New Features &amp; 업그레이드 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409868536 {padding: 0px;}
+div.rbtoc1624409868536 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409868536 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409868536'>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-개요'>개요</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-APRE*C/C++'>APRE*C/C++</a>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-용어설명'>용어설명</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-도입배경'>도입배경</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-NewFeatures요약'>New Features 요약</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-NewFeatures상세'>New Features 상세</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-유의사항'>유의사항</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-참고사항'>참고사항</a></li>
+</ul>
+</li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-변경사항'>변경사항</a>
+<ul class='toc-indentation'>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-업그레이드절차'>업그레이드 절차</a></li>
+<li><a href='#APRE*C/C++NewFeatures&amp;업그레이드가이드-유의사항.1'>유의사항</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-개요"><strong>개요</strong></h1><hr /><p>본 문서는 SES*C/C++의 후속버전인 APRE*C/C++의 새로운 기능과 변경사항 및 업그레이드 절차에 대해 설명한다.</p><p>문서에 언급하지 않은 구체적인 사항은 [<a href="11698385.html">Altibase Precompiler &#44032;&#51060;&#46300;</a>] 를 참고하도록 한다.</p><p>문서의 기준은 APRE*C/++가 최초 제공되는 Altibase 5.3.3 버전을 기준으로 작성되었고,  문서상의 실행결과는 5.3.3.15 버전에서 수행한 결과이다.</p><p> </p><p>문서의 이해를 돕기 위해 아래 기술문서를 함께 참조하는 것을 권장한다.</p><ul><li><a href="11698493.html">Altibase APRE(SES) *C/C++ Makefile</a></li><li><a href="11698385.html">Altibase Precompiler &#44032;&#51060;&#46300;</a></li></ul><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><h1 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-APRE*C/C++"><strong style="color: rgb(0,0,0);font-size: 24.0px;">APRE*C/C++</strong></h1><hr /><p>Altibase의 새로워진 Precompiler of Embedded SQL에 대하여 설명한다. 요약형태의 설명으로 기능에 대한 상세사용법과 같은 구체적인 사항은 [<a href="11698385.html">Altibase Precompiler &#44032;&#51060;&#46300;</a>] 를 참고하도록 한다.</p><p> </p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro" style="width:30px;min-width:30px;max-width:30px;"> </div><div class="columnMacro"><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-용어설명"><strong>용어설명</strong></h2><hr /><p><strong>Precompiler of Embedded SQL<br /></strong>내장 SQL(Embedded SQL)이 포함된 소스코드를 입력 받아, 해당 내장 SQL을 실행시간 라이브러리 함수 호출로 변환한 소스코드를 생성하는 프로그램<br /><br /><strong>SES*C/C++<br /></strong>Altibase 5.1.5 이하 버전의 Precompiler of Embedded SQL의 약어로 소스코드로 C와 C++을 지원한다.<br /><br /><strong>APRE*C/C++<br /></strong>Altibase 5.3.3 이상 버전의 Precompiler of Embedded SQL의 약어로 소스코드로 C와 C++을 지원한다. SES*C/C++와 비교하여 업그레이드 수준의 기능이 개선되었다.</p><p><strong><br /></strong></p><p><strong><br /></strong></p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-도입배경"><strong>도입배경</strong></h2><hr /><p>SES*C/C++는 아래와 같은 다수의 제약을 가지고 있어 사용상에 불편함이 있었다.</p><ul><li>매크로(Macro) 처리 제약</li><li>호스트변수 선언부(DECLARE SECTION) 외부에 호스트변수 선언 불가</li><li>호스트변수 선언방식 및 사용 제약</li><li>일부 표준 내장 SQL구문 미 지원</li></ul><p>Altibase 사용자에게 Precompiler of Embedded SQL을 통한  개발편의성을 제공하기 위해서 이러한 제약은 우선적으로 개선되어야 할 사항이다.</p><p> </p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-NewFeatures요약"><strong>New Features 요약</strong></h2><hr /><p>SES*C/C++에 존재하던 다수의 제약을 대폭 개선하였다.<br />기능 업데이트 수준을 넘어서는 업그레이드를 적용하면서 명칭 또한 APRE*C/C++(Altibase C/C++ Precompiler of Embedded SQL)로 변경되었다.</p><p>APRE*C/C++에 새롭게 추가된 기능은 아래와 같다.</p><ul><li>매크로 처리를 위한 Partial C Preprocessor 탑재</li><li>호스트변수 선언부 외부의 호스트변수 선언을 위한 C Parser 탑재</li><li>호스트변수 선언방식 및 사용제약 완화를 위한 라이브러리 재 작성</li><li>DECLARE STATEMENT 구문 지원</li></ul><p>이와 더불어 아래와 같은 개선을 하였다.</p><ul><li>WHENEVER 구문 사용시 함수 호출 가능</li><li>APRE*C/C++ 실행파일(apre) 명령옵션 변경 및 추가</li><li>에러메세지 출력형태 변경</li></ul><p> </p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-NewFeatures상세"><strong>New Features 상세</strong></h2><hr /><p><strong>Partial C Preprocessor 탑재</strong></p><p>아래와 같은 대부분의 매크로가 선언영역에 대한 제한 없이 처리가 가능하게 되었다.</p><p><span><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/> #include, #define #if, #ifdef, #ifndef, #endif, #else, #elif</span></p><p>
+
+<map id="gliffy-map-13631905-8615" name="gliffy-map-13631905-8615"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13631905-8615" src="attachments/13435760/13631906.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /><strong style="color: rgb(0,0,0);">C Parser 탑재</strong></p><p>소스코드를 C로 작성하는 경우에 한하여 호스트변수 선언부 외부(DECLARE SECTION)에서도 호스트변수 선언이 가능하게 되었다.<br />
+
+<map id="gliffy-map-14221316-8517" name="gliffy-map-14221316-8517"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-14221316-8517" src="attachments/13435760/14221317.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /><strong style="color: rgb(0,0,0);">호스트변수 선언방식 및 사용제약 완화</strong></p><p>호스트변수 사용과 관련된 다수의 제약이 제거되었다.<br />상세내용은 아래와 같다.</p><ul><li><p>호스트변수 선언과 동시에 초기값을 할당 가능<br />
+
+<map id="gliffy-map-13631960-4184" name="gliffy-map-13631960-4184"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13631960-4184" src="attachments/13435760/13631961.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>typedef 후 구조체 정의 가능 (역으로도 가능)<br />
+
+<map id="gliffy-map-13631966-7810" name="gliffy-map-13631966-7810"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13631966-7810" src="attachments/13435760/13631967.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>내장 SQL문에서 배열형의 호스트변수 사용 시 배열요소 지정 가능<br />
+
+<map id="gliffy-map-13631968-5692" name="gliffy-map-13631968-5692"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13631968-5692" src="attachments/13435760/13631969.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>char *, struct * 외의 다른 데이터형도 포인터형 호스트변수로 사용 가능<br />
+
+<map id="gliffy-map-13631992-6882" name="gliffy-map-13631992-6882"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13631992-6882" src="attachments/13435760/13631993.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>SELECT 구문의 INTO절에 &quot;:&quot; 없이 출력용 호스트변수 사용 가능<br />
+
+<map id="gliffy-map-13632002-671" name="gliffy-map-13632002-671"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632002-671" src="attachments/13435760/13632003.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>FOR 절이 포함된 내장 SQL의 입력 호스트변수가 배열 타입이 아니더라도 사용 가능<br />
+
+<map id="gliffy-map-13632006-8748" name="gliffy-map-13632006-8748"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632006-8748" src="attachments/13435760/13632007.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><ul><li><p>유니온(Union)형의 호스트변수 사용 가능<br />
+
+<map id="gliffy-map-13632008-5531" name="gliffy-map-13632008-5531"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632008-5531" src="attachments/13435760/13632009.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul><p> </p><p><strong style="color: rgb(0,0,0);">DECLARE STATEMENT 구문 추가지원</strong></p><p>표준 Embedded SQL 구문으로 DECLARE STATEMENT 구문을 지원한다.<br />다른 내장 SQL 구문에 사용될 수 있도록 SQL 구문이나 PL/SQL 블럭에 대한 식별자를 선언할 수 있다.<br />
+
+<map id="gliffy-map-13632012-7381" name="gliffy-map-13632012-7381"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13632012-7381" src="attachments/13435760/13632013.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /><strong>WHENEVER 구문 사용시 함수 호출 가능</strong></p><p>WHENEEVER &lt;condition&gt; DO &lt;function&gt; 와 같은 형태로 WHENEVER 구문 사용시 특정 함수를 호출할 수 있게 개선되었다.
+
+<map id="gliffy-map-13632014-577" name="gliffy-map-13632014-577"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13632014-577" src="attachments/13435760/13632015.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /><strong>APRE*C/C++ 실행파일(apre) 명령옵션 변경</strong></p><ol><li><p>-I<br />기존 SES*C/C++ 에서 -include 옵션으로 제공되던 옵션으로써 -I 로 명칭이 변경되었다.<br />precompile시 include한 소스코드 파일의 경로를 명시한다.<br />이 옵션은 코드 내의 EXEC SQL OPTION (INCLUDE=library_path)와 같은 기능을 한다.<br />
+
+<map id="gliffy-map-13632016-4909" name="gliffy-map-13632016-4909"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632016-4909" src="attachments/13435760/13632017.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li><li><p>-keyword<br />예약된 키워드들을 보여준다.<br />
+
+<map id="gliffy-map-13632028-702" name="gliffy-map-13632028-702"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632028-702" src="attachments/13435760/13632029.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li><li><p>-parse <em><span style="color: blue;">parsing_mode</span></em></p><p>파싱모드(parsing mode)를 지정하여 소스파일에 대한 precompile 범위를 결정한다.<br />-parse 옵션의 파싱모드와 그에 따른 처리범위는 아래와 같다.<br />-parse 옵션 자체를 생략한 경우는 기본적으로 파싱모드가 partial로 작동한다.</p>
+
+<map id="gliffy-map-13632532-4297" name="gliffy-map-13632532-4297"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632532-4297" src="attachments/13435760/13632533.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br />[#include 형식의 헤더파일까지 처리] 의 경우, 해당 헤더파일 내의 #include 형식으로 선언한 또 다른 헤더파일까지도 모두 처리된다.<p> </p><p>
+
+<map id="gliffy-map-13632228-8027" name="gliffy-map-13632228-8027"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1030px;" usemap="#gliffy-map-13632228-8027" src="attachments/13435760/13632229.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p><p>예를 들어, 위 예제에서의 쿼리를 아래와 같이 매크로를 사용한 선택적인 쿼리로 변경 후<br />
+
+<map id="gliffy-map-13632338-4608" name="gliffy-map-13632338-4608"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632338-4608" src="attachments/13435760/13632339.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p><p>파싱옵션을 생략하여 기본 파싱모드인 partial로 precompile 할 경우<br />
+
+<map id="gliffy-map-13632340-9456" name="gliffy-map-13632340-9456"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632340-9456" src="attachments/13435760/13632341.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p><p>실제 생성코드는 아래와 같이 매크로 처리가 완료된 상태로만 남게된다.(매크로 처리 후 불필요하여 제거된 부분은 공백으로 치환된다)<br />
+
+<map id="gliffy-map-13632424-8141" name="gliffy-map-13632424-8141"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632424-8141" src="attachments/13435760/13632425.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p><p>기존 SES*C/C++와 동일하게 precompile 하기 위해 -parse none을 지정한 경우에는 매크로 처리기능이 작동하지 않음으로 변수 중복선언 에러가 발생한다.<br />
+
+<map id="gliffy-map-13632430-9017" name="gliffy-map-13632430-9017"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632430-9017" src="attachments/13435760/13632431.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ol><p> </p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-유의사항"><strong>유의사항</strong></h2><hr /><p><strong>문법(syntex)강화</strong></p><p>기존 SES*C/C++는 코드에서 EXEC SQL BEGIN/END DECLARE/ARGUMENT SECTION을 기술할 경우, 종결자인 “ ; ” 이 누락되어도 무관하였으나 APRE*C/C++는 반드시 “ ; “ 가 있어야 한다.<br />이는 타 DBMS Precompiler와도 동일한 제약사항이다.</p><p>아래는 END DECLARE SECTION에 종결자를 기재하지 않은 경우의 에러이다.<br />
+
+<map id="gliffy-map-13632478-3335" name="gliffy-map-13632478-3335"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13632478-3335" src="attachments/13435760/13632479.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /><strong>C++ 스타일의 소스코드 precompile</strong></p><p>호스트변수 선언부외부에 호스트변수를 사용하기 위해서는 parse 옵션의 모드를 full로 해야 한다.<br />하지만, 파싱모드를 full로 설정하면 C 파서가 동작하기 때문에 C++ 스타일의 소스코드는 전처리 중 각종 파싱에러를 발생시킬 수 있다.</p><p>즉, C++ 스타일로 작성된 소스코드는 SES*C/C++와 같이 호스트변수 선언부에만 호스트변수를 선언하고, -parse 옵션을 사용할 경우 파싱모드를 partial 또는 none으로 해야 한다.<br /><br /><strong>-D, -I 옵션</strong></p><p>C/C++ 컴파일 단계에서 –D, -I 옵션을 사용한다면 대부분의 경우 APRE*C/C++를 통한 precompile 단계에서도 동일한 옵션을 주어야 올바른 precompile이 가능하다.</p><p> </p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-참고사항"><strong>참고사항</strong></h2><hr /><p><strong>-I 옵션</strong></p><p>기존처럼 -include 로 사용하여도 무방하나 향후 유지보수를 고려하여 새로운 옵션으로 변경하여 사용하는 것을 권장한다.<br /><br /><strong>이진 데이터 타입 변경</strong></p><p>기존에 사용되었던 SES_CLOB, SES_BLOB, SES_BINARY, SES_BYTES, SES_NIBBLE 타입의 이름이 APRE_CLOB, APRE_BLOB, APRE_BINARY, APRE_BYTES, APRE_NIBBLE로 변경됐다.<br />하위 호환성이 고려되었기에 기존 이름을 사용해도 무방하다.<br /><br /><strong>precompile 수행시간</strong></p><p>SES*C/C++와 비교하여 precompile 수행시간이 다소 느려졌다.<br />아래는 Altibase 설치 시 제공되는 sample 예제 arrays1.sc(약 450 lines)를 SES*C/C++, APRE*C/C++로 각각 precompile을 수행한 시간을 측정한 결과이다.<br />
+
+<map id="gliffy-map-13632480-6851" name="gliffy-map-13632480-6851"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13632480-6851" src="attachments/13435760/13632481.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br />위 측정결과는 IBM AIX5.3 (Power5 1898 MHz 1EA)에서 precompile한 결과로 실제수행속도는 OS 환경에 따라 달라질 수 있다.</p></div></div></div></div><p> </p><p> </p><p> </p><p> </p><h1 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-변경사항"><strong>변경사항</strong></h1><hr /><p>SES*C/C++ 환경에서 ARPE*C/C++ 로의 업그레이드 시 고려사항과 절차에 대해 설명한다.</p><p> </p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro" style="width:30px;min-width:30px;max-width:30px;"> </div><div class="columnMacro"><p><strong style="color: rgb(0,0,0);font-size: 20.0px;">변경사항</strong></p><hr /><p>SES*C/C++에서 APRE*C/C++ 로 명칭이 변경되면서 아래와 같이 실행파일, 헤더파일, 라이브러리파일, 링크옵션, 실행파일 명령옵션 명칭이 일부 변경되었다.<br />
+
+<map id="gliffy-map-13632544-6228" name="gliffy-map-13632544-6228"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1110px;" usemap="#gliffy-map-13632544-6228" src="attachments/13435760/13632545.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br />위 변경사항은 하위 호환성이 고려되어 있어 별도로 조치할 사항은 없으나, 향후 유지보수를 위해 실행파일명과 링크옵션은 APRE*C/C++ 방식으로 변경을 권장한다.</p><p>또한, 필수적인 요소는 아니나 -include 옵션의 경우도 -I로 변경하는 것을 권장한다.</p><p> </p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-업그레이드절차"><strong>업그레이드 절차</strong></h2><hr /><p>SES*C/C++ 개발환경에서 APRE*C/C++로 업그레이드시의 절차는 아래와 같다.</p><ol><li><p>APRE*C/C++ 버전확인<br />
+
+<map id="gliffy-map-13632749-6766" name="gliffy-map-13632749-6766"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1070px;" usemap="#gliffy-map-13632749-6766" src="attachments/13435760/13632750.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br />기본적으로 최신버전의 APRE*C/C++를 사용하는 것을 권장하며 아래 버그들 반영을 고려하여 최소 5.3.3.15 이상을 사용하여야 한다.</p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/> BUG-28392 Direct Execute 실패 시 메모리 증가 (fixed 5.3.3.5)</p><p><span><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/> </span>BUG-28588 null fetch시 statement 해제하지 않음 (fixed at 5.3.3.6)</p><p><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.png" data-emoticon-name="tick" alt="(tick)"/> BUG-29745 SELECT 컬럼 절에 숫자가 있을 때 커서사용 시 접속해제가 발생<br /><span> </span><span> <span> </span><span> </span></span><span> </span>BUG-29903 prepare 실패를 반복 시 메모리 증가 (fixed at 5.3.3.15)<br /><br /></p></li><li>컴파일 옵션 수정<br />변경사항 섹션의 표를 참조, 아래와 같은 명령문 수행, 링크옵션, makefile과 같은 컴파일 파일의 옵션을 수정한다.<br /><ul><li>실행파일명 변경<br />
+
+<map id="gliffy-map-13632767-4960" name="gliffy-map-13632767-4960"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1030px;" usemap="#gliffy-map-13632767-4960" src="attachments/13435760/13632768.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li><li>링크옵션 변경<br />
+
+<map id="gliffy-map-13632783-1011" name="gliffy-map-13632783-1011"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1030px;" usemap="#gliffy-map-13632783-1011" src="attachments/13435760/13632784.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li><li>makefile<br />
+
+<map id="gliffy-map-13632787-605" name="gliffy-map-13632787-605"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1030px;" usemap="#gliffy-map-13632787-605" src="attachments/13435760/13632788.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<br /><br /></li></ul></li></ol><p>변경 관련파일이 쉽게 파악되지 않거나 양이 많아 일일이 수정할 수 없는 경우는 위 예시의 절차를 생략할 수 있지만 가급적 관련 명칭을 변경하는 정상적인 업그레이드 수행을 권장한다.</p><p> </p><h2 id="APRE*C/C++NewFeatures&amp;업그레이드가이드-유의사항.1"><strong>유의사항</strong></h2><hr /><p><strong>-parse none 옵션 추가</strong></p><p><strong><span style="color: rgb(0,0,255);">APRE*C/C++ -&gt; [유의사항]</span></strong> 섹션에서 언급한 문법강화로 인한 사항이 아닌데도 SES*C/C++에서는 이상없이 precompile되던 소스코드가 APRE*C/C++에서는 에러가 발생할 수 있는데,<br />이 경우는 APRE*C/C++의 파싱모드가 기본적으로 partial 이기 때문에 #include 방식으로 포함된 헤더파일까지 매크로처리를 하면서 발생하는 오류일 가능성이 높다.</p><p>따라서, 에러발생 원인을 쉽게 알 수 없다면 SES*C/C++와 동일하게 precompile을 하기 위한 -parse none 옵션을 추가하여 일차적인 확인을 하는 과정이 필요하다.</p><p> </p><p><strong>Precompiler 라이브러리 사용으로 인한 오류</strong></p><p>기존의 소스코드가 SES*C/C++ 라이브러리를 직접적으로 사용하도록 작성되었다면 Precompiler 라이브러리 interface 변경으로 인해 컴파일이 되지 않을 수 있다.<br />이 경우는 기존 소스코드에서 관련코드를 모두 제거하여야만 한다.</p><p>Precompiler의 라이브러리 interface는 변경이 잦은 내부적인 요소로써 원칙적으로 사용자의 직접적인 사용을 금한다.</p><p>따라서, precompile된 소스코드를 분석, 사용자 임의로 소스코드에 관련 매크로, 구조체 및 함수를 사용하면서 추후 발생되는 오류는 책임지지 않는다.</p></div></div></div></div><p> </p><p> </p><p><br /><br /><br /></p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631780.png">worddav5e64f4b9a554eb394410e9bd741ee65c.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631781.png">worddav0b836be0da0f19b4f29ad890ab9ce37e.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631845">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631846.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631847">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631848.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631849">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631850.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631851">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631852.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631853">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631854.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631855">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631856.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631857">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631858.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631859">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631860.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631861">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631862.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631865">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631866.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631869">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631870.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631871">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631872.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631873">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631874.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631875">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631876.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631877">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631878.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631879">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631880.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631881">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631882.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631883">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631884.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631885">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631886.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631887">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631888.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631889">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631890.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631901">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631902.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631893">C Parser 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631894.png">C Parser 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631891">C Parser 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631892.png">C Parser 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631895.url">garbage1.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631896.url">garbage2.png.url.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631898.url">garbage3.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631897.url">garbage3.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631899.url">garbage4.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631900.url">garbage5.png.url</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631903">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631904.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631843">Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631844.png">Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631907">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631908.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631909">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631910.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631911">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631912.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631913">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631914.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631915">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631916.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631917">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631918.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631950">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631951.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631954">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631955.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631956">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631957.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631998">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631999.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631958">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631959.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632000">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632001.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631962">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631963.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631964">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631965.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631974">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631975.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631970">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631971.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631972">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631973.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631984">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631985.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631988">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631989.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631976">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631977.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631978">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631979.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631980">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631981.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631982">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631983.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631996">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631997.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631986">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631987.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631994">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631995.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631990">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631991.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632046">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632047.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632048">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632049.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632044">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632045.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632042">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632043.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632038">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632039.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632040">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632041.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632004">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632005.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632050">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632051.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632010">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632011.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632054">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632055.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632052">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632053.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632056">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632057.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632058">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632059.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632018">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632019.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632020">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632021.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632022">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632023.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632024">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632025.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632026">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632027.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632032">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632033.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632030">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632031.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632062">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632063.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632060">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632061.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632036">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632037.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632064">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632065.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632174">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632175.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632176">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632177.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632182">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632183.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632184">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632185.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632186">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632187.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632188">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632189.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632190">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632191.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632192">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632193.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632194">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632195.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632196">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632197.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632198">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632199.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632200">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632201.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632210">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632211.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632066">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632067.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632068">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632069.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632074">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632075.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632034">table</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632035.png">table.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632306">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632307.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632180">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632181.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632308">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632309.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632310">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632311.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632312">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632313.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632314">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632315.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632316">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632317.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632318">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632319.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632324">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632325.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632326">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632327.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632202">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632203.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632204">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632205.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632332">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632333.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632206">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632207.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632208">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632209.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632328">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632329.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632330">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632331.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632304">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632305.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632236.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632237.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632238.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632239.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632240.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632241.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632242.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632243.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632252.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632253.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632262.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632263.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632264.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632265.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632266.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632267.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632268.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632269.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632270.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632271.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632278.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632279.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632274">table_parsing_mode</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632275.png">table_parsing_mode.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632276">table_parsing_mode</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632277.png">table_parsing_mode.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632272">table_parsing_mode</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632273.png">table_parsing_mode.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632334.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632335.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632362">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632363.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632390">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632391.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632386">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632387.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632384">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632385.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632382">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632383.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632380">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632381.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632378">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632379.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632320">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632321.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632322">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632323.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632376">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632377.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632374">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632375.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632370">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632371.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632368">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632369.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632366">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632367.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632364">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632365.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632336.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632337.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632354.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632355.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632346">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632347.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632356">partial로 preccompile_할_경우</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632357.png">partial로 preccompile_할_경우.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632344">test</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632345.png">test.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632342">test</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632343.png">test.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632348">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632349.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632350">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632351.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632352">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632353.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632358">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632359.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632360.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632361.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632468">partial로 preccompile_할_경우</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632469.png">partial로 preccompile_할_경우.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632466">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632467.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632436.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632437.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632464">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632465.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632462">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632463.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632460">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632461.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632458">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632459.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632372">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632373.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632456">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632457.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632454">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632455.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632452">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632453.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632450">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632451.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632448">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632449.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632446">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632447.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632444">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632445.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632388">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632389.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632442">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632443.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632440">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632441.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632428">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632429.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632470">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632471.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632432">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632433.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632434">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632435.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632472">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632473.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632438.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632439.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632474.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632475.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632482">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632483.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632484">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632485.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632488">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632489.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632490">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632491.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632492">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632493.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632494">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632495.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632496">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632497.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632498">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632499.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632500">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632501.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632502">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632503.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632504">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632505.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632506">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632507.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632508">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632509.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632512">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632513.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632514">partial로 preccompile_할_경우</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632515.png">partial로 preccompile_할_경우.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632516">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632517.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632518">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632519.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632510.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632511.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632476">END_DECLARE_SECION_종결자</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632477.png">END_DECLARE_SECION_종결자.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632520">종결자_누락_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632521.png">종결자_누락_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632522">sesc_apre_수행시간</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632523.png">sesc_apre_수행시간.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631905">1.Partial C Preprocessor 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631906.png">1.Partial C Preprocessor 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632486">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632487.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632575">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632576.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632577">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632578.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632579">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632580.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632581">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632582.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632585">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632586.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632587">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632588.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632589">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632590.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632591">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632592.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632593">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632594.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632595">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632596.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632016">전처리_시_사용될_매크로선언</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632017.png">전처리_시_사용될_매크로선언.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632028">예약된_키워드들을_보여줌</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632029.png">예약된_키워드들을_보여줌.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632228.h">main.sc_header.h</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632229.png">main.sc_header.h.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632597">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632598.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632340">partial로 preccompile_할_경우</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632341.png">partial로 preccompile_할_경우.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632599">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632600.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221350">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221351.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632478">종결자_누락_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632479.png">종결자_누락_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221352">sesc_apre_수행시간</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221353.png">sesc_apre_수행시간.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632534">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632535.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632536">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632537.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632538">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632539.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632540">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632541.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632542">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632543.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632915">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632916.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632546">명령옵션_명칭_일부변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632547.png">명령옵션_명칭_일부변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632548">명령옵션_명칭_일부변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632549.png">명령옵션_명칭_일부변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632544">명령옵션_명칭_일부변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632545.png">명령옵션_명칭_일부변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632918">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632919.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631960">호스트변수_선언과_동시에_초기값을_할당_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631961.png">호스트변수_선언과_동시에_초기값을_할당_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631966">typedef_후_구조체_정의_가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631967.png">typedef_후_구조체_정의_가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632583">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632584.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631968">내장_SQL문에서_배열형의_호스트변수_사용</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631969.png">내장_SQL문에서_배열형의_호스트변수_사용.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631992">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631993.png">point_외의_다른_데이터형도_포인터형_호스트변수로_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632002">select_구문의into절에_표시없이_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632003.png">select_구문의into절에_표시없이_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632006">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632007.png">for_절의_입력_호스트변수가_배열_타입이_아니더라도_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632008">유니온형의_호스트변수_사용가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632009.png">유니온형의_호스트변수_사용가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632012">declare_statement_구문_추가지원</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632013.png">declare_statement_구문_추가지원.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632014">whenever구문_사용시_함수_호출가능</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632015.png">whenever구문_사용시_함수_호출가능.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632338">매크로를_사용한_선택적인_쿼리로_변경후</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632339.png">매크로를_사용한_선택적인_쿼리로_변경후.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632745">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632746.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632747">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632748.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632424">불필요한부분_공백</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632425.png">불필요한부분_공백.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632751">apre_버전확인</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632752.png">apre_버전확인.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632753">apre_버전확인</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632754.png">apre_버전확인.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632755">apre_버전확인</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632756.png">apre_버전확인.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632749">apre_버전확인</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632750.png">apre_버전확인.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632769">실행파일명_변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632770.png">실행파일명_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632767">실행파일명_변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632768.png">실행파일명_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632785">링크옵션_변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632786.png">링크옵션_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632783">링크옵션_변경</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632784.png">링크옵션_변경.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632787">makefile</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632788.png">makefile.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632532">table_1</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632533.png">table_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632920">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632921.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631952">c_parser_탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13631953.png">c_parser_탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221318">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221319.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221320">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221321.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221322">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221323.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221324">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221325.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221326">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221327.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221328">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221329.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221330">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221331.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221333">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221334.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221335">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221336.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221337">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221338.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221316">C parse 탑재</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/14221317.png">C parse 탑재.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632430">변수_중복선언_에러</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632431.png">변수_중복선언_에러.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632480">sesc_apre_수행시간</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13435760/13632481.png">sesc_apre_수행시간.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

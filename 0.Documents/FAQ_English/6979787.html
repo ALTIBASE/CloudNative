@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11030 The data file cannot be extended because the requested size is bigger than the maximum size (262144 pages)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11030 The data file cannot be extended because the requested size is bigger than the maximum size (262144 pages)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149533 {padding: 0px;}
+div.rbtoc1624409149533 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149533 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149533'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Version'>Version</a></li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Cause'>Cause</a></li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Action'>Action</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-1.ChangetheAUTOEXTENDoption'>1. Change the AUTOEXTEND option</a></li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-2.Changethedatafilesize'>2. Change the datafile size</a></li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-3.IncreaseSYS_UNDO_FILE_MAX_SIZE'>3. Increase SYS_UNDO_FILE_MAX_SIZE</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Version">Version</h2>
+
+<p>4.3.9 or above</p>
+
+<h2 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Explanation">Explanation</h2>
+
+<p>1. Unable to change the datafile size of the disk tablespace.</p>
+
+<p>2. Unable to resize the undo tablespace datafile.</p>
+
+<h2 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Cause">Cause</h2>
+
+<p>1. The user has attempted to change the size of a datafile that has the AUTOEXTEND option OFF to a value bigger than the maximum size.</p>
+
+<p>2. The value of the undo tablespace datafile to be resized exceeded SYS_UNO_FILE_MAX_SIZE.</p>
+
+<h2 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Action">Action</h2>
+
+<p>Set the AUTOEXTEND option of datafile to ON and follow the steps as below to change the datafile size.
+<br class="atl-forced-newline" /></p>
+
+<h5 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-1.ChangetheAUTOEXTENDoption">1. Change the AUTOEXTEND option</h5>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;ALTER TABLESPACE DISK_USER_TBS
+   2 ALTER DATAFILE &#39;/home/altibase_home/dbs/user.dbf&#39; AUTOEXTEND ON;
+Alter success.</pre>
+</div></div>
+
+<h5 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-2.Changethedatafilesize">2. Change the datafile size</h5>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER TABLESPACE DISK_USER_TBS
+   2  ALTER DATAFILE &#39;/home/altibase_home/dbs/user.dbf&#39; SIZE 100M;
+Alter success.</pre>
+</div></div>
+
+<h5 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-3.IncreaseSYS_UNDO_FILE_MAX_SIZE">3. Increase SYS_UNDO_FILE_MAX_SIZE</h5>
+
+<p>    Change SYS_UNDO_FILE_MAX_SIZE from $ALTIBASE_HOME/conf/altibase.properties to the desired size (in bytes) and recreate the database.</p>
+
+<h2 id="ERR-11030Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(262144pages)-Reference">Reference</h2>
+
+<p>In order to change this property, the database has to be recreated.</p>
+
+<p>Hence, if you want to increase the undospace size, it is easier to use the ALTER TABLESPACE command to add a datafile.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

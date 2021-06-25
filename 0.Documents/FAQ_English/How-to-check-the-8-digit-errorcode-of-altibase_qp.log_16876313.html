@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to check the 8-digit errorcode of altibase_qp.log</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to check the 8-digit errorcode of altibase_qp.log
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148801 {padding: 0px;}
+div.rbtoc1624409148801 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148801 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148801'>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Version'>Version</a></li>
+<li><a href='#Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Symptom'>Symptom</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Howtocheckthe8-digiterrorcode'>How to check the 8-digit error code</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Version">Version</h1><hr /><p>Version 6.1.1 or earlier.</p><p>In version 6.3.1 or later, it is expressed as a 5-digit error code.</p><p> </p><h1 id="Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Symptom">Symptom</h1><hr /><p>Depending on the version of Altibase, the expression method of the error code in $ALTIBASE_HOME/trc/altibase_qp.log is different.</p><p># Example of 6.1.1 version (expressed as an 8-digit error code)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[EXEC_DDL_BEGIN : DROP USER ALTITEST CASCADE]
+[2013/04/01 11:02:17] [Thread-1105209696] [Level-2]
+[EXEC_DDL_END : FAILURE] errorcode 822329545</pre>
+</div></div><p># Example of 6.3.1 version (5 digit error code and error message are output)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[EXEC_DDL_BEGIN : DROP USER ALTITEST CASCADE]
+[2014/05/21 15:12:48] [Thread-1157658976] [Level-2]
+[EXEC_DDL_END : FAILURE] ERR-3103c : Undefined user name. The user specified as the owner of a table or an object was not found in the database.
+0001 : DROP USER ALTITEST CASCADE
+                ^       ^</pre>
+</div></div><p>In version 6.3.1 and later, error codes and messages that can be checked directly from altierr are displayed, so there is no difficulty in checking errors, but in versions below 6.1.1, there are no unknown error codes and error messages, making it difficult to check the contents of errors.</p><p> </p><h2 id="Howtocheckthe8-digiterrorcodeofaltibase_qp.log-Howtocheckthe8-digiterrorcode">How to check the 8-digit error code</h2><hr /><p>Convert an 8-digit decimal error code to a Hexa value. (Use Windows calculator)</p><p>The first 5 digits of the converted number are the error code.</p><p>For example, if you convert the error code 822329545 above to Hexa, it becomes <span style="color: rgb(255,0,0);">3103C</span>0C9.</p><p>Then the actual error code is 3103C.</p><p>The error code can be checked by using altierr.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x3103C<br /> 0x3103C ( 200764) qpERR_ABORT_QDR_NOT_EXISTS_USER Undefined user name. The user specified as the owner of a table or an object was not found in the database. &lt;0%s&gt;<br /> # *Cause:<br /> # - The user specified as the owner of a table or an object was not found in the database.<br /> # *Action:<br /> # - Please make sure that a user name corresponding to the owner of an object is registered in the database</p>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

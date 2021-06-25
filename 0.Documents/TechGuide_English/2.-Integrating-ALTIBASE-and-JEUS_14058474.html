@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Integrating ALTIBASE and JEUS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JEUS-Integration-Guide-for-Altibase_14058459.html">JEUS Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Integrating ALTIBASE and JEUS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409359275 {padding: 0px;}
+div.rbtoc1624409359275 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409359275 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409359275'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-JDBCDriver'>JDBC Driver</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-JDBCDriverSetting'>JDBC Driver Setting</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-ConnectionPooling'>Connection Pooling</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-1.BetterPerformance'>1. Better Performance</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-2.ConnectionManagement'>2. Connection Management</a></li>
+</ul>
+</li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-DataSource'>Data Source</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-Configuringdatasource'>Configuring data source</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-DataSourceSetting'>Data Source Setting</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-Considerationswhenconfiguringthedatasource'>Considerations when configuring the data source</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-Checkingquery'>Checking query</a></li>
+<li><a href='#id-2.IntegratingALTIBASEandJEUS-Connectionpoolmonitoring'>Connection pool monitoring</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes how to integrate ALTIBASE and JEUS.</p><h2 id="id-2.IntegratingALTIBASEandJEUS-JDBCDriver"><strong>JDBC Driver</strong></h2><p>JDBC is a standard interface that allows Java applications to connect the database and execute multiple SQLs.</p><p>These JDBC drivers are provided by each database vendor, and ALTIBASE provides the Altibase.jar file. This JDBC driver is located in the $ALTIBASE_HOME/lib directory.<strong> </strong></p><div>Starting from Altibase version 5, Altibase.jar and Altibase5.jar files are located in the $ALTIBASE_HOME/lib directory. Altibase.jar is a ALTIBASE JDBC driver file, and it can be used in Altibase version 5 and below. Therefore, if more than one ALTIBASE are integrating, the Altibase5.jar file is used.</div><div><h2 id="id-2.IntegratingALTIBASEandJEUS-JDBCDriverSetting"><strong>JDBC Driver Setting</strong></h2><p>To integrate ALTIBASE and JEUS, the JDBC driver (Altibase.jar) provided by ALTIBASE must be located in the $JEUS_HOME/lib/datasource directory.</p><h2 id="id-2.IntegratingALTIBASEandJEUS-ConnectionPooling"><strong>Connection Pooling</strong></h2><p>Connection pooling is a framework for caching DB connections. When the connection pool is started, it creates a certain number of physical connections, which reduces the overhead for creating connections during the application execution. The advantages of the connection pool are:</p><h3 id="id-2.IntegratingALTIBASEandJEUS-1.BetterPerformance">1. Better Performance</h3><p>Creating DB connection is slow. All real connections in the connection pool are pre-made and ready to handle requests from the application. When the connection is no longer in use, it can be returned to the pool, reducing the overhead of dropping the connection.</p><h3 id="id-2.IntegratingALTIBASEandJEUS-2.ConnectionManagement">2. Connection Management</h3><p>The number of simultaneous connections can be controlled. By configuring the maximum number of simultaneous connections, the simultaneous connections of the DB can be limited.</p><h2 id="id-2.IntegratingALTIBASEandJEUS-DataSource"><strong>Data Source</strong></h2><p>javax.sql.DataSource is the interface between the application and the connection pool. The javax.sql.DataSource object can be viewed as a factory for DB connections and provides many advantages over java.sql.DriverManager. In this document, the followings are the four types of data sources.</p><p>1. Basic Data Source</p><p>This returns connections for users. Because there is no connection pooling, there may be additional overhead compared to the connection pool type.</p><p>2. Connection Pool Data Source</p><p>This receives the connection stored in the connection pool and returns it to the application program. Because it uses the connection pooling function provided by JEUS, it has less overhead than the method of connecting to the DB every time and receiving the connection. When autocommit is set to false, the application can directly control local transactions.</p><p>3. XA Data Source</p><p>This manages connections used for distributed/global transactions. This data source format should be used only when 2PC (2 Phase Commit) is used. After starting a transaction in EJB or Servlet, 2PC-protocol starts automatically when starting the operating using two or more connections obtained from the XA data source. This connection cannot be used again after the transaction ends.</p><p>When using the XADataSource, the transaction recovery function is supported for each data source. For DB integration using the XADataSource, please refer to the ALTIBASE 5.3.3 API manual.</p><p>4. Local XA Data Source</p><p>Turn off autocommit to use a connection obtained from a connection pool data source so that local transactions are always on, and the transaction manager handles commits and rollbacks. Because of this, local transactions can be emulated to participate in XA. For reference, the local XA data source can be used when it is necessary to participate in XA even if the JDBC driver does not support the XA data source. The local XA data source may not recover properly due to functional limitations, and only one XA data source can participate in one global transaction.</p><h2 id="id-2.IntegratingALTIBASEandJEUS-Configuringdatasource"><strong>Configuring data source</strong></h2><p>To integrate Altibase and JEUS, data sources in JEUSMain.xml can be configured. The properties of Javax.sql.DataSource are different for each driver, so the user needs to understand the characteristics of the driver to use and set it accordingly.</p><p>The following XML tags &lt;resource&gt;&lt;data-source&gt;…&lt;database&gt; can be used as a sub tag of the XML tag.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Tag</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Vender</p></td><td class="confluenceTd"><p>The name of DB vendor (oracle, mssql, db2, sybase, tibero, others).<br class="atl-forced-newline" />ALTIBASE should be set to others.</p></td></tr><tr><td class="confluenceTd"><p>Export-name</p></td><td class="confluenceTd"><p>The name to be bound to JNDI. The data source object is bound by this name. The user can specify it arbitrarily.</p></td></tr><tr><td class="confluenceTd"><p>Data-source-class-name</p></td><td class="confluenceTd"><p>The data source class name by JDBC driver</p><p><strong>ABConnectionPoolDataSource ( ALTIBASE 6.1.1 or lower),</strong></p><p><strong>AltibaseConnectionPoolDataSource ( ALTIBASE 6.3.1 or later) ,</strong></p><p>This decides how to set BlackboxConnectionPoolDataSource.</p></td></tr><tr><td class="confluenceTd"><p>Data-source-type</p></td><td class="confluenceTd"><p>One of “DataSource”, “ConnectionPoolDataSource”, “XADataSource”, or “LocalXAData- Source” values.<br class="atl-forced-newline" />This chooses according to the type of data source to be used.</p></td></tr><tr><td class="confluenceTd"><p>Data-source-name</p></td><td class="confluenceTd">The name of the data source. It depends on the driver vendor and is usually the same as the DataSourceClass-Name value.<p> </p></td></tr><tr><td class="confluenceTd"><p>Database-name</p></td><td class="confluenceTd"><p>The name of the DB (ex: mydb)</p></td></tr><tr><td class="confluenceTd"><p>Service-name</p></td><td class="confluenceTd"><p>Used only when using the Oracle inet driver, and the SID value of the Oracle Database. Not used in conjunction with ALTIBASE.</p></td></tr><tr><td class="confluenceTd"><p>description</p></td><td class="confluenceTd"><p>The description text of data source</p></td></tr><tr><td class="confluenceTd"><p>Network-protocol</p></td><td class="confluenceTd">The protocol used to connect to DB<p> </p></td></tr><tr><td class="confluenceTd"><p>Password</p></td><td class="confluenceTd">The user password<p> </p></td></tr><tr><td class="confluenceTd"><p>User</p></td><td class="confluenceTd"><p>The user name</p></td></tr><tr><td class="confluenceTd"><p>Port-number</p></td><td class="confluenceTd"><p>The port number of DB listener</p></td></tr><tr><td class="confluenceTd"><p>Server -name</p></td><td class="confluenceTd"><p>The DNS name or IP address of the server where the DB is running</p></td></tr><tr><td class="confluenceTd"><p>Driver-type</p></td><td class="confluenceTd"><p>For Oracle, the type of driver (ex. thin. oci)</p></td></tr><tr><td class="confluenceTd"><p>Property</p></td><td class="confluenceTd"><p>JDBC custom properties</p><p>When set to BlackboxConnectionPoolDataSource, specifies DriverClassName, URL, USER, and PASSWORD in this field.</p><p> </p></td></tr><tr><td class="confluenceTd"><p>Connection-pool</p></td><td class="confluenceTd"><p>Sets the content specific to connection pooling.</p></td></tr><tr><td class="confluenceTd"><p>Auto-commit</p></td><td class="confluenceTd"><p>Specifies the autocommit value to be assigned to the connection. Set to true or false. In the case of local XA data sources or XA data sources, it is applied only when the connection is not linked to a transaction.</p></td></tr><tr><td class="confluenceTd"><p>Action-on-connection-leak</p></td><td class="confluenceTd"><p>Configures logging or return action for JDBC connection used in components (mainly stateless components-Servlet/JSP, Stateless Session Bean, MDB).<br />If not set, the default action follows the invocation-manager-action set in the engine container.</p></td></tr></tbody></table></div><div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>As the connection pool data source name, Altibase.jdbc.driver.ABConnectionPoolDataSource is used in versions lower than 6.1.1. Altibase.jdbc.driver.AltibaseConnectionPoolDataSource is used from ALTIBASE 6.3.1 or higher, so be cautious when setting the class.</p><p>If the class name is wrong, a java.lang.ClassNotFoundException: Altibase.jdbc.driver.ABConnectionPoolDataSource or java.lang.ClassNotFoundException: Altibase.jdbc.driverAltibaseConnectionPoolDataSource exception occurs in the jeus log.</p>
+                    </div>
+    </div>
+</div><h2 id="id-2.IntegratingALTIBASEandJEUS-DataSourceSetting"><strong>Data Source Setting</strong></h2><div>There are two methods to set the data source to use in conjunction with ALTIBASE and JEUS: </div><div><ol><li>Directly modifying the XML file in console mode</li><li>Setting in GUI mode using the WebAdmin.</li></ol><p>There are two methods of configuring and managing the connection pool when setting the data source: the AltibaseConnectionPoolDataSource method and the BlackboxConnecitonPoolDataSource is no JEUS, but ALTIBASE JDBC driver manages the connection pool, and BlackboxConnecitonDataSource is JEU manages the connection pool.</p><p>Let's set the connection pool using AltibaseConnectionPoolDataSource method and BlackboxConnectionPoolDataSource method to set the data source.</p><p>1. Set by the BlackboxConnectionPoolDataSource method</p><p>Setting by directly modifying the JEUSMain.xml file</p><p>Open the JEUSMain.xml file using a file editor and add the contents of &lt;resource&gt; ~ &lt;/resource&gt;.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;jeus-system&gt;
+…
+&lt;resource&gt;
+&lt;data-source&gt;
+&lt;database&gt;
+&lt;vendor&gt;others&lt;/vendor&gt;
+&lt;export-name&gt;datasource1&lt;/export-name&gt;
+&lt;data-source-class-name&gt;jeus.jdbc.driver.blackbox.BlackboxConnectionPoolDataSource&lt;/data-source-class-name&gt;
+&lt;data-source-type&gt;ConnectionPoolDataSource&lt;/data-source-type&gt;
+&lt;property&gt;
+&lt;name&gt;DriverClassName&lt;/name&gt;
+&lt;type&gt;java.lang.String&lt;/type&gt;
+&lt;value&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;URL&lt;/name&gt;
+&lt;type&gt;java.lang.String&lt;/type&gt;
+&lt;value&gt;jdbc:Altibase://127.0.0.1:20300/mydb&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;User&lt;/name&gt;
+&lt;type&gt;java.lang.String&lt;/type&gt;
+&lt;value&gt;sys&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;Password&lt;/name&gt;
+&lt;type&gt;java.lang.String&lt;/type&gt;
+&lt;value&gt;manager&lt;/value&gt;
+&lt;/property&gt;
+&lt;connection-pool&gt;
+&lt;pooling&gt;
+&lt;min&gt;2&lt;/min&gt;
+&lt;max&gt;30&lt;/max&gt;
+&lt;step&gt;1&lt;/step&gt;
+&lt;period&gt;3600000&lt;/period&gt;
+&lt;/pooling&gt;
+&lt;/connection-pool&gt;
+&lt;/database&gt;
+&lt;/data-source&gt;
+&lt;/resource&gt;
+…
+&lt;/jeus-system&gt;</pre>
+</div></div><p>2. Setting by using the WebAdmin method</p><p>Let's set the connection pool with BlackboxConnectionPoolDataSource using the WebAdmin.</p><p>WebAdmin can be accessed at <a href="http://localhost:9744/WebAdmin" class="external-link" rel="nofollow">http://localhost:9744/WebAdmin</a>, and by default, USER is the Administrator and password is the value set during installation. Here, the value of 9744 is the value of JEUS_BASSPORT + 8.</p></div><div>JEUS Manager menu of WebAdmin provides the function to boot, down, shut down by checking the desired node.</div><img class="confluence-embedded-image" src="attachments/14058474/14221664.png" data-image-src="attachments/14058474/14221664.png"></div><div><div>After booting the node with WebAdmin, click the JEUS manager resource  JDBC menu to create a new data source for integrating with ALTIBASE.</div></div><div><img class="confluence-embedded-image" src="attachments/14058474/14221665.png" data-image-src="attachments/14058474/14221665.png"></div><div>Select “Others” as the DBMS vendor, and select “BlackboxConnectionPoolDataSource” as the data source, and then proceed to the next step.</div><div><img class="confluence-embedded-image" src="attachments/14058474/14221666.png" data-image-src="attachments/14058474/14221666.png"></div><div>When creating a new JDBC data source, set each property value. Generally, if the user selects the DBMS vendor name and data source, &quot;Vendor&quot;, &quot;Data Source Class Name&quot;, &quot;Data Source Type&quot;, and &quot;Export Name&quot; are set as follows. Change and use the property value only when it is needed, otherwise, just leave them.</div><div>Do not set the “Database Name”, “Port Name”, and “Server Name” property values, and set them in the “Property” item below and proceed to the next step. (When selecting and configuring with AltibaseConnectionPoolDataSource or XADataSource, set the values in “Database Name”, “Port Name”, and “Server Name” rather than “Property”).</div><div><img class="confluence-embedded-image" src="attachments/14058474/14221667.png" data-image-src="attachments/14058474/14221667.png"></div><div>&quot;Property&quot; value can be set as follows.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">DriverClassName=Altibase.jdbc.driver.AltibaseDriver
+URL= jdbc:Altibase://server_ip:server_port/dbname
+USER=sys
+PASSWORD=manager</pre>
+</div></div><p><img class="confluence-embedded-image" src="attachments/14058474/14221668.png" data-image-src="attachments/14058474/14221668.png"></p><p>If the following values are not set in the “Property”, or if any of the values of “Database Name”, “Port Name”, and “Server Name” is set, an error occurs.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221669.png" data-image-src="attachments/14058474/14221669.png"></p><p>If the Min/Max value of the connection pool is set, the basic setting is completed.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221670.png" data-image-src="attachments/14058474/14221670.png"></p><p>After the creation is finished, the test and bind functions are available, and the user needs to bind to reflect the setting.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221671.png" data-image-src="attachments/14058474/14221671.png"></p><p>2. Set by using the AltibaseConnectionPoolDataSource method</p><p>Setting by directly modifying the JEUSMain.xml file</p><p>Open the JEUSMain.xml file using a file editor and add the contents of &lt;resource&gt; ~ &lt;/resource&gt;.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;jeus-system&gt;
+…
+ 
+&lt;resource&gt;
+    &lt;data-source&gt;
+        &lt;database&gt;
+            &lt;vendor&gt;others&lt;/vendor&gt;
+            &lt;export-name&gt;Datasource1&lt;/export-name&gt;
+            &lt;data-source-class-name&gt;Altibase.jdbc.driver.AltibaseConnectionPoolDataSource&lt;/data-source-class-name&gt;
+            &lt;data-source-type&gt;ConnectionPoolDataSource&lt;/data-source-type&gt;
+            &lt;database-name&gt;mydb&lt;/database-name&gt;
+            &lt;port-number&gt;20300&lt;/port-number&gt;
+            &lt;server-name&gt;127.0.0.1&lt;/server-name&gt;
+            &lt;user&gt;sys&lt;/user&gt;
+            &lt;password&gt;manager&lt;/password&gt;
+            &lt;auto-commit&gt;true&lt;/auto-commit&gt;
+            &lt;property&gt;
+                &lt;name&gt;Encoding&lt;/name&gt;
+                &lt;type&gt;java.lang.String&lt;/type&gt;
+                &lt;value&gt;KSC5601&lt;/value&gt;
+            &lt;/property&gt;
+            &lt;property&gt;
+                &lt;name&gt;maxPoolSize&lt;/name&gt;
+                &lt;type&gt;java.lang.Integer&lt;/type&gt;
+                &lt;value&gt;30&lt;/value&gt;
+            &lt;/property&gt;
+            &lt;connection-pool&gt;
+                &lt;pooling&gt;
+                    &lt;min&gt;2&lt;/min&gt;
+                    &lt;max&gt;30&lt;/max&gt;
+                    &lt;step&gt;1&lt;/step&gt;
+                    &lt;period&gt;3600000&lt;/period&gt;
+                &lt;/pooling&gt;
+            &lt;/connection-pool&gt;
+        &lt;/database&gt;
+    &lt;/data-source&gt;
+&lt;/resource&gt;
+ 
+…
+&lt;/jeus-system&gt;</pre>
+</div></div><ul><li>Set by using the WebAdmin</li></ul><p>JEUS can be started and shutdown, and data source can be set with the WebAdmin provided by JEUS. Property values set through WebAdmin are saved in JEUSMain.xml. If the user compares the JEUSMain.xml file before and after setting the property value, the user can see that the property value of ALTIBASE is modified between &lt;resource&gt; ~ &lt;/resource&gt;.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221672.png" data-image-src="attachments/14058474/14221672.png"></p><p>Click &quot;Create New JDBC Data Source&quot; to create a new JDBC data source.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221673.png" data-image-src="attachments/14058474/14221673.png"></p><p>Select “Other” after selecting DBMS as “Other DataSource”.</p><p><img class="confluence-embedded-image" src="attachments/14058474/14221674.png" data-image-src="attachments/14058474/14221674.png"></p><p>Set &quot;Data Source Class Name&quot; ~&quot;Password&quot;. When setting &quot;Data Source Class Name&quot;, it should not be entered as AltibaseConnectionPoolDataSource, but must be entered in the complete form including the name and package name of the data source lass of the JDBC driver (Altibase.jdbc.driver.AltibaseConnectionPoolDataSource).</p><p>For connection pool, configuration, binding, and testing, please refer to the setting of BlackboxConnectionPoolDataSource.</p><h2 id="id-2.IntegratingALTIBASEandJEUS-Considerationswhenconfiguringthedatasource"><strong>Considerations when configuring the data source</strong></h2><ol><li>Considerations when using AltibaseConnectionPoolDataSource</li></ol><ul><li>When AltibaseConnectionPoolDataSource is set as Data-Source-Class-Name, properties such as “Encoding” and “maxPoolSize” can be specified and used, but when using BlackboxConnectionPoolDataSource, the property cannot be used.</li><li>URL-related method name changes according to the Altibase version. Therefore, a property name must be used to match the version.</li></ul>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>For some versions, the method name related to URL setting is setUrl, and some versions are implemented as setURL. Therefore, URL properties must be set with respect to each version.</p><p>For version 6.3.1 or later, the URL should be set as follows (uppercase).</p><p><span style="color: rgb(0,0,0);">&lt;property&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;name&gt;<strong>URL</strong>&lt;/name&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;type&gt;java.lang.String&lt;/type&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;value&gt;jdbc:<a rel="nofollow">Altibase://192.168.1.35:20300/mydb&lt;/value</a>&gt;</span><br /><span style="color: rgb(0,0,0);">   &lt;/property&gt;</span></p><p>For some versions, the URL should be set as follows (lowercase).</p><p><span style="color: rgb(0,0,0);">&lt;property&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;name&gt;<strong>Url </strong>&lt;/name&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;type&gt;java.lang.String&lt;/type&gt;</span><br /><span style="color: rgb(0,0,0);">       &lt;value&gt;jdbc:<a rel="nofollow">Altibase://192.168.1.35:20300/mydb&lt;/value</a>&gt;</span><br /><span style="color: rgb(0,0,0);">   &lt;/property&gt;</span></p><p>If the property name is used incorrectly, an error such as java.lang.NoSuchMethodException: Altibase.jdbc.driver.ABConnectionPoolDataSource.setURL(java.lang.String) occurs, and after checking the error, edit JEUSMain.xml.</p>
+                    </div>
+    </div>
+<p>    2. Deadlock occurrence</p><ul><li>When using AltibaseConnectionPoolDataSource and initialPoolSize, lock may occur. To solve this problem that occurs while using the values of pool to be used in JEUS in the ALTIBASE JDBC drive, use only the MaxPoolSize value instead of the initialPoolSize value.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;property&gt;
+&lt;name&gt;encoding&lt;/name&gt;
+&lt;type&gt;java.lang.String&lt;/type&gt;
+&lt;value&gt;KSC5601&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+         &lt;name&gt;maxPoolSize&lt;/name&gt;
+         &lt;type&gt;java.lang.Integer&lt;/type&gt;
+         &lt;value&gt;10&lt;/value&gt;
+ &lt;/property&gt;</pre>
+</div></div><h2 id="id-2.IntegratingALTIBASEandJEUS-Checkingquery"><strong>Checking query</strong></h2><p>This function checks the status of the connection by sending a specific SELECT query when the application makes a JDBC connection request. This is useful to check for disconnection due to internal error of JDBC connection, socket disconnection by the firewall, and so forth. If the check fails, a new physical connection is created and it is returned to the application.</p><p>The check query function can be set in two methods. First, simply enter a query statement in the &lt;check-query&gt; tag in the setting, and the function can be extended by using the &lt;check-query-class&gt; tag.</p><p>Add directly between &lt;database&gt; ~ &lt;/database&gt; in the JEUSMain.xml file. In the case of using WebAdmin, set the value after clicking on the connection pool and advanced options when creating or modifying a datasource.</p><p>1. Check-query setting</p><p>The query statement for the check query should enter a command for query only, not a command to update the DB.<br />&lt;check-query&gt;select 1 from dual&lt;/check-query&gt;</p><div>2. Check-query-timeout setting (msec)</div><p>If there is no response from the DB server while executing the check-query, there may be a situation in which waiting indefinitely. To prevent this, check-query-timeout can be set. The setting value is msec, and if it is less than 1000msec, it is set to 0.<br />&lt;check-query-timeout&gt;20000&lt;/check-query-timeout&gt;</p><p>3. Non-validation-interval setting (msec)</p><p>If overhead occurs due to the frequent use of check-query, it can be solved by setting Non-validation-interval.<br />If the difference between the time when performing check-query and the time when the last connection was used is between the settings of Non-validation-interval, do not execute the check-query.<br />&lt;non-validation-interval&gt;10000&lt;/non-validation-interval&gt;</p><p>4. Destroy policy for check-query setting</p><p>If the check-query fails, the user can determine the destroy policy for the remaining connections in the connection pool as follows.</p><ul><li><p>FailedConnectionOnly: Only discard the connection for which check-query. Default settings.</p></li><li><p>AllConnections: Discard all remaining connections.</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;destroy-policy-on-check-query&gt;AllConnections&lt;/destroy-policy-on-check-query&gt;</pre>
+</div></div><h2 id="id-2.IntegratingALTIBASEandJEUS-Connectionpoolmonitoring"><strong>Connection pool monitoring</strong></h2><p>There are two methods to monitor the connection pool: using jeusadmin and WebAdmin. This section describes how to monitor the connection pool by using jeusadmin.</p><p>When using jeusadmin, the command “dsinfo” is used to monitor the JDBC connection pool configured in the engine container. To monitor all connection pools configured in a container, specify the container name, and to monitor a single connection pool, specify the data source name created in the container.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Jeusadmin&gt; Dsinfo –con Container name Data source name (export name)</pre>
+</div></div><p><img class="confluence-embedded-image" src="attachments/14058474/14221675.png" data-image-src="attachments/14058474/14221675.png"></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Name</p></td><td class="confluenceTd"><p>The export name of DB pool</p></td></tr><tr><td class="confluenceTd"><p>Min</p></td><td class="confluenceTd"><p>The minimum size of connections maintained in the pool</p></td></tr><tr><td class="confluenceTd"><p>Max</p></td><td class="confluenceTd"><p>The maximum size of connections maintained in the pool</p></td></tr><tr><td class="confluenceTd"><p>Act</p></td><td class="confluenceTd">The number of connection the application is using<p> </p></td></tr><tr><td class="confluenceTd"><p>Idle</p></td><td class="confluenceTd"><p>The number of connections currently in the pool</p></td></tr><tr><td class="confluenceTd"><p>Disp</p></td><td class="confluenceTd"><p>The total number of connection once used and discarded</p></td></tr><tr><td class="confluenceTd"><p>Tot</p></td><td class="confluenceTd"><p>The total number of DB connections (active+idle+disposable connection)</p></td></tr><tr><td class="confluenceTd"><p>Wait</p></td><td class="confluenceTd">Determines whether to make the thread wait if the connection is empty. If it is &quot;true&quot;, it waits, and if it is &quot;false&quot;, it makes a connection independent of the pool.<p> </p></td></tr><tr><td class="confluenceTd"><p>work</p></td><td class="confluenceTd"><p>It is “true” if the DB pool is active, and “false” if it is inactive or not yet created.</p></td></tr></tbody></table></div><p>Additionally, the user can use the 'dsconinfo' command to check the current status of connection for each data source or related statistics.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Jeusadmin&gt; dsconinfo –con Container name Data source name (export name)</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">2edcf6a9ba4d44b&gt;dsconinfo -con 2edcf6a9ba4d44b_container1 datasource1
+ 
+===============================================================
+Connection information list for the engine container[2edcf6a9ba4d44b_container1]
+---------------------------------------------------------------
+| id | state | state-time(ms) | use-count | type |
+---------------------------------------------------------------
+| datasource1-1 | idle | 10000 | 0 | pooled |
+---------------------------------------------------------------
+===============================================================</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Id</p></td><td class="confluenceTd">The unique value attached to each connection in the data source of the container<p> </p></td></tr><tr><td class="confluenceTd"><p>State</p></td><td class="confluenceTd"><p>Indicates the connection state and there are 'active' and 'idle' states. If it is active, it means the connection is currently used</p></td></tr><tr><td class="confluenceTd"><p>State time</p></td><td class="confluenceTd"><p>The time that persists after the connection is changed to the current state</p></td></tr><tr><td class="confluenceTd"><p>type</p></td><td class="confluenceTd">Distinguish the state between pooled and disposable connections<p> </p></td></tr><tr><td class="confluenceTd"><p>Usecount</p></td><td class="confluenceTd"><p>Indicates how many times an op and close pair has ocurred</p></td></tr></tbody></table></div><p>If the user knows the Export Name of the data source, you can test whether the pool is available with jeusadmin.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Jeusadmin&gt; testdsconfig data source name (export name)</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">2edcf6a9ba4d44b&gt;testdsconfig datasource1
+Configuration is valid. You can use it.</pre>
+</div></div><p> </p><p> </p></div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221664.png">jeus_manager.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221665.png">jeus_manager2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221666.png">jeus_manager3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221667.png">jeus_manager4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221668.png">jeus_manager5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221669.png">jeus_manager6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221670.png">jeus_manager7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221671.png">jeus_manager8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221672.png">jeus_manager9.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221673.png">jeus_manager10.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221674.png">jeus_manager11.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221676.png">jeus_manager12.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058474/14221675.png">jeus_manager12.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

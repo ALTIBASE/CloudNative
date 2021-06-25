@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Makefile for SUN(Solaris) cc</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="15630378.html">Altibase APRE(SES) *C/C++ Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Makefile for SUN(Solaris) cc
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Jan 14, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Previously, we discussed how to add the basic APRE library in the &quot;How to make a basic Makefile&quot; chapter. This chapter describes the library and compile options that should be additionally described in Makefile, which in the SUN (Solaris) cc compiler is used.</p><h1 id="MakefileforSUN(Solaris)cc-LibraryandCompileOptionsforAPREcompileinSUN(Solaris)environment.">Library and Compile Options for APRE compile in SUN (Solaris) environment.</h1><h2 id="MakefileforSUN(Solaris)cc-LibrarytobeaddedtoMakefile"><strong>Library to be added to Makefile</strong></h2><p>As previously mentioned, the basic APRE library &quot;-lapre -lodbccli&quot; must be described in Makefile.</p><p>When compiling with only the basic library added, there are system libraries referenced by the APRE library and a reference error occurs. Therefore, system libraries used in APRE must be specified in Makefile as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Library type</th><th class="confluenceTh">Makefile Library</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Thread Library</td><td class="confluenceTd"><strong>+Makefile or -lthread</strong></td><td class="confluenceTd">Thread library for POSIX thread functions</td></tr><tr><td class="confluenceTd">Math related Library</td><td class="confluenceTd"><strong>-lm</strong></td><td class="confluenceTd">Library for using math functions</td></tr><tr><td class="confluenceTd">Dynamic Linking Loader (DL) Library</td><td class="confluenceTd"><strong>-ldl</strong></td><td class="confluenceTd">Dynamically loaded (DL) Library</td></tr><tr><td class="confluenceTd">Networking Services Library</td><td class="confluenceTd"><strong>-lnsl</strong></td><td class="confluenceTd">Library for using Networking Services functions</td></tr><tr><td class="confluenceTd">Sockets Library</td><td class="confluenceTd"><strong>-lsocket</strong></td><td class="confluenceTd">Library for using Sockets functions</td></tr><tr><td colspan="1" class="confluenceTd">C++ Library</td><td colspan="1" class="confluenceTd">-lCrun -ldemangle</td><td colspan="1" class="confluenceTd">When compiling using cc in Altibase version 5.3.3 or lower version, specify C++ library</td></tr><tr><td colspan="1" class="confluenceTd">Realtime Extensions Library to be added</td><td colspan="1" class="confluenceTd"><strong>-lrt</strong></td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div><h2 id="MakefileforSUN(Solaris)cc-Compileoptions"><strong>Compile options</strong></h2><div><p>It is necessary to specify the following options to improve performance and specify the compile bit type.</p><div><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Option</th><th class="confluenceTh">Option display</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">Multithread program compile option</td><td class="confluenceTd">-mt</td><td class="confluenceTd">Need to specify when creating a program in multi-thread</td></tr><tr><td rowspan="4" class="confluenceTd">Instruction Set Architecture (ISA)</td><td class="confluenceTd">-xarch=amd64</td><td class="confluenceTd">When compiling 64bit program on AMD cpu (X86) platform</td></tr><tr><td class="confluenceTd">-xarch=sse2a</td><td class="confluenceTd">When compiling 32bit program on AMD cpu (X86) platform</td></tr><tr><td class="confluenceTd">-xarch=v9</td><td class="confluenceTd">When compiling 64bit program on SUN sparc cpu platform</td></tr><tr><td class="confluenceTd">-xarch=v8plus</td><td class="confluenceTd">When compiling 32bit porgram on SUN sparc cpu platform</td></tr><tr><td class="confluenceTd">Performance option</td><td class="confluenceTd">-fast</td><td class="confluenceTd">Option for improving Runtime performance</td></tr></tbody></table></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><span>By referring to the $ALTIBASE_HOME/install/<a href="http://altibase_env.mk" class="external-link" rel="nofollow">altibase_env.mk</a> file and $ALTIBASE_HOME/sample/APRE/Makefile, it can be referred to the optimized compile and link options when compiling APRE.</span></p>
+                    </div>
+    </div>
+<h1 id="MakefileforSUN(Solaris)cc-ExampleofsimpleMakefile"><br />Example of simple Makefile</h1><p>The simplest Makefile that can compile APRE in SUN X86 cc environment is completed as follows. In addition, if there is an additional library referenced by the program, the library must additionally be described in Makefile. Depending on the platform type, the options for specifying the memory model (32bit/64bit) may vary, so refer to the compile option table described above and set it according to the platform type.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=/altibase_home/include<br />ALTI_LIBRARY=/altibase_home/lib<br />LIBS=<strong>-lapre -lodbccli -lthread -lposix4 -ldl -lkvm -lkstat -lsocket -lnsl -lgen -lC -lCrun -ldemangle -lm</strong><br />LFLAGS=<strong> -fast -mt -xarch=amd64</strong> -L/opt/SUNWspro/lib/amd64 -L/usr/lib/amd64</p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow">/altibase_home/bin/apre -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">/opt/SUNWspro/bin/cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><h1 id="MakefileforSUN(Solaris)cc-ExampleofMakefilefor32bitcompile"><strong>Example of Makefile for 32bit compile</strong></h1><p>An example of APRE Makefile for SUN X86 cc specifying the 32bit compile option is as follows. Specify &quot;-xarch=sse2a&quot; as a compile coption, and specify the path where the 32bit APRE library is installed in the path referencing the Header file and library. In addition, APRE precompiler also specifeis the path to execute 32bit APRE.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>/alticlient32/include</strong><br />ALTI_LIBRARY=<strong>/alticlient32/lib</strong><br />LIBS=<strong>-lapre -lodbccli -lpthread -lrt -ldl -lkvm -lkstat -lsocket -lnsl -lgen -lm</strong></p><p>LFLAGS=<strong> -fast -mt -xarch=sse2a</strong> -L/opt/SUNWspro/lib/amd64 -L/usr/lib/amd64</p><p>connect1.c:<a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a class="external-link" href="http://connect1.sc/" rel="nofollow"><strong>/alticlient32/bin/apre</strong> -t c </a><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a></p><p><a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">/opt/SUNWspro/bin/cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><p> </p></div></div><div><strong><br /></strong></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

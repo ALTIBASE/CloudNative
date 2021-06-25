@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-1105D Unable to begin a new update statement.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-1105D Unable to begin a new update statement.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> JH Choi</span>, last modified by <span class='editor'> richard.nahm	</span> on Mar 25, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055070 {padding: 0px;}
+div.rbtoc1624409055070 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055070 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055070'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement.-대상버전'>대상 버전</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement.-증상'>증상</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement.-원인'>원인</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement.-해결방안'>해결 방안</a></li>
+<li><a href='#ERR-1105DUnabletobeginanewupdatestatement.-참고사항'>참고 사항</a></li>
+</ul>
+</div></p><h2 id="ERR-1105DUnabletobeginanewupdatestatement.-대상버전">대상 버전</h2><p>6.1.1 이하 버전.</p><p>6.3.1 버전에서는 에러코드 및 메시지 변경됨.</p><h2 id="ERR-1105DUnabletobeginanewupdatestatement.-증상">증상</h2><p>SELECT문 안에서 함수 사용 시 다음 에러가 발생합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select func1() from dual;
+[ERR-1105D : Unable to begin a new update statement.
+0004 :       insert into T1 values(C1);
+            ^                         ^
+]
+</pre>
+</div></div><p>  </p><p>6.3.1 버전에서는 에러코드 및 메시지가 다음과 같이 변경되었습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select func1() from dual;
+[ERR-31386 : Cannot perform a DML, commit, or rollback inside a query.
+
+In FUNC1
+0004 :  insert into T1 values(C1);
+       ^                         ^
+]
+</pre>
+</div></div><h2 id="ERR-1105DUnabletobeginanewupdatestatement.-원인">원인</h2><p>다음과 같이 altierr 유틸리티를 이용하여 해당 에러에 대한 설명을 확인할 수 있습니다.</p><p># 6.1.1 이하 버전</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x1105D<br /> 0x1105D ( 69725) smERR_ABORT_smiCantBeginUpdateStatement Unable to begin a new update statement.<br /> # *Cause: Either the statement is read-only, or more than one update child statement has been requested.<br /> # *Action: Please make sure that the request to begin a new update statement is valid.</p>
+</div></div><p># 6.3.1 버전</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x31386<br /> 0x31386 ( 201606) qpERR_ABORT_QSX_PSM_INSIDE_QUERY Cannot perform a DML, commit, or rollback inside a query.<br /> # *Cause :<br /> # - The program attempted to perform a DML, commit, or rollback inside a query.<br /> # *Action :<br /> # - Do not use a DML, commit, or rollback statement inside a query.</p>
+</div></div><p>SELECT문 안에서 함수 사용 시 해당 함수는 SELECT문만 포함해야 합니다.</p><p>해당 함수에 INSERT/UPDATE 등이 포함되면 위 에러가 발생합니다.</p><h2 id="ERR-1105DUnabletobeginanewupdatestatement.-해결방안">해결 방안</h2><p>SELECT문 안에서 사용하는 함수는 select문만 포함해야 합니다.</p><p>  </p><p># insert문을 포함하는 함수를 SELECT문 안에서 사용했을 때 에러가 발생하는 예제</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create or replace function func1() return varchar(10) as c1 varchar(10);
+2 begin
+3 select c1 into c1 from t1;
+4 insert into t1 values(c1);
+5 return c1;
+6 end;
+7 /
+Create success.
+iSQL&gt; select func1() from dual;
+[ERR-1105D : Unable to begin a new update statement.
+0004 :       insert into T1 values(C1);
+            ^                         ^
+]
+</pre>
+</div></div><p>  </p><p># 위 함수를 execute 구문을 사용하여 수행하는 예제</p><p>   execute 구문에서는 성공적으로 수행됨.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select * from t1;
+C1
+--------------
+abc
+1 row selected.
+iSQL&gt; var c1 varchar(10);
+iSQL&gt; exec :c1 := func1();
+Execute success.
+iSQL&gt; print var;
+[ HOST VARIABLE ]
+-------------------------------------------------------
+NAME                 TYPE                 VALUE
+-------------------------------------------------------
+C1                   VARCHAR(10)          abc
+iSQL&gt; select * from t1;
+C1
+--------------
+abc
+abc
+2 rows selected.
+</pre>
+</div></div><p>  </p><p># 위 함수를 SELECT문 안에서 사용하기 위해 insert문을 제거하고 SELECT문 안에서 사용했을 때 성공적으로 수행되는 예제</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create or replace function func1() return varchar(10) as c1 varchar(10);
+2 begin
+3 select c1 into c1 from t1;
+4 return c1;
+5 end;
+6 /
+Create success.
+iSQL&gt; select func1() from dual;
+FUNC1
+--------------
+abc
+1 row selected.  
+</pre>
+</div></div><h2 id="ERR-1105DUnabletobeginanewupdatestatement.-참고사항">참고 사항</h2><p>  </p><p>  </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

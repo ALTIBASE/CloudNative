@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 타 DBMS에서 변환시 고려 사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698385.html">Altibase Precompiler 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 타 DBMS에서 변환시 고려 사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p class="0cm">앞에서 설명한 각 부분별 내용 중 타DBMS에서 변환할 경우 고려할 부분을 표로 정리한다.</p><p class="0cm"> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p class="0cm"><strong>구분</strong></p></th><th class="confluenceTh"><p class="0cm"><strong>ALTIBASE </strong><strong>사용</strong><strong> </strong><strong>예시</strong><strong> </strong><strong>및</strong><strong> </strong><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p class="0cm"><strong>CONNECT/DISCONNECT</strong></p></td><td class="confluenceTd"><p class="0cm">EXEC SQL CONNECT [AT :con_name] CONNECT :usr IDENTIFIED BY :pwd USING :opt;</p><p class="0cm"> </p><p class="0cm">자세한 사용은 위의 &quot;CONNECT/DISCONNECT&quot;절을 참고한다.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>함수의 인자</strong></p></td><td class="confluenceTd"><p class="0cm">void user_function (char *param1)</p><p class="0cm">{</p><p class="0cm">   EXEC SQL BEGIN ARGUMENT SECTION;</p><p class="0cm">      char *param1;</p><p class="0cm">   EXEC SQL END ARGUMENT SECTION;</p><p class="0cm">}</p><p class="0cm">또는,</p><p class="0cm">void user_function (char *param1)</p><p class="0cm">{</p><p class="0cm">   EXEC SQL BEGIN DECLARE  SECTION;</p><p class="0cm">      char *H_param1;</p><p class="0cm">   EXEC SQL END DECLARE  SECTION;</p><p class="0cm"> </p><p class="0cm">   H_param1 = param1;</p><p class="0cm">}</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>에러 코드</strong></p></td><td class="confluenceTd"><p class="0cm">sqlca.sqlcode 및 SQLCODE, SQLSTATE등은 별도의 선언을 하지 않고 사용할 수 있으며 타DBMS와 에러 코드는 다르기 때문에 사용자가 적절하게 변환해야 한다. CLI 표준 코드를 사용한 경우라면 그대로 호환하여 사용할 수 있다.</p><p class="0cm"> </p><p class="0cm">EXEC SQL INCLUDE sqlca.h; 와 같은 구문은 필요하지 않다.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>호스트 변수의 선언</strong></p></td><td class="confluenceTd"><p class="0cm">ALTIBASE 5.3부터는 apre의 옵션에 따라 호스트 변수 선언절을 생략할 수 있다. 또는, 기존과 동일하게 선언절 내에 표기된 변수를 호스트 변수로 사용할 수 있다.</p><p class="0cm">EXEC SQL BEGIN DECLARE  SECTION;</p><p class="0cm">      char *H_param1;</p><p class="0cm">EXEC SQL END DECLARE  SECTION;</p><p class="0cm"> </p><p class="0cm">호스트 변수의 초기화는 ALTIBASE 5.3.3 부터 지원하고 있다.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>헤더 파일의 경로</strong></p></td><td class="confluenceTd"><p class="0cm">소스 내에서 헤더를 명시할 경우 다음과 같이 할 수 있다.</p><p class="0cm">EXEC SQL INCLUDE &quot;…../user_header.h&quot;;</p><p class="0cm">또는,</p><p class="0cm">EXEC SQL OPTION (INCLUDE=/절대경로/);</p><p class="0cm">EXEC SQL INCLUDE user_header.h;</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>헤더 파일 내의 호스트 변수의 선언</strong></p></td><td class="confluenceTd"><p class="0cm">#ifdef SESC_DECLARE</p><p class="0cm">…..</p><p class="0cm">#endif</p><p class="0cm">위와 같은 define절 내에 명시할 수 있다.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>SELECT 의 into절 생략</strong></p></td><td class="confluenceTd"><p class="0cm">지원하지 않는다.</p></td></tr><tr><td class="confluenceTd"><p class="0cm"><strong>SET TRANSACTION ~구문</strong></p></td><td class="confluenceTd"><p class="0cm">지원하지 않는다.</p></td></tr></tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Restrictions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Overview-of-ALTIBASE-Stored-Procedures_2988067.html">Overview of ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Restrictions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346494 {padding: 0px;}
+div.rbtoc1624409346494 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346494 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346494'>
+<ul class='toc-indentation'>
+<li><a href='#Restrictions-Overview'>Overview</a></li>
+<li><a href='#Restrictions-LOBTypeinALTIBASEStoredProcedure'>LOB Type in ALTIBASE Stored Procedure</a></li>
+<li><a href='#Restrictions-GeometrytypeinALTIBASEStoredProcedure'>Geometry type in ALTIBASE Stored Procedure</a></li>
+<li><a href='#Restrictions-Commit/Rollbackwithacursoropen'>Commit/Rollback with a cursor open</a></li>
+<li><a href='#Restrictions-StoredPackage'>Stored Package</a></li>
+<li><a href='#Restrictions-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="Restrictions-Overview">Overview</h2>
+
+<p>Simply, the usages of ALTIBASE Stored Procedure(ALTIBASE PSM) has so many resemblances to those of ORACLE.</p>
+
+<p>Whereas It has a few differences with ORACLE's one.</p>
+
+<p>In summation, The differences between them are as follows.</p>
+<ul>
+	<li>LOB Type is not available as a datatype of the local variable or ALTIBASE Stored Procedure parameter.</li>
+	<li>Geometry type is not available in the ALTIBASE Stored Procedure.</li>
+	<li>Stored Package is not supported.</li>
+	<li>only support ref cursor using Dynamic SQL not Static SQL.</li>
+	<li>Commit statement explicitly at fetch loop body in the ALTIBASE Stored Procedure can't be used. (select.. for update)
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>&quot;FETCH ACROSS COMMIT&quot; and &quot;STORED PACKAGE&quot; functionalities will be adopted as new features at ALTIBASE HDB V7.</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Restrictions-LOBTypeinALTIBASEStoredProcedure">LOB Type in ALTIBASE Stored Procedure</h2>
+
+<p> LOB type variables cannot be declared in the declare section of a stored procedure.</p>
+
+<p>Additionally, the %TYPE and %ROWTYPE attributes cannot be used to declare variables when the underlying column<br />
+in the actual database object is a LOB type column.<br />
+Because LOB type variables cannot be declared within stored procedures, data in LOB type columns<br />
+cannot be fetched using cursors.</p>
+
+<p>Therefore, LOB type columns cannot be referenced using cursor<br />
+control statements.</p>
+
+<h2 id="Restrictions-GeometrytypeinALTIBASEStoredProcedure">Geometry type in ALTIBASE Stored Procedure</h2>
+
+<p>Same as above, Geometry type is unusable in ALTIBASE Stored Procedure.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="Restrictions-Commit/Rollbackwithacursoropen">Commit/Rollback with a cursor open</h2>
+
+<p>A user can not issue a commit or rollback statement with a cursor open.</p>
+
+<p><strong><em>ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE cur_proc1
+(in_val IN INTEGER, out_val OUT INTEGER)
+IS
+  CURSOR cur1 IS SELECT c1 FROM t1 WHERE c1&gt;in_val;
+  col1 INTEGER;
+  r1 INTEGER;
+BEGIN
+  r1 := 0;
+  OPEN cur1;
+  LOOP
+    FETCH cur1 into col1;
+    EXIT WHEN cur1%NOTFOUND;
+    INSERT INTO t2 VALUES(col1);
+    COMMIT;  -- 허용됨.
+     r1 := r1+1;
+    DBMS.PUT_LINE(col1);
+  END LOOP;
+  CLOSE cur1;
+  DBMS.PUT_LINE(&#39;# of insert: &#39;||r1);
+  out_val := r1;
+END;
+/</pre>
+</div></div>
+
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE cur_proc1
+(in_val IN INTEGER, out_val OUT INTEGER)
+IS
+  CURSOR cur1 IS SELECT c1 FROM t1 WHERE c1&gt;in_val;
+  col1 INTEGER;
+  r1 INTEGER;
+BEGIN
+  r1 := 0;
+  OPEN cur1;
+  LOOP
+    FETCH cur1 into col1;
+    EXIT WHEN cur1%NOTFOUND;
+    INSERT INTO t2 VALUES(col1);
+    COMMIT;          (X)
+    r1 := r1+1;
+    PRINTLN(col1);
+  END LOOP;
+  CLOSE cur1;
+  COMMIT;            (O)
+  PRINTLN(&#39;# of insert: &#39;||r1);
+  out_val := r1;
+END;
+/</pre>
+</div></div>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This functionality will be adopted in ALTIBASE HDB V7 as a new one.</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Restrictions-StoredPackage">Stored Package</h2>
+
+<p> ALTIBASE HDB does not support Stored Package(called as a Package).
+<br class="atl-forced-newline" /></p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This functionality will be adopted in ALTIBASE HDB V7 as a new one as well.</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+
+<h2 id="Restrictions-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> create or replace procedure proc1(b1 integer, e1 integer) <br class="atl-forced-newline" />
+is --&gt; equal to as <br class="atl-forced-newline" />
+begin <br class="atl-forced-newline" />
+for i in b1 .. e1 loop <br class="atl-forced-newline" />
+insert into t1 values(i, sysdate); <br class="atl-forced-newline" />
+end loop; <br class="atl-forced-newline" />
+end; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> create or replace procedure proc1(b1 integer, e1 integer) <br class="atl-forced-newline" />
+is -- as is equal <br class="atl-forced-newline" />
+begin <br class="atl-forced-newline" />
+for i in b1 .. e1 loop <br class="atl-forced-newline" />
+insert into t1 values(i, sysdate); <br class="atl-forced-newline" />
+end loop; <br class="atl-forced-newline" />
+end; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Simple usage of ALTIBASE Stored Procedure and PL/SQ;. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+TYPE MY_ARR IS TABLE OF INTEGER <br class="atl-forced-newline" />
+INDEX BY VARCHAR(10); <br class="atl-forced-newline" />
+V1 MY_ARR; <br class="atl-forced-newline" />
+V2 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+V1('FSDGADS') := 1; <br class="atl-forced-newline" />
+V1('AA') := 2; <br class="atl-forced-newline" />
+V1('7G65') := 3; <br class="atl-forced-newline" />
+V1('N887K') := 4; <br class="atl-forced-newline" />
+V1('KU') := 5; <br class="atl-forced-newline" />
+V1('34') := 6; <br class="atl-forced-newline" />
+dbms_output.put_line( 'V1 COUNT IS : '||V1.COUNT() ); <br class="atl-forced-newline" />
+dbms_output.put_line( 'V1 COUNT IS : '||V1.COUNT() ); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC3( <br class="atl-forced-newline" />
+P1 IN VARCHAR(10), <br class="atl-forced-newline" />
+P2 IN VARCHAR(10) ) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE MY_ARR IS TABLE OF INTEGER <br class="atl-forced-newline" />
+INDEX BY VARCHAR(10); <br class="atl-forced-newline" />
+V1 MY_ARR; <br class="atl-forced-newline" />
+V2 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+V1['FSDGADS'] := 1; <br class="atl-forced-newline" />
+V1['AA'] := 2; <br class="atl-forced-newline" />
+V1['7G65'] := 3; <br class="atl-forced-newline" />
+V1['N887K'] := 4; <br class="atl-forced-newline" />
+V1['KU'] := 5; <br class="atl-forced-newline" />
+V1['34'] := 6; <br class="atl-forced-newline" />
+PRINTLN( 'V1 COUNT IS : '||V1.COUNT() ); <br class="atl-forced-newline" />
+PRINTLN( 'V1 COUNT IS : '||V1.COUNT() ); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Associative Array(Nested Table) </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

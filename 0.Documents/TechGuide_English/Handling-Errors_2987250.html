@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Handling Errors</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Handling Errors
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348111 {padding: 0px;}
+div.rbtoc1624409348111 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348111 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348111'>
+<ul class='toc-indentation'>
+<li><a href='#HandlingErrors-SQLSTATEVariable'>SQLSTATE Variable</a></li>
+<li><a href='#HandlingErrors-SQLCODE'>SQLCODE</a></li>
+<li><a href='#HandlingErrors-SQLCA'>SQLCA</a></li>
+<li><a href='#HandlingErrors-Pre-DefinedError-Code'>Pre-Defined Error-Code</a></li>
+<li><a href='#HandlingErrors-WHENEVER'>WHENEVER</a></li>
+<li><a href='#HandlingErrors-SomeNotices'>Some Notices</a></li>
+</ul>
+</div>
+
+<h1 id="HandlingErrors-SQLSTATEVariable">SQLSTATE Variable</h1>
+
+<p>This variable is char[]-type and contains error and warning codes.<br />
+It is retained only for compatibility with SQL-89.<br />
+If you want to use it, write a code as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char SQLSTATE[6];
+</pre>
+</div></div>
+<p>SQLState can be used for checking connection-state.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char SQLSTATE[6];
+
+...
+if (memcmp (SQLSTATE, &quot;08S01&quot;, 5) == 0 ||
+    memcmp (SQLSTATE, &quot;08001&quot;, 5) == 0 ||
+    memcmp (SQLSTATE, &quot;08003&quot;, 5) == 0 )
+{
+   // Handling Connection-Errors.
+   ...
+}
+</pre>
+</div></div>
+
+
+<h1 id="HandlingErrors-SQLCODE">SQLCODE</h1>
+
+<p>This variable contains detailed error-code. user uses SQLCODE without declaring it.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL INSERT INTO employee VALUES (...);
+if (sqlca.sqlcode != 0)
+  printf(&quot;ErrCode = %d\n&quot;, SQLCODE);
+</pre>
+</div></div>
+
+<h1 id="HandlingErrors-SQLCA">SQLCA</h1>
+
+<p>This is variable containing error and warning-code. user uses it without declaring it.<br />
+This is structure variable as follows.</p>
+<ol>
+	<li>sqlca.sqlcode
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Status codes </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 0 </p></td>
+<td class="confluenceTd"><p> Means that ALTIBASE HDB executed a statement without errors. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &gt; 0 </p></td>
+<td class="confluenceTd"><p> Means that ALTIBASE HDB executed a statement with some errors. <br class="atl-forced-newline" />
+This occurs when SELECT statement without indicator-variable returned a result with NULL. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &lt; 0 </p></td>
+<td class="confluenceTd"><p> Means that ALTIBASE HDB didn't execute a statement with some errors. </p></td>
+</tr>
+</tbody></table></div>
+</li>
+	<li>sqlca.sqlerrm.sqlerrmc<br />
+It contains full-text error-messages. Its length is in sqlca.sqlerrm.sqlerrml</li>
+</ol>
+
+
+<p>WJ</p>
+<ol>
+	<li>sqlca.sqlerrd<br />
+It contains number of record processed. (ALTIBASE uses only sqlca.sqlerrd[2])</li>
+</ol>
+
+
+
+<h1 id="HandlingErrors-Pre-DefinedError-Code">Pre-Defined Error-Code</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQLCODE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> Etc </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (SQLCODE = 0) </p></td>
+<td class="confluenceTd"><p> SQL_SUCCESS </p></td>
+<td class="confluenceTd"><p> SQL_SUCCESS </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (SQLCODE = 1) </p></td>
+<td class="confluenceTd"><p> SQL_SUCCESS_WITH_INFO </p></td>
+<td class="confluenceTd"><p> SQL_SUCCESS_WITH_INFO </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (SQLCODE = -1) </p></td>
+<td class="confluenceTd"><p> SQL_ERROR </p></td>
+<td class="confluenceTd"><p> SQL_ERROR </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (SQLCODE = 100) </p></td>
+<td class="confluenceTd"><p> SQL_NO_DATA </p></td>
+<td class="confluenceTd"><p> SQL_NO_DATA </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (SQLCODE = -69720) </p></td>
+<td class="confluenceTd"><p> APRE_DUPKEY_ERROR </p></td>
+<td class="confluenceTd"><p> ORA-00001 </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+<p>You can refer to <a href="http://atc.altibase.com/sub09/551b/html/ErrorMessage/index.html" class="external-link" rel="nofollow">this document</a></p>
+
+<h1 id="HandlingErrors-WHENEVER">WHENEVER</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL WHENEVER &lt;condition&gt; &lt;action&gt;;
+</pre>
+</div></div>
+<ol>
+	<li>Condition<br />
+The condition has two states. ALTIBASE HDB doesn't support &quot;SQLWARNING&quot;.
+	<ol>
+		<li>SQLERROR</li>
+		<li>NOTFOUND</li>
+	</ol>
+	</li>
+	<li>Action
+	<ol>
+		<li>CONTINUE</li>
+		<li>DO BREAK</li>
+		<li>DO CONTINUE</li>
+		<li>DO function_name</li>
+		<li>GOTO label</li>
+		<li>STOP<br />
+The connection is to be closed.</li>
+	</ol>
+	</li>
+</ol>
+
+
+<h1 id="HandlingErrors-SomeNotices">Some Notices</h1>
+
+<ol>
+	<li>APRE marks &quot;EXEC SQL INCLUDE SQLCA&quot; statement to a comment when precompiling it.</li>
+	<li>APRE marks &quot;#include &lt;sqlca.h&gt;&quot; statement to a comment when precompiling it.</li>
+</ol>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

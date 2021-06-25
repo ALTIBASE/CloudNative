@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 8. Tablespace (TBS)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 8. Tablespace (TBS)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check </span><span>t</span><span>ablespace informa</span><span>t</span><span>ion is as follows.</span></p><h3 class="md-end-block md-heading" id="id-8.Tablespace(TBS)-MemoryTablespaceUsage"><span class="md-plain">Memory Tablespace Usage</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">VOLATILE tablespace usage can now be viewed. As of Altibase 5.5.1, V</span><span>$</span><span class="md-plain">VOL_TABLSPACES, which stores information in volatile memory tablespaces, has been added.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT ID TBS_ID
+     , DECODE(TYPE, 0, &#39;MEMORY_DICTIONARY&#39;, 1, &#39;MEMORY_SYS_DATA&#39;, 2, &#39;MEMORY_USER_DATA&#39;, 8, &#39;VOLATILE_USER_DATA&#39;) TBS_TYPE
+     , NAME TBS_NAME
+     , TO_CHAR(DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE , 0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE, M.MAXSIZE) /1024/1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;
+     , TO_CHAR( M.ALLOC_PAGE_COUNT * T.PAGE_SIZE / 1024 / 1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;
+     , TO_CHAR(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,T.TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR(NVL(MT.USED, 0), &#39;999,999,999&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(DECODE(MAXSIZE, 140737488322560, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*T.PAGE_SIZE/ D.MEM_MAX_DB_SIZE ,0, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) / T.TOTAL_PAGE_COUNT , (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) * T.PAGE_SIZE/ M.MAXSIZE) * 100 , &#39;99.99&#39;) &#39;USAGE(%)&#39;
+     , DECODE(T.STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+     , DECODE(M.AUTOEXTEND_MODE,1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$DATABASE D
+     , V$TABLESPACES T
+     , (SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , DECODE(MAX_SIZE, 0, (SELECT VALUE1 FROM V$PROPERTY WHERE NAME = &#39;VOLATILE_MAX_DB_SIZE&#39;), MAX_SIZE) AS MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$VOL_TABLESPACES
+         UNION ALL
+        SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN(SELECT TABLESPACE_ID, ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM V$MEMTBL_INFO
+         GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+ WHERE T.ID = M.SPACE_ID;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TBS_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Unique tablespace number</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TBS_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Memory tablespace type</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">0: As a system memory tablespace, this is a tablespace for storing meta data required for the operation of the database system.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">1: This is a system memory tablespace. This is used to store the data created by default when creating a database.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">2: User-created memory tablespace</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">8: User-created volatile memory tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is the maximum memory size that used in a memory tablespace.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">When MAXSIZE is not specified when creating a tablespace, &quot;UNDEFINED&quot; is output.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">When the tablespace attribute is AUTOEXTEND OFF, TOTAL(M) is output.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Memory tablespace is the total number of pages allocated so far. That is, it is equal to the size of the data file (memory checkpoint image file) as the same of the 'pages in use' and 'blank pages' allocated so far.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">When the Altibase server is run, only 'pages in use' are loaded into memory. Therefore, it is difficult to judge that physical memory is used as much as this value.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Memory tablespace is the total number of 'pages in use' excluding 'empty pages' among pages allocated so far. </span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">For example, if DROP or TRUNCATE is executed on a memory table of size 100M, the total number of pages remains unchanged, but this value is close to 0 because 'page in use' becomes 'empty page' through page return.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is the sum of the 'page actually loaded with data' among the 'pages in use' of the memory tablespace.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">For example, if the user executes DELETE on a memory table with an ALLOC size of 100M, ALLOC will not change to 100M, but USED will be close to zero (0).</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is the percentage of 'pages in use' compared to 'pages allocated so far' for memory tablespace (USED / TOTAL)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The state of the tablespace</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">1: Offline</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">2: Online</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">3: Offline tablespace being backed up</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">4: Online tablespace being backed up</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">128: Dropped tablespace</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">1024: Discarded tablespace</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">1028; Discarded tablespace being backed up</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">AUTOEXTEND</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether to automatically expand the memory tablespace. </span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">ON (1), OFF (2)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-TotalMemoryTablespaceUsage"><span class="md-plain md-expand">Total Memory Tablespace Usage</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT MEM_MAX_DB_SIZE/1024/1024 &#39;MAX(M)&#39;
+    , ROUND(MEM_ALLOC_PAGE_COUNT*32/1024, 2) &#39;TOTAL(M)&#39;
+    , TRUNC((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, 2) &#39;ALLOC(M)&#39;
+    , (SELECT ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024), 3)
+         FROM V$MEMTBL_INFO) &#39;USED(M)&#39;
+    , TRUNC(((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE, 4)*100 &#39;USAGE(%)&#39;
+ FROM V$DATABASE ;  </pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.1"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages for which the entire memory tablespace can be allocated. This is defined by the Altibase server property MEM_MAX_DB_SIZE.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages allocated so far</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The sum of only 'in use pages' excluding 'empty pages' among the pages allocated so far</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The sum of the 'pages actually loaded with data' among the 'pages in use' of the entire memory tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The percentage of 'page in use' compared to 'pages that are fully allocated' for the entire memory tablespace (ALLOC / MAX)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-DiskTablespaceUsage"><span class="md-plain md-expand">Disk Tablespace Usage</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT TBS_ID
+     , TBS_TYPE
+     , TBS_NAME
+     , TO_CHAR(MAX/1024/1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;
+     , TO_CHAR(TOTAL/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;
+     , TO_CHAR(ALLOC/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR(USED/1024/1024, &#39;999,999,999&#39;) &#39;USED(M)&#39;
+     , TO_CHAR((ROUND((USED/1024/1024), 0)/ROUND((MAX/1024/1024), 0))*100, &#39;999.99&#39;) &#39;USAGE(%)&#39;
+     , STATE
+     , AUTOEXTEND
+  FROM (SELECT T.ID TBS_ID
+             , DECODE(TYPE, 3, &#39;DISK_SYS_DATA&#39;, 4, &#39;DISK_USER_DATA&#39;, 5, &#39;DISK_SYS_TEMP&#39;, 6, &#39;DISK_USER_TEMP&#39;, 7, &#39;DISK_SYS_UNDO&#39;) TBS_TYPE
+             , NAME TBS_NAME
+             , D.MAX * PAGE_SIZE MAX
+             , TOTAL_PAGE_COUNT * PAGE_SIZE TOTAL
+             , DECODE(TYPE, 7, U.TOTAL_EXT_CNT * PROP.EXTENT_SIZE, ALLOCATED_PAGE_COUNT * PAGE_SIZE) ALLOC
+             , DECODE(TYPE, 3, NVL(DS.USED, 0) , 4, NVL(DS.USED, 0) , 7, (U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE , ALLOCATED_PAGE_COUNT * PAGE_SIZE ) USED
+             , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+             , D.AUTOEXTEND
+          FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                  FROM X$SEGMENT
+                 GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+             , (SELECT SPACEID
+                     , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+                     , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+                  FROM V$DATAFILES
+                 GROUP BY SPACEID ) D
+             , V$DISK_UNDO_USAGE U
+             , (SELECT VALUE1 EXTENT_SIZE
+                  FROM V$PROPERTY
+                 WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+         WHERE T.ID = D.SPACEID ) ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.2"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages that can be allocated. Pages are divided into 'active pages' and 'empty pages'.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages that the disk tablespace has been allocated so far. That is, this corresponds to the data file size as the sum of the 'pages in use' and 'empty pages' allocated so far.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of 'pages in use' excluding 'empty pages' among the pages allocated so far. For example, when DROP or TRUNCATE is executed on a 100M disk table, the total number of pages remains the same, but this value is close to 0 because 'pages in use' become 'empty pages' through page return.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The sum of the 'pages actually loaded with data' among the 'pages in use' of the disk tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The percentage of 'pages in use' compared to 'maximum allocable pages' in disk tablespace (USED / MAX)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-DiskUndoTablespaceUsage"><span class="md-plain md-expand">Disk Undo Tablespace Usage</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT T.NAME TBS_NAME
+     , ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2) &#39;MAX(M)&#39;                                                                    
+     , ROUND((TOTAL_PAGE_COUNT * PAGE_SIZE) / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                                                    
+     , ROUND((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, 2) &#39;ALLOC(M)&#39;                                                    
+     , ROUND(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, 2) &#39;USED(M)&#39;               
+     , ROUND((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, 2) &#39;USAGE(%)&#39;
+     , DECODE(STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE           
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE FROM V$PROPERTY WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID
+   AND T.ID = 3 ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.3"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size that can be used in undo tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total size allocated to undo tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages in use, excluding 'empty pages' among the pages allocated so far</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The usage of undo tablespace. EXTENT size in use or not reusable by change transaction</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Usage rate (Used compared to MAX)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Tablespace state</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-UndoTablespaceUsagebyTransaction"><span class="md-plain md-expand">Undo Tablespace Usage by Transaction</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT  DECODE(TX.SESSION_ID, -1, &#39;REP(&#39;||REP.REP_NAME||&#39;)&#39;, TX.SESSION_ID) SESSION_ID
+      , TX.ID TX_ID
+      , DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;) TX_STATUS
+      , RPAD(DECODE(ST.EXECUTE_FLAG, NULL, &#39;REP(&#39;||REP.REP_NAME||&#39;)&#39;, 1, &#39;SQL ING&#39;, 0, &#39;SQL END&#39;), 10) SQL_STATUS
+      , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP &#39;||REP.PEER_IP||&#39;:&#39;||REP.PEER_PORT, S.COMM_NAME||&#39; PID:&#39;||S.CLIENT_PID), 40) CLIENT_IP
+      , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP(&#39;||REP.REP_NAME||&#39;)&#39;, S.CLIENT_APP_INFO), 15) CLIENT_APP_INFO
+      , RPAD(DECODE(S.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, 0, &#39;OFF&#39;, NULL, &#39;REP(&#39;||REP.REP_NAME||&#39;)&#39;), 10) AUTOCOMMIT
+      , RPAD(DECODE(TX.LOG_TYPE, 1, &#39;REP(&#39;||REP.REP_NAME||&#39;)&#39;, S.UTRANS_TIME_LIMIT), 15) UTRANS_TIMEOUT
+      , DECODE(ST.LAST_QUERY_START_TIME, NULL, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;), TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + ST.LAST_QUERY_START_TIME / (60*60*24), &#39;YYYY-MM-DD HH:MI:SS&#39;)) LAST_QUERY_START_TIME
+      , ((((TSS.TOTAL_EXTENT_COUNT+TSS.TOTAL_EXTDIR_COUNT)*TSS.PAGE_COUNT_IN_EXTENT)+((UDS.TOTAL_EXTENT_COUNT+UDS.TOTAL_EXTDIR_COUNT)*UDS.PAGE_COUNT_IN_EXTENT))*TBS.PAGE_SIZE) /1024/1024 UNDO_USAGE
+      , DECODE(TX.LOG_TYPE, 1, &#39;REMOTE_TX_ID : &#39;||REP_TX.REMOTE_TID, SUBSTR(ST.QUERY, 1, 30)) QUERY
+  FROM  V$TXSEGS TXS
+      , V$TSSEGS TSS
+      , V$UDSEGS UDS
+      , V$TRANSACTION TX LEFT OUTER JOIN V$SESSION S ON TX.ID = S.TRANS_ID LEFT OUTER JOIN V$STATEMENT ST ON S.CURRENT_STMT_ID = ST.ID LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL REP_TX ON TX.ID = REP_TX.LOCAL_TID LEFT OUTER JOIN V$REPRECEIVER REP ON REP_TX.REP_NAME = REP.REP_NAME
+      , V$TABLESPACES TBS
+ WHERE 1=1
+   AND UDS.SPACE_ID = 3
+   AND TXS.ID = UDS.TXSEG_ENTRY_ID
+   AND TXS.ID = TSS.TXSEG_ENTRY_ID
+   AND TXS.TRANS_ID = TX.ID
+   AND TBS.ID = UDS.SPACE_ID
+ ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.4"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SESSION_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The ID of the session or Replication object that executed the transaction</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TX_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Transaction ID</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TX_STATUS</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Transaction status</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SQL_STATUS</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">SQL statement status</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CLIENT_IP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Client IP and process ID</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">AUTOCOMMIT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">AUTOCOMMIT mode of the session</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">UTRANS_TIMEOUT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">UTRANS_TIMEOUT setting value of the session</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LAST_QUERY_START_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">SQL statement start time</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">UNDO_USAGE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Transaction undo usage (in MB)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">QUERY</span></span></td><td class="confluenceTd">The last query performed by a transaction using undo tablesapce or accessing undo tablespace.</td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-TotalTablespaceUsage"><span class="md-plain md-expand">Total Tablespace Usage</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT TBS_ID
+     , TBS_TYPE
+     , TBS_NAME
+     , TO_CHAR(MAX/1024/1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;
+     , TO_CHAR(TOTAL/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;
+     , TO_CHAR(ALLOC/1024, &#39;999,999,999&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR(USED/1024/1024, &#39;999,999,999&#39;) &#39;USED(M)&#39;
+     , TO_CHAR((ROUND((TOTAL/1024), 0)/ROUND((MAX/1024/1024), 0))*100, &#39;999.99&#39;) &#39;USAGE(%)&#39;
+      , &#39;&#39; STATE
+      , &#39;&#39; &#39;AUTOEXTEND&#39;
+  FROM (SELECT &#39;&#39; TBS_ID
+             , &#39;ALL_MEM_TBS&#39; TBS_TYPE
+             , &#39;-&#39; TBS_NAME
+             , MEM_MAX_DB_SIZE MAX
+             , MEM_ALLOC_PAGE_COUNT*32 TOTAL
+             , (MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32 ALLOC
+             , (SELECT SUM(FIXED_USED_MEM + VAR_USED_MEM)
+                  FROM V$MEMTBL_INFO) USED
+          FROM V$DATABASE )
+UNION ALL
+SELECT TBS_ID
+     , TBS_TYPE
+     , TBS_NAME
+     , TO_CHAR(MAX/1024/1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;
+     , TO_CHAR(TOTAL/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;
+     , TO_CHAR(ALLOC/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR(USED/1024/1024, &#39;999,999,999&#39;) &#39;USED(M)&#39;
+     , TO_CHAR((ROUND((USED/1024/1024), 0)/ROUND((TOTAL/1024/1024), 0))*100, &#39;999.99&#39;) &#39;USAGE(%)&#39;
+     , STATE
+     , AUTOEXTEND
+  FROM (SELECT ID TBS_ID
+             , DECODE(TYPE, 0, &#39;MEM_SYS_DIC&#39;, 1, &#39;MEM_SYS_DATA&#39;, 2, &#39;MEM_USER_DATA&#39;, 8, &#39;VOL_USER_DATA&#39;) TBS_TYPE
+             , NAME TBS_NAME
+             , DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE , 0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE, M.MAXSIZE) MAX
+             , M.ALLOC_PAGE_COUNT * T.PAGE_SIZE TOTAL
+             , NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT, T.TOTAL_PAGE_COUNT)*PAGE_SIZE ALLOC
+             , NVL(MT.USED, 0) USED
+             , DECODE(T.STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+             , DECODE(M.AUTOEXTEND_MODE, 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATABASE D
+             , V$TABLESPACES T
+             , (SELECT SPACE_ID
+                     , SPACE_NAME
+                     , ALLOC_PAGE_COUNT
+                     , FREE_PAGE_COUNT
+                     , DECODE(MAX_SIZE, 0, (SELECT VALUE1
+                                              FROM V$PROPERTY
+                                              WHERE NAME = &#39;VOLATILE_MAX_DB_SIZE&#39;), MAX_SIZE) AS MAXSIZE
+                     , AUTOEXTEND_MODE
+                  FROM V$VOL_TABLESPACES
+                 UNION ALL
+                SELECT SPACE_ID
+                     , SPACE_NAME
+                     , ALLOC_PAGE_COUNT
+                     , FREE_PAGE_COUNT
+                     , MAXSIZE
+                     , AUTOEXTEND_MODE
+                  FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN (SELECT TABLESPACE_ID, SUM((FIXED_USED_MEM + VAR_USED_MEM)) USED
+                                                                FROM V$MEMTBL_INFO
+                                                               GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+         WHERE T.ID = M.SPACE_ID)
+UNION ALL
+SELECT TBS_ID
+     , TBS_TYPE
+     , TBS_NAME
+     , TO_CHAR(MAX/1024/1024, &#39;999,999,999&#39;) &#39;MAX(M)&#39;
+     , TO_CHAR(TOTAL/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;
+     , TO_CHAR(ALLOC/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR(USED/1024/1024, &#39;999,999,999&#39;) &#39;USED(M)&#39;
+     , TO_CHAR((ROUND((USED/1024/1024), 0)/ROUND((MAX/1024/1024), 0))*100, &#39;999.99&#39;) &#39;USAGE(%)&#39;
+     , STATE
+     , AUTOEXTEND
+  FROM (SELECT T.ID TBS_ID
+             , DECODE(TYPE, 3, &#39;DISK_SYS_DATA&#39;, 4, &#39;DISK_USER_DATA&#39;, 5, &#39;DISK_SYS_TEMP&#39;, 6, &#39;DISK_USER_TEMP&#39;, 7, &#39;DISK_SYS_UNDO&#39;) TBS_TYPE
+             , NAME TBS_NAME
+             , D.MAX * PAGE_SIZE MAX
+             , TOTAL_PAGE_COUNT * PAGE_SIZE TOTAL
+             , DECODE(TYPE, 7, U.TOTAL_EXT_CNT * PROP.EXTENT_SIZE, ALLOCATED_PAGE_COUNT * PAGE_SIZE) ALLOC
+             , DECODE(TYPE, 3, NVL(DS.USED, 0) , 4, NVL(DS.USED, 0) , 7, (U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE , ALLOCATED_PAGE_COUNT * PAGE_SIZE ) USED
+             , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+             , D.AUTOEXTEND
+          FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                  FROM X$SEGMENT
+                 GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+             , (SELECT SPACEID
+                     , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+                     , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+                  FROM V$DATAFILES
+                 GROUP BY SPACEID ) D
+             , V$DISK_UNDO_USAGE U
+             , (SELECT VALUE1 EXTENT_SIZE
+                  FROM V$PROPERTY
+                 WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+         WHERE T.ID = D.SPACEID ) ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.5"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size that can be used in undo tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The size of the tablespace allocated so far.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">Same as memory checkpoint image file and disk data size</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The size of the 'page in use' excluding 'empty pages' among the pages allocated so far in the tablespace</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The size of the actual data loaded on the page that the tablespace is using</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd">Total memory tablespace : TOTAL utilization rate compared to MAX (TOTAL / MAX)<br /><span>Memory tablespace : USED <span>utilization </span>rate <span> compared to </span>TOTAL (USED / TOTAL)<br /></span>Disk tablespace : USED utilization rate compared to MAX (USED / MAX)</td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MemoryTablespaceDataFileCheckpointPath"><span class="md-plain md-expand">Memory Tablespace Data File Checkpoint Path</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT M.SPACE_ID TBS_ID,
+      SPACE_NAME TBS_NAME,
+      CHECKPOINT_PATH
+ FROM V$MEM_TABLESPACES M,
+      V$MEM_TABLESPACE_CHECKPOINT_PATHS C
+WHERE M.SPACE_ID = C.SPACE_ID ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-Memorytablespacedatafile"><span class="md-plain md-expand">Memory tablespace data file</span></h3><p><span class="md-plain md-expand">Shows stable data files in memory tablespaces.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT MEM_DATA_FILE DATAFILE_NAME
+ FROM V$STABLE_MEM_DATAFILES ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-DiskTablespaceDataFile"><span class="md-plain md-expand">Disk Tablespace Data File</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> SELECT B.NAME TBS_NAME,
+       A.ID &#39;FILE#&#39;,
+       A.NAME DATAFILE_NAME,
+       CURRSIZE*8/1024 &#39;ALLOC(M)&#39;,
+       ROUND(CASE2(A.MAXSIZE=0, CURRSIZE, A.MAXSIZE)*8/1024) &#39;MAX(M)&#39;,
+       DECODE(AUTOEXTEND, 0, &#39;OFF&#39;, &#39;ON&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$DATAFILES A,
+       V$TABLESPACES B
+ WHERE B.ID = A.SPACEID
+ ORDER BY B.NAME, A.ID
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.6"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">FILE#</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of the data file. A disk tablespace can have multiple data files.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-I/OPerDiskTablespaceDataFile"><span class="md-plain md-expand">I/O Per Disk Tablespace Data File</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME TBS_NAME,
+       A.PHYRDS PHY_READ,
+       A.PHYWRTS PHY_WRITE,
+       A.PHYRDS+A.PHYWRTS PHY_TOTAL,
+       TRUNC(A.PHYRDS/READ_SUM*100,2) &#39;READ(%)&#39;,
+       TRUNC(A.PHYWRTS/WRITE_SUM*100,2) &#39;WRITE(%)&#39;,
+       TRUNC( (A.PHYRDS+A.PHYWRTS) / (READ_SUM+WRITE_SUM) * 100 , 2) &#39;TOTAL(%)&#39;,
+       A.AVGIOTIM AVG_IO_TIME
+  FROM V$FILESTAT A,
+       V$DATAFILES B,
+       (SELECT SUM(PHYRDS) READ_SUM,
+               SUM(PHYWRTS) WRITE_SUM
+          FROM V$FILESTAT ) C
+ WHERE A.SPACEID = B.SPACEID
+       AND A.FILEID = B.ID
+       AND READ_SUM &gt; 0
+       AND WRITE_SUM &gt; 0
+ ORDER BY A.PHYRDS+A.PHYWRTS DESC, ROWNUM DESC
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.7"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PHY_READ</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of physical read I/O occurrences</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PHY_WRITE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of physical write I/O occurrences</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PHY_TOTAL</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of physical I/O occurrences</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">READ(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The percentage of occurrence compared to total physical read I/O</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">WRITE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The percentage of occurrence compared to total physical write I/O</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TOTAL(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The ratio of occurrence to total physical I/O</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">AVG_IO_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The average physical I/O time, measured in milliseconds</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-SinglePageReadI/OperDiskTablespaceDataFile"><span class="md-plain md-expand">Single Page Read I/O per Disk Tablespace Data File</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT B.NAME TBS_NAME,
+       A.SINGLEBLKRDS READ_CNT_PER_PAGE,
+       A.SINGLEBLKRDTIM READ_TIME_PER_PAGE,
+       TRUNC(A.SINGLEBLKRDTIM/A.SINGLEBLKRDS,2) AVERAGE_TIME
+  FROM V$FILESTAT A,
+       V$DATAFILES B
+ WHERE A.SPACEID = B.SPACEID
+       AND A.FILEID = B.ID
+       AND A.SINGLEBLKRDS &gt; 0
+ ORDER BY AVERAGE_TIME DESC
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.8"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">READ_CNT_PER_PAGE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Read count for a single page</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">READ_TIME_PER_PAGE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Read time for a single page, in milliseconds.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">AVERAGE_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Average read time for a single page, in milliseconds.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-TemporaryTablespaceUsage"><span class="md-plain md-expand">Temporary Tablespace Usage</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT SUM(NORMAL_AREA_SIZE) SUM_NORMAL_AREA_SIZE
+ FROM X$TEMPTABLE_STATS
+WHERE DROP_TIME = &#39;19700101_090000&#39; ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-MainColumnDescription.9"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">NORMAL_AREA_SIZE</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">The size of used Temp tablespace</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-TemporaryTablespaceUsagebyTransaction"><span class="md-plain md-expand">Temporary Tablespace Usage by Transaction</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NORMAL_AREA_SIZE
+ FROM X$TEMPTABLE_STATS T,
+      V$STATEMENT STMT
+WHERE T.TRANSACTION_ID = STMT.TX_ID ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-8.Tablespace(TBS)-OverallTablespaceStatus"><span class="md-plain md-expand">Overall Tablespace Status</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME TBS_NAME,
+      DECODE(STATE, 1, &#39;OFFLINE&#39;,
+                    2, &#39;ONLINE&#39;,
+                    5, &#39;OFFLINE BACKUP&#39;,
+                    6, &#39;ONLINE BACKUP&#39;,
+                    128, &#39;DROPPED&#39;, &#39;DISCARD&#39;) STATE
+ FROM V$TABLESPACES ;</pre>
+</div></div><p><br /><br /></p><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

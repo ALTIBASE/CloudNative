@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : When server create errors occur after DB name change</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : When server create errors occur after DB name change
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="WhenservercreateerrorsoccurafterDBnamechange-Contents">Contents</h1><hr /><p>Up to version 5.3.3 or earlier, the DB must be manually created.</p><p>The following types of tasks can be performed by executing the server command, and the DB can be created with the server create command.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Usage: server { start | stop | kill | status | create db_charset national_charset | restart }</p><p>$server create MS949 UTF8</p>
+</div></div><p>When the first DB is created, the DB NAME is set to mydb, and DB_NAME can be changed in altibase.properties.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#=================================================================</p><p># Fixed Properties # should not be modified after createdb</p><p>#=================================================================</p><p><strong>DB_NAME       =  <span style="color: rgb(255,0,0);">mydb &lt;-- change the DB name</span></strong></p><p>MEM_DB_DIR    =  ?/dbs</p><p>MEM_DB_DIR    =  ?/dbs</p><p>DEFAULT_DISK_DB_DIR = ?/dbs</p>
+</div></div><p>When performing server craete after changing DB_NAME, the following error occurs.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span style="color: rgb(0,51,102);"><strong>$server create MS949 UTF8</strong></span></p><p><span style="color: rgb(0,51,102);"><strong>Connecting to the DB server... Connected.</strong></span><br class="atl-forced-newline" /><span style="color: rgb(0,51,102);"><strong>TRANSITION TO PHASE : PROCESS</strong></span><br class="atl-forced-newline" /><span style="color: rgb(0,51,102);"><strong>Command executed successfully.</strong></span><br class="atl-forced-newline" /><span style="color: rgb(0,51,102);"><strong>FAILURE of createdb.</strong></span><br class="atl-forced-newline" /><span style="color: rgb(255,0,0);"><strong>Invalid Database Name. Check the properties and retry.</strong></span><br class="atl-forced-newline" /><span style="color: rgb(0,51,102);"><strong>[ERR-91015 : Communication failure.]</strong></span></p>
+</div></div><h1 id="WhenservercreateerrorsoccurafterDBnamechange-Solution">Solution</h1><hr /><p>This occurs because the DB name is mydb in the $ALTIBASE_HOME/bin/server script file.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong><span style="color: rgb(0,51,102);">'create')</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">if [ $# = 3 ]; then</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">    rm -f live-altibase.txt;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">    $</span><span style="color: rgb(0,0,0);">{ISQL}</span><span style="color: rgb(0,51,102);">  &lt;&lt; EOF &gt; /dev/null</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">spool  live-altibase.txt;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">EOF</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">    if [ -f live-altibase.txt ]; then</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">        echo &quot; server is running !!!! \n &quot;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">        echo &quot; you must shutdown first before server create &quot;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">        rm -f live-altibase.txt;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">    else</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">            $</span><span style="color: rgb(0,0,0);">{ADMIN} </span><span style="color: rgb(0,51,102);">&lt;&lt; EOF</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">startup process;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">create database</span><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(255,0,0);">mydb</span><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(0,51,102);">INITSIZE=10M noarchivelog character set $2 national character set $3;</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">quit</span></strong><br class="atl-forced-newline" /><strong><span style="color: rgb(0,51,102);">EOF</span></strong></p>
+</div></div><p>Create the DB after making the same change as DB_NAME changed in altibase.properties.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

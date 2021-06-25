@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2-3 STORED PROCEDURE or FUNCTION 변환</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341605.html">Altibase Oracle 변환가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341609.html">2. 환경 설정</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2-3 STORED PROCEDURE or FUNCTION 변환
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409850752 {padding: 0px;}
+div.rbtoc1624409850752 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409850752 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409850752'>
+<ul class='toc-indentation'>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-ALTIBASEAUTOCOMMIT모드에서Procedure처리'>ALTIBASE AUTOCOMMIT 모드에서 Procedure 처리</a></li>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-PARAMETER의TYPE과RETURNTYPE'>PARAMETER의 TYPE 과 RETURN TYPE</a></li>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-파일및출력처리'>파일 및 출력 처리</a></li>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-REFCURSOR'>REF CURSOR</a></li>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-WHERECURRENTOF구문'>WHERE CURRENT OF 구문</a></li>
+<li><a href='#id-2-3STOREDPROCEDUREorFUNCTION변환-EXCEPTION'>EXCEPTION</a></li>
+</ul>
+</div></p><hr /><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-ALTIBASEAUTOCOMMIT모드에서Procedure처리"><strong>ALTIBASE AUTOCOMMIT 모드에서 Procedure 처리</strong></h2><p>ALTIBASE가 AUTOCOMMIT 모드일 경우 PROCEDURE/FUNCTION 전체가 하나의 트랜잭션으로 처리되고 PROCEDURE 내에서의 COMMIT/ROLLBACK은 무시됩니다.<br /> PROCEDURE/FUNCTION을 실행한 후에 자동으로 COMMIT됩니다. 따라서 PROCEDURE/FUNCTION에서 DML 문장을 실행한 후 결과가 ALTIBASE와 Oracle이 다를 수 있습니다.<br /> ALTIBASE를 NON-AUTOCOMMIT 모드로 적용했다면 Oracle의 NON-AUTOCOMMIT 모드와 동일한 결과가 나타납니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE t1_test( in_t IN INTEGER, in_v IN VARCHAR)
+IS
+BEGIN
+    INSERT INTO t1 VALUES(in_t, in_v);
+    ROLLBACK;
+END;
+/
+EXEC t1_test(4, &#39;000004&#39;);
+SQL&gt; SELECT COUNT(*) FROM t1;
+COUNT(*)
+-----------------
+0
+</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE t1_test( in_t IN INTEGER, in_v IN VARCHAR(20))
+IS
+BEGIN
+    INSERT INTO t1 VALUES(in_t, in_v);
+    ROLLBACK;
+END;
+/
+EXEC t1_test(4,   &#39;000004&#39;);
+iSQL&gt; SELECT COUNT\(*) FROM t1;
+COUNT
+-----------
+1
+</pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-PARAMETER의TYPE과RETURNTYPE"><strong>PARAMETER의 TYPE 과 RETURN TYPE</strong></h2><p>PARAMETER의 TYPE과 RETURN TYPE의 CHAR, VARCHAR는 크기 지정해야 합니다.<br /> ALTIBASE에서 PROCEDURE나 FUCTION의 PARAMATER 혹은 RETURN TYPE을 Oracle처럼 CHAR, VARCHAR로 선언하면 CHAR(1), VARCHAR(1)과 동일한 의미입니다. 따라서, 하나의 문자가 아니라 문자열을 사용하고자 한다면, 반드시 그 크기를 지정해 줘야 합니다. 만약 지정 해주지 않고 문자열이 2문자 이상이면 다음과 같은 에러가 발생합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">ERR-2100D : Invalid length of the data type
+</pre>
+</div></div><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-파일및출력처리"><strong>파일 및 출력 처리</strong></h2><p>ALTIBASE의 파일 및 출력에 관련된 PROCEDURE는 SYSTEM_ 유저에 자동으로 생성이 되어 있고, PUBLIC SYNONYM으로 정의되어 있기 때문에 사용자는 PROCEDURE 이름만 호출하여 사용할 수 있습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>구분</strong></p></th><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th></tr><tr><td class="confluenceTd"><p>표준출력</p></td><td class="confluenceTd"><p>DBMS_OUTPUT.PUT</p></td><td class="confluenceTd"><p>PRINT</p></td></tr><tr><td class="confluenceTd"><p>표준출력</p></td><td class="confluenceTd"><p>DBMS_OUTPUT.PUT_LINE</p></td><td class="confluenceTd"><p>PRINTLN</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FOPEN</p></td><td class="confluenceTd"><p>FOPEN</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FCLOSE</p></td><td class="confluenceTd"><p>FCLOSE</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FCLOSE_ALL</p></td><td class="confluenceTd"><p>FCLOSE_ALL</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FCOPY</p></td><td class="confluenceTd"><p>FCOPY</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FFLUSH</p></td><td class="confluenceTd"><p>FFLUSH</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FREMOVE</p></td><td class="confluenceTd"><p>FREMOVE</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.FRENAME</p></td><td class="confluenceTd"><p>FRENAME</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.GET_LINE</p></td><td class="confluenceTd"><p>GET_LINE</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.IS_OPEN</p></td><td class="confluenceTd"><p>IS_OPEN</p></td></tr><tr><td class="confluenceTd"><p>파일처리</p></td><td class="confluenceTd"><p>UTL_FILE.NEW_LINE</p></td><td class="confluenceTd"><p>NEW_LINE</p></td></tr></tbody></table></div><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-REFCURSOR"><strong>REF CURSOR</strong></h2><p>Oracle의 REF CURSOR는 보통 PACKAGE에 선언을 하고, 이를 PROCEDURE의 OUT PARAMATER로 선언하여 사용합니다. 하지만, ALTIBASE는 PACKAGE를 제공하지 않기 때문에 TYPESET으로 생성하여 사용해야 합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PACKAGE ref_cursor_pkg
+AS
+TYPE ref_type IS REF CURSOR;
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql IN VARCHAR2);
+END;
+/
+CREATE OR REPLACE PACKAGE BODY ref_cursor_pkg
+AS
+PROCEDURE ref_cursor_pro(v_result OUT ref_type, v_sql IN VARCHAR2)
+AS
+BEGIN OPEN v_result FOR v_sql [USING] [Bind Var];
+END;
+/
+</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE TYPESET my_type 
+AS 
+TYPE my_cur IS REF CURSOR;
+END;
+/
+CREATE OR REPLACE PROCEDURE opencursor( v_result OUT my_type.my_cur, v_sql IN VARCHAR(200) ) 
+AS 
+BEGIN 
+    OPEN y_result FOR v_sql \[USING\] \[Bind Var\]; 
+END;
+/</pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-WHERECURRENTOF구문"><strong>WHERE CURRENT OF 구문</strong></h2><p>ALTIBASE는 CURSOR를 이용한 WHERE CURRENT OF 구문을 지원하지 않습니다. 다만, 해당 TABLE에 PRIMARY KEY가 있다면 다음과 같이 변경이 가능합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE proc1
+IS
+
+CURSOR emp_list IS
+       SELECT empno FROM employee
+       WHERE empno = 1 FOR UPDATE;
+
+BEGIN FOR emplst IN emp_list LOOP
+    UPDATE employee SET empjob = &#39;SALESMAN&#39;
+     WHERE CURRENT OF emp_list;
+END LOOP;
+END;
+/
+</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE proc1
+AS
+BEGIN
+DECLARE CURSOR cur1 IS
+SELECT empno FROM employee
+WHERE empno = 1;
+
+v_empjob VARCHAR(10);
+v_empno INTEGER;
+
+BEGIN
+    OPEN cur1;
+    LOOP FETCH cur1 INTO v_empno, v_empjob;
+    EXIT WHEN cur1%NOTFOUND;
+    UPDATE employee SET empjob = &#39;SALESMAN’ WHERE emp_no = v_empno; //emp_no가 PK이어야 한다.
+END LOOP;
+CLOSE cur1;
+END;
+END;
+/
+</pre>
+</div></div></td></tr></tbody></table></div><h2 id="id-2-3STOREDPROCEDUREorFUNCTION변환-EXCEPTION"><strong>EXCEPTION</strong></h2><p>Oracle과 ALTIBASE는 Stored PROCEDURE/FUNCTION에서 발생하는 EXCEPTION들을 미리 시스템에서 정의해 놓았습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Oracle</strong></p></th><th class="confluenceTh"><p> </p></th><th class="confluenceTh"><p><strong>ALTIBASE</strong></p></th><th class="confluenceTh"><p> </p></th></tr><tr><td class="confluenceTd"><p><strong>SQLERRM</strong></p></td><td class="confluenceTd"><p><strong>SQLCODE</strong></p></td><td class="confluenceTd"><p><strong>SQLERRM</strong></p></td><td class="confluenceTd"><p><strong>SQLCODE</strong></p></td></tr><tr><td class="confluenceTd"><p>CURSOR_ALREADY_OPEN</p></td><td class="confluenceTd"><p>-6530</p></td><td class="confluenceTd"><p>CURSOR_ALREADY_OPEN</p></td><td class="confluenceTd"><p>201062</p></td></tr><tr><td class="confluenceTd"><p>DUP_VAL_ON_INDEX</p></td><td class="confluenceTd"><p>-1</p></td><td class="confluenceTd"><p>DUP_VAL_ON_INDEX</p></td><td class="confluenceTd"><p>201063</p></td></tr><tr><td class="confluenceTd"><p>INVALID_CURSOR</p></td><td class="confluenceTd"><p>-1001</p></td><td class="confluenceTd"><p>INVALID_CURSOR</p></td><td class="confluenceTd"><p>201064</p></td></tr><tr><td class="confluenceTd"><p>INVALID_NUMBER</p></td><td class="confluenceTd"><p>-1722</p></td><td class="confluenceTd"><p>INVALID_NUMBER</p></td><td class="confluenceTd"><p>201065</p></td></tr><tr><td class="confluenceTd"><p>NO_DATA_FOUND</p></td><td class="confluenceTd"><p>+100</p></td><td class="confluenceTd"><p>NO_DATA_FOUND</p></td><td class="confluenceTd"><p>100</p></td></tr><tr><td class="confluenceTd"><p>PROGRAM_ERROR</p></td><td class="confluenceTd"><p>-6501</p></td><td class="confluenceTd"><p>PROGRAM_ERROR</p></td><td class="confluenceTd"><p>201067</p></td></tr><tr><td class="confluenceTd"><p>STROAGE_ERROR</p></td><td class="confluenceTd"><p>-6500</p></td><td class="confluenceTd"><p>STROAGE_ERROR</p></td><td class="confluenceTd"><p>201068</p></td></tr><tr><td class="confluenceTd"><p>TIMEOUT_ON_RESOURCE</p></td><td class="confluenceTd"><p>-51</p></td><td class="confluenceTd"><p>TIMEOUT_ON_RESOURCE</p></td><td class="confluenceTd"><p>201069</p></td></tr><tr><td class="confluenceTd"><p>TOO_MANY_ROWS</p></td><td class="confluenceTd"><p>-1422</p></td><td class="confluenceTd"><p>TOO_MANY_ROWS</p></td><td class="confluenceTd"><p>201070</p></td></tr><tr><td class="confluenceTd"><p>VALUE_ERROR</p></td><td class="confluenceTd"><p>-6502</p></td><td class="confluenceTd"><p>VALUE_ERROR</p></td><td class="confluenceTd"><p>201071</p></td></tr><tr><td class="confluenceTd"><p>ZERO_DIVIDE</p></td><td class="confluenceTd"><p>-1476</p></td><td class="confluenceTd"><p>ZERO_DIVIDE</p></td><td class="confluenceTd"><p>201072</p></td></tr><tr><td class="confluenceTd"><p>ACCESS_INTO_NULL</p></td><td class="confluenceTd"><p>-6530</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>CASE_NOT_FOUND</p></td><td class="confluenceTd"><p>-6592</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>COLLECTION_IS_NULL</p></td><td class="confluenceTd"><p>-6531</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>LOGIN_DENIED</p></td><td class="confluenceTd"><p>-1017</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>NOT_LOGGED_ON</p></td><td class="confluenceTd"><p>-1012</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>ROWTYPE_MISMATCH</p></td><td class="confluenceTd"><p>-6504</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>SELF_IS_NULL</p></td><td class="confluenceTd"><p>-30625</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>SUBSCRIPT_BEYOND_COUNT</p></td><td class="confluenceTd"><p>-6533</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>SUBSCRIPT_OUTSIDE_LIMIT</p></td><td class="confluenceTd"><p>-6532</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr><tr><td class="confluenceTd"><p>SYS_INVALID_ROWID</p></td><td class="confluenceTd"><p>-1410</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>지원하지 않음</p></td></tr></tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

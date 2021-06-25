@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : What is MEM_MAX_DB_SIZE?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : What is MEM_MAX_DB_SIZE?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145557 {padding: 0px;}
+div.rbtoc1624409145557 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145557 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145557'>
+<ul class='toc-indentation'>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-Definition'>Definition</a></li>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-MaximumValue'>Maximum Value</a></li>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-HowtoChange'>How to Change</a>
+<ul class='toc-indentation'>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-Whentosetitlargerthanthecurrentvalue'>When to set it larger than the current value</a></li>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-Whentosetitlessthanthecurrentvalue'>When to set it less than the current value</a></li>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-Howtochange'>How to change</a></li>
+<li><a href='#WhatisMEM_MAX_DB_SIZE?-Checkthesettingvalue'>Check the setting value</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="WhatisMEM_MAX_DB_SIZE?-Definition">Definition</h1><hr /><ul><li>This refers to the <strong>maximum amount of memory that can be used as a memory tablespace (memory table or memory data)</strong> stored in physical memory.</li><li>Constraints on <span style="color: rgb(0,0,128);"><u>the total usage of all memory tablespaces combined.</u></span></li><li>This is not the maximum size that each of the memory tablespaces can use.</li><li>The size of the index created on the memory table <strong><u>is not included.</u></strong></li><li><strong><u>It also includes historical data that occurs when performing change transactions.</u></strong><br />When a change transaction is performed, the past data is retained until the transaction is terminated (MVCC technique). In the case of a memory table, a replica of the record is created in the memory table.<strong><u><br /></u></strong></li><li>If the maximum value is not specified when creating a memory tablespace, it is automatically expanded by the value set for MEM_MAX_DB_SIZE.</li></ul><p> </p><h1 id="WhatisMEM_MAX_DB_SIZE?-MaximumValue">Maximum Value</h1><hr /><ul><li><strong>It is recommended to set it to about 60~70% of the physical memory.</strong></li><li><strong><u>In addition to the memory data, must consider the size of the record replicas</u> </strong>that will be created by the MVCC technique when performing a change transaction.<br />For example, if a change transaction occurs in a 1G memory table, the size of the table may be 2G when the transaction is completed.</li><li>Since memory is a shared resource that should be used by the OS and other processes as well as the Altibase server process, it should be set lesser than the physical memory.</li><li>Although it is possible to set MEM_MAX_DB_SIZE larger than the physical memory, if the memory is used beyond the physical memory, swap in/out may occur, resulting in performance degradation and various problems in the system.</li></ul><p> </p><h1 id="WhatisMEM_MAX_DB_SIZE?-HowtoChange">How to Change</h1><hr /><h2 id="WhatisMEM_MAX_DB_SIZE?-Whentosetitlargerthanthecurrentvalue">When to set it larger than the current value</h2><hr /><p>This section describes the parts to be considered when setting MEM_MAX_DB_SIZE larger than the current value.</p><h3 id="WhatisMEM_MAX_DB_SIZE?-Diskspace">Disk space</h3><p>Memory tablespaces store two sets of 'memory checkpoint image files on disk for backup purposes. So it requires <span style="color: rgb(255,0,0);"><strong>twice as much disk space as the memory data usage.</strong></span></p><p>If MEM_MAX_DB_SIZE is set large, disk usage will also increase, so make sure to free up disk space before changing MEM_MAX_DB_SIZE.</p><p>Ex) If MEM_MAX_DB_SIZE is 60G, 120G of disk space is required.</p><h3 id="WhatisMEM_MAX_DB_SIZE?-Userenvironmentsetting(Linux/Unix)">User environment setting (Linux/Unix)</h3><p>The user should run ulimit -a to make sure that the settings below are <span style="color: rgb(255,0,0);"><strong>set to the maximum values allowed by the OS.</strong></span></p><p><span style="color: rgb(0,0,0);">max memory size<br />virtual memory</span></p><h3 id="WhatisMEM_MAX_DB_SIZE?-Kernelparameters(AIX,HP-UX)"><span style="color: rgb(0,0,0);">Kernel parameters (AIX, HP-UX)</span></h3><p>For AIX, check if data, rss, fsize, etc. are set to -1 in the /etc/security/limits file.</p><p>For HP, check that the maxdsiz_64bit value is set large enough via kctune.</p><p>Linux and SunOS are not applicable.</p><h2 id="WhatisMEM_MAX_DB_SIZE?-Whentosetitlessthanthecurrentvalue"><span style="color: rgb(0,0,0);">When to set it less than the current value</span></h2><hr /><p><span style="color: rgb(0,0,0);">This section describes the parts to be considered when setting MEM_MAX_DB_SIZE less than the current value.</span></p><ul><li><span style="color: rgb(0,0,0);">MEM_MAX_DB_SIZE cannot be set less unconditionally.</span></li><li>Check the increased 'Checkpoint Image File' size and set it larger than that.<br />Its size can be checked with the statement below.</li></ul><p><span style="color: rgb(0,0,0);">If TOTAL is less than MAX, set MEM_MAX_DB_SIZE to be larger than TOTAL and smaller than the existing value.</span></p>    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>If the user copies the SQL statement in IE, a blank line may appear, so please use the attached file if necessary. total_memory_tablespaces_usage.txt</p>
+                    </div>
+    </div>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;       MAX(M)&#39;,                                       -- MAX(M)   : MEM_MAX_DB_SIZE setting value
+       TO_CHAR(MEM_ALLOC_PAGE_COUNT*32/1024, &#39;999,999,999&#39;) &#39;     TOTAL(M)&#39;,                                    -- TOTAL(M) : The total page size allocated to the memory tablespace. Also refers to the size of the checkpoint image file.
+       TO_CHAR((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, &#39;999,999,999&#39;) &#39;     ALLOC(M)&#39;,              -- ALLOC(M) : Amount of memory used by the tablespace
+       (SELECT TO_CHAR(SUM((FIXED_USED_MEM + VAR_USED_MEM))/1024/1024, &#39;999,999,999&#39;)
+          FROM V$MEMTBL_INFO) &#39;      USED(M)&#39;,                                                                  -- USED(M)  : Memory size in which data is stored among ALLOCs
+       TO_CHAR((((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE)*100, &#39;99.99&#39;) &#39;USAGE(%)&#39;  -- USAGE(%) : ALLOC utilization rate compared to MAX
+  FROM V$DATABASE ;
+       MAX(M)         TOTAL(M)         ALLOC(M)         USED(M)     USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120              920              621              142      12.13           
+1 row selected. </pre>
+</div></div>
+<div id="expander-1480735853" class="expand-container">
+<div id="expander-control-1480735853" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">TOTAL is...</span>
+</div>
+<div id="expander-content-1480735853" class="expand-content"><p>TOTAL(M) means the total page size allocated to the memory tablespace.</p><p>This value also includes free pages in the memory tablespace.<br />Free pages may not be loaded into physical memory. So this value cannot be viewed as the physical memory usage of the memory tablespace.</p><pre> </pre><pre>This value also refers to the size of the checkpoint image file.</pre><pre> </pre><pre>TOTAL does not decrease except in the case of DROP TABESPACE. Restarting the Altibase server does not decrease the value.</pre><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Comparing to checkpoint image file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; /
+      MAX(M)         TOTAL(M)         ALLOC(M)          USED(M)    USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120            4,108              158              123       3.10           
+1 row selected.
+
+
+iSQL&gt; ! ls -l $ALTIBASE_HOME/dbs/*MEM* | sort -n | awk &#39;{sum += $5} END{print (sum/1024/1024)/2&quot; MB&quot;}&#39;        -- It may look different depending on when the checkpoint is performed. 
+4108.17 MB                                                                                                    -- When a checkpoint is performed, it becomes equal to TOTAL. </pre>
+</div></div></div>
+</div>
+<p> </p><p><span style="color: rgb(0,0,0);"> </span></p><h2 id="WhatisMEM_MAX_DB_SIZE?-Howtochange">How to change</h2><p>1. <strong>Stop the Altibase Server</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div><p> </p><p>2. <strong>Change the altibase.properties file</strong></p><p>Save after changing MEM_MAX_DB_SIZE in the Altibase server properties file ($ALTIBASE_HOME/conf/altibase.properties).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+MEM_MAX_DB_SIZE        = 2G # MEM_MAX_DB_SIZE</pre>
+</div></div><p> </p><p>3. <strong>Start the Altibase Server</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div><p> </p><h2 id="WhatisMEM_MAX_DB_SIZE?-Checkthesettingvalue">Check the setting value</h2><hr /><p>The setting value can be checked in two methods as below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set linesize 1024
+iSQL&gt; set colsize 20
+iSQL&gt; SELECT NAME, TO_CHAR(VALUE1/1024/1024, &#39;999,999&#39;) AS &#39;VALUE(MB)&#39; FROM V$PROPERTY WHERE NAME = &#39;MEM_MAX_DB_SIZE&#39;;</pre>
+</div></div><p>Or,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999&#39;) AS &#39;MEM_MAX_DB_SIZE(MB)&#39; FROM V$DATABASE; </pre>
+</div></div><p> </p><p> </p><div><span style="color: rgb(0,0,0);font-size: 20.0px;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

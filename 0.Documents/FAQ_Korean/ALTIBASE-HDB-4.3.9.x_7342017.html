@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ALTIBASE HDB 4.3.9.x</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7342015.html">디스크 테이블 및 인덱스 사용량</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ALTIBASE HDB 4.3.9.x
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Apr 20, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053638 {padding: 0px;}
+div.rbtoc1624409053638 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053638 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053638'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB4.3.9.x-개요'>개요</a></li>
+<li><a href='#ALTIBASEHDB4.3.9.x-디스크테이블사용량조회'>디스크 테이블 사용량 조회</a></li>
+<li><a href='#ALTIBASEHDB4.3.9.x-디스크인덱스사용량조회'>디스크 인덱스 사용량 조회</a></li>
+<li><a href='#ALTIBASEHDB4.3.9.x-참고-디스크테이블및인덱스수확인방법'>참고 - 디스크 테이블 및 인덱스 수 확인 방법</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB4.3.9.x-개요"><strong>개요</strong></h1><hr /><p>ALTIBASE HDB 4.3.9 버전의 디스크 테이블 및 인덱스 사용량 조회 쿼리입니다.</p><p>이 쿼리는 ALTIBASE HDB 5.1.1 에서도 사용할 수 있습니다.</p><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB4.3.9.x-디스크테이블사용량조회"><strong>디스크 테이블 사용량 조회</strong></h1><hr /><p><strong><br /></strong></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 4.3.9 디스크 테이블 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>set linesize 1024;
+set colsize 20;
+SELECT U.USER_NAME &#39;USER_NAME&#39;                                                                                      -- 데이터베이스 사용자
+     , TBL.TABLE_NAME &#39;TABLE_NAME&#39;                                                                                  -- 테이블 이름
+     , TBS.NAME &#39;TBS_NAME&#39;                                                                                          -- 테이블이 속한 테이블스페이스 이름
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024 , &#39;999,999,999&#39;) &#39;TBS_MAX(KB)&#39;                           -- 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, &#39;999,999,999&#39;) &#39;ALLOC(KB)&#39;  -- 테이블에서 할당받은 전체 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT)/1024, &#39;999,999,999&#39;) &#39;USED(KB)&#39;    -- 테이블의 실 사용량(데이터 사용량)
+     , TO_CHAR((((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE))*100), &#39;99.9&#39;) &#39;USAGE(%)&#39; -- 테이블스페이스 최대 크기를 기준으로 한 사용률
+  FROM X$SEGMENT SEG
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE SEG.TABLE_OID = TBL.TABLE_OID
+   AND SEG.SPACE_ID = TBL.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND TBL.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = &#39;T&#39;
+   AND SEG.SEGMENT_TYPE = 6
+ ORDER BY USER_NAME, TABLE_NAME
+ ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">USER_NAME             TABLE_NAME            TBS_NAME              TBS_MAX(KB)      ALLOC(KB)        USED(KB)         USAGE(%)
+----------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   CUSTOMER              USER_DATA                2,097,152              256                0       0.0
+SYS                   DEPARTMENT            SYS_TBS_DATA               254,976              256                0        .1
+SYS                   DISK_T                USER_DATA                2,097,152          851,200          850,944      40.6
+SYS                   EMPLOYEE              SYS_TBS_DATA               254,976              256                0        .1
+SYS                   ORDERS                USER_DATA                2,097,152              256                0       0.0
+5 rows selected.</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB4.3.9.x-디스크인덱스사용량조회"><strong>디스크 인덱스 사용량 조회</strong></h1><hr /><p><strong><br /></strong></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 4.3.9 디스크 인덱스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>set linesize 1024
+set colsize 20
+SELECT U.USER_NAME AS &#39;USER_NAME&#39;           -- 데이터베이스 사용자
+     , TBL.TABLE_NAME AS &#39;TABLE_NAME&#39;       -- 테이블 이름
+     , IDX.INDEX_NAME AS &#39;INDEX_NAME&#39;       -- 인덱스 이름
+     , TBS.NAME AS &#39;TBS_NAME&#39;               -- 인덱스가 속한 테이블스페이스 이름
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024 , &#39;999,999,999&#39;) AS &#39;TBS_MAX(KB)&#39;                            -- 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, &#39;999,999,999&#39;) AS &#39;ALLOC(KB)&#39;   -- 인덱스에서 할당받은 전체 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT )/1024, &#39;999,999,999&#39;) AS &#39;USED(KB)&#39;    -- 인덱스의 실 사용량(데이터 사용량)
+    , TO_CHAR((((TBS.A_EXTENT_PAGE_COUNT * SEG.EXTENT_TOTAL_COUNT)/TBS.TOTAL_PAGE_COUNT)*100), &#39;99.9&#39;) AS &#39;USAGE(%)&#39;    -- 테이블스페이스의 최대 크기를 기준으로 한 사용률
+ FROM  X$SEGMENT SEG
+     , V$INDEX I
+     , SYSTEM_.SYS_INDICES_ IDX
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_DESC = I.INDEX_SEG_DESC
+   AND I.INDEX_ID = IDX.INDEX_ID
+   AND IDX.TABLE_ID = TBL.TABLE_ID
+   AND SEG.SPACE_ID = IDX.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND IDX.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = &#39;T&#39;
+   AND SEG.SEGMENT_TYPE = 5
+ ORDER BY U.USER_NAME, TBL.TABLE_NAME, IDX.INDEX_NAME
+   ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">USER_NAME             TABLE_NAME            INDEX_NAME            TBS_NAME              TBS_MAX(KB)      ALLOC(KB)        USED(KB)         USAGE(%)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   CUSTOMER              __SYS_IDX_ID_136      USER_DATA                2,097,152              256                0       0.0
+SYS                   DEPARTMENT            DEP_IDX1              USER_IDX                 2,097,152              256                0       0.0
+SYS                   DEPARTMENT            __SYS_IDX_ID_134      SYS_TBS_DATA               254,976              256                0        .1
+SYS                   DISK_T                DISK_T_IDX_01         USER_IDX                 2,097,152          159,744          159,488       7.6
+SYS                   EMPLOYEE              EMP_IDX1              USER_IDX                 2,097,152              256                0       0.0
+SYS                   EMPLOYEE              __SYS_IDX_ID_135      SYS_TBS_DATA               254,976              256                0        .1
+SYS                   ORDERS                ODR_IDX1              USER_IDX                 2,097,152              256                0       0.0
+SYS                   ORDERS                __SYS_IDX_ID_137      USER_DATA                2,097,152              256                0       0.0
+8 rows selected.</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB4.3.9.x-참고-디스크테이블및인덱스수확인방법"><strong>참고 - 디스크 테이블 및 인덱스 수 확인 방법</strong></h1><hr /><p><strong><br /></strong></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>디스크 테이블 수 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>set linesize 1024
+set colsize 30
+SELECT &#39;TABLE CNT : &#39;||COUNT(*) TABLE_COUNT
+  FROM V$DISKTBL_INFO D
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE D.TABLE_OID = T.TABLE_OID ;</pre>
+</div></div><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>디스크 인덱스 수 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>set linesize 1024;
+set colsize 30;
+SELECT &#39;INDEX CNT : &#39;||COUNT(*) INDEX_COUNT
+  FROM SYSTEM_.SYS_INDICES_
+ WHERE TABLE_ID IN (SELECT TABLE_ID
+                      FROM SYSTEM_.SYS_TABLES_ T
+                         , V$DISKTBL_INFO D
+                     WHERE T.TABLE_OID = D.TABLE_OID);</pre>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7342017/8618037.txt">disk_table_index_usage.txt</a> (text/plain)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7342017/8618038.txt">ALTIBASE_HDB_4.3.9_disk_table_index_usage.txt</a> (text/plain)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

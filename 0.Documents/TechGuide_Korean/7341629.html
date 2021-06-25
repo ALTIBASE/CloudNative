@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2-2 SQL 변환</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341605.html">Altibase Oracle 변환가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341609.html">2. 환경 설정</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2-2 SQL 변환
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Dec 04, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409850694 {padding: 0px;}
+div.rbtoc1624409850694 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409850694 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409850694'>
+<ul class='toc-indentation'>
+<li><a href='#id-2-2SQL변환-MathFunction'>Math Function</a></li>
+<li><a href='#id-2-2SQL변환-StringFunction'>String Function</a></li>
+<li><a href='#id-2-2SQL변환-DateFunction'>Date Function</a></li>
+<li><a href='#id-2-2SQL변환-CompareFunction'>Compare Function</a></li>
+<li><a href='#id-2-2SQL변환-ConvertFunction'>Convert Function</a></li>
+<li><a href='#id-2-2SQL변환-Encode/DecodeFunction'>Encode/Decode Function</a></li>
+<li><a href='#id-2-2SQL변환-LargeObjectFunction'>Large Object Function</a></li>
+<li><a href='#id-2-2SQL변환-AnalyzeFunction'>Analyze Function</a></li>
+</ul>
+</div>
+<hr />
+<h2 id="id-2-2SQL변환-MathFunction"><strong>Math Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ABS </p></td>
+<td class="confluenceTd"><p> ABS </p></td>
+<td class="confluenceTd"><p> 절대값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ACOS </p></td>
+<td class="confluenceTd"><p> ACOS </p></td>
+<td class="confluenceTd"><p> n의 역코사인(arc   cosine) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ASIN </p></td>
+<td class="confluenceTd"><p> ASIN </p></td>
+<td class="confluenceTd"><p> n의 역사인(arc sine) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ATAN </p></td>
+<td class="confluenceTd"><p> ATAN </p></td>
+<td class="confluenceTd"><p> n의 역탄젠트(arc tangent) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ATAN2 </p></td>
+<td class="confluenceTd"><p> ATAN2 </p></td>
+<td class="confluenceTd"><p> ATAN2(n,m)은 n/m의 역탄젠트(arc tangent)값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AVG </p></td>
+<td class="confluenceTd"><p> AVG </p></td>
+<td class="confluenceTd"><p> Row의expr 값의 평균값을 구한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BITAND </p></td>
+<td class="confluenceTd"><p> BITAND </p></td>
+<td class="confluenceTd"><p> 인수1과 인수2의 비트에 대한 and 연산을 수행하여 정수를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CEIL </p></td>
+<td class="confluenceTd"><p> CEIL </p></td>
+<td class="confluenceTd"><p> 인수에서 지정한 수치를 올림 하여 정수를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COS </p></td>
+<td class="confluenceTd"><p> COS </p></td>
+<td class="confluenceTd"><p> n의 코사인값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COSH </p></td>
+<td class="confluenceTd"><p> COSH </p></td>
+<td class="confluenceTd"><p> n의 쌍곡 코사인 값을반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COUNT </p></td>
+<td class="confluenceTd"><p> COUNT </p></td>
+<td class="confluenceTd"><p> Row의 개수를 세는 함수, 분석함수이다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DENSE_RANK </p></td>
+<td class="confluenceTd"><p> DENSE_RANK </p></td>
+<td class="confluenceTd"><p> DENSE_RANK 함수는 RANK 함수처럼 결과 집합   또는   파티션의   특정   멤버를   기준으로   순위를   매긴다. 그러나 중복   순위   발생   후에   건너뛰지   않고   다음   순위가   매겨진다. 반환 값의   타입은   BIGINT 이다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXP </p></td>
+<td class="confluenceTd"><p> EXP </p></td>
+<td class="confluenceTd"><p> e의n제곱 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FLOOR </p></td>
+<td class="confluenceTd"><p> FLOOR </p></td>
+<td class="confluenceTd"><p> 지정한 숫자보다 작거나 같은 가장 큰 정수 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAG </p></td>
+<td class="confluenceTd"><p> LAG </p></td>
+<td class="confluenceTd"><p> 정렬된 각 파티션   내에서   현재   행을   기준으로   이전의   offset 번째 행의   값을   구하는   함수이다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LN </p></td>
+<td class="confluenceTd"><p> LN </p></td>
+<td class="confluenceTd"><p> 입력한 자연 로그값 구한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG(N,M) </p></td>
+<td class="confluenceTd"><p> LOG(N,M) </p></td>
+<td class="confluenceTd"><p> 밑을 n으로 하는 m의 로그값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MOD </p></td>
+<td class="confluenceTd"><p> MOD </p></td>
+<td class="confluenceTd"><p> n2을 n1으로 나눈 나머지 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NANVL </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 입력 값n2가 수치가 아니면 대체값n1을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NTH_VALUE </p></td>
+<td class="confluenceTd"><p> NTH_VALUE </p></td>
+<td class="confluenceTd"><p> 파티션 또는 윈도우   내에서   offset 번째 행의   값을   구하는   함수이다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> POWER </p></td>
+<td class="confluenceTd"><p> POWER </p></td>
+<td class="confluenceTd"><p> n2의 1n1승 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ROUND </p></td>
+<td class="confluenceTd"><p> ROUND </p></td>
+<td class="confluenceTd"><p> n값을 소수점 이하를 integer를 기준으로 반올림하여 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ROW_NUMBER </p></td>
+<td class="confluenceTd"><p> ROW_NUMBER </p></td>
+<td class="confluenceTd"><p> ROW_NUMBER 함수는 결과   집합   또는   파티션의   특정   멤버를   기준으로   연속적인   유일한   수를   부여한다. 1 부터 시작하여   ORDER BY 식에 명시된   순서대로   부여된다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SIGN </p></td>
+<td class="confluenceTd"><p> SIGN </p></td>
+<td class="confluenceTd"><p> n의 부호를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SIN </p></td>
+<td class="confluenceTd"><p> SIN </p></td>
+<td class="confluenceTd"><p> n의 사인값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SINH </p></td>
+<td class="confluenceTd"><p> SINH </p></td>
+<td class="confluenceTd"><p> n의 쌍곡선 사인을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQRT </p></td>
+<td class="confluenceTd"><p> SQRT </p></td>
+<td class="confluenceTd"><p> n의 제곱근을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STDDEV </p></td>
+<td class="confluenceTd"><p> STDDEV </p></td>
+<td class="confluenceTd"><p> STDDEV 는 입력된   expression 들의 표준편차를   반환한다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TAN </p></td>
+<td class="confluenceTd"><p> TAN </p></td>
+<td class="confluenceTd"><p> N의탄젠트 값을반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TANH </p></td>
+<td class="confluenceTd"><p> TANH </p></td>
+<td class="confluenceTd"><p> N의쌍곡선탄젠트(hyperbolic tangent)값 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> VARIANCE </p></td>
+<td class="confluenceTd"><p> VARIANCE </p></td>
+<td class="confluenceTd"><p> VARIANCE 는 입력된   expression 들의 변동량을   반환한다. </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-StringFunction"><strong>String Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONCAT </p></td>
+<td class="confluenceTd"><p> CONCAT </p></td>
+<td class="confluenceTd"><p> char1과 char2를 연결하여 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHR </p></td>
+<td class="confluenceTd"><p> CHR </p></td>
+<td class="confluenceTd"><p> number에 해당하는 문자를 구한다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NCHR </p></td>
+<td class="confluenceTd"><p> NCHR </p></td>
+<td class="confluenceTd"><p> 유니코드 문자를 변환한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOWER </p></td>
+<td class="confluenceTd"><p> LOWER </p></td>
+<td class="confluenceTd"><p> 입력된 문자열을 소문자로 변환한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UPPER </p></td>
+<td class="confluenceTd"><p> UPPER </p></td>
+<td class="confluenceTd"><p> 입력된 문자열을 대문자로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LPAD </p></td>
+<td class="confluenceTd"><p> LPAD </p></td>
+<td class="confluenceTd"><p> 지정된 자릿수N으로부터EXPR1을 채우고, 왼편에 남은 공간에 expr1을 채운다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LTRIM </p></td>
+<td class="confluenceTd"><p> LTRIM </p></td>
+<td class="confluenceTd"><p> 문자열 char   좌측으로부터set 으로 지정된 모든 문자를 제거한다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RTRIM </p></td>
+<td class="confluenceTd"><p> RTRIM </p></td>
+<td class="confluenceTd"><p> 문자열 char   우측으로부터set 으로 지정된 모든 문자를 제거한다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RPAD </p></td>
+<td class="confluenceTd"><p> RPAD </p></td>
+<td class="confluenceTd"><p> 인수 expr1   오른편으로 인수 expr2 로 지정한 문자를 길이 필요에 따라 반복하여n만큼 붙여준다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RPAD </p></td>
+<td class="confluenceTd"><p> RPAD </p></td>
+<td class="confluenceTd"><p> 인수 expr1   오른편으로 공백을 채워준다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SOUNDEX </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> char의 음성표현을 가지는 문자열을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SUBSTR </p></td>
+<td class="confluenceTd"><p> SUBSTR </p></td>
+<td class="confluenceTd"><p> 문자열 Char에서Position 문자위치로부터Substring_Leng   th 문자 길이만큼 문자열을 추출하여 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REPLACE </p></td>
+<td class="confluenceTd"><p> REPLACE2 </p></td>
+<td class="confluenceTd"><p> Parameter로 주어지는 첫번째 문자열에서, 두번째 문자열을 모두 세번째 문자열로바꾼 후 결과를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REGEXP_REPLACE/SUBSTR </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 지정한 정규 표현을 만족하는 부분을 치환, 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INITCAP </p></td>
+<td class="confluenceTd"><p> INITCAP </p></td>
+<td class="confluenceTd"><p> 입력 문자열 중에서 각 단어의 첫 글자를 대문자로 변환한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NLS_INITCAP </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 입력문자열 중에서 각 단어의 첫 글자를 대문자로 변환한다(다국언어 지원)한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NLSSORT </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 입력 문자열을 sorting하여 string을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TRANSLATE </p></td>
+<td class="confluenceTd"><p> TRANSLATE </p></td>
+<td class="confluenceTd"><p> from_string에서 각 문자를 to_sting 안의 대응하는 문자로 치환하여 expr을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_CHAR </p></td>
+<td class="confluenceTd"><p> TO_CHAR </p></td>
+<td class="confluenceTd"><p> CHAR 타입으로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TREAT </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 인수의 선언형을 변경해준다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NLS_CHARSET_DECL_LEN </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> NCHR열의 선언된 폭을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NLS_CHARSET_ID </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 문자셋 이름에 상응하는 ID번호를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ASCII </p></td>
+<td class="confluenceTd"><p> ASCII </p></td>
+<td class="confluenceTd"><p> 주어진 char의 첫 문자의 아스키 값에 상응하는10진수 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INSTR </p></td>
+<td class="confluenceTd"><p> INSTR </p></td>
+<td class="confluenceTd"><p> 문자열 중에서 지정한 문자가 처음 나타나는 위치를 숫자로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LENGTH </p></td>
+<td class="confluenceTd"><p> LENGTH </p></td>
+<td class="confluenceTd"><p> 인수 char의 길이를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LENGTHB </p></td>
+<td class="confluenceTd"><p> LENGTHB </p></td>
+<td class="confluenceTd"><p> char대신 바이트 단위로 길이를 계산한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> REGEXP_INSTR </p></td>
+<td class="confluenceTd"><p> REGEXP_INSTR </p></td>
+<td class="confluenceTd"><p> 지정한 조건(정규표현)을 만족하는 부분의 최초의 위치를 반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-DateFunction"><strong>Date Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (use +) </p></td>
+<td class="confluenceTd"><p> (use +) </p></td>
+<td class="confluenceTd"><p> 일자 date에서 integer를 더한 날짜가 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> (use - ) </p></td>
+<td class="confluenceTd"><p> (use -) </p></td>
+<td class="confluenceTd"><p> 일자 Date   에서 integer   를 뺀 날짜가 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ADD_MONTHS </p></td>
+<td class="confluenceTd"><p> ADD_MONTHS </p></td>
+<td class="confluenceTd"><p> 일자 date에 특정 개월 수integer를 더한 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_DATE </p></td>
+<td class="confluenceTd"><p> CURRENT_DATE </p></td>
+<td class="confluenceTd"><p> 현재 세션의 날짜 정보를 date 형으로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_TIME </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 현재 세션의 시간대를 기준으로 현재 시간을 출력한다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_TIMESTAMP </p></td>
+<td class="confluenceTd"><p> CURRENT_TIMESTAMP </p></td>
+<td class="confluenceTd"><p> 현재 세션의 날짜와 시간정보를 반환(* CURRENT_DATE의 alias임) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_DAY </p></td>
+<td class="confluenceTd"><p> LAST_DAY </p></td>
+<td class="confluenceTd"><p> 해당날짜가 속한 달의 마지막 날짜를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NEW_TIME </p></td>
+<td class="confluenceTd"><p> CONV_TIMEZONE </p></td>
+<td class="confluenceTd"><p> date,zone1시간대를 zone2 시간대로 출력한다 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NEXT_DAY </p></td>
+<td class="confluenceTd"><p> NEXT_DAY </p></td>
+<td class="confluenceTd"><p> 해당일을 기준으로 명시된 요일의 다음 날짜를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ROUND </p></td>
+<td class="confluenceTd"><p> ROUND </p></td>
+<td class="confluenceTd"><p> 지정된 단위로 반올림한 날짜 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TRUNC </p></td>
+<td class="confluenceTd"><p> TRUNC </p></td>
+<td class="confluenceTd"><p> 지정된 단위로 잘라서 날짜 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXTRACT(datetime) </p></td>
+<td class="confluenceTd"><p> EXTRACT(datetime) </p></td>
+<td class="confluenceTd"><p> 특정 날짜, 시간 값이나 날짜 값 표현식으로부터 지정된 날짜 영역의 값을 추출 후 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOCALTIMESTAMP </p></td>
+<td class="confluenceTd"><p> DB_TIMEZONE </p></td>
+<td class="confluenceTd"><p> timestamp의 현재 날짜와 시각을 출력 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYSTIMESTAMP </p></td>
+<td class="confluenceTd"><p> SYSTIMESTAMP </p></td>
+<td class="confluenceTd"><p> 시스템의 날짜를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MONTHS_BETWEEN </p></td>
+<td class="confluenceTd"><p> MONTHS_BETWEEN </p></td>
+<td class="confluenceTd"><p> 일자 date1과 date2 사이의 시간대로 출력 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_CHAR(datetime) </p></td>
+<td class="confluenceTd"><p> TO_CHAR(datetime) </p></td>
+<td class="confluenceTd"><p> 사용자가 지정한 폼을 갖는 varchar2 형식의 Data로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_NUMBER(TO_CHAR()) </p></td>
+<td class="confluenceTd"><p> TO_NUMBER(TO_CHAR()) </p></td>
+<td class="confluenceTd"><p> 지정된 형식인 number형식으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_DATE </p></td>
+<td class="confluenceTd"><p> TO_DATE </p></td>
+<td class="confluenceTd"><p> 지정된 형식인 date형식으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_DSINTERVAL </p></td>
+<td class="confluenceTd"><p> DATEDIFF로 대체가능 </p></td>
+<td class="confluenceTd"><p> interval year to   month 형태로 변경 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYSDATE </p></td>
+<td class="confluenceTd"><p> SYSDATE </p></td>
+<td class="confluenceTd"><p> Database가 있는OS의 일자와 시간을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> DATENAME </p></td>
+<td class="confluenceTd"><p> 입력 date에서 date_field_name에 해당하는 값만 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> DATEDIFF </p></td>
+<td class="confluenceTd"><p> enddate에서 startdate를 뺀 값(즉, enddate-startdate)을 date_field_name에 명시한 단위로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> DATEPART </p></td>
+<td class="confluenceTd"><p> 입력 date에서 date_field_name에 해당하는 값만 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> DATEADD </p></td>
+<td class="confluenceTd"><p> date 의  date_field_name부분을    number  만큼 증가시켜 그  결과를  반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-CompareFunction"><strong>Compare Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GREATEST </p></td>
+<td class="confluenceTd"><p> GREATEST </p></td>
+<td class="confluenceTd"><p> 하나 이상의 인수 중에서 가장 큰 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LEAST </p></td>
+<td class="confluenceTd"><p> LEAST </p></td>
+<td class="confluenceTd"><p> 인수 expr의 리스트 중에서 가장 작은 값을 반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-ConvertFunction"><strong>Convert Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CAST </p></td>
+<td class="confluenceTd"><p> CAST </p></td>
+<td class="confluenceTd"><p> Data형식을 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONVERT </p></td>
+<td class="confluenceTd"><p> CONVERT </p></td>
+<td class="confluenceTd"><p> 지정된 문자 세트를 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RAWTOHEX </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> RAW를 16진수의 문자로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> HEXTORAW </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 16진수를 raw값으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RAWINTOCHAR </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> rowid 값을 VARCHAR2형식으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SCN TO TIMESTAMP </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 시스템 변경 번호(SCN) 로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_BINARY_DOUBLE </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 배정밀도 부동소수점 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_CLOB </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> nclob값을 clob값으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TO_LOB </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> long또는 long raw 값을 lob값으로 변환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COLEASE </p></td>
+<td class="confluenceTd"><p> COLEASE </p></td>
+<td class="confluenceTd"><p> 나열된 값을 순차적으로 체크하여 NULL 이 아닌 첫번째 인수를 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LNNVL </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 조건의 한쪽 또는 양쪽 연산자가 NULL이 존재할 경우에, 조건문을 평가하기 위한 방법 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NULLIF </p></td>
+<td class="confluenceTd"><p> NULLIF </p></td>
+<td class="confluenceTd"><p> expr1과 expr2 가 같으면, null 값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NVL </p></td>
+<td class="confluenceTd"><p> NVL </p></td>
+<td class="confluenceTd"><p> 쿼리의 결과에서 NULL (공백으로 반환)값을 치환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NVL2 </p></td>
+<td class="confluenceTd"><p> NVL2 </p></td>
+<td class="confluenceTd"><p> expr1이 NULL이 아니면 expr2를 반환하고 NULL   이면 expr3를 반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-Encode/DecodeFunction"><strong>Encode/Decode Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECODE </p></td>
+<td class="confluenceTd"><p> DECODE </p></td>
+<td class="confluenceTd"><p> 프로그래밍언어의 IF   문을 SQL   , PL/SQL 안으로 끌어들이는 함수 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DUMP </p></td>
+<td class="confluenceTd"><p> DUMP </p></td>
+<td class="confluenceTd"><p> 지정한 Data의 위치와 길이등을 지정한 형식으로 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> VSIZE </p></td>
+<td class="confluenceTd"><p> SIZEOF </p></td>
+<td class="confluenceTd"><p> expr 의 내부 표현에서 바이트 수를 반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-LargeObjectFunction"><strong>Large Object Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EMPTY_BLOB/EMPTY_CLOB </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> LOB변수를 초기화하는 함수 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BFILENAME </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> Server File System의 물리 LOB   BinaryFile과 연관된 BFILE Locator를 반환 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-2-2SQL변환-AnalyzeFunction"><strong>Analyze Function</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Oracle</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX </p></td>
+<td class="confluenceTd"><p> MAX </p></td>
+<td class="confluenceTd"><p> 인수 중에 최대값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MIN </p></td>
+<td class="confluenceTd"><p> MIN </p></td>
+<td class="confluenceTd"><p> 인수 중에 최소값을 반환 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SUM </p></td>
+<td class="confluenceTd"><p> SUM </p></td>
+<td class="confluenceTd"><p> Row의 expr에 대한 합계 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RANK </p></td>
+<td class="confluenceTd"><p> RANK </p></td>
+<td class="confluenceTd"><p> 값의 그룹에서 값의 순위 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LEAD </p></td>
+<td class="confluenceTd"><p> LEAD </p></td>
+<td class="confluenceTd"><p> 현재형 기준으로 이후 값을 참조 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GROUP_ID </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> 지정된 GROUP   BY 결과로부터 중복된 그룹을 구별 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FIRST_VALUE </p></td>
+<td class="confluenceTd"><p> FIRST_VALUE </p></td>
+<td class="confluenceTd"><p> 파티션 또는 윈도우 내에 첫 번째 행의 값을 구하는 함수이다. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_VALUE </p></td>
+<td class="confluenceTd"><p> LAST_VALUE </p></td>
+<td class="confluenceTd"><p> 파티션 또는 윈도우   내에서   마지막   번째   행의   값을   구하는   함수이다. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

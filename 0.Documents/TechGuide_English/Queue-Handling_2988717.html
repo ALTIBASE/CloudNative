@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Queue Handling</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Queue Handling
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348200 {padding: 0px;}
+div.rbtoc1624409348200 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348200 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348200'>
+<ul class='toc-indentation'>
+<li><a href='#QueueHandling-Overview'>Overview</a></li>
+<li><a href='#QueueHandling-enqueue'>enqueue</a></li>
+<li><a href='#QueueHandling-dequeue'>dequeue</a></li>
+</ul>
+</div>
+
+<h1 id="QueueHandling-Overview">Overview</h1>
+
+<p>ALTIBASE HDB provides an object like table for queue.<br />
+Queue has a FIFO (First-In, First-Out) concept.<br />
+You can create a queue-object as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; CREATE QUEUE Q1 (1024);
+iSQL&gt; desc q1;
+[ TABLESPACE : SYS_TBS_MEM_DIC ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+MSGID                                    BIGINT          FIXED       NOT NULL
+MESSAGE                                  VARCHAR(1024)   VARIABLE
+CORRID                                   INTEGER         FIXED
+ENQUEUE_TIME                             DATE            FIXED
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_144                         BTREE    UNIQUE        MSGID ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+MSGID
+</pre>
+</div></div>
+
+<p>In a common case, User only inputs a record using message.</p>
+
+<p>if you want to corrdinate messages, you have to specify a value of corrid-column.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; ENQUEUE INTO q1 (message) VALUES (&#39;message&#39;);
+1 row inserted.
+
+iSQL&gt; set vertical on;
+iSQL&gt; select * from q1;
+MSGID        : 1
+MESSAGE      : message
+CORRID       :
+ENQUEUE_TIME : 09-FEB-2012
+
+1 row selected.
+</pre>
+</div></div>
+<ul>
+	<li>MSGID value is automatically inserted in order.</li>
+</ul>
+
+
+<h1 id="QueueHandling-enqueue">enqueue</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL ENQUEUE INTO Q1 (message) VALUES (:host_v);
+</pre>
+</div></div>
+
+<h1 id="QueueHandling-dequeue">dequeue</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL DEQUEUE message FROM Q1;
+</pre>
+</div></div>
+<ul>
+	<li>dequeue only one record having minimum value in an order(MSGID).</li>
+</ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Cannot insert new records after deleting bulk records</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Cannot insert new records after deleting bulk records
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_TaeHun Kim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 16, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><br class="atl-forced-newline" /></p>
+
+
+<h2><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-ProblemAbstract"></a>Problem Abstract</h2>
+
+<p>Disk Tablespace gets full and data cannot be inserted anymore.</p>
+
+<p>This problem was reported by an ALTIBASE HDB customer. In this document, we will reference the reported case while examining the causes of the problem and the possible resolution options.</p>
+
+
+<h2><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-Background"></a>Background</h2>
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-FMS(FreelistManagedSegment)"></a>FMS (Freelist Managed Segment)</h3>
+
+<p>ALTIBASE HDB 5.3.3 manages disk pages with FMS technique.</p>
+
+
+
+<map id="gliffy-map-2752865-7163" name="gliffy-map-2752865-7163"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 754px;" usemap="#gliffy-map-2752865-7163" src="attachments/2557870/2752866.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+<p>In FMS technique, used and available pages are added to the head of the freelist. Although the pages are added to the freelist, they are not usable until the Ager cleans them.</p>
+
+<p>ALTIBASE HDB has to allocate a new page to insert data, if all pages at the header are not aged.<br/>
+By default, only 5 pages are searched to allocate the space for the new data.<br/>
+ALTIBASE HDB can search more than 5 pages by modifying the ALTIBASE HDB provided properties. However, the performance can be degraded if the value gets bigger.</p>
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-Tablespace"></a>Tablespace</h3>
+
+<p>Unless specified otherwise, ALTIBASE HDB stores data and Index in the same Tablespace, and they are managed in a Segment unit. Each Segment requests a page to the Tablespace if it needs more space to store data or Index.</p>
+
+
+
+<map id="gliffy-map-2752973-4252" name="gliffy-map-2752973-4252"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 592px;" usemap="#gliffy-map-2752973-4252" src="attachments/2557870/2752974.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h2><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-CauseoftheProblem"></a>Cause of the Problem</h2>
+
+<p>There are three possible causes for the issue.</p>
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-Inefficientpageusage"></a>Inefficient page usage</h3>
+
+<p>ALTIBASE HDB provides two properties - PCTUSED and PCTFREE for controlling the page usage.</p>
+
+<p>PCTFREE: the amount of space kept free on each page for the update statement - versioning. The value specified by PCTFREE indicates the percentage of space kept free in order to allow existing records to be updated.</p>
+
+<p>PCTUSED: once the page gets full, it does not return to the insert-able state until the amount of space gets smaller than the value specified on this value.</p>
+
+<p>If the page usage is as follows, ALTIBASE HDB cannot reuse the existing pages, but allocates a new page for the new data being inserted.</p>
+
+
+
+<map id="gliffy-map-2752869-3707" name="gliffy-map-2752869-3707"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 801px;" usemap="#gliffy-map-2752869-3707" src="attachments/2557870/2752870.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>Since the value of properties are already changed - PCTUSED = 80, this is not the case at this time.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>This problem can occur on any disk database. To avoid this issue, DBA must perform reorganization on tables.</p>
+                    </div>
+    </div>
+
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-Bulkinsertanddeleteoperations"></a>Bulk insert and delete operations</h3>
+
+<p>ALTIBASE HDB cleans the page for only <strong>committed data</strong> . Therefore, it cannot work on pages with bulk insert/delete operations.<br/>
+By default, ALTIBASE HDB searches the first 5 available pages from the head of the freelist when it needs space for the operation. Under bulk operations, many pages are added to the head of the freelist; however, they are not available pages. Therefore, ALTIBASE HDB allocates a new page for the next bulk insert operation.</p>
+
+<p>Since the Tablespace is full, ALTIBASE HDB cannot allocate the page and returns an error message.</p>
+
+<p>According to the test case we got from the customer, this was not the issue in their case.</p>
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-IndexSegmentfull"></a>Index Segment full</h3>
+
+<p>A page returns to the reusable state once it gets aged. A page allocated to the Index Segment gets aged when the 'SPLIT' operation is occurred. However, once the Index Segment and the Tablespace are full, the Index Segment cannot allocate a page from the Tablespace; therefore, 'SPLIT' operation fails.</p>
+
+<p>Since ALTIBASE HDB cannot allocate a page to the Index Segment, the error message is returned.</p>
+
+<h2><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-Solutions"></a>Solutions</h2>
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-1.Upgradeto5.5.1"></a>1. Upgrade to 5.5.1</h3>
+
+<p>ALTIBASE HDB 5.5.1 uses TMS (Tree Managed Segment) technique for the page. This issue does not occur frequently with 5.5.1 as it does with 5.3.3 - this technique is also used by other database vendors such as Oracle.</p>
+
+
+<p>However, an upgrade was not an option for the customer reporting the problem.</p>
+
+
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-2.Commitfrequently"></a>2. Commit frequently</h3>
+
+<p>The use of the Ager more frequently can help avoiding this problem. Thus it is recommended that the commit is performed more frequently in the bulk operations.</p>
+
+
+<h3><a name="Cannotinsertnewrecordsafterdeletingbulkrecords-3.SeperateTablespace"></a>3. Seperate Tablespace</h3>
+
+<p>We noticed that the customer was using LOB data type. LOB data accelerates  the problem since storing LOB data takes a lot of pages. Therefore,  separating the Tablespace will reduce the possibility of the symptom.</p>
+
+<p>It is recommended to separate the Tablespace - one for data and another for Index.<br/>
+In this way, the users can easily monitor the usage of the Tablespaces and prevent the problem in advance.</p>
+
+<p>If the usage of Data and Index Tablespace are near 100%, then DBA may add datafile to prevent the Tablespace full situation.</p>
+
+<p>Furthermore, it is recommended that the tables are refreshed periodically.<br/>
+ALTIBASE HDB does not support a reorganize function that is supported by some other database solutions such as Oracle. However the steps listed below can be used a a workaround for achieving the same re-org results:</p>
+
+<p>1. export data<br/>
+2. truncate tables<br/>
+3. import data</p>
+
+<p>This will gather the data distributed all over the pages and stack them from the first page.</p>
+
+
+<map id="gliffy-map-2753003-4487" name="gliffy-map-2753003-4487"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 588px;" usemap="#gliffy-map-2753003-4487" src="attachments/2557870/2753004.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752867">FMS</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752868.png">FMS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752865">FMS</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752866.png">FMS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752873">inefficient page</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752874.png">inefficient page.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752875">inefficient page</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752876.png">inefficient page.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752879">inefficient page</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752880.png">inefficient page.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752869">inefficient page</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752870.png">inefficient page.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752973">tablespace</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2752974.png">tablespace.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2753003">reorganization</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2557870/2753004.png">reorganization.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

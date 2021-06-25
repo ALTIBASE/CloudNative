@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Database 를 stop 하고 start 하는 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Database 를 stop 하고 start 하는 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> richard.nahm	</span> on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409050769 {padding: 0px;}
+div.rbtoc1624409050769 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409050769 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409050769'>
+<ul class='toc-indentation'>
+<li><a href='#Database를stop하고start하는방법-ALTIBASE를stop하는방법'>ALTIBASE를 stop하는 방법</a></li>
+<li><a href='#Database를stop하고start하는방법-ALTIBASE를start하는방법'>ALTIBASE 를 start 하는 방법</a></li>
+<li><a href='#Database를stop하고start하는방법-Database를기동한후정상기동유무를확인하는방법'>Database 를 기동한 후 정상 기동 유무를 확인하는 방법</a></li>
+<li><a href='#Database를stop하고start하는방법-ALTIBASE를강제종료하는방법'>ALTIBASE를 강제 종료하는 방법</a></li>
+<li><a href='#Database를stop하고start하는방법-ALTIBASEserverstart/stop시의에러메세지'>ALTIBASE server start/stop 시의 에러 메세지</a></li>
+</ul>
+</div></p><h1 id="Database를stop하고start하는방법-ALTIBASE를stop하는방법">ALTIBASE를 stop하는 방법</h1><hr /><p>ALTIBASE database 를 stop하는 방법은 아래의 2가지 방법이 있습니다.  </p><h2 id="Database를stop하고start하는방법-(1)serverstopscript를이용하는방법">(1) server  stop script를 이용하는 방법</h2><p>간단한 명령으로 db server를 중지할 수 있으며 가장 많이 사용되는 방식입니다.  ALTIBASE를 설치한  unix 유저 계정에서  아래와 같이 &quot;server stop&quot; 이란 명령으로 db server 의 기동을 중단할 수 있습니다.</p><p>명령어 사용법:  shell&gt; server stop</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>server stop 명령을 통한 db stop 하는 방법</b></div><div class="panelContent">
+<p><strong>$ server stop</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />Ok..Shutdown Proceeding....</p><p><br />TRANSITION TO PHASE : Shutdown Altibase<br />  [RP] Finalization : PASS<br /><strong>shutdown immediate success.     <span style="color: rgb(0,0,255);"> ( shutdown 이 성공적일 경우 좌측과 같은 메세지가 출력됩니다.)</span></strong></p><p><strong><span style="color: rgb(0,0,255);"> </span></strong></p><p><strong><span style="color: rgb(0,0,255);"> </span></strong></p>
+</div></div><p> </p><h2 id="Database를stop하고start하는방법-(2)isql접속후shutdown명령을사용하는방법">(2) isql 접속후  shutdown 명령을 사용하는 방법</h2><p> isql 로 접속한 후 shutdown 명령을 통해서 shutdown 방식을 선택적으로 사용하여  db를 stop할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>isql 접속후 shutdown 명령을 이용한 db stop</b></div><div class="panelContent">
+<p>$ <strong>isql -sysdba               &lt;- - - 반드시 sysdba모드로 접속해야 해야 합니다.</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />Write UserID : sys<br />Write Password : <br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]</p><p>iSQL(sysdba)&gt; select db_name from v$database;<br />DB_NAME                                                                                                                           <br />------------------------------------------------------------------------------------------------------------------------------------<br /><strong>mydb </strong>                                                                                                                             <br />1 row selected.<br />iSQL(sysdba)&gt; <strong>alter database </strong><span style="color: rgb(0,0,255);"><em>mydb</em></span> <strong>shutdown immediate;           &lt;- - dbname 인 mydb는 설치시 선택사항으로 DB마다 다를 수 있습니다.</strong><br />Ok..Shutdown Proceeding....</p><p><br />TRANSITION TO PHASE : Shutdown Altibase<br />  [RP] Finalization : PASS<br /><strong>Alter success.</strong><br />iSQL(sysdba)&gt; exit</p><p> </p><p> </p>
+</div></div><p> </p><h1 id="Database를stop하고start하는방법-ALTIBASE를start하는방법">ALTIBASE 를 start 하는 방법</h1><hr /><p>ALTIBASE database 를 start하는 방법은 아래의 2가지 방법이 있습니다.</p><h2 id="Database를stop하고start하는방법-(1)serverstartscript를이용하는방법">(1) server  start script를 이용하는 방법</h2><p>간단한 명령으로 db server를 기동할 수 있으며 가장 많이 사용되는 방식입니다.   ALTIBASE를 설치한  unix 유저 계정에서 아래와 같이 &quot;server start&quot; 이란 명령으로 db server 를 기동시킬 수 있습니다.</p><p>명령어 사용법: shell&gt; server start</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>server start 명령을 통한 db start방법</b></div><div class="panelContent">
+<p><strong>$ server start</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />Connecting to the DB server.. Connected.</p><p><br />TRANSITION TO PHASE : PROCESS</p><p><br />TRANSITION TO PHASE : CONTROL</p><p><br />TRANSITION TO PHASE : META<br />  [SM] Recovery Phase - 1 : Preparing Database<br />                          : Dynamic Memory Version =&gt; Parallel Loading<br />  [SM] Recovery Phase - 2 : Loading Database <br />  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...<br />                            Refining Disk Table <br />  [SM] Refine Memory Table : ................................................................................................... [SUCCESS]<br />  [SM] Rebuilding Indices [Total Count:102] ...................................................................................................... [SUCCESS]</p><p><br />TRANSITION TO PHASE : SERVICE<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><strong>--- STARTUP Process SUCCESS ---   </strong><br /><strong>Command execute success.</strong><br />$</p><p> </p><p> </p>
+</div></div><p> </p><h2 id="Database를stop하고start하는방법-(2)isql접속후startup명령을통해서start하는방법">(2) isql 접속후 startup 명령을 통해서 start하는 방법</h2><p>ALTIBASE를 설치한  unix 유저 계정에서 isql 로  sysdba 모드로  db에 접속한 후  단계적을 db를 start할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>isql로 접속후 db를 start하는 방법</b></div><div class="panelContent">
+<p><strong>$ isql -sysdba</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />Write UserID : sys<br />Write Password : <br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />iSQL(sysdba)&gt; <strong>startup;</strong><br />Connecting to the DB server.. Connected.</p><p><br />TRANSITION TO PHASE : PROCESS</p><p><br />TRANSITION TO PHASE : CONTROL</p><p><br />TRANSITION TO PHASE : META<br />  [SM] Recovery Phase - 1 : Preparing Database<br />                          : Dynamic Memory Version =&gt; Parallel Loading<br />  [SM] Recovery Phase - 2 : Loading Database <br />  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...<br />                            Refining Disk Table <br />  [SM] Refine Memory Table : ................................................................................................... [SUCCESS]<br />  [SM] Rebuilding Indices [Total Count:102] ...................................................................................................... [SUCCESS]</p><p><br />TRANSITION TO PHASE : SERVICE<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><strong>--- STARTUP Process SUCCESS ---   </strong><br /><strong>Command execute success.</strong><br />iSQL(sysdba)&gt; exit</p><p> </p><p> </p>
+</div></div><p> </p><h1 id="Database를stop하고start하는방법-Database를기동한후정상기동유무를확인하는방법">Database 를 기동한 후 정상 기동 유무를 확인하는 방법</h1><hr /><p>ALTIBASE를  기동한 후 성공적으로 ALTIBASE DB 서버가 기동했는지 여부는 아래의 방법으로 확인할 수 있습니다.</p><p> </p><h2 id="Database를stop하고start하는방법-(1)serverstart후출력메세지">(1)  server start 후 출력 메세지</h2><p>server start 명령 또는 isql 을 통해서  DB를 start 했을 때  다음과 같이 &quot; — STARTUP Process Success — &quot;가 출력됐는지 여부를 확인합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>server start후 메세지</b></div><div class="panelContent">
+<p><strong>$ server start</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />Connecting to the DB server.. Connected.</p><p>..............................중략...............................</p><p>.....................................................................<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><span style="color: rgb(0,0,255);"><strong>--- STARTUP Process SUCCESS ---   </strong></span><br /><span style="color: rgb(0,0,255);"><strong>Command execute success.</strong></span></p><p><span style="color: rgb(0,0,255);"> </span></p><p><span style="color: rgb(0,0,255);"> </span></p>
+</div></div><p> </p><h2 id="Database를stop하고start하는방법-(2)isql을통한접속테스트">(2)  isql 을 통한 접속 테스트</h2><p>대화형 쿼리 실행 도구인 is 또는 isql 상에서  간단한 SQL문을 실행하여  쿼리를 정상동작 유무 확인을 통해서  DB의 상태를 확인할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>isql 접속을 통한 DB 상태 확인</b></div><div class="panelContent">
+<p>$ is<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20419<br />iSQL&gt; select sysdate from dual;<br />SYSDATE      <br />---------------<br />08-MAR-2016  <br />1 row selected.<br />iSQL&gt;</p><p> </p><p> </p>
+</div></div><p> </p><h2 id="Database를stop하고start하는방법-(3)간단한점검쿼리">(3)  간단한 점검쿼리</h2><p>아래의 쿼리를 실행해서 간단히 DB의 상태를  확인할 수 있습니다.</p><ul><ul><li><p>세션수 확인 :  DB에 현재 접속되어 있는 세션수를 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from v$session;
+COUNT                
+-----------------------
+1                    
+1 row selected.
+ 
+ </pre>
+</div></div></li><li><p>이중화 gap 확인 : 이중화(Replication) 을 사용중인 경우  이중화 gap 을 확인하여   이중화 상태를 확인할 수 있습니다.<br />이중화 gap 값이   증감을 반복할 경우는 정상상태적인 상태입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select rep_name, rep_gap from v$repgap;
+REP_NAME                                  REP_GAP              
+------------------------------------------------------------------
+REP1                                      567    
+1 rows selected.
+iSQL&gt; 
+ 
+ </pre>
+</div></div></li><li><p>트랜잭션 처리 상태<br />DML 별 또는  DB에서 현재 처리되고 있는 누적 트랜잭션 처리량을 조회합니다.  계속 증가하고 있으면 정상적인 상태입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select * from v$sysstat where name like &#39;%execute%count%&#39;;
+SEQNUM      NAME                                                VALUE
+-----------------------------------------------------------------------------------------
+28          execute success count                               3186
+29          execute success count : insert                      3119
+30          execute success count : update                      0
+31          execute success count : delete                      0
+32          execute success count : select                      66
+33          rep_execute success count : insert                  0
+34          rep_execute success count : update                  0
+35          rep_execute success count : delete                  0
+36          execute failure count                               0
+9 rows selected.
+iSQL&gt;
+ 
+ </pre>
+</div></div></li></ul></ul><p> </p><h1 id="Database를stop하고start하는방법-ALTIBASE를강제종료하는방법">ALTIBASE를 강제 종료하는 방법</h1><hr /><p>시스템의 오동작 또는  시스템 리소스 부족등으로   ALTIBASE Database server 가  Hang 상태에 빠져서 server stop 과 같은 정상적인 방법으로는  DB를 stop할 수 없는 경우는  아래의 명령을 사용할 수 있습니다.</p><p> </p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>ALTIBASE 강제 종료하는 방법</b></div><div class="panelContent">
+<p>$ server kill<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419</p><p>$</p><p> </p><p> </p>
+</div></div>    <div class="aui-message problem shadowed information-macro">
+                    <p class="title">강제 종료시 주의점</p>
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>server kill 은 ALTIBASE를  kill -9  로 죽이는 것과 같은 방식으로 DB process를 강제 종료시키는 것으로 정상적인 상황에서는 사용하지 않는 것이 좋습니다.</p><p>server kill 로  ALTIBASE를 강제 종료한 경우 다음번 start 시에   recovery 과정을 거치게 됩니다.   recovery 과정중에 undo 와 redo 할  트랜잭션의 양이 많다면  server start시에 장시간이 소요될 수도 있습니다.</p><p>따라서 가급적이면 정상적인  server stop 명령을 통한 Database를 정시키는 것이 좋습니다. </p>
+                    </div>
+    </div>
+<p> </p><h1 id="Database를stop하고start하는방법-ALTIBASEserverstart/stop시의에러메세지">ALTIBASE server start/stop 시의 에러 메세지</h1><hr /><p> </p><h2 id="Database를stop하고start하는방법-(1)Thedatabaseserverisalreadyupandrunning.">(1)   The database server is already up and running.</h2><p>ALTIBASE server 가 이미 기동되어 있는 상태에서  추가로  server start를 시도한 경우 아래와 같은 메세지가 출력됩니다.   이미 Database 가 기동되어 있으므로  server start를 할 수 없습니다. </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ server start<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br /><strong>The database server is already up and running.</strong><br />[ERR-4107A : Unable to startup to the specified phase at current state.]<br />$ </p>
+</div></div><p> </p><h2 id="Database를stop하고start하는방법-(2)AnotherSYSDBAsessionisalreadyrunning"> (2)  Another SYSDBA session is already running</h2><p>sysdba 권한을  가진 세션은 DB에 오직 한개만 연결을 허용합니다.    sysdba 로 이미 접속되어 있는 session 이 존재하는 경우  server start 또는 server stop 을 위한 추가적인 sysdba 연결이 실패할 경우 나오는 에러 메세지입니다.</p><p>이미 연결된 sysdba 세션을 종료한 후  다시 연결을 시도해야 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ server start<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br /><strong>[ERR-41041 : Another SYSDBA session is already running.]</strong><br />$</p><p> </p><p> </p>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

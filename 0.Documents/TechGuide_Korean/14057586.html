@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 백업정책 결정을 위한 고려사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 백업정책 결정을 위한 고려사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409856217 {padding: 0px;}
+div.rbtoc1624409856217 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409856217 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409856217'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase백업정책결정을위한고려사항-개요'>개요</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업종류'>백업 종류</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase백업정책결정을위한고려사항-논리적백업'>논리적 백업</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-물리적백업'>물리적 백업</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-증분백업'>증분 백업</a></li>
+</ul>
+</li>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업정책결정을위한고려사항'>백업 정책 결정을 위한 고려사항</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업대상선정'>백업 대상 선정</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-복구시점'>복구 시점</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-복구시간'>복구 시간</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업수행시각'>백업 수행 시각</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업소요시간'>백업 소요 시간</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-트랜잭션영향'>트랜잭션 영향</a></li>
+</ul>
+</li>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업본보관주기'>백업본 보관 주기</a></li>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업을위한디스크파티션구성'>백업을 위한 디스크 파티션 구성</a></li>
+</ul>
+</li>
+<li><a href='#Altibase백업정책결정을위한고려사항-정리'>정리</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase백업정책결정을위한고려사항-백업종류별비교'>백업 종류 별 비교</a></li>
+</ul>
+</li>
+<li><a href='#Altibase백업정책결정을위한고려사항-참고문서'>참고문서</a></li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="Altibase백업정책결정을위한고려사항-개요">개요</h1><hr /><p>이 문서는 데이터 파일 손상 및 유실, 데이터 삭제와 같이 뜻하지 않은 상황으로 데이터가 손실된 경우를 대비한 데이터베이스 백업 정책을 세우는 데 필요한 가이드이다.</p><p>Altibase가 제공하는 백업 종류와 특징을 소개하고 고객사 운영 환경에 적합한 백업 방식을 결정하는 데 도움을 주려는 목적으로 제공한다. 각 백업 방식에 관한 구체적인 명령어나 옵션에 관한 설명은 소개하지 않는다.</p><p> </p><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><h1 id="Altibase백업정책결정을위한고려사항-백업종류">백업 종류</h1><hr /><p>Altibase에서 제공하는 백업 종류를 간단하게 분류하면 다음과 같다. 분류 기준은 Administrator Manual을 따른다.</p><ul><li>논리적 백업</li><li>물리적 백업<ul><li>온라인 백업</li><li>오프라인 백업</li></ul></li><li>증분 백업 (Altibase 6.3.1 부터 지원)</li></ul><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase백업정책결정을위한고려사항-논리적백업">논리적 백업</h2><hr /><p>논리적(Logical) 백업은 aexport 및 iloader 유틸리티를 사용하여 데이터베이스 객체 및 데이터를 사용자가 확인 가능한 텍스트 파일 형태로 백업하는 방식이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh"><p><strong><strong>백업</strong> <strong>종류</strong></strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th><th colspan="1" class="confluenceTh">백업 결과 예시</th></tr><tr><th rowspan="2" class="confluenceTh"><p>논리적 백업</p><p>Logical Backup</p></th><th class="confluenceTh"><p>aexport            </p></th><td class="confluenceTd"><p>aexport는 Altibase 서버 간 데이터 마이그레이션을 지원하기 위한 도구지만 백업 용도로 활용할 수 있다.</p><p>Altibase 서버에 생성된 모든 데이터베이스 객체의 생성 문장을 .sql 이름의 파일로 생성한다.</p><br /><p>용도에 따라 수행할 수 있도록 3가지 방식을 제공한다.</p><ul><li>데이터베이스 객체 전체</li><li>데이터베이스 사용자별</li><li>객체별</li></ul></td><td colspan="1" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>aexport 수행 결과와 파일 내용 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l | head
+합계 60
+-rw-rw-rw- 1 eheejung eheejung  303 2019-07-12 13:15 ALL_ALT_TBL.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_DIR.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_FK.sql
+-rw-rw-rw- 1 eheejung eheejung 1539 2019-07-12 13:15 ALL_CRT_INDEX.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_JOB.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_LIB.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_LINK.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_REP.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_SEQ.sql
+...중략...
+
+$ cat ALL_CRT_TBL.sql | head 
+connect &quot;ALTITEST&quot; / &quot;ALTITEST&quot;
+--############################
+--  &quot;ALTITEST&quot;.&quot;ORDERS&quot;  
+--############################
+create table &quot;ORDERS&quot;
+(
+    &quot;ONO&quot; BIGINT,
+    &quot;ORDER_DATE&quot; DATE,</pre>
+</div></div></td></tr><tr><th colspan="1" class="confluenceTh">iloader</th><td colspan="1" class="confluenceTd"><p>aexport 처럼 데이터 마이그레이션을 지원하기 위한 도구지만 백업 용도로 활용할 수 있다.</p><p>테이블 단위로, 데이터를 사용자가 읽을 수 있는 텍스트 파일 형태로 백업한다.</p><br /><p> </p></td><td colspan="1" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>DEPARTMENTS 샘플 테이블 iloader 수행 결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cat SYS_DEPARTMENTS.dat
+1001,&quot;RESEARCH DEVELOPMENT DEPT 1   &quot;,&quot;New York       &quot;,16
+1002,&quot;RESEARCH DEVELOPMENT DEPT 2   &quot;,&quot;Sydney         &quot;,13
+1003,&quot;SOLUTION DEVELOPMENT DEPT     &quot;,&quot;Osaka          &quot;,14
+2001,&quot;QUALITY ASSURANCE DEPT        &quot;,&quot;Seoul          &quot;,17
+3001,&quot;CUSTOMERS SUPPORT DEPT        &quot;,&quot;London         &quot;,4
+3002,&quot;PRESALES DEPT                 &quot;,&quot;Peking         &quot;,5
+4001,&quot;MARKETING DEPT                &quot;,&quot;Brasilia       &quot;,8
+4002,&quot;BUSINESS DEPT                 &quot;,&quot;Palo Alto      &quot;,7</pre>
+</div></div></td></tr></tbody></table></div><p> </p><h2 id="Altibase백업정책결정을위한고려사항-물리적백업">물리적 백업</h2><hr /><p>Altibase 서버를 구성하는 데이터 파일, 로그 앵커 파일과 같은 파일을 복사하여 물리적으로 다른 장소에 백업하는 것을 의미한다.</p><p>Altibase 서버 구동 상태에 따라 온라인 백업과 오프라인 백업으로 분류한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh"><p><strong>백업</strong> <strong>종류</strong></p></th><th class="confluenceTh"><strong>설명<br /></strong></th><th colspan="1" class="confluenceTh">백업 결과 예시</th></tr><tr><th rowspan="2" class="confluenceTh"><p>물리적 백업</p><p>Physical Backup</p><p> </p></th><th class="confluenceTh">온라인 백업</th><td class="confluenceTd"><p>Altibase 서버가 구동된 상태에서 물리적 백업을 수행하는 것을 의미한다.</p><p>용도에 따라 수행할 수 있도록 2가지 방식을 제공한다.</p><ul><li>전체 데이터베이스</li><li>테이블스페이스 단위</li></ul></td><td class="confluenceTd"><p>온라인 백업에서는 stable 한 메모리 체크포인트 이미지 파일 한 벌만 백업한다.</p><p>디스크 임시 테이블스페이스의 데이터 파일은 백업하지 않는다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l
+합계 2811920
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-0-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-0-0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 system001.dbf
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 undo001.dbf</pre>
+</div></div></td></tr><tr><th colspan="1" class="confluenceTh">오프라인 백업</th><td colspan="1" class="confluenceTd"><p>Altibase 서버가 중지된 상태에서 물리적 백업을 수행하는 것을 의미한다.</p><p>데이터베이스 전체 백업만 가능하다.</p></td><td class="confluenceTd"><p>오프라인 백업은 모든 데이터 파일을 백업한다</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[tech2@bd5 online_backup]$ ls -l
+합계 3629032
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-0-0
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-1-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-0-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-1-0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 system001.dbf
+-rw-r----- 1 tech2 tech2  104865792 2019-07-12 15:09 temp001.dbf
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 undo001.dbf</pre>
+</div></div></td></tr></tbody></table></div><p> </p><h2 id="Altibase백업정책결정을위한고려사항-증분백업">증분 백업</h2><hr /><p>증분 백업이란 마지막 증분 백업 이후 변경된 데이터 페이지만을 백업하는 방식으로 '페이지 변경 추적' 기능을 활성화해야 한다.</p><p>전체 데이터베이스 또는 테이블스페이스 단위 백업이 가능하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="3" class="confluenceTh"><strong><strong>백업</strong> 종류</strong></th><th class="confluenceTh"><strong>설명</strong></th><th class="confluenceTh">백업 결과 예시</th></tr><tr><th rowspan="3" class="confluenceTh"><p>증분 백업</p><p>Incremental Backup</p></th><th colspan="2" class="confluenceTh">레벨 0 증분 백업</th><td class="confluenceTd">레벨 0 증분 백업은 물리적 백업과 유사하지만, 데이터 페이지의 변경 여부를 판단하기 위한 기준이 되는 백업이다.</td><td rowspan="3" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l TAG_20190712_141610/
+합계 2811924
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:16 SYS_TBS_MEM_DATA-0-0_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:16 SYS_TBS_MEM_DIC-0-0_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2       3296 2019-07-12 14:16 backupinfo
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:16 system001.dbf_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:16 undo001.dbf_TAG_20190712_141610.ibak</pre>
+</div></div></td></tr><tr><th rowspan="2" class="confluenceTh">레벨 1 증분 백업</th><th class="confluenceTh"><p>차등 증분 백업</p><p>differential incremental backup</p></th><td class="confluenceTd">가장 최근에 수행된 레벨 0 또는 레벨 1 증분 백업 이후에 변경된 페이지를 백업한다.</td></tr><tr><th class="confluenceTh"><p>누적 증분 백업</p><p>cumulative incremental backup</p></th><td class="confluenceTd">가장 최근에 수행된 레벨 0 백업 이후에 변경된 페이지를 백업한다.</td></tr></tbody></table></div></div></div></div></div><p> </p><p> </p><h1 id="Altibase백업정책결정을위한고려사항-백업정책결정을위한고려사항">백업 정책 결정을 위한 고려사항</h1><hr /><p>백업 정책은 데이터의 중요도, 복구 정책, 백업 크기 등 고객사 운영 환경을 고려하여 결정해야 한다. 백업 정책을 세우기 위해 필요한 고려사항에 관해 설명한다.</p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase백업정책결정을위한고려사항-백업대상선정">백업 대상 선정</h2><hr /><p>백업 정책을 정의하기 위해 가장 먼저 백업 대상을 선정해야 한다. 그리고 백업 대상의 특성을 고려하여 복구 정책, 백업 종류, 백업 주기, 백업 시각, 백업 파일의 보관 기간 등을 결정해야 한다. 이러한 백업 계획은 데이터베이스 관리자가 혼자 할 수 있는 일이 아니며 데이터를 관리하는 업무 담당자의 협조가 필요하다. 백업 대상의 특성을 가장 잘 아는 사람은 업무 담당자이기 때문이다.</p><p> </p><h2 id="Altibase백업정책결정을위한고려사항-복구시점">복구 시점</h2><hr /><p>백업 종류에 따라 복구 시점에 차이가 있다. 백업 대상의 중요도에 따라 허용 가능한 복구 시점을 정하고 그에 따른 백업 방법을 선택해야 한다.</p><p>복구 시점은 크게 세 가지로 나뉜다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: left;" class="confluenceTh">복구 시점</th><th class="confluenceTh">설명</th></tr><tr><th style="text-align: left;" class="confluenceTh">백업 시점</th><td class="confluenceTd">백업을 수행한 시점으로의 복구를 의미한다.</td></tr><tr><th style="text-align: left;" class="confluenceTh">완전 복구</th><td class="confluenceTd"><p>데이터베이스의 가장 최근 시점까지 복구하는 것을 의미한다.<br />완전 복구는 온라인 로그파일과 아카이브 로그파일의 유실이 없는 경우에만 가능하다.</p></td></tr><tr><th colspan="1" style="text-align: left;" class="confluenceTh">불완전 복구</th><td colspan="1" class="confluenceTd"><p>데이터베이스를 특정 과거 시점으로 되돌리는 것을 의미한다.</p><p>불완전 복구는 2가지 시점으로 가능하다.</p><ul><li>UNTIL CANCEL<br />특정 로그파일을 지정하여 복구한다.</li><li>UNTIL TIME<br />날짜와 시각을 지정하여 복구한다.</li></ul></td></tr></tbody></table></div><p> </p><p>아래 표는 백업 종류에 따른 복구 시점을 정리하였다. 표를 참고하여 백업 대상에 적합한 백업 방법을 선택한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">백업 종류</th><th style="text-align: center;" class="confluenceTh">백업 시점</th><th style="text-align: center;" class="confluenceTh">완전 복구</th><th style="text-align: center;" class="confluenceTh">불완전 복구</th></tr><tr><th colspan="2" class="confluenceTh">논리적 백업</th><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">불가</td><td style="text-align: center;" class="confluenceTd">불가</td></tr><tr><th rowspan="2" class="confluenceTh">물리적 백업</th><th class="confluenceTh">온라인 백업</th><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">가능</td></tr><tr><th class="confluenceTh">오프라인 백업</th><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">불가</td><td style="text-align: center;" class="confluenceTd">불가</td></tr><tr><th colspan="2" class="confluenceTh">증분백업</th><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">가능</td><td style="text-align: center;" class="confluenceTd">가능</td></tr></tbody></table></div><p> </p><h2 id="Altibase백업정책결정을위한고려사항-복구시간">복구 시간</h2><hr /><p>복구 작업은 서비스 중단 후 수행해야 하는 작업이다. 서비스 다운 타임을 최소화해야 하는 업무 환경은 복구 시간도 백업 정책 결정 시에 함께 고려해야 한다.</p><p>백업 종류에 따라 복구 시간에 영향을 주는 요소가 다르므로 아래 표를 참고하여 백업 대상 특성에 맞는 백업 방법을 선택한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">백업 종류</th><th style="text-align: center;" class="confluenceTh"><span>복구 소요 시간에 영향을 주는 요소</span></th><th class="confluenceTh"><span>설명</span></th></tr><tr><th rowspan="2" class="confluenceTh">논리적 백업</th><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>aexport</span></span></span></th><td class="confluenceTd"><ul style="list-style-type: square;"><li>데이터베이스 객체 수</li></ul></td><td class="confluenceTd"><span style="text-decoration: none;"><span>복구 과정에서 객체 생성이 필요한 경우 객체 수가 복구 시간에 영향을 줄 수 있다. </span></span></td></tr><tr><th class="confluenceTh">iloader</th><td class="confluenceTd"><ul style="list-style-type: square;"><li>테이블 수</li><li>테이블 데이터 사용량</li><li>인덱스 수</li></ul></td><td class="confluenceTd"><span>파일의 내용을 읽어서 테이블에 입력(INSERT)하는 과정을 거치므로 테이블 수와 레코드 수, 인덱스 수가 복구 시간에 영향을 준다.</span></td></tr><tr><th rowspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>물리적 백업</span></span></span></th><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>온라인 백업</span></span></span></th><td class="confluenceTd"><ul style="list-style-type: square;"><li>메모리 테이블 데이터 사용량</li><li>메모리 인덱스</li><li>로그파일 수</li></ul></td><td class="confluenceTd"><p style="text-align: left;"><span>Altibase 서버 구동 과정에서 복구가 진행된다. <br />메모리 테이블 데이터를 메모리에 로딩하고 메모리 인덱스를 리빌드하는 시간이 필요하다.<br />복구 과정에서 로그파일을 이용하기 때문에 반영해야 할 로그파일의 수는 복구 시간에 영향을 준다.<br />로그파일은 백업 이후 발생한 트랜잭션의 양에 따라 결정된다.</span></p></td></tr><tr><th class="confluenceTh">오프라인 백업</th><td class="confluenceTd"><ul style="list-style-type: square;"><li>메모리 테이블 데이터 사용량</li><li>메모리 인덱스</li></ul></td><td class="confluenceTd"><p><span>백업 파일만으로 Altibase 서버를 구동하여 복구하기 때문에 복구 시간이 가장 짧다.<span><br />Altibase 서버 구동 시 <span>메모리 테이블 데이터를 </span> 메모리에 로딩하고 메모리 인덱스를 리빌드하는 시간이 필요하다.</span></span></p></td></tr><tr><th colspan="2" class="confluenceTh">증분 백업</th><td class="confluenceTd"><ul style="list-style-type: square;"><li>메모리 테이블 데이터 사용량</li><li>메모리 인덱스</li><li>로그파일 수</li></ul></td><td class="confluenceTd"><p style="text-align: left;"><span style="text-decoration: none;">복구 과정에서 <span><span> <span>메모리 테이블 데이터를</span></span></span> 메모리에 로딩하고 메모리 인덱스를 리빌드하는 시간이 필요하다.<br />복구 과정에서 로그파일을 이용하기 때문에 반영해야 할 로그파일의 수는 복구 시간에 영향을 준다.</span></p><span style="text-decoration: none;"><span>로그파일은 백업 이후 발생한 트랜잭션의 양에 따라 결정된다. </span></span></td></tr></tbody></table></div><p> </p><h2 id="Altibase백업정책결정을위한고려사항-백업수행시각">백업 수행 시각</h2><hr /><p>백업 수행 시간은 데이터베이스의 크기가 클수록 장시간 소요되며 백업을 수행하는 동안 트랜잭션에 영향을 준다. 그러므로 백업 수행 시각은 Altibase 운용 중 가장 idle time에 수행할 것을 권장한다.</p><p>백업 종류별 백업 시간에 영향을 주는 요소와 트랜잭션에 어떤 영향을 주는지 표로 정리하였다.</p><p> </p><ul><li><h3 id="Altibase백업정책결정을위한고려사항-백업소요시간">백업 소요 시간</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>백업 종류</span></span></span></th><th class="confluenceTh"><span>백업 소요 시간에 영향을 주는 요소</span></th><th class="confluenceTh"><span>설명</span></th></tr><tr><th rowspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>논리적 백업</span></span></span></th><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>aexport</span></span></span></th><td class="confluenceTd">- 데이터베이스 객체 수</td><td class="confluenceTd"><span>객체 생성 스크립트가 생성되므로 백업 시간에 데이터베이스 객체 수에 영향을 받는다.</span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>iloader</span></span></span></th><td class="confluenceTd">- 테이블 수<br />- 테이블 사용량</td><td class="confluenceTd"><span>테이블별 데이터를 조회하여 텍스트 파일을 생성하므로 백업 소요 시간이 테이블 수와 사용량에 영향을 받는다.</span></td></tr><tr><th rowspan="2" class="confluenceTh">물리적 백업</th><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>온라인 백업</span></span></span></th><td class="confluenceTd">- 디스크 테이블 데이터 파일 크기<br />- 메모리 체크포인트 이미지 파일 크기</td><td class="confluenceTd"><span>온라인 백업은 데이터 파일을 물리적으로 복사하는 작업이므로 데이터 파일의 크기가 백업 소요 시간에 영향을 준다.</span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>오프라인 백업</span></span></span></th><td class="confluenceTd">- 디스크 테이블 데이터 파일 크기<br />- 메모리 체크포인트 이미지 파일 크기</td><td class="confluenceTd"><span>오프라인 백업 역시 데이터 파일을 물리적으로 복사하는 작업으로 백업 소요 시간이 데이터 파일 크기에 영향을 받는다.</span></td></tr><tr><th rowspan="2" class="confluenceTh">증분 백업</th><th class="confluenceTh"><span><span>레벨 0 증분 백업</span></span></th><td class="confluenceTd">- 디스크 테이블 데이터 파일 크기<br />- 메모리 체크포인트 이미지 파일 크기</td><td class="confluenceTd"><span>온라인 백업과 유사한 방식의 백업으로 데이터 파일의 크기가 백업 소요 시간에 영향을 준다.</span></td></tr><tr><th class="confluenceTh"><span><span>레벨 1 증분 백업</span></span></th><td class="confluenceTd">- 데이터 페이지 변화량</td><td class="confluenceTd"><span>레벨1 증분 백업의 소요 시간은 변경 트랜잭션으로 발생한 데이터 페이지 변화량에 영향을 받는다.</span></td></tr></tbody></table></div></li></ul><ul><li><h3 id="Altibase백업정책결정을위한고려사항-트랜잭션영향">트랜잭션 영향</h3><p>백업 수행 시 트랜잭션에 주는 영향을 비교한 표이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">백업 종류</th><th class="confluenceTh">트랜잭션 영향</th></tr><tr><th rowspan="2" class="confluenceTh">논리적 백업</th><th colspan="1" class="confluenceTh">aexport</th><td class="confluenceTd"><span>일시적으로 DDL 수행 불가</span></td></tr><tr><th colspan="1" class="confluenceTh">iloader</th><td class="confluenceTd"><span>백업 중 Memory GC 증가</span></td></tr><tr><th rowspan="2" class="confluenceTh">물리적 백업</th><th colspan="1" class="confluenceTh">온라인 백업</th><td class="confluenceTd"><span>백업 중 체크포인트 수행 불가로 온라인 로그파일 증가</span></td></tr><tr><th colspan="1" class="confluenceTh">오프라인 백업</th><td class="confluenceTd"><span>서비스 다운타임 필요</span></td></tr><tr><th colspan="2" class="confluenceTh">증분 백업</th><td class="confluenceTd"><p style="text-align: left;"><span>'페이지 변경 추적' 기능 활성화로 평상시 DB 성능 저하</span></p><p style="text-align: left;"><span>백업 중 체크포인트 수행 불가로 온라인 로그파일 증가</span></p></td></tr></tbody></table></div></li></ul><p> </p><h2 id="Altibase백업정책결정을위한고려사항-백업본보관주기">백업본 보관 주기</h2><hr /><p>최소 2벌의 백업본을 유지할 것을 권장한다.</p><p>백업이 잘못 수행된 경우 또는 디스크 폴트 및 유저 폴트로 인한 백업본 유실에 대비하기 위해서이다.</p><p> </p><h2 id="Altibase백업정책결정을위한고려사항-백업을위한디스크파티션구성">백업을 위한 디스크 파티션 구성</h2><hr /><p>백업 파일을 저장하는 매체가 디스크인 경우 백업 위치는 데이터베이스의 데이터 파일과 로그파일이 위치하는 경로와 물리적으로 분리된 공간으로 설정할 것을 권고한다.</p><p>데이터베이스 운영 중에는 다음과 같이 디스크 I/O가 발생한다. 단, 메모리 테이블에 조회 트랜잭션만 주로 발생하는 서비스의 경우는 예외이다.</p><ul><li>데이터베이스의 변경사항이 기록되는 로그 파일을 위한 디스크 I/O</li><li>메모리 테이블의 메모리 체크포인트 이미지 파일에 기록하기 위한 디스크 I/O</li><li>디스크 테이블의 데이터 파일을 읽고 쓰기 위한 디스크 I/O</li></ul><p>따라서 데이터베이스 운영 중 발생하는 디스크 I/O와 백업 수행 중 발생하는 디스크 I/O간의 병목을 최소화하기 위해 디스크 공간을 분리한다.</p><p> </p></div></div></div></div><p> </p><p> </p><h1 id="Altibase백업정책결정을위한고려사항-정리">정리<strong><br /></strong></h1><hr /><p>백업 종류 별 특성을 한눈에 비교할 수 있도록 표로 정리하였다.</p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><br /><p> </p></div><div class="columnMacro"><h2 id="Altibase백업정책결정을위한고려사항-백업종류별비교">백업 종류 별 비교</h2><hr /><p>백업 종류 별 장,단점을 비교한 표이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th rowspan="2" class="confluenceTh">분류</th><th colspan="2" style="text-align: center;" class="confluenceTh">논리적 백업</th><th colspan="2" style="text-align: center;" class="confluenceTh">물리적 백업</th><th rowspan="2" style="text-align: center;" class="confluenceTh">증분백업</th></tr><tr><th colspan="1" style="text-align: center;" class="confluenceTh">aexport</th><th colspan="1" style="text-align: center;" class="confluenceTh">iloader</th><th colspan="1" style="text-align: center;" class="confluenceTh">온라인 백업</th><th colspan="1" style="text-align: center;" class="confluenceTh">오프라인 백업</th></tr><tr><th class="confluenceTh">특징</th><td class="confluenceTd"><ul><li>객체 단위 백업/복구</li><li>객체 구조 변경 시에만 백업 필요</li></ul></td><td class="confluenceTd"><ul><li><p>테이블 단위 데이터 백업</p></li><li><p>레코드 단위 복구 가능</p></li><li><p>시점 복구가 불필요한 경우</p></li><li>Altibase 서버 구동 상태에서 복구해야하는 경우</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>데이터 유실을 최소화해야하는 경우</li><li>시점 복구가 필요한 경우</li><li>아카이브 로그 모드 운용에 부담이 없는 경우</li><li>데이터 파일, 로그앵커 파일 등 파일의 물리적인 유실을 대비해야하는 경우<br /><br /></li></ul></td><td class="confluenceTd"><ul><li>백업을 위한 Altibase 서버 다운 타임을 확보할 수 있는 경우</li><li>복구 시간을 최소화해야하는 경우</li></ul></td><td class="confluenceTd"><ul><li>데이터 유실을 최소화해야하는 경우</li><li>시점 복구가 필요한 경우</li><li>아카이브 로그 모드 운용에 부담이 없는 경우</li><li>데이터 파일, 로그앵커 파일 등 파일의 물리적인 유실을 대비해야하는 경우</li><li>'페이지 변경 추적' 기능 활성화로 인한 DB 성능 저하를 감당할 수 있는 경우</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">장점</th><td colspan="1" class="confluenceTd"><ul><li>복구 중 Altibase 서버 운영 가능<br /><br /></li></ul></td><td colspan="1" class="confluenceTd"><ul><li>복구 중 Altibase 서버 운영 가능</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>시점 복구 가능</li><li>데이터 파일과 로그앵커 파일의 물리적인 장애에 대비 가능</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>복구 시간 최소화</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>시점 복구 가능</li><li>데이터 파일과 로그앵커 파일의 물리적인 장애에 대비 가능</li><li>온라인 백업에 비해 백업 시간 절약</li><li>온라인 백업에 비해 백업 공간 절약</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">단점</th><td colspan="1" class="confluenceTd"><ul><li>-</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>시점 복구 불가</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>아카이브 로그 파일 관리</li><li>복구 중 Altibase 서버 운영 불가</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>복구 중 Altibase 서버 운영 불가</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>아카이브 로그 파일 관리</li><li>복구 중 Altibase 서버 운영 불가</li></ul></td></tr></tbody></table></div><p> </p><p>아래는 각 백업 방법의 특징을 상세하게 비교한 표이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" rowspan="2" style="text-align: center;" class="confluenceTh"><p style="text-align: left;">백업 종류</p></th><th colspan="2" style="text-align: center;" class="confluenceTh">Altibase 서버 구동 상태</th><th rowspan="2" style="text-align: center;" class="confluenceTh">데이터베이스 모드</th><th rowspan="2" style="text-align: center;" class="confluenceTh">백업 파일</th><th rowspan="2" style="text-align: center;" class="confluenceTh">복구 시점</th><th rowspan="2" style="text-align: center;" class="confluenceTh">복구 대상</th><th rowspan="2" style="text-align: center;" class="confluenceTh">기타</th></tr><tr><th colspan="1" style="text-align: center;" class="confluenceTh">      백업    </th><th colspan="1" style="text-align: center;" class="confluenceTh">복구</th></tr><tr><th rowspan="2" class="confluenceTh">논리적 백업</th><th class="confluenceTh">aexport</th><td colspan="1" style="text-align: center;" class="confluenceTd">구동</td><td colspan="1" style="text-align: center;" class="confluenceTd">구동</td><td rowspan="2" style="text-align: center;" class="confluenceTd">무관</td><td class="confluenceTd"><ul><li>데이터베이스 객체 생성 스크립트(.sql 확장자)</li><li>자동화 스크립트 (.sh 확장자)</li></ul></td><td class="confluenceTd"><ul><li>백업 시점</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>객체 단위</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th class="confluenceTh">iloader</th><td style="text-align: center;" class="confluenceTd">구동</td><td colspan="1" style="text-align: center;" class="confluenceTd">구동</td><td class="confluenceTd"><ul><li>테이블 별 FORM 파일</li><li>텍스트 형태의 데이터 파일</li></ul></td><td class="confluenceTd"><ul><li>백업 시점</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>테이블 단위</li><li>레코드 단위</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th rowspan="2" class="confluenceTh">물리적 백업</th><th class="confluenceTh">온라인 백업</th><td colspan="1" style="text-align: center;" class="confluenceTd">구동</td><td colspan="1" class="confluenceTd"><p style="text-align: center;">구동</p><p style="text-align: center;">(컨트롤 단계)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">아카이브 모드</td><td class="confluenceTd"><ul><li>디스크 데이터파일</li><li>메모리 체크포인트 이미지파일 1벌</li><li>로그앵커 파일</li><li>아카이브 로그파일</li></ul></td><td class="confluenceTd"><ul><li>완전 복구</li><li>불완전 복구</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>데이터베이스 전체</li><li>테이블스페이스 단위</li></ul></td><td colspan="1" class="confluenceTd"><ul style="list-style-type: square;"><li>아카이브 로그파일 관리 필요</li></ul></td></tr><tr><th colspan="1" class="confluenceTh">오프라인 백업</th><td colspan="1" style="text-align: center;" class="confluenceTd">중지</td><td colspan="1" style="text-align: center;" class="confluenceTd">-</td><td colspan="1" style="text-align: center;" class="confluenceTd">무관</td><td colspan="1" class="confluenceTd"><ul><li>디스크 데이터파일</li><li>메모리 체크포인트 이미지파일</li><li>로그앵커 파일</li><li>온라인 로그파일</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>백업 시점</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>데이터베이스 전체</li></ul></td><td colspan="1" class="confluenceTd"> </td></tr><tr><th colspan="2" class="confluenceTh">증분 백업</th><td colspan="1" style="text-align: center;" class="confluenceTd">구동</td><td colspan="1" class="confluenceTd"><p style="text-align: center;">구동</p><p style="text-align: center;">(컨트롤 단계)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">아카이브 모드</td><td colspan="1" class="confluenceTd"><ul><li>디스크 데이터파일</li><li>메모리 체크포인트 이미지파일 1벌</li><li>로그앵커 파일</li><li>아카이브 로그파일</li><li>backupInfo 파일</li></ul></td><td colspan="1" class="confluenceTd"><ul><li>완전 복구</li><li>불완전 복구</li></ul><p> </p></td><td colspan="1" class="confluenceTd"><ul><li>데이터베이스 전체</li><li>테이블스페이스 단위</li></ul></td><td colspan="1" class="confluenceTd"><ul style="list-style-type: square;"><li>'페이지 변경 추적' 기능 활성화 필요</li><li>아카이브 로그파일 관리 필요</li></ul></td></tr></tbody></table></div></div></div></div></div><p> </p><p> </p><h1 id="Altibase백업정책결정을위한고려사항-참고문서">참고문서</h1><hr /><ul><li>기술문서 『Altibase 용량 산정 가이드』</li><li>기술문서 『디스크 I/O를 고려한 볼륨 구성 가이드』</li><li>Administrator Manual -&gt; 10. 백업 및 복구</li><li>Administrator Manual -&gt; 11. 증분 백업과 복구</li><li>Utilities Manual -&gt; 1. aexport</li><li>iLoader User's Manual</li><li>매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></li></ul><p> </p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

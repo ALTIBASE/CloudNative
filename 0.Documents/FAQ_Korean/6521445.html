@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : altibase_qp.log의 8자리 errorcode 확인방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : altibase_qp.log의 8자리 errorcode 확인방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> JH Choi</span>, last modified by <span class='editor'> richard.nahm	</span> on Mar 25, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054912 {padding: 0px;}
+div.rbtoc1624409054912 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054912 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054912'>
+<ul class='toc-indentation'>
+<li><a href='#altibase_qp.log의8자리errorcode확인방법-대상버전'>대상 버전</a></li>
+<li><a href='#altibase_qp.log의8자리errorcode확인방법-증상'>증상</a></li>
+<li><a href='#altibase_qp.log의8자리errorcode확인방법-8자리에러코드확인방법'>8자리 에러코드 확인방법</a></li>
+<li><a href='#altibase_qp.log의8자리errorcode확인방법-참고사항'>참고 사항</a></li>
+</ul>
+</div></p><h2 id="altibase_qp.log의8자리errorcode확인방법-대상버전">대상 버전</h2><p>6.1.1 이하 버전.</p><p>6.3.1 이상 버전에서는 5자리 에러코드로 표현됨.</p><h2 id="altibase_qp.log의8자리errorcode확인방법-증상">증상</h2><p>알티베이스 버전에 따라 $ALTIBASE_HOME/trc/altibase_qp.log 에 에러코드에 대한 표현방식이 다릅니다.</p><p># 6.1.1 버전 예 (8자리 에러코드로 표현)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[EXEC_DDL_BEGIN : DROP USER ALTITEST CASCADE]
+[2013/04/01 11:02:17] [Thread-1105209696] [Level-2]
+[EXEC_DDL_END : FAILURE] errorcode 822329545
+</pre>
+</div></div><p># 6.3.1 버전 예 (5자리 에러코드 및 에러메시지가 표시됨)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[EXEC_DDL_BEGIN : DROP USER ALTITEST CASCADE]
+[2014/05/21 15:12:48] [Thread-1157658976] [Level-2]
+[EXEC_DDL_END : FAILURE] ERR-3103c : Undefined user name. The user specified as the owner of a table or an object was not found in the database.
+0001 : DROP USER ALTITEST CASCADE
+                ^       ^
+</pre>
+</div></div><p>6.3.1 이상 버전에서는 altierr 에서 바로 확인 가능한 에러코드 및 메시지까지 표시되어 에러 확인에 어려움이 없지만, 6.1.1 이하 버전에서는 알수 없는 에러코드 및 에러메시지도 없어 에러내용 확인에 어려움이 있습니다.</p><h2 id="altibase_qp.log의8자리errorcode확인방법-8자리에러코드확인방법">8자리 에러코드 확인방법</h2><p>8자리 10진수 에러코드를 hexa값으로 변환합니다. (윈도우 계산기 이용)</p><p>변환된 숫자의 앞 5자리가 에러코드입니다.</p><p>예를 들어 위 에러코드 822329545를 hexa로 변환하면 <span style="color: rgb(255,0,0);">3103C</span>0C9 이 됩니다.</p><p>그럼 실제 에러코드는 3103C 이 됩니다.</p><p>이렇게 구한 에러코드를 altierr를 이용하여 에러 내용을 확인할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x3103C<br /> 0x3103C ( 200764) qpERR_ABORT_QDR_NOT_EXISTS_USER Undefined user name. The user specified as the owner of a table or an object was not found in the database. &lt;0%s&gt;<br /> # *Cause:<br /> # - The user specified as the owner of a table or an object was not found in the database.<br /> # *Action:<br /> # - Please make sure that a user name corresponding to the owner of an object is registered in the database.</p>
+</div></div><h2 id="altibase_qp.log의8자리errorcode확인방법-참고사항">참고 사항</h2><p>  </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

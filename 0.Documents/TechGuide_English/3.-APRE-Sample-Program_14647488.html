@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. APRE Sample Program</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Precompiler-Guide_14647438.html">Altibase Precompiler Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. APRE Sample Program
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter briefly describes the sample program included in the ALTIBASE installation file.</p><h1 id="id-3.APRESampleProgram-SampleProgram">Sample Program</h1><p>Refer to various samples in $ALTIBASE_HOME/sample/APRE. The source of the directory can be referenced as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Sample source name</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Cursor usage sample</p></td><td class="confluenceTd"><p>cursor1.sc cursor2.sc</p></td></tr><tr><td class="confluenceTd"><p>DB connection sample</p></td><td class="confluenceTd"><p>connect1.sc connect2.sc</p></td></tr><tr><td class="confluenceTd"><p>DML specific usage sample</p></td><td class="confluenceTd"><p>select.sc insert.sc delete.sc update.sc</p></td></tr><tr><td class="confluenceTd"><p>Dynamic SQL sample</p></td><td class="confluenceTd"><p>dynamic1.sc dynamic2.sc dynamic3.sc</p></td></tr><tr><td class="confluenceTd"><p>FailOver sample</p></td><td class="confluenceTd"><p>Fail-Over/FailOverSample.sc</p></td></tr><tr><td class="confluenceTd"><p>LOB usage sample</p></td><td class="confluenceTd"><p>BLOB/blobSample.sc  CLOB/clobSample.sc</p></td></tr><tr><td class="confluenceTd"><p>Multi Connection sample</p></td><td class="confluenceTd"><p>mc1.sc mc2.sc</p></td></tr><tr><td class="confluenceTd"><p>PSM/Function sample</p></td><td class="confluenceTd"><p>ps1m.sc psm2.sc</p></td></tr><tr><td class="confluenceTd"><p>Thread development environment sample</p></td><td class="confluenceTd"><p>mt1.sc mt2.sc</p></td></tr><tr><td class="confluenceTd"><p>Host variable sample</p></td><td class="confluenceTd"><p>arrays1.sc arrays2.sc pointer.sc date.sc varchar.sc binary.sc</p></td></tr></tbody></table></div><p> </p><p>This document describes a sample of performing an update to a separate table in the cursor-fetch process by making two connections by applying sample sources in combination.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Testsample.sc
+--------------------------------------------------------------------------
+EXEC SQL BEGIN DECLARE SECTION;
+ char   usr [20];
+ char   pwd [20];
+ char   opt [200];
+ char   conn2 [20];
+ int    H_C1;
+ int    H_C2;
+ int     i;
+EXEC SQL END DECLARE SECTION;
+ 
+void error_do(const char*step)
+{
+ 
+    if (sqlca.sqlcode != 0)
+    {
+        printf (&quot;Error: &lt;%s&gt; %d, %s\n&quot;, step,  SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    } else {
+        printf (&quot;%s success\n&quot;, step);
+    }
+}
+ 
+main()
+{
+    // Connection information to connect
+    sprintf (usr, &quot;sys&quot;);
+    sprintf (pwd, &quot;manager&quot;);
+    sprintf (opt, &quot;DSN=192.168.1.35;PORT_NO=27584;CONNTYPE=1&quot;);
+ 
+    // Execute DB conenction
+    EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+    error_do(&quot;conn&quot;);
+ 
+    // Execute a separate connection for update execution in the cursor
+    sprintf (conn2, &quot;update_con&quot;);
+    EXC SQL AT :conn2 CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+    error_do(&quot;conn2&quot;);
+ 
+    // Change to NonAutoCommit mode
+    EXEC SQL AT :conn2 ALTER SESSION SET AUTOCOMMIT = FALSE:
+    error_do (&quot;alter session&quot;);
+ 
+    // Create two tables for testing and enter the data
+    EXEC SQL CREATE TABLE TABLE_A (C1 INTEGER, C2 INTEGER);
+    EXEC SQL CREATE TABLE TABLE_B (C1 INTEGE, C2 INTEGER);
+ 
+    for (i=0; i&lt;10; i++)
+   {
+       EXEC SQL INSERT INTO TABLE_A VALUES (:i, :i);
+       Error_do (&quot;insert_table_a&quot;);
+        
+       EXEC SQL INSERT INTO TABLE_B VALUES (:i, :i);
+       Error_do(&quot;insert_table_b&quot;);
+    }
+ 
+    EXEC SQL AT :conn2 COMMIT;
+ 
+    // Declare cursor
+    EXEC SQL DECLARE CURSOR1 CURSOR FOR   SELECT C1, C2 FROM TABLE_A;
+    error_do(&quot;declare&quot;);
+ 
+    // Open cursor
+    EXEC SQL OPEN CURSOR1;
+    error_do(&quot;open&quot;);
+ 
+    while (1)
+    {
+         // Update while fetching
+        EXEC SQL FETCH CURSOR1 INTO :H_C1, :H_C2;
+        error_do(&quot;fetch&quot;);
+ 
+        // Update
+        EXEC SQL AT :conn2  UPDATE TABLE_B SET C2 = C2 + :H_C2  WHERE C1 = :H_C1;
+        error_do(&quot;update&quot;);
+    }
+ 
+    // Close the used cursor
+    EXEC SQL CLOSE CURSOR1;
+ 
+    // Disconnect
+    EXEC SQL DISCONNECT;
+ 
+    // Commit the session that was performed the update and disconnect.
+    EXEC SQL AT :conn2 COMMIT;
+    EXEC SQL AT :conn2 DISCONNECT;
+}</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

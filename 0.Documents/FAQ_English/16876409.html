@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11183 (  70019) Insufficient page descriptor area in the temp table.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11183 (  70019) Insufficient page descriptor area in the temp table.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148494 {padding: 0px;}
+div.rbtoc1624409148494 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148494 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148494'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Overview'>Overview</a></li>
+<li><a href='#ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Version'>Version</a></li>
+<li><a href='#ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Cause'>Cause</a></li>
+<li><a href='#ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Solution'>Solution</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Overview">Overview</h1><hr /><p>This document describes the cause and solution of the occurrence of 'ERR-11183 (70019) Insufficient page descriptor area in the temp table' that occurs when executing a query.</p><p> </p><h1 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Version">Version</h1><hr /><ul><li>Altibase Server 6.3.1 or later</li><li>Altibase server up to 7.1.0.5.0<ul><li>Altibase 7.1.0.5.1 or later reflects BUG-48369, so this error does not occur.</li></ul></li></ul><p> </p><h1 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Symptom">Symptom</h1><hr /><p>This can occur when a disk table is used in a query statement and a query statement that requires SORT or HASH operation processing is executed. </p><p> </p><h1 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Cause">Cause</h1><hr /><p>This error occurs when the following conditions are satisfied.</p><ul><li>The maximum size of the disk temporary tablespace is set larger than TEMP_MAX_PAGE_COUNT, and</li><li>When a query statement that requires a disk temporary tablespace with a size exceeding TEMP_MAX_PAGE_COUNT is executed.</li></ul><p>Altibase server allocates and uses a certain size in memory for fast operation when SORT/HASH operation is required in the process of query processing for disk tables. If all the memory of the specified size is used and additional space for SORT/HASH operations is needed, use a disk temporary tablespace. At this time, the total number of pages that can be used as a disk temporary tablespace is determined by the TEMP_MAX_PAGE_COUNT property.</p><h4 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Exampleoferroroccurrence:Insufficientpagedescriptorareainthetemptable">Example of error occurrence: Insufficient page descriptor area in the temp table</h4><p>The maximum size of the disk temporary tablespace is set to 2G, and the value of the TEMP_MAX_PAGE_COUNT property is set to 32767 (256MB),</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set vertical off;
+iSQL&gt; set linesize 1024
+iSQL&gt; set colsize 25
+
+-- The disk temporary tablespace is set to use up to 2G.
+iSQL&gt; SELECT &#39;DISK_TEMP_TBS_MAX_SUM&#39;
+     , SUM(DECODE(F.MAXSIZE, 0, F.CURRSIZE, F.MAXSIZE)*TBS.PAGE_SIZE) AS &#39;MAX_SIZE(BYTE)&#39; 
+  FROM V$DATAFILES F,
+       V$TABLESPACES TBS
+ WHERE F.SPACEID = TBS.ID
+   AND TBS.TYPE IN (5, 6);
+&#39;DISK_TEMP_TBS_MAX_SUM&#39;  MAX_SIZE(BYTE)         
+---------------------------------------------------
+DISK_TEMP_TBS_MAX_SUM  2147475456             
+1 row selected.
+
+-- The unit of the TEMP_MAX_PAGE_COUNT property value is the number of pages, and in terms of size, it is 256MB.
+- The result below means that the number of pages that can be used as a disk temporary tablespace is 256MB.
+iSQL&gt; SELECT NAME, VALUE1, VALUE1*8192 FROM V$PROPERTY WHERE NAME = &#39;TEMP_MAX_PAGE_COUNT&#39;;
+NAME                       VALUE1                     VALUE1*8192            
+---------------------------------------------------------------------------------
+TEMP_MAX_PAGE_COUNT        32767                      268427264              
+1 row selected.</pre>
+</div></div><p>When a query statement whose size for SORT operation exceeds the TEMP_MAX_PAGE_COUNT property value of 32767 (256MB) is executed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);      
+[ERR-11183 : Insufficient page descriptor area in the temp table.]</pre>
+</div></div><p>If the disk temporary tablespace usage is queried while executing the query, it can be seen that the disk temporary tablespace usage is close to the TEMP_MAX_PAGE_COUNT property value.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- Query disk temporary tablespace usage when executing a query
+iSQL&gt; set vertical on;
+iSQL&gt; set colsize 100
+iSQL&gt; SELECT TO_CHAR(SYSDATE, &#39;HH:MI:SS&#39;) TIME,
+       &#39;TEMP_T_STATS&#39;,
+       CREATE_TIME, DROP_TIME,
+       SS.ID SESSION_ID,
+       TRANSACTION_ID TX_ID,
+       SS.AUTOCOMMIT_FLAG ,
+       STMT.EXECUTE_FLAG ,
+       SQL_TEXT,
+       STATE,
+       ESTIMATED_OPTIMAL_SORT_SIZE,
+       ESTIMATED_OPTIMAL_HASH_SIZE,
+       ALLOC_WAIT_COUNT,
+       WORK_AREA_SIZE, 
+       NORMAL_AREA_SIZE
+  FROM X$TEMPTABLE_STATS TEMP,
+       V$STATEMENT STMT,
+       V$SESSION SS
+ WHERE TRANSACTION_ID = STMT.TX_ID
+   AND SS.ID &lt;&gt; SESSION_ID()
+   AND STMT.SESSION_ID = SS.ID
+ ORDER BY SESSION_ID;
+TIME                        : 15:39:03                   
+&#39;TEMP_T_STATS&#39;              : TEMP_T_STATS  
+CREATE_TIME                 : 20161129_153221                   
+DROP_TIME                   : 20161129_153311                   
+SESSION_ID                  : 1           
+TX_ID                       : 51842       
+AUTOCOMMIT_FLAG             : 1           
+EXECUTE_FLAG                : 0           
+SQL_TEXT                    : select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2)     
+STATE                       : SORT_INSERTNSORT                  
+ESTIMATED_OPTIMAL_SORT_SIZE : 562205696            
+ESTIMATED_OPTIMAL_HASH_SIZE : 0                    
+ALLOC_WAIT_COUNT            : 0                    
+WORK_AREA_SIZE              : 1048576              
+NORMAL_AREA_SIZE            : 267911168              -- Disk temporary tablespace usage. Similar to the size of TEMP_MAX_PAGE_COUNT converted to bytes.</pre>
+</div></div><h1 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-Solution">Solution</h1><hr /><p>Change the value of the TEMP_MAX_PAGE_COUNT property according to the maximum value of the disk temporary tablespace.</p><p> </p><p><strong>1. Check the maximum value of disk temp tablespace</strong><br />TEMP_MAX_PAGE_COUNT should be set on the assumption that all disk temporary tablespaces will be used to the maximum. Therefore, check the sum of the maximum values of all disk temporary tablespaces created in the Altibase server with the following query.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Sum of maximum disk temporary tablespaces</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT &#39;DISK_TEMP_TBS_MAX_SUM&#39;
+     , SUM(DECODE(F.MAXSIZE, 0, F.CURRSIZE, F.MAXSIZE)*TBS.PAGE_SIZE) AS &#39;MAX_SIZE(BYTE)&#39;  
+  FROM V$DATAFILES F,
+       V$TABLESPACES TBS
+ WHERE F.SPACEID = TBS.ID
+   AND TBS.TYPE IN (5, 6);</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><p><strong>2. Calculate TEMP_MAX_PAGE property appropriate value</strong><br />The unit of the TEMP_MAX_PAGE_COUNT property is the number of pages, and the value is calculated using the formula below.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>TEMP_MAX_PAGE_COUNT = <span style="color: rgb(255,0,0);"><em>Sum of maximum disk temporary tablespaces</em></span></span><span> / 8192</span></p>
+</div></div>    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p style="margin-left: 10.0px;"><strong>Example of TEMP_MAX_PAGE_COUNT calculation</strong></p><p style="margin-left: 10.0px;">If the total sum of the maximum disk temporary tablespaces is 17179869184 bytes (16GB), 17179869184/8192 = 2097152, and the value of the TEMP_MAX_PAGE_COUNT property is 2097152. </p><p style="margin-left: 10.0px;"><strong>TEMP_MAX_PAGE_COUNT setting value for each total maximum of disk temporary tablespaces</strong></p><p style="margin-left: 10.0px;">TEMP_MAX_PAGE_COUNT = 1048576 for 8G</p><p style="margin-left: 10.0px;">TEMP_MAX_PAGE_COUNT = 2096128 for 16G</p><p style="margin-left: 10.0px;">TEMP_MAX_PAGE_COUNT = 4192256 for 32G</p><p style="margin-left: 10.0px;">TEMP_MAX_PAGE_COUNT = 8388608 for 64G</p>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><p> </p><h4 id="ERR-11183(70019)Insufficientpagedescriptorareainthetemptable.-3.ChangeTEMP_MAX_PAGE_COUNTproperty"><strong>3. Change TEMP_MAX_PAGE_COUNT property</strong></h4><div>TEMP_MAX_PAGE_COUNT can be changed at the system level during Altibase operation.</div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TEMP_MAX_PAGE_COUNT = value; </pre>
+</div></div><p><br />Check V$PROPERTY to check the changed value.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TEMP_MAX_PAGE_COUNT&#39;;</pre>
+</div></div><p><br />Altibase server configuration file is also changed so that the value changed to ALTER SYSTEM is reflected even after restarting the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; cd $ALTIBASE_HOME/conf
+shell&gt; vi altibase.properties        # If TEMP_MAX_PAGE_COUNT does not exist in the altibase.properties file, if it is added, the existing value is changed. 
+TEMP_MAX_PAGE_COUNT = value;         </pre>
+</div></div><p> </p><p> </p><p> </p><p><strong>4. Considerations when changing the TEMP_MAX_PAGE_COUNT property</strong><br />The following three properties are affected by TEMP_MAX_PAGE_COUNT.<br />TOTAL_WA_SIZE<br />SORT_AREA_SIZE<br />HASH_AREA_SIZE<br /><br />So, if TEMP_MAX_PAGE_COUNT is changed, these properties must be changed as well.<br /><br /><span style="color: rgb(0,0,255);">The recommended values for each property are as follows</span>. The recommended value is calculated according to the default ratio, and the appropriate value of the property may be changed during operation.</p><p>TOTAL_WA_SIZE: 256 times TEMP_MAX_PAGE_COUNT<br />SORT_AREA_SIZE: 2 times TEMP_MAX_PAGE_COUNT<br />HASH_AREA_SIZE: 8 times TEMP_MAX_PAGE_COUNT</p><p>For example, when changing to TEMP_MAX_PAGE_COUNT = 1048576, the recommended value of each property is as follows.</p><p>TOTAL_WA_SIZE = 1048576*256 = 268435456 (Unit is bytes)<br />SORT_AREA_SIZE = 1048576*2 = 2097152 (unit is byte)<br />HASH_AREA_SIZE = 1048576*8 = 8388608 (Unit is byte)</p><p><br />Like TEMP_MAX_PAGE_COUNT, the following three properties can be changed at the system level during Altibase operation.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TOTAL_WA_SIZE = value; 
+ALTER SYSTEM SET SORT_AREA_SIZE = value; 
+ALTER SYSTEM SET HASH_AREA_SIZE = value; </pre>
+</div></div><p><br />Check V$PROPERTY to check the changed value.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;TOTAL_WA_SIZE&#39;, &#39;SORT_AREA_SIZE&#39;, &#39;HASH_AREA_SIZE&#39;);</pre>
+</div></div><p> </p><p>The altibase server configuration file is also changed so that the value changed to ALTER SYSTEM is reflected even after restarting the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">shell&gt; cd $ALTIBASE_HOME/conf
+shell&gt; vi altibase.properties        # Find and change each property in the altibase.properties file. 
+TOTAL_WA_SIZE                        = 134217728 # default = 134217728
+SORT_AREA_SIZE                       = 1048576   # default = 1048576 
+HASH_AREA_SIZE                       = 4194304   # default = 4194304        </pre>
+</div></div><p><strong><br />5. Effect of property change</strong></p><p><span style="color: rgb(255,0,0);">In the case of the TOTAL_WA_SIZE property, the ALLOC_SIZE and MAX_TOTAL_SIZE of V$MEMSTAT increase immediately after setting, and the memory of the Altibase server process also increases.</span></p><p>The area where the memory increases depend on the Altibase version. In the case of Altibase 7, the Temp_Memory area increases, and in the case of Altibase 6.3.1 and 6.5.1, the Storage_Disk_Buffer area increases.</p><p><span style="color: rgb(255,0,0);"> </span>How to check V$MEMSTAT is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 7 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, ALLOC_SIZE, MAX_TOTAL_SIZE FROM V$MEMSTAT WHERE NAME = &#39;Temp_Memory&#39;;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 6.3.1, 6.5.1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, ALLOC_SIZE, MAX_TOTAL_SIZE FROM V$MEMSTAT WHERE NAME = &#39;Storage_Disk_Buffer&#39;;</pre>
+</div></div><p>In the case of Unix/Linux, check whether the memory of the Altibase server process is increased with the ps command.</p><p>When checking immediately after TOTAL_WA_SIZE is changed, vsz increases, and when sort/hash operation occurs, rss increases.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Linux, SunOS</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; ps -o vsz,rss -p process_id </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>HP-UX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; export UNIX95=1
+shell&gt; ps -o vsz,rss -p process_id </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AIX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; ps -o vsz,rssize -p process_id</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

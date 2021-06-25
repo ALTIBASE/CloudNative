@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Causes and Solutions of Replication Conflicts</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Causes and Solutions of Replication Conflicts
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145655 {padding: 0px;}
+div.rbtoc1624409145655 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145655 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145655'>
+<ul class='toc-indentation'>
+<li><a href='#CausesandSolutionsofReplicationConflicts-Overview'>Overview</a></li>
+<li><a href='#CausesandSolutionsofReplicationConflicts-Whendataconflictsoccurinareplicationenvironment'>When data conflicts occur in a replication environment</a></li>
+<li><a href='#CausesandSolutionsofReplicationConflicts-Measurestopreventconflictasmuchaspossible'>Measures to prevent conflict as much as possible</a></li>
+<li><a href='#CausesandSolutionsofReplicationConflicts-Conflicttype'>Conflict type</a></li>
+</ul>
+</div></p><p> </p><h1 id="CausesandSolutionsofReplicationConflicts-Overview">Overview</h1><hr /><p>This document describes the causes and solutions of replication conflicts.</p><p> </p><h1 id="CausesandSolutionsofReplicationConflicts-Whendataconflictsoccurinareplicationenvironment">When data conflicts occur in a replication environment</h1><hr /><p>A replication conflict occurs when insert/update/delete is executed on the same key value at the same time.</p><p>● insert conflict: When an INSERT conflict occurs, the INSERT fails and a conflict error message is an output to altibase_rp.log. Use the REPLICATION_INSERT_REPLACE property to set a policy that resolves conflicts that occur when inserting data with the same key as an existing record. REPLICATION_INSERT_REPLACE=1: Insert after deletion. REPLICATION_INSERT_REPLACE=0: Do not delete or insert, and output an error message.</p><p>● update conflict: When an UPDATE conflict occurs, the UPDATE fails and a conflict error message is displayed in altibase_rp.log. The REPLICATION_UPDATE_REPLACE property can be used for conflict resolution. This occurs when the previous image changes other data or attempts to change to a primary key that does not exist. For example, if it currently has data of 10 and a replication transaction has an update to change from 20 to 30, the following policy can be used depending on the situation: REPLICATION_UPDATE_REPLACE=1: Update. REPLICATION_UPDATE_REPLACE=0: Does not update and displays a conflict error message.</p><p>● delete conflict: When a DELETE conflict occurs, the DELETE fails and a conflict error message is displayed in altibase_rp.log.</p><p> </p><p>For example in the case of insert:</p><p>1) After data with key=1 is inserted in server A, before transmitting the replication data to server B</p><p>2) When the same key=1 data is inserted in server B, the replication data received later in server B already has data with the same key=1 in server B, so a conflict occurs.</p><h1 id="CausesandSolutionsofReplicationConflicts-Measurestopreventconflictasmuchaspossible">Measures to prevent conflict as much as possible</h1><hr /><p>The best way is to avoid insert/update/delete with the same Key value on both servers.</p><p>For example, if the sequence is the primary key for a specific table, if the user inserts/updates/deletes data only with odd numbers on one side and even numbers on the other server, there will be no replication conflict.</p><p>In addition, do not do bulk insert/update/delete.</p><p>There are three solutions for replication conflict provided by Altibase.</p><p>1) User-Oriented Scheme</p><p>(1) Insert conflict: If you try to insert data with the same key, it is not reflected. (Output Conflict Error Message to altibase_rp.log)</p><p>(2) delete conflict: If you want to delete data with the same key, it is not reflected. (Output Conflict Error Message to altibase_rp.log)</p><p>(3) Update conflict: In the case of updating data with the same key, it is specified whether or not it is reflected according to the following attribute values.</p><p>-REPLICATION_UPDATE_REPLACE=1: Updated</p><p>-REPLICATION_UPDATE_REPLACE=0: Do not update and it is a conflict</p><p>Error message output</p><p> </p><p>2) Master-slave Scheme</p><p>When declaring a replication object, if as a master or as a slave is specified in the syntax, the replication conflict is handled as follows.</p><p>(1) Master's processing method: All Insert/Update/Delete conflicts are not reflected.</p><p>(2) Slave processing method</p><p>-Insert conflict: Delete an existing record and add a new record.</p><p>-Update conflict: The conflict is ignored and unconditionally reflected.</p><p>-Insert conflict: Not reflected.</p><p> </p><p>3) Timestamp-based Scheme</p><p>After setting the REPLICATION_TIMESTAMP_RESOLUTION property value to 1, a timestamp column is used in the replication table to reflect the latest value. In this method, there is a limitation that the timestamp column must be added to all of the replication target tables, and the time between both servers being replicated must be set equally.</p><p> </p><h1 id="CausesandSolutionsofReplicationConflicts-Conflicttype">Conflict type</h1><hr /><p>When a conflict occurs, a log is recorded in $ALTIBASE_HOME/trc/altibase_rp.log.</p><p>● Insert conflict: Occurs when the same PK (Primary Key) already exists.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[2015/04/28 10:11:33] [Thread-489] [Level-2]
+ERR-11058(errno=0) The row already exists in a unique index.
+
+
+[2015/04/28 10:11:33] [Thread-489] [Level-3]
+INSERT INTO TEST VALUES ( 14, 0, 0,  , 0, 0, 0, 0 );</pre>
+</div></div><p>● update conflict: Occurs when the PK (Primary Key) is the same, but the pre-change value from the remote server is different from the current value.</p><div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[2015/04/27 18:49:32] [Thread-489] [Level-2]
+ERR-610f7(errno=16) [Receiver] Unable to find record in executeUpdate() function
+
+
+[2015/04/27 18:49:32] [Thread-489] [Level-2]
+ERR-61000(errno=16) The received record is not found in the database.
+
+
+[2015/04/27 18:49:32] [Thread-489] [Level-3]
+UPDATE TEST SET C2 = 20150428 WHERE C1 =1231232 ;</pre>
+</div></div><div>● delete conflict: Occurs when the PK (Primary Key) is the same, but the pre-change value from the remote server is different from the current value.</div><div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[2015/10/28 17:03:08] [Thread-140059163547392] [Level-2]
+ERR-610f7(errno=16) [Receiver] Unable to find record in executeDelete() function
+
+
+[2015/10/28 17:03:08] [Thread-140059163547392] [Level-3]
+DELETE FROM TEST WHERE C1 = 21987744;</pre>
+</div></div><p> </p></div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

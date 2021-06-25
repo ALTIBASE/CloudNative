@@ -1,0 +1,129 @@
+/*
+
+TBS_ID   : 테이블스페이스 고유 번호
+TBS_TYPE : 메모리 테이블스페이스 유형. 
+           0 - 시스템 메모리 테이블스페이스. 데이터베이스 시스템의 운영상 필요한 메타 데이터를 저장하기 위한 테이블스페이스.
+           1 - 시스템 메모리 테이블스페이스. 데이터베이스 생성 시 기본으로 생성되는 데이터를 저장할 수 있는 테이블스페이스.
+           2 - 유저 메모리 테이블스페이스. 사용자가 생성한 메모리 테이블스페이스.
+           8 - 유저가 생성한 휘발성 테이블스페이스.
+TBS_NAME : 메모리 테이블스페이스 이름.
+MAX(M)   : 메모리 테이블스페이스에서 사용할 수 있는 최대 메모리 크기.
+           테이블스페이스 생성 시 MAXSIZE 를 지정하지 않는 경우는 MEM_MAX_DB_SIZE 를 출력함.          
+           테이블스페이스 속성이 AUTOEXTEND OFF 인 경우 TOTAL 을 출력함. 
+TOTAL(M) : 메모리 테이블스페이스에서 할당받은 페이지 합계. 체크포인트 이미지 파일 생성 크기와 동일하다.
+           여기에는 free page 도 포함하고 있다. free page는 알티베이스 서버 구동 시에 메모리로 로딩되지 않는다. 그래서 이 값만큼 물리 메모리를 사용하고 판단하기 어렵다. 
+           이 값은 DROP TABLESPACE 를 수행해야만 줄어든다. 
+ALLOC(M) : 메모리 테이블스페이스에서 사용 중인 메모리 크기.
+USED(M)  : ALLOC 중에서 데이터를 저장하고 있는 메모리 크기.
+USAGE(%) : MAX 대비 ALLOC 사용률.
+STATE    : 테이블스페이스의 상태. 
+           1 - 오프라인, 2 - 온라인, 3 - 백업 중인 오프라인 상태의 테이블스페이스, 4 - 백업 중인 온라인 상태의 테이블스페이스, 
+           128 - 삭제된(dropped) 테이블스페이스, 1024 - 폐기된(discarded) 테이블스페이스, 1028 - 백업 중인 폐기된(discarded) 상태의 테이블스페이스
+*/
+set linesize 1024;
+set colsize 20;
+SELECT ID TBS_ID
+     , DECODE(TYPE, 0, 'MEMORY_DICTIONARY', 1, 'MEMORY_SYS_DATA', 2, 'MEMORY_USER_DATA', 8, 'VOLATILE_USER_DATA') TBS_TYPE
+     , NAME TBS_NAME
+     , ROUND( DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE ,0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE , M.MAXSIZE) /1024/1024 ,2 ) 'MAX(M)'
+     , ROUND( M.ALLOC_PAGE_COUNT * T.PAGE_SIZE / 1024 / 1024, 2) 'TOTAL(M)'
+     , ROUND(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,T.TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024,2) 'ALLOC(M)'
+     , NVL(MT.USED, 0) 'USED(M)'
+     , ROUND( DECODE(MAXSIZE, 140737488322560, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*T.PAGE_SIZE/ D.MEM_MAX_DB_SIZE ,0, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) / T.TOTAL_PAGE_COUNT , (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) * T.PAGE_SIZE/ M.MAXSIZE) * 100 , 2) 'USAGE(%)'
+     , DECODE(T.STATE,1,'OFFLINE',2,'ONLINE',5,'OFFLINE BACKUP',6,'ONLINE BACKUP',128,'DROPPED', 'DISCARDED') STATE
+     , DECODE(M.AUTOEXTEND_MODE,1,'ON','OFF') 'AUTOEXTEND'
+  FROM V$DATABASE D
+     , V$TABLESPACES T
+     , (SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAX_SIZE AS MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$VOL_TABLESPACES
+         UNION
+        SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN(SELECT TABLESPACE_ID, ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM V$MEMTBL_INFO
+         GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+ WHERE T.ID = M.SPACE_ID;
+ 
+ 
+ 
+TBS_ID      TBS_TYPE            TBS_NAME              MAX(M)      TOTAL(M)    ALLOC(M)    USED(M)     USAGE(%)    STATE           AUTOEXTEND  
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+0           MEMORY_DICTIONARY   SYS_TBS_MEM_DIC       4096        4.03        4           1.002       0.1         ONLINE          ON   
+1           MEMORY_SYS_DATA     SYS_TBS_MEM_DATA      4096        8.03        0.09        0           0           ONLINE          ON   
+5           MEMORY_USER_DATA    USER_MEM_TBS          3072.03     3072.03     24.06       0           0.78        ONLINE          OFF  
+3 rows selected.
+
+
+
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, '999,999,999') 'CURR_SIZE(MB)'
+     , TO_CHAR(AUTOEXTEND_NEXTSIZE/1024/1024, '999,999,999') 'NEXT_SIZE(MB)'
+     , TO_CHAR(DECODE(MAXSIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAXSIZE)/1024/1024, '999,999,999') ' MAXSIZE(MB)'
+     , DECODE(AUTOEXTEND_MODE, 1, 'ON', 0, 'OFF') 'AUTOEXTEND' 
+  FROM V$MEM_TABLESPACES, V$DATABASE D
+UNION ALL  
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, '999,999,999') 'CURR_SIZE(MB)'
+     , TO_CHAR(NEXT_SIZE/1024/1024, '999,999,999') 'NEXT_SIZE(MB)'
+     , TO_CHAR(DECODE(MAX_SIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAX_SIZE)/1024/1024, '999,999,999') ' MAXSIZE(MB)'
+     , DECODE(AUTOEXTEND_MODE, 1, 'ON', 0, 'OFF') 'AUTOEXTEND' 
+  FROM V$VOL_TABLESPACES, V$DATABASE D  
+set linesize 1024;
+set colsize 20;
+SELECT ID TBS_ID
+     , DECODE(TYPE, 0, 'MEMORY_DICTIONARY', 1, 'MEMORY_SYS_DATA', 2, 'MEMORY_USER_DATA', 8, 'VOLATILE_USER_DATA') TBS_TYPE
+     , NAME TBS_NAME
+     , ROUND( DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE ,0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE , M.MAXSIZE) /1024/1024 ,2 ) 'MAX(M)'
+     , ROUND( M.ALLOC_PAGE_COUNT * T.PAGE_SIZE / 1024 / 1024, 2) 'TOTAL(M)'
+     , ROUND(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,T.TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024,2) 'ALLOC(M)'
+     , NVL(MT.USED, 0) 'USED(M)'
+     , ROUND( DECODE(MAXSIZE, 140737488322560, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*T.PAGE_SIZE/ D.MEM_MAX_DB_SIZE ,0, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) / T.TOTAL_PAGE_COUNT , (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) * T.PAGE_SIZE/ M.MAXSIZE) * 100 , 2) 'USAGE(%)'
+     , DECODE(T.STATE,1,'OFFLINE',2,'ONLINE',5,'OFFLINE BACKUP',6,'ONLINE BACKUP',128,'DROPPED', 'DISCARDED') STATE
+     , DECODE(M.AUTOEXTEND_MODE,1,'ON','OFF') 'AUTOEXTEND'
+  FROM V$DATABASE D
+     , V$TABLESPACES T
+     , (SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAX_SIZE AS MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$VOL_TABLESPACES
+         UNION
+        SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN(SELECT TABLESPACE_ID, ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM V$MEMTBL_INFO
+         GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+ WHERE T.ID = M.SPACE_ID;
+ 
+
+
+-- 메모리 테이블스페이스 속성 정보
+
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, '999,999,999') 'CURR_SIZE(MB)'
+     , TO_CHAR(AUTOEXTEND_NEXTSIZE/1024/1024, '999,999,999') 'NEXT_SIZE(MB)'
+     , TO_CHAR(DECODE(MAXSIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAXSIZE)/1024/1024, '999,999,999') ' MAXSIZE(MB)'
+     , DECODE(AUTOEXTEND_MODE, 1, 'ON', 0, 'OFF') 'AUTOEXTEND' 
+  FROM V$MEM_TABLESPACES, V$DATABASE D
+UNION ALL  
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, '999,999,999') 'CURR_SIZE(MB)'
+     , TO_CHAR(NEXT_SIZE/1024/1024, '999,999,999') 'NEXT_SIZE(MB)'
+     , TO_CHAR(DECODE(MAX_SIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAX_SIZE)/1024/1024, '999,999,999') ' MAXSIZE(MB)'
+     , DECODE(AUTOEXTEND_MODE, 1, 'ON', 0, 'OFF') 'AUTOEXTEND' 
+  FROM V$VOL_TABLESPACES, V$DATABASE D ;

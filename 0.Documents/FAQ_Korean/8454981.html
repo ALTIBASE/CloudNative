@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : floating point 형 data type (double, float) 사용 시 주의사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : floating point 형 data type (double, float) 사용 시 주의사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Mar 06, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="floatingpoint형datatype(double,float)사용시주의사항-3"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051084 {padding: 0px;}
+div.rbtoc1624409051084 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051084 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051084'>
+<ul class='toc-indentation'>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-double,floatdatatype사용시주의사항'>double, float data type 사용 시 주의사항</a></li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-영향을받는버전'>영향을 받는 버전</a></li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-double형숫자값이잘려서표현되는예'>double형 숫자값이 잘려서 표현되는 예 </a>
+<ul class='toc-indentation'>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-iSQL에서값이잘려서표현되는현상'>iSQL 에서 값이 잘려서 표현되는 현상</a></li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-iLoader에서data를export했을때'> iLoader 에서 data 를 export 했을 때</a></li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-프로그램에서double형호스트변수에가져올올경우는정상조회된다.'>프로그램에서 double 형 호스트 변수에 가져올 올 경우는 정상 조회된다.</a></li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-Oraclesqlplus에서도동일한현상'>Oracle sqlplus 에서도 동일한 현상</a></li>
+</ul>
+</li>
+<li><a href='#floatingpoint형datatype(double,float)사용시주의사항-문제해결방안'>문제 해결방안</a></li>
+</ul>
+</div></h1><h1 id="floatingpoint형datatype(double,float)사용시주의사항-double,floatdatatype사용시주의사항">double, float data type 사용 시 주의사항</h1><hr /><p>알티베이스의 double data type 은 C언어의 double 형 데이터타입과 동일합니다.   double data type은 고정 소수점 방식보다 넓은 범위의 수를 나타낼 수 있는 반면, 근사값으로 표현되기 때문에 </p><p>그 값이 정확하지 않을 수 있으며 소숫점 뒤의 의미없는 값들이 지나치게 길게 나올수 있습니다.</p><p>또한 double/float 형 값을  iSQL로  조회하거나  iloader 로 export 할 경우  소수점 이하의 값이 잘려서 나오지 않을 수 있습니다.  </p><p>따라서 소수점이하의 값을  정확하게  조회하거나 저장하기 위해서는    numeric 과 같은 고정 소수점  숫자타입을 사용하여야 합니다.</p><h1 id="floatingpoint형datatype(double,float)사용시주의사항-영향을받는버전">영향을 받는 버전</h1><hr /><p>모든 알티베이스 버전에 동일하게 해당하는 사항입니다.</p><p> </p><p> </p><h1 id="floatingpoint형datatype(double,float)사용시주의사항-double형숫자값이잘려서표현되는예">double형 숫자값이 잘려서 표현되는 예 </h1><hr /><h3 id="floatingpoint형datatype(double,float)사용시주의사항-iSQL에서값이잘려서표현되는현상">iSQL 에서 값이 잘려서 표현되는 현상</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt; create table t1 ( c1 <span style="color: rgb(255,0,0);">double</span> );<br />Create success.</p><p>iSQL&gt; desc t1;<br />[ TABLESPACE : SYS_TBS_MEM_DATA ]<br />[ ATTRIBUTE ]                                                         <br />------------------------------------------------------------------------------<br />NAME                                     TYPE                        IS NULL <br />------------------------------------------------------------------------------<br />C1                                       <span style="color: rgb(255,0,0);">DOUBLE         </span> FIXED      </p><p>iSQL&gt;  insert into t1 values ( <span style="color: rgb(255,0,0);">double'100.00000000000001421085471520200372'</span>);                                    <span style="color: rgb(255,0,0);">&lt;-- double형 칼럼에 double형의 긴 소수점 이하값을 갖는  숫자를 입력한다.</span><br />1 row inserted.</p><p>iSQL&gt; select c1, to_char(c1) from t1;<br />C1                     TO_CHAR(C1)                                                       <br />--------------------------------------------------------------------------------------------<br />100                    <span style="color: rgb(255,0,0);">100</span>                                                                                                                                      <span style="color: rgb(255,0,0);">&lt;--- 소수점이하의 값이 잘려서 조회</span></p><p>iSQL&gt;</p><p><br />iSQL&gt; select * from t1 where <span style="color: rgb(255,0,0);">c1 = 100.00000000000001421085471520200372</span>;                                      <span style="color: rgb(255,0,0);">&lt;-- 조회 조건값이 잘려서  조회되지 않을 수 있다.</span><br />C1                     <br />-------------------------<br />No rows selected.</p><p>iSQL&gt; select c1, to_char(c1) from t1 where c1 =<span style="color: rgb(255,0,0);"> double'100.00000000000001421085471520200372'</span>; <span style="color: rgb(255,0,0);"> &lt;-- 조회 조건값을  형변환시키면 원하는 값을 찾을 수 있다.</span><br />C1                     TO_CHAR(C1)                                                       <br />--------------------------------------------------------------------------------------------<br />100                    100                                                                                                                                   <span style="color: rgb(255,0,0);">&lt;---  그러나 조회되서 출력되는 값을 잘려서 표현된다.</span><br />1 row selected.</p>
+</div></div><p> </p><h3 id="floatingpoint형datatype(double,float)사용시주의사항-iLoader에서data를export했을때"> iLoader 에서 data 를 export 했을 때</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ iloader -s localhost -u SYS -p MANAGER out -f SYS_T1.fmt -d SYS_T1.dat -log SYS_T1.log<br />$ cat SYS_T1.dat<br />100                     <span style="color: rgb(255,0,0);">&lt;--- 소수점이하가  잘린 값이  export된다.</span></p>
+</div></div><p> </p><h3 id="floatingpoint형datatype(double,float)사용시주의사항-프로그램에서double형호스트변수에가져올올경우는정상조회된다.">프로그램에서 double 형 호스트 변수에 가져올 올 경우는 정상 조회된다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>/* select.c */<br />...................<br />...................<br />    EXEC SQL BEGIN DECLARE SECTION;<br />    double c1;         // select 출력용 double 호스트변수 <br />    double ins_c1;     // insert 용 double 호스트변수 <br />    EXEC SQL END DECLARE SECTION;</p><p>    ins_c1 = 100.00000000000001421085471520200372;</p><p>    EXEC SQL INSERT INTO T1 values ( :ins_c1 );<br />    if (sqlca.sqlcode != SQL_SUCCESS)<br />    {<br />        printf(&quot;Error : [%d] %s\n\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);</p><p>    }</p><p>    EXEC SQL SELECT C1 INTO :c1 FROM T1 limit1;<br />    /* check sqlca.sqlcode */<br />    if (sqlca.sqlcode == SQL_SUCCESS)<br />    {<br />        printf(&quot;c1 = %.32f \n&quot;, c1);<br />    }<br />.................<br />.................<br />shell&gt; ./select   ( 프로그램 실행)<br />&lt;SELECT&gt;<br />c1 = <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372</span>   <span style="color: rgb(255,0,0);">&lt;-- 정상적인 값이 출력된다.</span></p>
+</div></div><p> </p><h3 id="floatingpoint형datatype(double,float)사용시주의사항-Oraclesqlplus에서도동일한현상">Oracle sqlplus 에서도 동일한 현상</h3><p> 확인결과 Oracle 의 sqlplus 에서도 동일하게 값이 잘리는 현상이 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; create table t1 ( c1 binary_double );</p><p>Table created.</p><p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; insert into t1 values ( 100.00000000000001421085471520200372 );</p><p>1 row created.</p><p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; select c1, to_char(c1) from t1;</p><p>        C1 TO_CHAR(C1)<br />---------- ----------------------------------------<br />  1.0E+002 1.0000000000000001E+002</p>
+</div></div><h1 id="floatingpoint형datatype(double,float)사용시주의사항-문제해결방안">문제 해결방안</h1><hr /><p>소수점이하의 값을  정확하게  조회하거나 저장하기 위해서는    numeric(scale, presicion )   과 같은 고정 소수점  숫자타입을 사용하여야 합니다.</p><p>아래는   numeric 형을 사용할 경우 iSQL에서  값이 정상 조회되는 실행 예입니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt;  create table t2 ( c1 numeric(35, 32 ) );<br />Create success.<br />iSQL&gt; desc t2;<br />[ TABLESPACE : SYS_TBS_MEM_DATA ]<br />[ ATTRIBUTE ]                                                         <br />------------------------------------------------------------------------------<br />NAME                                     TYPE                        IS NULL <br />------------------------------------------------------------------------------<br />C1                                       NUMERIC(35, 32) FIXED      </p><p> </p><p>iSQL&gt; insert into t2 values ( 100.00000000000001421085471520200372 );<br />iSQL&gt; insert into t2 values ( 123.00000000000001421085471520200372 );<br />iSQL&gt; insert into t2 values ( 100.12345 );</p><p><br />iSQL&gt; select c1, to_char(c1) from t2;     <span style="color: rgb(255,0,0);">&lt;-- iSQL 상에서 소수점 이하 값을 그대로 표현하기 위해서 to_char 함수를 사용하여 char 형으로 형변환합니다.</span> <br />C1          TO_CHAR(C1)                                                       <br />---------------------------------------------------------------------------------<br />100         <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372 </span>                             <br />123         <span style="color: rgb(255,0,0);">123.00000000000001421085471520200372                             </span> <br />100.12345   100.12345    </p><p> </p><p>iSQL&gt; select c1, to_char(c1) from t2 where c1 = <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372</span>;      <span style="color: rgb(255,0,0);">&lt;--  조건값으로 조회할 경우 별도의 형변환이 필요없이 사용 가능합니다.</span><br />C1          TO_CHAR(C1)                                                       <br />---------------------------------------------------------------------------------<br />100         100.00000000000001421085471520200372                              <br />1 row selected.</p>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

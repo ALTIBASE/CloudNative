@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 로그디스크 FULL이 발생하는 경우와 대처 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 로그디스크 FULL이 발생하는 경우와 대처 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> JH Choi</span> on Jun 22, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051625 {padding: 0px;}
+div.rbtoc1624409051625 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051625 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051625'>
+<ul class='toc-indentation'>
+<li><a href='#id-로그디스크FULL이발생하는경우와대처방법-개요'>개요</a></li>
+<li><a href='#id-로그디스크FULL이발생하는경우와대처방법-적용버전'>적용버전</a></li>
+<li><a href='#id-로그디스크FULL이발생하는경우와대처방법-DiskFull이발생한경우알티베이스운용상태'>Disk Full이 발생한 경우 알티베이스 운용 상태</a></li>
+<li><a href='#id-로그디스크FULL이발생하는경우와대처방법-로그화일이있는디렉토리가full이난경우'>로그 화일이 있는 디렉토리가 full이 난 경우</a></li>
+<li><a href='#id-로그디스크FULL이발생하는경우와대처방법-LogDiskFull이발생한경우대처방법'>Log Disk Full이 발생한 경우 대처방법</a></li>
+</ul>
+</div></strong></strong></p><p><strong><strong><br /></strong></strong></p><h1 id="id-로그디스크FULL이발생하는경우와대처방법-개요"><strong>개요</strong></h1><hr /><p>알티베이스 운용시 디스크 full이 발생하는 경우 중 로그 화일이 존재하는 디렉토리에서 full이 발생한 경우에 한해 </p><p>발생할 수 있는 상황과 대처 방법에 대해 기술합니다.</p><p> </p><h1 id="id-로그디스크FULL이발생하는경우와대처방법-적용버전"><strong style="color: rgb(0,0,0);line-height: 1.25;font-size: 24.0px;">적용버전</strong></h1><hr /><ul><li>ALTIBASE HDB 6.3.1 을 기준으로 작성 되었습니다.</li><li>추가 문의내용 및 업데이트가 필요한 경우 <a class="external-link" href="http://support.altibase.com/kr/" rel="nofollow" style="line-height: 1.4285;">http://support.altibase.com/kr/</a> 또는 이 페이지에 댓글로 요청 글 남겨주세요.</li></ul><p> </p><h1 id="id-로그디스크FULL이발생하는경우와대처방법-DiskFull이발생한경우알티베이스운용상태"><strong>Disk Full이 발생한 경우 알티베이스 운용 상태</strong></h1><hr /><p>알티베이스 운용 중 filesystem Full 현상은 DB 화일이 있는 화일시스템의 Full 또는 로그 화일이 있는 화일시스템의 Full일 수 있습니다.</p><p>DB 화일이 있는 화일 시스템이 full이 난 경우에는 일반 트랜잭션에는 영향을 미치지 않습니다.</p><p>그러나, checkpoint 수행시 충분한 디스크 여유 공간이 없기 때문에 checkpoint 작업이 수행되지 못합니다.</p><p>따라서, DB에 수행된 모든 변경 작업은 메모리 상의 DB에만 반영하게됩니다.</p><p>LOG 화일이 있는 화일 시스템이 full이 난 경우에는 DB에 변경을 가하는 트랜잭션들은 더 이상 수행되지 않으며</p><p>altibase process는 waiting 상태에 들어갑니다. </p><p>즉, select를 제외한 서비스들이 중지되는 현상이 발생하게 됩니다.</p><p>일반적으로 Disk Full이 발생하는 경우는 파일시스템 크기가 작기 때문이며 충분한 디스크 공간을 확보한 후 알티베이스를</p><p>운용하는 것이 바람직합니다.</p><p> </p><h1 id="id-로그디스크FULL이발생하는경우와대처방법-로그화일이있는디렉토리가full이난경우"><strong>로그 화일이 있는 디렉토리가 full이 난 경우</strong></h1><hr /><p><span style="color: rgb(0,0,0);">디스크 공간을 충분히 확보하여 운용함에도 불구하고 </span><span style="color: rgb(0,0,0);">로그 화일이 삭제되지 않아 </span></p><p><span style="color: rgb(0,0,0);">비정상적으로 로그 화일들이 많이 존재하는 경우는 다음과 같습니다.</span></p><p><span style="color: rgb(0,0,0);"> </span></p><ol><li><p>이중화를 사용하는 경우 네트워크 불안정이나 기타 다른 이유로 인하여 이중화 데이타가 상대편 서버로 반영되지 못한 경우<br />=&gt; 이를 확인하기 위하여 이중화 갭을 확인합니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">SELECT * FROM V$REPGAP; </pre>
+</div></div></li><li><p>ARCHIVE_FULL_ACTION 프로퍼티의 값이 1으로 설정된 경우<br />=&gt; ARCHIVE_DIR에 설정된 디렉토리가 속한 파일 시스템에 충분한 디스크 공간이 없는 경우 아카이브 로그 백업(archive log backup)을 수행하는 아카이브 쓰레드의 동작을 제어하는 프로퍼티이다. <br />값이 0인 경우 아카이브 쓰레드는 오류 메시지를 출력한 후, 아카이브 로그파일을 백업하는 작업을 중지하게 된다. 이후 충분한 디스크 공간이 확보된 후에라도 사용자가 명시적으로 아카이브 로그 백업을 활성화하는 명령을 입력하지 않는 한 아카이브 로그 백업은 재개되지 않는다. 이 경우 체크포인트가 발생하면 아카이브 로그파일이 백업되지 않았더라도 불필요한 로그 파일들은 삭제되기 때문에 운영시 주의가 필요하다. <br />값이 1인 경우 아카이브 쓰레드는 충분한 디스크 공간이 확보되어 아카이브 로그파일을 백업할 수 있을 때까지 기다린다. 이 기간 동안은 체크포인트가 발생하더라도 아카이브 로그파일을 백업할 수 없기 때문에 로그 파일들은 삭제되지 않는다.<br />$ALTIBASE_HOME/conf/altibase.properties 화일을 참조하거나 isql 상에서 이 프로퍼티의 값을 확인할 수 있다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select name, value1 from v$property where name like &#39;%ARCHIVE_FULL_ACTION%&#39;; </pre>
+</div></div></li><li><pre>checkpoint가 수행되지 않은 경우<br />=&gt; 로그 화일의 삭제는 checkpoint 시에만 발생하므로 checkpoint가 정상적으로 수행되었는지의 여부를 확인한다.<br />checkpoint 수행 여부는 $ALTIBASE_HOME/trc/altibase_sm.log 화일을 참조하여 확인 가능하다. <br />아래와 같이 checkpoint 정상 수행시 로그가 기록된다. </pre><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT BY USER]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-BEGIN]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step2] Write BeginChkpt Log [0,0,6232554]
+Active Tx Recovery LSN [0,0,6232554]
+Disk Buffer Oldest LSN [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step3] Flush Dirty Page(s)
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[PRE-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[NEW-DirtyPageCount=8]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[DUP-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + Begin Sync For All-LFG - Request LSN [0,0,6232995]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + End Sync For All-LFG
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[FLU-DirtyPageCount=8]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[REM-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step4] sync Database File
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-0]
+==========================================================
+SM IO STAT  - Checkpoint 
+DB SIZE      :       262144 Byte ( 8 Page)
+LOG SIZE     :          441 Byte
+TOTAL TIME   :      0 s 2416 us
+LOG SYNC TIME:      0 s 665 us
+DB FLUSH TIME:      0 s 1751us
+      SYNC TIME :      0 s 860 us
+      WAIT TIME :      0 s 0 us
+      WRITE TIME:      0 s 891 us
+LOG IO PERF  : 136.16138155429 MB/sec
+DB IO PERF   : 142.775556824672 MB/sec
+=========================================================
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step5] Write End_Chkpt Log [0,0,6233141]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step6] Sync Log File
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + Begin Sync For All-LFG - Request LSN [0,0,6233182]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + End Sync For All-LFG
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step7] Check LogFiles That Is Not Needed
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+Replication MinSN48192
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step8] Update and Flush Log Anchor
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step9] Remove Online Log File[None]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=0, PPID=0, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=0, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=0, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,504], [0,0,504]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=0, PPID=1, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=0, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=0, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,504], [0,0,504]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=1, PPID=0, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=1, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=1, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,1426], [0,0,1426]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=1, PPID=1, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=1, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=1, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,1426], [0,0,1426]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-summary] BeginChkptLSN=[0,0,6232554], EndChkptLSN=[0,0,6233141], DiskRecLSN=[0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+Minimum LSN = [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-END]
+[2015/12/14 10:42:50] [Thread-140326782105344] [Level-9]
+Sleep checkpoint thread ( next time : 2015-12-14 12:22:50 )</pre>
+</div></div></li><li><p>checkpoint가 정상적으로 수행된 경우<br />(1) checkpoint 수행시 출력되는 메세지 내용 중<br />  [CHECKPOINT-step9] Remove Online Log File 이 부분을 확인한다.<br />  checkpoint 수행 때마다 뒷부분에 나타나는 [None], skip의 경우 checkpoint는 정상 수행되었으나 long transaction이 존재하거나 이중화 데이타가 넘어가지 않아서 로그 화일들이 삭제될 수 없는 경우로 판단한다.<br /><br />(2) 체크포인트 발생 때마다 계속 로그 화일이 삭제됨에도 불구하고 로그 파티션에 full이 발생했다면 트랜잭션이 굉장히 busy하게 발생하는지의 여부와 파일시스템의 크기를 확인한다.<br />=&gt; checkpoint가 수행되는 도중에 트랜잭션이 매우 busy하게 발생하여 로그 화일이 삭제되는 갯수만큼 새로운 로그 화일이 생길 수 있기 때문에 이를 고려하여 화일 시스템의 크기를 충분히 크게 설정해야한다.</p></li></ol><p style="margin-left: 30.0px;"> </p><h1 id="id-로그디스크FULL이발생하는경우와대처방법-LogDiskFull이발생한경우대처방법"><strong>Log Disk Full이 발생한 경우 대처방법</strong></h1><hr /><p>$ALTIBASE_HOME/logs 공간에 있는 log 파일들을 여유있는 공간으로 옮겨 소프트 링크를 걸어주고<br />logs 공간을 확보하여 DBMS가 log파일을 I/O 할수있는 공간을 확보해야 합니다.</p><p>* 로그파일 move 및 심볼릭 링크 걸어주는 스크립트</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">echo &quot;Move Logfile Number&quot;
+read i
+echo &quot;Move Logfile Count&quot;
+read j
+echo &quot;ALTIBASE LOG DIR&quot;
+ALTI_DIR=/sas_home/hychoi/altibase_home_631/logs
+echo $ALTI_DIR
+echo &quot;MOVE LOG DIR&quot;
+MOVE_DIR=/sas_home/hychoi/altibase_home_631/backuplog
+echo $MOVE_DIR
+MAX=`expr $i + $j`
+cd
+while true
+  do
+  log=&#39;logfile&#39;$i
+mv $ALTI_DIR/$log $MOVE_DIR
+ln -s $MOVE_DIR/$log $ALTI_DIR/$log
+i=`expr $i + 1`
+if [ $i -eq $MAX ]
+  then
+    exit;
+  fi;
+done</pre>
+</div></div><p> </p><p>참고적으로 현재 DB 가 기동되어 있는 상태라면 사용중인 로그파일은 제외하고 move 시키고 링크를 걸어주어야 합니다.</p><p>*사용중인 로그파일 확인방법</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">lsof -p PID(ALTIBASE DB) | grep logfile </pre>
+</div></div><p> </p><p style="margin-left: 30.0px;"> </p><p style="margin-left: 30.0px;"><span style="line-height: 1.4285;"> </span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Starting and Shutdown the WebLogic Server Instance</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="WEBLOGIC-Integration-Guide-for-Altibase_14058319.html">WEBLOGIC Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Starting and Shutdown the WebLogic Server Instance
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on May 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Among the various ways to start and shutdown the WebLogic server instance, the following describes how to start and stop the script (script or batch) fil in $DOMAIN_HOME/bin.</p><p>The script file has the separate start/stop script files for each management server and each managed server for each domain.</p><ul><li>Management Server - startWebLogic.cmd / stopWebLogic.cmd</li><li>Managed Server - startManagedWebLogic.cmd / stopManagedWebLogic.cmd</li></ul><h2 id="id-2.StartingandShutdowntheWebLogicServerInstance-Start">Start</h2><p>Run startWebLogic.cmd to start the management server of the domain. The following is an example of the message format when the operation is completed normally.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ startWebLogic.cmd
+.
+JAVA Memory arguments: -Xms256m -Xmx512m -XX:CompileThreshold=8000 -XX:PermSize=128m  -XX:MaxPermSize=256m
+.
+***************************************************
+*  To start WebLogic Server, use a username and   *
+*  password assigned to an admin-level user.  For *
+*  server administration, use the WebLogic Server *
+*  console at http:\\hostname:port\console        *
+***************************************************
+... syncopation ...
+ 
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000331&gt; &lt;Started the WebLogic Server Administration
+ Server &quot;myserver&quot; for domain &quot;mydomain&quot; running in development mode.&gt;
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000360&gt; &lt;The server started in RUNNING mode.&gt;
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000365&gt; &lt;Server state changed to RUNNING.&gt;</pre>
+</div></div><h2 id="id-2.StartingandShutdowntheWebLogicServerInstance-Shutdown">Shutdown</h2><p>Run stopWebLogic.cmd to shutdown the management server of the domain. The following is an example of the message format when the shutdown is completed normally.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ stopWebLogic.cmd
+Stopping Weblogic Server...
+... syncopation ...
+Connecting to t3://IBM-1DA5AF93847:7001 with userid weblogic ...
+Successfully connected to Admin Server &#39;AdminServer&#39; that belongs to domain &#39;mydomain&#39;.
+... syncopation ...
+Shutting down the server AdminServer with force=false while connected to AdminServer ...
+Disconnected from weblogic server: AdminServer
+Exiting WebLogic Scripting Tool.
+Done
+Stopping Derby Server...</pre>
+</div></div><p>In case of a shutdown, it is possible to guarantee the normal termination only by the execution result of the shutdown script file.</p><p>If the related process still exists despite the normal shutdown in the message, the log of the WebLogic server instance should be checked and corrected.</p><h2 id="id-2.StartingandShutdowntheWebLogicServerInstance-JDBCDriverSettings"><strong>JDBC Driver Settings</strong></h2><p>To create a JDBC data source, the relevant JDBC driver must be set in WebLogic. This section describes overall information about JDBC Driver settings.</p><h3 id="id-2.StartingandShutdowntheWebLogicServerInstance-HowtogettheAltibaseJDBCDriver">How to get the Altibase JDBC Driver</h3><p>The Altibase JDBC driver is provided as a single file called Altibase.jar.</p><p>It is provided with the Altibase Server package by default, so it can be obtained in the $ALTIBASE_HOME/lib directory of the operating system account where Altibase is installed.</p><p>Altibase.jar, as well as Altibase5.jar files, exist from the ALTIBASE 5 version. Altibase5.jar is used to link ALTIBASE 5 and lower versions together.</p><p>Therefore, in a normal situation where only one ALTIBASE server or multiple ALTIBASE servers of the same version are linked, the file $ ALTIBASE_HOME/lib/Altibase.jar can be used.</p><p>The latest ALTIBASE JDBC driver can be found on <a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a>.</p><h3 id="id-2.StartingandShutdowntheWebLogicServerInstance-HowtochecktheAltibaseJDBCDriverVersion">How to check the Altibase JDBC Driver Version</h3><p>In order to determine whether the Altibase Server and the Altibase JDBC Driver are compatible, the version of the Altibase Server and Altibase JDBC Driver must be compared to check whether the CM (Communication) protocol matches.</p><p>The method to check the version of the Altibase server is as follows.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ altibase -v
+version 6.3.1.2.7 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.2.7-release-GCC3.4.6 (x86_64-unknown-linux-gnu) Oct  8 2014 09:16:24, binary db version 6.2.1, meta version 6.3.1, cm protocol version 7.1.1, replication protocol version 7.4.1</pre>
+</div></div><p>The method to check the version of the Altibase JDBC Driver is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ java -jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 6.3.1.2.6 for JavaVM v1.4, CMP:7.1.1, Oct  6 2014 13:54:56</pre>
+</div></div><p>Here, if the &quot;cm protocol version&quot; of the Altibase server matches the &quot;CMP&quot; of the Altibase JDBC driver, compatibility is possible.</p><p>Generally, the Altibase JDBC driver file included in the Altibase server package is used for compatibility, but it is recommended to use the latest compatible Altibase JDBC drive file whenever possible.</p><h3 id="id-2.StartingandShutdowntheWebLogicServerInstance-HowtosettheJDBCDrivertobeusedinWebLogic">How to set the JDBC Driver to be used in WebLogic</h3><p>To use a specific JDBC driver in WebLogic, the relevant files must be added to the CLASSPATH of the domain management server.</p><p>It cant be set up in two ways. It is irrelevant to select either method, but after setting, the user must restart the management server of the domain.</p><p>For reference, all the examples are for setting ALTIBASE 5 and ALTIBASE of different versions at the same time. When integrating ALTIBASE of the same version, only one JDBC driver needs to be set.</p><ol><li>The JDBC driver-related files are located in $ DOMAIN_HOME / lib.</li></ol><p>After placing JDBC driver-related files in $DOMAIN_HOME/lib, the default library path of each domain, when the management server of the domain is started, the files are automatically added to the CLASSPATH with the following message.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">...
+&lt;2010. 12. 14 오후 4시 48분 24초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000395&gt; &lt;Following extensions directory contents added to the end_of_the_classpath:C:\Oracle\Middleware\user_projects\domains\mydomain\lib\Altibase.jar;C:\Oracle\Middleware\user_projects\domains\mydomain\lib\Altibase5.jar&gt;
+...</pre>
+</div></div><ol><li>Add JDBC driver-related files directly to CLASSPATH of startWebLogic.cmd file.</li></ol><p>Open the startWebLogic.cmd file which is the management server of each domain, and add the JDBC driver-related file directly to the CLASSPATH item and restart it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">...
+set CLASSPATH=%SAVE_CLASSPATH%;C:\WebLogic_lib\Altibase5.jar;C:\WebLogic_lib\Altibase.jar
+...</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

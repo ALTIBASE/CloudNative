@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Transaction</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Transaction
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347962 {padding: 0px;}
+div.rbtoc1624409347962 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347962 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347962'>
+<ul class='toc-indentation'>
+<li><a href='#Transaction-Overview'>Overview</a></li>
+<li><a href='#Transaction-ORACLE'>ORACLE</a></li>
+<li><a href='#Transaction-ALTIBASE'>ALTIBASE</a></li>
+<li><a href='#Transaction-Howtochangecommit-mode'>How to change commit-mode</a></li>
+</ul>
+</div>
+
+<h1 id="Transaction-Overview">Overview</h1>
+
+<p>Non-AutoCommit mode is set as default of Oracle Commit-Mode. </p>
+
+<p>Whereas in case of Altibase, AutoCommit mode is set as default.<br />
+Then, If you want to control a transaction, you have to change a commit-mode.
+<br class="atl-forced-newline" /></p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Commit-mode is defined in $ALTIBASE_HOME/conf/altibase.properties (default: AUTO_COMMIT = 1)</p>
+                    </div>
+    </div>
+
+
+<h1 id="Transaction-ORACLE">ORACLE</h1>
+
+<p>Sample code</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+...
+EXEC SQL SAVEPOINT point1;
+EXEC SQL INSERT INTO employee (NAME, AGE) VALUES (&#39;park&#39;,  40);
+...
+EXEC SQL SAVEPOINT point2;
+EXEC SQL UPDATE employee SET age = 41 WHERE name = &#39;park&#39;;
+...
+EXEC SQL COMMIT;
+</pre>
+</div></div>
+
+<h1 id="Transaction-ALTIBASE">ALTIBASE</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+...
+EXEC SQL SAVEPOINT point1;
+EXEC SQL INSERT INTO employee (NAME, AGE) VALUES (&#39;park&#39;,  40);
+...
+EXEC SQL SAVEPOINT point2;
+EXEC SQL UPDATE employee SET age = 41 WHERE name = &#39;park&#39;;
+...
+EXEC SQL ROLLBACK TO SAVEPOINT point2;
+EXEC SQL COMMIT;
+</pre>
+</div></div>
+<ul>
+	<li>When a transaction is commited or rollbacked in ALTIBASE HDB, Already open cursor should be closed.<br />
+(Currently, fetch across commit Functionality is not supported, It will be supported at Version 7)</li>
+	<li>APRE doesn't support a functionality of &quot;WITH HOLD&quot; of cursor.</li>
+	<li>APRE doesn't support a functionality of &quot;CLOSE_ON_COMMIT&quot; of pro*c option.</li>
+	<li>SELECT ~ FOR UPDATE
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL SELECT sal FROM salary FOR UPDATE;
+</pre>
+</div></div>
+	<ul>
+		<li>If you use &quot;FOR UPDATE&quot; clause, You cannot reference multiple tables.</li>
+		<li>&quot;FOR UPDATE&quot; clause acquires a exclusive row locks. Therefore, you have to use it in Non-AutoCommit mode.</li>
+	</ul>
+	</li>
+</ul>
+
+
+<h1 id="Transaction-Howtochangecommit-mode">How to change commit-mode</h1>
+
+<p>ALTIBASE HDB is basically running on AUTO-COMMIT mode.<br />
+If you want to change COMMIT-MODE, you can do as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+...
+EXEC SQL AUTOCOMMIT ON;
+EXEC SQL AUTOCOMMIT OFF;
+EXEC SQL ALTER SESSION SET AUTOCOMMIT = TRUE;
+EXEC SQL ALTER SESSION SET AUTOCOMMIT = FALSE;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

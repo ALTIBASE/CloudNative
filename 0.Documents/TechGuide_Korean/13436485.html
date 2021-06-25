@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 운영을 위한 Linux 설정 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 운영을 위한 Linux 설정 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> david.cho</span> on Dec 11, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409834503 {padding: 0px;}
+div.rbtoc1624409834503 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409834503 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409834503'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-개요'>개요</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-Linux호환성'>Linux 호환성</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-glibc호환성버전'>glibc 호환성 버전</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-glibc권고버전'>glibc 권고 버전</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-glibc버전확인방법'>glibc 버전 확인 방법</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한Linux설정가이드-커널파라미터'>커널 파라미터</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-CPUfrequencyGovernor'>CPU frequency Governor</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-RemoveIPC'>RemoveIPC</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-swappiness'>swappiness</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-THP(TransparentHugePages)'>THP(Transparent Huge Pages)</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-max_map_count'>max_map_count</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-공유메모리(Sharedmemory)'>공유 메모리(Shared memory)</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-세마포어(Semaphore)'>세마포어(Semaphore)</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한Linux설정가이드-커널파라미터변경방법'>커널 파라미터 변경 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-CPUfrequencyGovernor.1'>CPU frequency Governor</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-RemoveIPC.1'>RemoveIPC</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-swappiness.1'>swappiness</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-THP'>THP</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-max_map_count.1'>max_map_count</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-공유메모리와세마포어'>공유 메모리와 세마포어</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한Linux설정가이드-사용자환경'>사용자 환경</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-리소스제한'>리소스 제한</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-관련에러메시지'>관련 에러 메시지</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-리소스설정값확인및변경'>리소스 설정값 확인 및 변경</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-환경변수'>환경변수</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한Linux설정가이드-요약'>요약</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-기타'>기타</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux권장Swap크기'>Red Hat Enterprise Linux 권장 Swap 크기</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-systemd에Altibasestartup서비스등록시timeout설정에의한Altibase서버프로세스강제종료현상'>systemd에 Altibase startup 서비스 등록 시 timeout 설정에 의한 Altibase 서버 프로세스 강제 종료 현상</a></li>
+<li><a href='#Altibase운영을위한Linux설정가이드-SymantecEndpointProtection(SEP)forLinux가설치된서버에서SYS영역CPU사용량증가현상'>Symantec Endpoint Protection(SEP) for Linux 가 설치된 서버에서 SYS 영역 CPU 사용량 증가 현상</a></li>
+</ul>
+</li>
+<li><a href='#Altibase운영을위한Linux설정가이드-참고자료'>참고자료</a></li>
+</ul>
+</div></p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-개요">개요</h1><hr /><p class="0cm">이 문서는 Linux 시스템에서 Altibase 서버를 안정적으로 운영하기 위한 커널 파라미터 및 OS 사용자 환경설정에 대한 가이드를 제시한다.</p><p class="0cm">이 문서는 아래 버전을 기준으로 작성되었다.</p><ul><li>Altibase 5.5.1 이상</li><li>Red Hat Enterprise Linux 6 이상</li></ul><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-Linux호환성">Linux 호환성</h1><hr /><p>Linux는 수많은 배포판이 존재하나 Altibase와의 호환성 확인은 배포판 종류 및 커널 버전에 상관없이 glibc 버전을 기준으로 한다.</p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase운영을위한Linux설정가이드-glibc호환성버전">glibc 호환성 버전</h2><hr /><ul><li>Altibase 5.5.1 부터 glibc 버전을 기준으로 호환성 여부를 확인한다.</li><li><p>Altibase 서버 버전 별 호환성이 보장된 glibc 버전은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span style="text-decoration: none;"><span>Altibase 서버 버전</span></span></th><th style="text-align: center;" class="confluenceTh"><span style="text-decoration: none;"><span>glibc 버전</span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>Altibase 7.1.0</span></span></td><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>2.12 ~ 2.20</span></span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>Altibase 6.5.1</span></span></td><td style="text-align: center;" class="confluenceTd"><span>2.12 ~ 2.20</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>Altibase 6.3.1</span></span></td><td style="text-align: center;" class="confluenceTd"><span>2.3.4 ~ 2.20</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>Altibase 6.1.1</span></span></td><td style="text-align: center;" class="confluenceTd"><span>2.3.4 ~ 2.20</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span>Altibase 5.5.1</span></span></td><td style="text-align: center;" class="confluenceTd"><span>2.3.4 ~ 2.20</span></td></tr></tbody></table></div></li></ul><h2 id="Altibase운영을위한Linux설정가이드-glibc권고버전">glibc 권고 버전</h2><hr /><ul><li>glibc-2.12-1.166.el6_7.1 이상을 권고한다.</li><li>이전 버전의 glibc는 시스템 콜(malloc/free) 함수가 race condition으로 인해 deadlock이 발생할수 있는 버그가 존재한다.</li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-glibc버전확인방법">glibc 버전 확인 방법</h2><hr /><ul><li><p>glibc 버전 확인 방법은 다음과 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ rpm -q glibc</pre>
+</div></div></li></ul></div></div></div></div><p> </p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-커널파라미터">커널 파라미터</h1><hr /><p>Linux에서 Altibase를 설치하고 안정적으로 운영하기 위해 설정해야 할 커널 파라미터의 종류와 권고값, 권고 이유에 관해 설명한다.</p><p>설정 권고 파라미터 종류는 다음과 같다.</p><ul><li>CPU frequency Governor</li><li>RemoveIPC</li><li>swappiness</li><li>THP</li><li>max_map_count</li><li>공유 메모리</li><li>세마포어</li></ul><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase운영을위한Linux설정가이드-CPUfrequencyGovernor">CPU <span class="st">frequency</span> Governor</h2><hr /><p>Altibase 서버는 최대 처리 성능과 최단 응답시간을 절대적으로 요구하는 시스템이므로 CPU 클럭 속도를 항상 최고로 유지해야 한다.</p><p>Linux는 그린 IT(환경친화적인 컴퓨팅)에 발맞춰 시스템의 전력 소모를 효율적으로 최소화하는 것이 전원 관리의 핵심으로 보고 이를 위해 CPUfreq Governor를 제공한다.</p><p>RHEL 6의 기본 설정 Ondemand Governor는 <span class="emphasis">주파수 변경에 따른 지연 시간으로 Altibase 서버 성능이 일관성을 보장하지 못한 사례가 있다. 따라서 </span>performance로 설정하거나 이 기능 자체를 비활성화하는 것을 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span style="color: rgb(67,67,67);">커널 파라미터</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span style="color: rgb(67,67,67);">권고값</span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><p style="text-align: center;"><span>CPU frequency Governor<br />(CPUfreq Governor)</span></p></td><td class="confluenceTd"><p style="text-align: left;"><span>Linux에서 전원 관리를 위해 CPU 주파수 변경 규칙 등을 조정하는 성능 조정기이다.<br />RHEL 6의 기본값은 Ondemand로 시스템의 부하가 높을 때는 CPU가 최고 클럭 주파수로 동작하고, 시스템이 유휴상태 일 때는 최저 주파수로 동작한다.</span></p></td><td style="text-align: center;" class="confluenceTd"><span style="color: rgb(67,67,67);">performance</span></td></tr></tbody></table></div><h4 id="Altibase운영을위한Linux설정가이드-Linux커널버전">Linux 커널 버전</h4><ul><li>CPUfreq Governor는 Red Hat Enterprise Linux 6 부터 지원하는 기능이다.</li><li>RHEL 6의 커널 버전은 2.6.32-71 이다.</li><li><a href="https://access.redhat.com/articles/3078" class="external-link" rel="nofollow">Red Hat Enterprise Linux Release Dates</a></li></ul><p> </p><h2 class="title" id="Altibase운영을위한Linux설정가이드-RemoveIPC">RemoveIPC</h2><hr /><p>RemoveIPC는 RHEL 7.2에서 추가된 옵션으로 OS 사용자가 세션을 종료할 때 System V IPC와 POSIX IPC 객체를 제거하는 리눅스 프로퍼티이다.</p><p>기본 설정 yes의 경우 IPC를 사용하는 Altibase 환경에서 강제적인 세마포어 할당, 반환으로 Altibase 서버 및 애플리케이션 비정상 종료 현상이 발생한 사례가 보고되었다. IPC를 사용하지 않는 환경에서도 커널에서 발생하는 RemoveIPC 관련 동작 및 시스템 콜로 인해 시스템 성능에 영향을 주는 사례도 보고되었으므로 기본적으로 no를 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span style="color: rgb(67,67,67);">커널 파라미터</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>권고값</span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span>RemoveIPC</span></td><td class="confluenceTd"><p style="text-align: left;"><span>OS 사용자가 로그아웃할 때 IPC 자원을 모두 제거한다.  <br />root 사용자와 시스템 사용자는 이 설정에 영향을 받지 않는다. 기본값은 yes이다.<br /></span></p></td><td style="text-align: center;" class="confluenceTd"><span>no<br /></span></td></tr></tbody></table></div><h4 id="Altibase운영을위한Linux설정가이드-Linux커널버전.1">Linux 커널 버전</h4><ul><li>RemoveIPC는 Red Hat Enterprise Linux 7.2에서 추가된 옵션이다.</li><li>RHEL 7.2의 커널 버전은 3.10.0-327 이다.</li><li><a href="https://access.redhat.com/articles/3078" class="external-link" rel="nofollow">Red Hat Enterprise Linux Release Dates</a></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-swappiness">swappiness</h2><hr /><p>스와핑(swapping) 발생 시 디스크 I/O로 인한 시스템 성능 저하가 Altibase 서버 성능에 영향을 미치는 것을 최소화하기 위해 권장하는 커널 파라미터이다.</p><p>스와핑이란 물리 메모리가 부족한 상황에서 사용 빈도가 낮은 물리 메모리 영역을 스왑 영역로 내리는 작업(스왑 아웃, swap out)을 의미한다. 스왑은 디스크를 메모리처럼 사용하기 위한 것으로 스왑 아웃이 발생하면 DISK I/O로 인한 시스템 성능 저하가 발생한다.</p><p>따라서 Altibase 서버의 안정적이고 일관적인 성능을 유지하기 위해 swappiness를 적절하게 설정하는 것이 중요하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span><span style="color: rgb(67,67,67);">커널 파라미터</span></span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span><span>권고값</span></span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span style="color: rgb(67,67,67);">swappiness</span></td><td class="confluenceTd"><p style="text-align: left;"><span>0 ~ 100 사이에서 설정할 수 있다.<br />낮은 값은 커널이 가급적 페이지 캐시의 페이지를 사용하며 높은 값은 물리 메모리에서 사용 빈도가 낮은(cold) 페이지를 스왑 아웃 하는 것을 선호한다.<br /></span></p></td><td style="text-align: center;" class="confluenceTd">1</td></tr></tbody></table></div><ul><li>swappiness를 완전히 비활성화하면 메모리 부족 상황에서 Altibase 서버 프로세스가 OOM Killer에 의해 비정상 종료할 가능성이 커진다.</li><li>권고값 1은 swappiness를 비활성화하지 않고 스와핑을 최소화하기 위한 설정이다.</li><li>페이지 캐시는 파일 I/O 성능 향상을 위해 Linux에서 관리하는 메모리 영역이다.</li></ul><h4 id="Altibase운영을위한Linux설정가이드-Linux커널버전.2">Linux 커널 버전</h4><ul><li>swappiness는 커널 버전 상관없이 모두 적용한다.</li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-THP(TransparentHugePages)">THP(Transparent Huge Pages)</h2><hr /><p>THP는 대량의 메모리 관리를 위해 Linux에서 채택한 방법으로 4096바이트 단위의 메모리 페이지를 2MB 또는 1GB 단위로 확대하는 기능을 자동화하는 설정이다.</p><p>하지만 Altibase 운용 환경에서 메모리 할당 지연 및 단편화로 인한 성능 이슈 사례가 보고되어 비활성화를 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span>커널 파라미터</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>권고값</span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span>THP(transparent_hugepage)</span></td><td class="confluenceTd"><p style="text-align: left;"><span>커널에서 관리하는 메모리 페이지 단위를 기존 4K에서 2M 또는 1G단위로 확대하는 기능을 자동화한다.<br />기본값은 always이다.</span></p></td><td style="text-align: center;" class="confluenceTd"><span><span>never</span></span></td></tr></tbody></table></div><h4 id="Altibase운영을위한Linux설정가이드-Linux커널버전.3">Linux 커널 버전</h4><ul><li>THP(Transparent Huge Pages)는 Red Hat Enterprise Linux 6 부터 지원하는 기능이다.</li><li>RHEL 6의 커널 버전은 2.6.32-71 이다.</li><li><a href="https://access.redhat.com/articles/3078" class="external-link" rel="nofollow">Red Hat Enterprise Linux Release Dates</a></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-max_map_count">max_map_count</h2><hr /><p>테라바이트 단위의 메모리 테이블을 운영할 경우 max_map_count 파라미터 제한으로 메모리 할당 실패할 수 있다. 이는 트랜잭션 실패 등 Altibase 운용에 심각한 영향을 줄 수 있으므로 충분히 큰 값으로 설정하는 것을 권고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">커널 파라미터</th><th class="confluenceTh">설명</th><th class="confluenceTh">권고값</th></tr><tr><td class="confluenceTd">max_map_count</td><td class="confluenceTd"><p><span>프로세스가 사용할 수 있는 메모리 맵 영역의 최대 수를 의미한다. <br /></span>대부분의 경우 기본값으로 <code class="literal">65530</code>이 적절하나 애플리케이션에 이 파일 보다 많은 수를 매핑해야 하는 경우 이 값을 늘려야한다.   </p></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">2147483647</span></td></tr></tbody></table></div><ul style="list-style-type: square;"><li>이 파라미터 제한으로 메모리 할당이 실패할 경우,<ul style="list-style-type: square;"><li>Altibase 트레이스 로그 altibase_boot.log에 아래와 같은 메시지가 남을 수 있다.<ul style="list-style-type: square;"><li>Failed to mmap log file ( errno=ENOMEM(12), Not enough memory </li></ul></li><li>어플리케이션에서는 Memory [iduMemMgr::malloc] failed. 와 같은 에러가 발생할 수 있다.</li></ul></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-공유메모리(Sharedmemory)"><span style="color: rgb(0,0,0);">공유 메모리(Shared memory)<br /></span></h2><hr /><p>한 서버에서 여러 응용 프로그램이 서로 정보를 주고받아야 하는 경우 필요한 커널 파라미터이다.</p><ul><li>Altibase 서버와 클라이언트의 통신 방식이 IPC 또는 IPCDA 타입인 경우</li><li>두 개 이상의 Altibase 응용 프로그램이 IPC로 통신하는 경우</li></ul><p>OS는 이를 위해 IPC(Inter Process Communication)라고 부르는 자원을 제공한다. 여러 IPC 자원 중 프로세스 간 정보를 주고 받기 위한 메모리 영역을 공유 메모리(Shared memory)라고 부른다. 공유 메모리는 사용자가 단위를 지정하여 한 개 이상의 영역으로 나누어 설정할 수 있으며 이를 세그먼트(segment)라고 부른다.</p><p>예를 들어 사용자는 10MB로 1개의 세그먼트를 갖는 공유 메모리를 설정할 수도 있고 10MB로 10개의 세그먼트로 구성하여 100MB의 공유 메모리를 설정할 수도 있다. 따라서, 세그먼트의 최대 크기나 개수와 같은 세그먼트 관련한 커널 파라미터 설정이 필요하다.</p><p>Linux에서 제공하는 공유 메모리 관련 파라미터와 Altibase에서 권장하는 값은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span style="color: rgb(67,67,67);">커널 파라미터</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>권고값</span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span>shmmni</span></td><td class="confluenceTd"><span>생성할 수 있는 공유 메모리 세그먼트의 최대 개수로 기본값은 4096이다.</span></td><td style="text-align: center;" class="confluenceTd"><span>4096</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span>shmmax</span></td><td class="confluenceTd"><p style="text-align: left;"><span>공유 메모리 세그먼트 한 개의 최대 크기로 단위는 바이트이다.<br />x86 시스템의 경우 최소 설정값은 268435456바이트(256MB)이고 64비트 시스템의 경우 2147483648바이트(2GB)이다.</span></p></td><td style="text-align: center;" class="confluenceTd"><span>2147483648</span></td></tr></tbody></table></div><p> </p><h2 id="Altibase운영을위한Linux설정가이드-세마포어(Semaphore)">세마포어(<span class="ILfuVd"><span class="e24Kjd">Semaphore</span></span>)</h2><hr /><p>Altibase 서버와 클라이언트의 통신 방식이 IPC 또는 IPCDA 타입인 경우 프로세스 간 동기화 구현하기 위해 필요한 커널 파라미터이다.</p><p>세마포어는 IPC에서 공유 자원에 대한 접근을 제한하기 위해 OS에서 제공하는 자원이다. IPC 또는 IPCDA 통신 방식에서 공유 메모리를 통신 버퍼로 사용하기 때문에 이 자원에 대한 읽기/쓰기의 동시성 제어를 위해 세마포어 오퍼레이션을 사용한다. 세마포어 오퍼레이션에 따라 프로세스는 대기 또는 진행 상태가 될 수 있다. 세마포어 오퍼레이션은 동시다발적으로 발생하기 때문에 세마포어 개수 및 오퍼레이션에 대한 적합한 커널 파라미터 설정이 필요하다.</p><p>Linux에서 제공하는 세마포어 관련 파라미터와 Altibase에서 권장하는 값은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh"><span><span><span style="color: rgb(67,67,67);">커널 파라미터</span></span></span></th><th style="text-align: center;" class="confluenceTh"><span><span>설명</span></span></th><th style="text-align: center;" class="confluenceTh"><span><span><span>권고값</span></span></span></th></tr><tr><td style="text-align: center;" class="confluenceTd"><span>semmsl</span></td><td class="confluenceTd"><p style="text-align: left;"><span>한 개의 세마포어 세트에 존재하는 세마포어의 최대개수이며 논리적으로 semmns와 같거나 작아야 한다.<br />너무 크게 잡으면 몇 개의 세마포어 ID가 시스템 전체의 세마포어를 독점할 수 있다.</span></p></td><td style="text-align: center;" class="confluenceTd"><span>2000</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span>semmns</span></td><td class="confluenceTd"><span>운영체제에서 세마포어의 최대 개수이며 한 개에 16바이트의 커널 메모리가 할당된다.</span></td><td style="text-align: center;" class="confluenceTd"><span>32000</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span>semopm</span></td><td class="confluenceTd"><span>semop 시스템 콜에서 처리하는 오퍼레이션의 최대 개수이다.</span></td><td style="text-align: center;" class="confluenceTd"><span>512</span></td></tr><tr><td style="text-align: center;" class="confluenceTd"><span>semmni</span></td><td class="confluenceTd"><span>세마포어 세트의 최대 개수로 65535 이내에 설정 가능하며 한 세트당 84바이트의 커널 메모리가 할당된다.</span></td><td style="text-align: center;" class="confluenceTd"><span>5029</span></td></tr></tbody></table></div></div></div></div></div><p> </p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-커널파라미터변경방법">커널 파라미터 변경 방법</h1><hr /><p>각 커널 파라미터의 설정값을 확인하는 방법과 변경 방법을 알아본다.</p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase운영을위한Linux설정가이드-CPUfrequencyGovernor.1">CPU frequency Governor</h2><hr /><p>Altibase에서 권고하는 CPU frequency Governor 설정은 performance이다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인">설정값 확인</h3><hr /><p>RHEL 6과 7에서 공통으로 사용하는 확인 방법이다. 일반적으로 cat 명령어로 확인하며 cpupowerutils 패키지가 설치되어 있다면 cpupower 명령어로도 확인할 수 있다.</p><ul><li><p><strong>cat 명령어</strong></p><p>RHEL 6과 7에서 공통으로 사용하는 확인 방법이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>CPU frequency Governor 설정 확인 방법 및 출력 예시- cat</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor | sort -u
+performance 
+
+   # CPUfreq 드라이버가 설치되어 있지 않은 경우 아래와 같은 출력 결과를 보일 수 있다. 
+   # 이 경우 CPU frequency Governor 설정은 고려하지 않아도 된다.
+$ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+cat: /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor: 그런 파일이나 디렉터리가 없습니다</pre>
+</div></div>
+<div id="expander-343204396" class="expand-container">
+<div id="expander-control-343204396" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">CPUfreq governor 드라이버 설치 여부 확인 방법</span>
+</div>
+<div id="expander-content-343204396" class="expand-content"><p><strong>Red Hat Enterprise Linux 6</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ lsmod | grep cpufreq
+acpi_cpufreq            7699  0 
+freq_table              4936  1 acpi_cpufreq
+mperf                   1557  1 acpi_cpufreq
+
+# 또는 
+
+$ cpupower frequency-info | grep driver
+ driver: acpi-cpufreq
+
+   # CPUfreq 드라이버가 설치되지 않은 경우 출력 결과는 아래와 같다. 
+   # lsmod 출력 결과는 나오지 않는다.
+$ lsmod | grep cpufreq                                     
+$ cpupower frequency-info | grep driver
+ no or unknown cpufreq driver is active on this CPU</pre>
+</div></div><p> </p><p><strong>Red Hat Enterprise Linux 7<br /></strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cpupower frequency-info | grep driver
+  driver: intel_pstate</pre>
+</div></div></div>
+</div>
+</li><li><p><strong>cpupower 명령어</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>CPU frequency Governor 설정 확인 방법 - cpupower</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 명령문 및 출력 예시
+   # cpupower 명령어 버전에 따라 출력 결과는 다를 수 있다. 
+$ cpupower frequency-info --policy
+analyzing CPU 0:
+  current policy: frequency should be within 1.20 GHz and 3.60 GHz.
+                  The governor &quot;performance&quot; may decide which speed to use
+                  within this range.
+
+   # CPUfreq 드라이버가 설치되어 있지 않은 경우 출력 결과
+$ cpupower frequency-info --policy
+analyzing CPU 0:
+  Unable to determine current policy</pre>
+</div></div></li><li><p><strong>CPU 코어 별 클럭 속도 확인</strong></p><p>아래 명령어로 모든 CPU 코어의 클럭 속도가 일정하게 설정되어 있는지 확인한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ grep MHz /proc/cpuinfo | sort -u</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux6"><u>Red Hat Enterprise Linux 6</u></h4><p>Red Hat Enterprise Linux 6에서 CPU frequency Governor를 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경">1) 즉시 변경</h5><p style="margin-left: 30.0px;">governor 지시문과 cpupower 명령어를 이용한 설정은 온라인 상태에서 변경할 수 있으나 OS를 재시작하면 초기화된다.</p><ul><li><p><strong>cat 명령어를 이용한 governor 지시문</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6에서 CPUfreq Governor 즉시 변경 1 -  cat 명령어</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # CPU 코어 수만큼 아래 명령어를 반복 수행한다. 
+$ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+$ echo performance &gt; /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+...</pre>
+</div></div></li><li><p><strong>cpupower</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6에서 CPUfreq Governor 즉시 변경 2 -  cpupower 명령어</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cpupower frequency-set -g performance</pre>
+</div></div></li><li><p><strong>tuned</strong><br />tuned 시스템 도구가 활성화된 시스템의 경우 <a href="#Altibase운영을위한Linux설정가이드-rhel7-governor-tuned_lasting">[RHEL 7 CPUfreq Governor &#50689;&#44396; &#51201;&#50857; - tuned]</a> 부분을 참고한다.</p>
+<div id="expander-1312228988" class="expand-container">
+<div id="expander-control-1312228988" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">tuned 시스템 도구 활성화 확인 방법</span>
+</div>
+<div id="expander-content-1312228988" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # tuned 서비스가 활성화 상태의 경우 출력 예시
+$ tuned-adm active
+Current active profile: throughput-performance
+
+   # tuned 서비스가 비활성화 상태의 경우 출력 예시
+$ tuned-adm active
+Current active profile: default
+Service tuned: disabled, stopped
+Service ktune: disabled, stopped</pre>
+</div></div></div>
+</div>
+</li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용">2) 영구 적용</h5><p style="margin-left: 30.0px;">OS를 재시작 후에도 설정값을 유지하기 위한 방법이다.</p><ul><li><p><strong>tuned</strong></p><p><a href="#Altibase운영을위한Linux설정가이드-rhel7-governor-tuned_lasting2">[RHEL 7 CPUfreq Governor &#50689;&#44396; &#51201;&#50857; - tuned]</a> 부분을 참고한다.</p></li></ul><ul><li><p><strong>rc.local</strong> <br />tuned 서비스가 비활성화인 경우 사용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 CPUfreq Governor 설정 영구 적용 방법 2 - rc.local</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # /etc/rc.d/rc.local 파일에 CPU 코어 수만큼 아래 명령어를 추가한다.
+echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo performance &gt; /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+...</pre>
+</div></div></li></ul><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux7"><u>Red Hat Enterprise Linux 7</u></h4><p>Red Hat Enterprise Linux 7에서 CPU freqency Governor를 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.1">1) 즉시 변경</h5><ul><li><p><strong>cpupower</strong><br />cpupower 명령어를 이용한 설정 변경은 OS를 재시작하면 초기화된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 CPUfreq Governor 설정 즉시 적용 - cpupower</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cpupower frequency-set -g performance</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용rhel7-governor-tuned_lasting2">2) 영구 적용<strong><strong><span class="confluence-anchor-link" id="Altibase운영을위한Linux설정가이드-rhel7-governor-tuned_lasting2"></span></strong></strong></h5><ul><li><p><strong>tuned</strong></p><p>Linux에서 기본 제공하는 throughput-performance나 latency-performance 프로파일을 사용한다. 이 두 프로파일을 사용하면 아래와 같은 효과를 볼 수 있다.</p><ul><li><p>CPUfreq governor가 performance로 설정된다.</p></li><li><p>CPU 클럭 속도가 최대로 고정된다.</p></li></ul><p>참고로, Red Hat Enterprise Linux 7의 기본 프로파일은 throughput-performance 이다.</p><p>throughput-performance나 latency-performance 프로파일로 설정하는 방법은 두 가지이다.</p><p> </p><p><strong>첫 번째 방법 : active 프로파일에 throughput-performance profile을 include한다.</strong> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 CPUfreq Governor 영구 적용 - active tuned profile에 throughput-performance profile을 include하는 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 1. 활성화된 tuned profile을 확인한다. 
+      # 다음은 tuned active profile이 throughput-performance나 latency-performance가 아닌 경우의 예이다. 
+      # 명렁어 수행 예시이며 아래 결과에서 active profile은 virtual-guest이다. 
+$ tuned-adm active
+Current active profile: virtual-guest
+
+   # 2. 프로파일 경로로 이동한다.
+      # tuned profile의 기본경로는 /usr/lib/tuned/profile_name 이다.  
+      # [main] 타입에 아래와 같이 include를 추가한다. 
+      # [cpu] 타입이 있다면 삭제한다. 
+$ cd /usr/lib/tuned/virtual-guest
+$ vi tuned.conf
+
+[main]
+include=throughput-performance
+
+   # 3. 변경한 프로파일을 적용한다. 
+$ tuned-adm profile virtual-guest
+
+</pre>
+</div></div><p><br /><strong>두 번째 방법 : active 프로파일을 throughput-performance로 변경한다.</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 CPUfreq Governor 영구 적용 - active profile을 throughput-performance로 변경하는 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ tuned-adm profile throughput-performance</pre>
+</div></div></li></ul><h2 id="Altibase운영을위한Linux설정가이드-RemoveIPC.1">RemoveIPC</h2><hr /><p>RemoveIPC는 Red Hat Enterprise Linux 7.2 이상 버전에서 적용하며 권고값은 no이다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인.1">설정값 확인</h3><hr /><ul><li><p>logind.conf 파일에서 RemoveIPC=no 로 설정되어 있는 지 확인한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RemoveIPC 설정값 확인</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ grep RemoveIPC /etc/systemd/logind.conf 
+RemoveIPC=no</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.1">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux7.1"><u>Red Hat Enterprise Linux 7</u></h4><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.2">1) 즉시 변경</h5><ul><li>RemoveIPC는 Linux에서 즉시 변경하는 방법을 제공하지 않는다.</li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.1">2) 영구 적용</h5><ul><li><p>/etc/systemd/logind.conf 파일을 편집기로 열고 RemoveIPC=no 로 변경한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RemoveIPC 변경 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/systemd/logind.conf
+
+#  This file is part of systemd.
+...
+[Login]
+...
+RemoveIPC=no</pre>
+</div></div><p>OS를 재시작하거나 다음 명령을 수행하여 변경 사항을 적용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RemoveIPC 변경 후 적용</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ systemctl restart systemd-logind.service</pre>
+</div></div></li></ul><h2 id="Altibase운영을위한Linux설정가이드-swappiness.1">swappiness</h2><hr /><p>현재 설정값을 확인하여 권고설정이 안되어 있는 경우 아래 가이드를 참고하여 변경한다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인.2">설정값 확인</h3><hr /><p>설정값 확인은 Linux 버전 상관없이 동일하다. 다음 두 가지 방법으로 확인할 수 있다.</p><ul><li><p><strong>cat 이용</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>swappiness 설정 확인 방법 1 - cat</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cat /proc/sys/vm/swappiness         # Altibase의 권고 설정값은 1 이다.
+</pre>
+</div></div></li><li><p><strong>sysctl 이용</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>swappiness 설정 확인 방법 2 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -a | grep swappiness         # Altibase의 권고 설정값은 1 이다.
+</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.2">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux6.1"><u>Red Hat Enterprise Linux 6</u></h4><p>Red Hat Enterprise Linux 6에서 swappiness를 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.3"><strong>1) 즉시 변경</strong></h5><ul><li><p>echo 또는 sysctl 명령어를 이용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 swappiness 즉시 변경 방법 1 - echo</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ echo 1 &gt; /proc/sys/vm/swappiness</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 swappiness 즉시 변경 방법 2 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -w vm.swappiness=1</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.2"><strong>2) 영구 적용</strong></h5><p style="margin-left: 30.0px;">sysctl.conf, rc.local 두 가지 방법으로 설정할 수 있으므로 모두 동일하게 적용한다.</p><ul><li><p><strong>sysct.conf</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 swappiness 영구 적용 방법 1 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/sysctl.conf
+vm.swappiness = 1                   # sysctl.conf 파일에 vm.swappiness = 1 를 추가하거나 값을 변경한다.</pre>
+</div></div><p><strong><br /></strong></p></li><li><p><strong>rc.local</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 swappiness 영구 적용 방법 2 - rc.local</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/rc.d/rc.local
+echo 1 &gt; /proc/sys/vm/swappiness    # rc.local 파일에 이 명령어를 추가한다.</pre>
+</div></div></li></ul><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux7.2"><u>Red Hat Enterprise Linux 7</u></h4><p>Red Hat Enterprise Linux 7에서 swappiness를 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.4"><strong>1) 즉시 변경</strong></h5><ul><li><p>echo 또는 sysctl 명령어를 이용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 swappiness 즉시 변경 방법 1 - echo</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ echo 1 &gt; /proc/sys/vm/swappiness</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 swappiness 즉시 변경 방법 2 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -w vm.swappiness=1</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.3"><strong>2) 영구 적용</strong></h5><p style="margin-left: 30.0px;">tuned profile과 sysctl.conf 두 가지 방법으로 설정할 수 있으므로 모두 동일하게 적용한다.</p><ul><li><p><strong>tuned</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 swappiness 영구 적용 방법 - tuned</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 활성화된 Tuned profile을 확인한다. 
+$ tuned-adm active
+
+   # 수행 예. 
+   # 아래 결과에서 active profile은 throughput-performance이다. 
+$ tuned-adm active
+Current active profile: throughput-performance
+
+
+   # 프로파일 경로로 이동한다.
+   # tuned profile의 기본경로는 /usr/lib/tuned/profile_name 이다.  
+   # active profile이 throughput-performance 인 경우의 예.
+$ cd /usr/lib/tuned/throughput-performance
+
+   # tuned.conf 파일을 연다.
+   # [sysctl] 타입에 swappiness설정을 추가하거나 변경한다. [sysctl]타입이 없으면 추가한다.
+$ vi tuned.conf
+[sysctl]
+vm.swappiness=1	
+
+   # 변경한 프로파일을 적용한다
+$ tuned-adm profile &#39;profile_name&#39;</pre>
+</div></div></li><li><p><strong>/etc/sysctl.conf</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 swappiness 영구 적용 방법 -  sysctl.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/sysctl.conf
+vm.swappiness = 1</pre>
+</div></div></li><li><p>변경사항을 확인하기 위해 OS를 재시작한다. OS 재시작은 모든 커널 파라미터 변경 후 한번에 수행해도 된다.</p></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-THP">THP</h2><hr /><p>현재 설정값을 확인하여 권고설정이 안되어 있는 경우 아래 가이드를 참고하여 변경한다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인.3">설정값 확인</h3><hr /><ul><li><p>설정 확인 방법은 Linux 버전 상관없이 동일하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>THP 설정 확인 방법 3가지</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cat /sys/kernel/mm/transparent_hugepage/enabled    # 권고설정 : never
+always madvise [never]
+
+$ grep -i huge /proc/meminfo                         # Hugepagesize를 제외한 모든 값이 0이어야 한다.
+AnonHugePages:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+
+$ cat /proc/cmdline                                  # 출력 결과에 transparent_hugepage=never 설정이 포함되어 있는지 확인한다.
+BOOT_IMAGE=/vmlinuz-3.10.0-862.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet transparent_hugepage=never
+</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.3">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux6.2"><u>Red Hat Enterprise Linux 6</u></h4><p>Red Hat Enterprise Linux 6에서 THP 설정을 비활성화하는 방법이다. </p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.5">1) 즉시 변경</h5><ul><li><p>아래 명령어는 새로운 THP 생성 및 사용만 중지한다. 이전에 생성된 THP가 해제되지는 않으므로 완전히 없애기 위해서는 THP를 비활성화한 상태에서 OS 재시작을 해야한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 THP 즉시 변경 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ echo never &gt; /sys/kernel/mm/redhat_transparent_hugepage/enabled
+$ echo never &gt; /sys/kernel/mm/redhat_transparent_hugepage/defrag</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.4">2) 영구 적용</h5><p style="margin-left: 30.0px;">grub.conf 파일과 rc.local 파일에 모두 동일하게 적용한다.</p><ul><li><p><strong>/etc/grub.conf</strong><br />grub.conf 파일에 transparent_hugepage=never 설정을 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 THP 영구 적용 방법 - /etc/grub.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/grub.conf
+default=0
+timeout=5
+splashimage=(hd0,0)/grub/splash.xpm.gz
+hiddenmenu
+title Red Hat Enterprise Linux 6 (2.6.32-504.el6.x86_64)
+        root (hd0,0)
+           # 아래 kernel 마지막 부분에 transparent_hugepage=never를 추가한다.
+        kernel /vmlinuz-2.6.32-504.el6.x86_64 ro root=/dev/mapper/vg_os-lv_os rd_NO_LUKS LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 crashkernel=auto rd_LVM_LV=vg_os/lv_os  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM rhgb quiet transparent_hugepage=never            
+        initrd /initramfs-2.6.32-504.el6.x86_64.img</pre>
+</div></div></li></ul><ul><li><p><strong>/etc/rc.d/rc.local</strong><br />rc.local 파일에 아래와 같이 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 THP 영구 적용 방법 - /etc/rc.d/rc.local</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/rc.d/rc.local
+...
+   # 아래의 스크립트를 추가한다.
+if test −f /sys/kernel/mm/transparent_hugepage/enabled; then
+echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled
+fi
+if test −f /sys/kernel/mm/transparent_hugepage/defrag; then
+echo never &gt; /sys/kernel/mm/transparent_hugepage/defrag
+fi</pre>
+</div></div></li><li><p>OS를 재시작하여 설정 상태를 확인한다. OS 재시작은 모든 커널 파라미터 변경 후 한번에 수행해도 된다.<br /><br /></p></li></ul><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux7.3"><u>Red Hat Enterprise Linux 7</u></h4><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.6">1) 즉시 변경</h5><ul><li>RHEL 7 에서는 OS 구동 상태에서 THP 설정을 변경할 수 없다.</li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.5">2) 영구 적용</h5><p style="margin-left: 30.0px;">Red Hat Enterprise Linux 7의 경우 grub, tuned 설정으로 활성화할 수 있으므로 모든 설정에서 비활성화한다.</p><ul><li><p><strong>grub</strong></p><p><strong>1. /etc/default/grub 파일에 GRUB_CMDLINE_LINUX 항목에 transparent_hugepage=never를 추가한다.</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 THP 영구 적용 - grub</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT=&quot;console&quot;
+   # GRUB_CMDLINE_LINUX 항목에 마지막에 transparent_hugepage=never 를 추가
+GRUB_CMDLINE_LINUX=&quot;nomodeset crashkernel=auto rd.lvm.lv=vg_os/lv_root rd.lvm.lv=vg_os/lv_swap rhgb quiet transparent_hugepage=never&quot;         
+GRUB_DISABLE_RECOVERY=&quot;true&quot;</pre>
+</div></div><p><strong>2. grub2-mkconfig를 수행하여 grub.cfg 파일을 생성한다.</strong></p><p>펌웨어 타입에 따라 grub.cfg 파일 생성 위치가 다르므로 다음 명령어를 참고하여 수행한다.</p><p><strong>On BIOS-based machines</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 - BIOS - grub.cfg 생성</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"> $ grub2-mkconfig -o /boot/grub2/grub.cfg</pre>
+</div></div><p><strong>On UEFI-based machines</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 - UEFI - grub.cfg 생성</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg</pre>
+</div></div>
+<div id="expander-1547743464" class="expand-container">
+<div id="expander-control-1547743464" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">UEFI 모드 확인 방법</span>
+</div>
+<div id="expander-content-1547743464" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 1. grub. conf 의 위치
+$ ls -la /etc/grub.conf
+lrwxrwxrwx. 1 root root 32 2016-08-22 19:55 /etc/grub.conf -&gt; ../boot/efi/EFI/redhat/grub.conf
+
+   # 2. efi 디렉토리 존재 유무
+$ ll /sys/firmware | grep ^d | grep -i efi
+drwxr-xr-x 3 root root 0 2015-09-09 13:27 efi
+
+   # 3. dmesg
+$ dmesg |grep EFI
+ EFI v2.40 by EDK II
+ EFI: mem00: type=3, attr=0xf, range=[0x0000000000000000-0x0000000000001000) (0MB)
+ EFI: mem01: type=7, attr=0xf, range=[0x0000000000001000-0x000000000001e000) (0MB)
+ EFI: mem02: type=2, attr=0xf, range=[0x000000000001e000-0x0000000000020000) (0MB)
+ EFI: mem03: type=3, attr=0xf, range=[0x0000000000020000-0x000000000009f000) (0MB)
+ ...중략...</pre>
+</div></div></div>
+</div>
+</li><li><p><strong>tuned</strong></p><p>tuned 서비스가 활성화되어 있다면 tuned profile에도 THP 비활성화를 설정한다.</p><p>참고로 Red Hat Enterprise Linux 7의 기본 tuned profile은 throughput-performance이고 THP 활성화가 기본 설정이다.</p><p>아래는 active tuned profile에서 THP를 비활성화하는 방법이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 THP 영구 적용 - tuned</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 활성화된 tuned profile을 확인한다. 
+   # 아래는 수행 예이며 아래 결과에서 active profile은 throughput-performance이다. 
+$ tuned-adm active
+Current active profile: throughput-performance
+
+   # 프로파일 경로로 이동한다.
+   # tuned profile의 기본경로는 /usr/lib/tuned/profile_name 이다.  
+   # active profile이 throughput-performance 인 경우의 예.
+$ cd /usr/lib/tuned/throughput-performance
+
+   # tuned.conf 파일을 연다.
+   # [vm] 타입에 transparent_hugepage 설정을 추가한다. [vm]타입이 없으면 추가한다.
+$ vi tuned.conf
+[vm]
+transparent_hugepage=never
+
+   # 변경한 프로파일을 적용한다
+$ tuned-adm profile &#39;profile_name&#39;</pre>
+</div></div><p><br />새로운 tuned profile을 등록하는 방법도 있다. <br /><a href="https://www.thegeekdiary.com/centos-rhel-7-how-to-disable-transparent-huge-pages-thp/" class="external-link" rel="nofollow">https://www.thegeekdiary.com/centos-rhel-7-how-to-disable-transparent-huge-pages-thp/</a><br /><br /></p></li><li><p>변경사항을 확인하기 위해 OS를 재시작한다. OS 재시작은 모든 커널 파라미터 변경 후 한번에 수행해도 된다.</p></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-max_map_count.1">max_map_count</h2><hr /><p>현재 설정값을 확인하여 권고설정이 안되어 있는 경우 아래 가이드를 참고하여 변경한다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인.4">설정값 확인</h3><hr /><p>설정값 확인은 Linux 버전 상관없이 동일하다. 다음 두 가지 방법으로 확인할 수 있다.</p><ul><li><p><strong>cat 이용</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>max_map_count 설정 확인 방법 1 - cat</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ cat /proc/sys/vm/max_map_count        # Altibase의 권고 설정값은 2147483647 이다.
+</pre>
+</div></div></li><li><p><strong>sysctl 이용</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>max_map_count 설정 확인 방법 2 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -a | grep max_map_count        # Altibase의 권고 설정값은 2147483647 이다.
+</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.4">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux6.3"><u>Red Hat Enterprise Linux 6</u></h4><p>Red Hat Enterprise Linux 6에서 max_map_count 파라미터 설정값을 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.7"><strong>1) 즉시 변경</strong></h5><ul><li><p>sysctl 명령어를 이용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 max_map_count 즉시 변경 방법 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -w vm.max_map_count=2147483647</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.6"><strong>2) 영구 적용</strong></h5><p style="margin-left: 30.0px;">sysctl.conf, rc.local 두 가지 방법으로 설정할 수 있으므로 모두 동일하게 적용한다.</p><ul><li><p><strong>sysct.conf</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 max_map_count 영구 적용 방법 1 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/sysctl.conf
+vm.max_map_count = 2147483647                   # sysctl.conf 파일에 vm.max_map_count = 2147483647 를 추가하거나 값을 변경한다.</pre>
+</div></div><p><strong><br /></strong></p></li><li><p><strong>rc.local</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 6 max_map_count 영구 적용 방법 2 - rc.local</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/rc.d/rc.local
+echo 2147483647 &gt; /proc/sys/vm/max_map_count    # rc.local 파일에 이 명령어를 추가한다.</pre>
+</div></div></li></ul><h4 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux7.4"><u>Red Hat Enterprise Linux 7</u></h4><p>Red Hat Enterprise Linux 7에서 max_map_count 를 변경하는 방법이다.</p><h5 id="Altibase운영을위한Linux설정가이드-1)즉시변경.8"><strong>1) 즉시 변경</strong></h5><ul><li><p>sysctl 명령어를 이용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 max_map_count 즉시 변경 방법 - sysctl</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ sysctl -w vm.max_map_count=2147483647</pre>
+</div></div></li></ul><h5 id="Altibase운영을위한Linux설정가이드-2)영구적용.7"><strong>2) 영구 적용</strong></h5><p style="margin-left: 30.0px;">tuned profile과 sysctl.conf 두 가지 방법으로 설정할 수 있으므로 모두 동일하게 적용한다.</p><ul><li><p><strong>tuned</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 max_map_count 영구 적용 방법 - tuned</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 활성화된 Tuned profile을 확인한다. 
+$ tuned-adm active
+
+   # 수행 예. 
+   # 아래 결과에서 active profile은 throughput-performance이다. 
+$ tuned-adm active
+Current active profile: throughput-performance
+
+
+   # 프로파일 경로로 이동한다.
+   # tuned profile의 기본경로는 /usr/lib/tuned/profile_name 이다.  
+   # active profile이 throughput-performance 인 경우의 예.
+$ cd /usr/lib/tuned/throughput-performance
+
+   # tuned.conf 파일을 연다.
+   # [sysctl] 타입에 swappiness설정을 추가하거나 변경한다. [sysctl]타입이 없으면 추가한다.
+$ vi tuned.conf
+[sysctl]
+vm.max_map_count=2147483647
+
+   # 변경한 프로파일을 적용한다
+$ tuned-adm profile &#39;profile_name&#39;</pre>
+</div></div></li><li><p><strong>/etc/sysctl.conf</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>RHEL 7 max_map_count 영구 적용 방법 -  sysctl.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/sysctl.conf
+vm.max_map_count=2147483647</pre>
+</div></div></li><li><p>변경사항을 확인하기 위해 OS를 재시작한다. OS 재시작은 모든 커널 파라미터 변경 후 한번에 수행해도 된다.</p></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-공유메모리와세마포어">공유 메모리와 세마포어</h2><hr /><h3 id="Altibase운영을위한Linux설정가이드-설정값확인.5">설정값 확인</h3><hr /><ul><li><p><strong>ipcs 명령어</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>공유 메모리 및 세마포어 확인방법 1 - ipcs 명령 이용</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 공유 메모리 커널 파라미터 설정값 확인
+$ ipcs -m -l
+------ Shared Memory Limits --------
+max number of segments = 4096                         # shmmni (권고값 4096)
+max seg size (kbytes) = 2097152                       # shmmax (권고값 2097152)
+max total shared memory (kbytes) = 137438953472       
+min seg size (bytes) = 1
+
+
+   # 세마포어 커널 파라미터 설정값 확인
+$ ipcs -s -l
+------ Semaphore Limits --------
+max number of arrays = 5029                           # semmni (권고값 5029)
+max semaphores per array = 2000                       # semmsl (권고값 2000)
+max semaphores system wide = 32000                    # semmns (권고값 32000)
+max ops per semop call = 512                          # semopm (권고값 512)
+semaphore max value = 32767
+</pre>
+</div></div></li><li><p><strong>sysctl 명령어</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>공유 메모리 및 세마포어 확인방법 2 - sysctl 명령 이용</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 명령문 및 수행 결과 예시
+$ sysctl -a | grep -e kernel.shmmax -e kernel.shmmni -e kernel.sem
+kernel.shmmax = 2147483648
+kernel.shmmni = 4096
+kernel.sem = 2000        32000   512     5029</pre>
+</div></div></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.5">설정값 변경 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-1)즉시변경.9">1) 즉시 변경</h4><ul><li><p>echo 명령어를 이용한다</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>공유 메모리 및 세마포어 즉시 변경</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">   # 공유 메모리 설정
+echo 4096 &gt; /proc/sys/kernel/shmmni
+echo 2147483648 &gt; /proc/sys/kernel/shmmax
+
+   # 세마포어 설정
+echo 2000 32000 512 5029 &gt; /proc/sys/kernel/sem</pre>
+</div></div></li></ul><h4 id="Altibase운영을위한Linux설정가이드-2)영구적용.8">2) 영구 적용</h4><ul><li><p>/etc/sysctl.conf 파일에 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>공유 메모리 및 세마포어 영구 적용 - /etc/sysctl.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/sysctl.conf
+kernel.shmmni = 4096
+kernel.shmmax = 2147483648
+kernel.sem = 2000        32000   512     5029
+</pre>
+</div></div></li><li><p>변경사항을 확인하기 위해 OS를 재시작한다. OS 재시작은 모든 커널 파라미터 변경 후 한번에 수행해도 된다.</p></li></ul></div></div></div></div><p> </p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-사용자환경">사용자 환경</h1><hr /><p>Linux에서 Altibase 서버를 설치하고 운영하기 위해 필요한 사용자 환경 설정에 관한 설명이다. 사용자는 OS 사용자를 의미하며 Altibase 서버를 설치하고 Altibase 서버 프로세스를 구동하는 사용자이다.</p><p>배시 쉘(Bash Shell)에서 사용자 로그인 환경설정 파일은 .bash_profile이다. 사용자 환경설정 파일은 쉘에 따라 다르나 Linux 기본 쉘이 배시 쉘이므로 이를 기준으로 설명한다.</p><p> </p><p>사용자 환경은 다음 두 가지로 나뉜다.</p><ul><li>리소스 제한</li><li>환경 변수</li></ul><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Altibase운영을위한Linux설정가이드-리소스제한">리소스 제한</h2><hr /><p>Linux는 CPU, 메모리, 파일 등과 같은 시스템 자원(리소스, resource)을 제한하는 설정을 제공한다. 특정 사용자가 시스템 자원을 독점하는 것을 막기 위한 목적이나 파일 생성 제한, 메모리 할당 제한 등으로 인해 Altibase 서버 운영에 치명적인 영향을 미치기 때문에 적절한 설정이 필요하다.</p><p>Altibase 서버 운영 환경에서 권고하는 리소스 항목과 권고값은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="3" style="text-align: center;" class="confluenceTh">리소스 종류</th><th rowspan="2" style="text-align: center;" class="confluenceTh">설명</th><th rowspan="2" style="text-align: center;" class="confluenceTh">권장값</th></tr><tr><th colspan="2" class="confluenceTh">ulimit 명령어</th><th colspan="1" style="text-align: center;" class="confluenceTh"><p>limits.conf의 item</p></th></tr><tr><td colspan="2" class="confluenceTd">data seg size                (kbytes, -d)</td><td colspan="1" style="text-align: center;" class="confluenceTd">data</td><td class="confluenceTd">프로세스 데이터 영역의 최대 메모리 크기</td><td class="confluenceTd">unlimited</td></tr><tr><td colspan="2" class="confluenceTd">file size                          (blocks, -f)</td><td colspan="1" style="text-align: center;" class="confluenceTd">fsize</td><td class="confluenceTd">생성 가능한 파일의 최대 크기</td><td class="confluenceTd">unlimited</td></tr><tr><td colspan="2" class="confluenceTd">open files                                 (-n)</td><td colspan="1" style="text-align: center;" class="confluenceTd">nofile</td><td class="confluenceTd"><span>한 </span><span> </span><span>프로세스에서</span><span> </span><span>열</span><span> </span><span>수</span><span> </span><span>있는</span><span> 최대 open file descriptor 수</span><span> </span></td><td class="confluenceTd">1048576</td></tr><tr><td colspan="2" class="confluenceTd"><p>max memory size         (kbytes, -m)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">rss</td><td class="confluenceTd">사용 가능한 메모리의 최대 크기</td><td class="confluenceTd">unlimited</td></tr><tr><td colspan="2" class="confluenceTd"><p>virtual memory             (kbytes, -v)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">as</td><td class="confluenceTd">사용 가능한 가상 메모리의 최대 크기</td><td class="confluenceTd">unlimited</td></tr><tr><td colspan="2" class="confluenceTd"><p>max user processes                 (-u)</p></td><td colspan="1" style="text-align: center;" class="confluenceTd">nproc</td><td class="confluenceTd">사용자가 실행할 수 있는 프로세스(쓰레드 포함)의 최대 개수</td><td class="confluenceTd">unlimited</td></tr></tbody></table></div><p> </p><h2 id="Altibase운영을위한Linux설정가이드-관련에러메시지">관련 에러 메시지</h2><hr /><p>리소스 제한으로 발생하는 에러 메시지이다. Altibase 서버 운영 중 아래의 에러 메시지가 확인되면 리소스 제한 설정을 확인할 필요가 있다.</p><ul><li>max user processes 가 부족한 경우<br /><ul><li>Failed to create a thread object.</li><li>resource temporarily unavailable</li></ul></li></ul><ul><li>open files 가 부족한 경우<br /><ul><li>Too many open files</li></ul></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-리소스설정값확인및변경">리소스 설정값 확인 및 변경</h2><hr /><p>리소스 제한은 사용자 별로 설정하지만, 사용자 프로세스에 개별 적용된다.</p><p>변경한 리소스 제한 설정값을 Altibase 서버에 반영하려면 Altibase 서버를 재기동해야 한다.</p><h3 id="Altibase운영을위한Linux설정가이드-설정값확인방법">설정값 확인 방법</h3><hr /><ul><li><p>리소스 제한 설정값을 확인하는 명령어이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ulimit -a        # -S 또는 -H 옵션을 명시하지 않으면 -S(Soft-Limit)을 출력한다. 
+
+$ ulimit -Ha       # Hard-Limit 설정값을 출력한다. </pre>
+</div></div></li><li><p>Altibase 서버 프로세스에 설정된 리소스 제한값은 아래 명령어로 확인한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ cat /proc/`ps -ef | grep &#39;altibase -p&#39; | grep -v grep | awk &#39;{print $2}&#39;`/limits</pre>
+</div></div></li><li><p>Altibase 서버 프로세스에 원하는 설정값이 적용되어 있지 않다면 Altibase 서버를 재기동해야 한다.</p></li></ul><h3 id="Altibase운영을위한Linux설정가이드-설정값변경방법.6">설정값 변경 방법</h3><hr /><ol><li><p><strong>ulimit 명령을 수행한다. <br /></strong></p><p>ulimit은 리소스 제한을 설정하는 명령어이다. Altibase 서버를 설치하고 구동하는 OS 사용자의 환경설정 파일 .bash_profile에 ulimit 설정 명령어를 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>사용자 리소스 제한 설정 예제 - .bash_profile 에 추가</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">#For Resource Limitation
+ulimit -d  unlimited  # data segment size
+ulimit -f  unlimited  # file size
+ulimit -n  1048576    # file descriptor(open files)
+ulimit -m  unlimited  # max memory size(rss)
+ulimit -v  unlimited  # virtual memory
+ulimit -u  unlimited  # user process</pre>
+</div></div></li><li><p><strong>환경설정 파일(.bash_profile)을 적용한다.</strong></p><p>아래 명령어로 ulimit 설정을 적용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">. ~/.bash_profile</pre>
+</div></div><p>환경설정 파일 적용 시 아래와 같은 에러가 발생할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">-bash: ulimit: open files: cannot modify limit: 명령을 허용하지 않음
+-bash: ulimit: max user processes: cannot modify limit: 명령을 허용하지 않음</pre>
+</div></div><p>이는 Hard-Limit에 걸려 발생하는 에러이다.</p><p><strong>Hard-Limit &amp; Soft-Limit</strong></p><p>시스템 리소스 제한에는 Hard-Limit과 Soft-Limit이 있다. Hard-Limit은 OS 일반 사용자가 설정할 수 있는 최대 리소스 제한 설정값을 의미하고 Soft-Limit은 사용자에 설정된 리소스 제한값을 의미한다.</p><p>Hard-Limit이 사용자가 ulimit으로 설정하려는 값보다 작으면 cannot modify limit 에러가 발생한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hard-Limit 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ulimit -H -u -n    # -H 옵션이 Hard-Limit을 의미한다. 
+max user processes              (-u) 1024
+open files                      (-n) 4096</pre>
+</div></div><p><strong>/etc/security/limits.conf 변경</strong></p><p>Hard-Limit 변경은 root 권한이 필요하다. limits.conf 파일에 아래 설정을 추가한 후 저장한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hard-Limit 설정 예제 - OS 사용자 이름이 altibase 인 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">#&lt;domain&gt;      &lt;type&gt;  &lt;item&gt;         &lt;value&gt;
+altibase         -     nofile          1048576
+altibase         -     nproc           unlimited</pre>
+</div></div><p>해당 OS 유저로 로그인하여 2.단계를 다시 수행한다.</p></li></ol><p> </p><h2 id="Altibase운영을위한Linux설정가이드-환경변수">환경변수</h2><hr /><p>Altibase 서버 설치 후 설정해야 할 환경변수이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" style="text-align: center;" class="confluenceTh">구분</th><th class="confluenceTh">환경변수</th><th class="confluenceTh">설명</th><th class="confluenceTh">설정값</th></tr><tr><th rowspan="6" class="confluenceTh"><span style="color: rgb(0,0,255);">필수</span></th><th rowspan="4" class="confluenceTh">자동 설정</th><th class="confluenceTh">ALTIBASE_HOME</th><td class="confluenceTd">Altibase를 설치한 경로를 지정한다.</td><td class="confluenceTd">환경에 따라 다르다.</td></tr><tr><th class="confluenceTh">PATH</th><td class="confluenceTd">Altibase의 유틸리티 및 쉘 스크립트의 위치를 찾기 위한 환경변수이다.</td><td class="confluenceTd">$ALTIBASE_HOME/bin</td></tr><tr><th class="confluenceTh">LD_LIBRARY_PATH</th><td class="confluenceTd">Altibase 동적 라이브러리의 위치를 찾기 위한 환경변수이다.</td><td class="confluenceTd">$ALTIBASE_HOME/lib</td></tr><tr><th class="confluenceTh">CLASSPATH</th><td class="confluenceTd">Java Class 파일의 위치를 찾기 위한 환경변수이다.</td><td class="confluenceTd">$ALTIBASE_HOME/lib</td></tr><tr><th rowspan="2" class="confluenceTh"><span style="color: rgb(0,0,255);">수동 설정</span></th><th class="confluenceTh">ALTIBASE_NLS_USE</th><td class="confluenceTd"><p>Altibase 클라이언트 캐릭터셋 설정을 위한 환경변수이다.</p><p>Altibase 서버 캐릭터셋과 동일하게 설정한다.</p></td><td class="confluenceTd">Altibase 서버 캐릭터셋과 동일</td></tr><tr><th class="confluenceTh">LANG</th><td class="confluenceTd">사용자의 시스템 로케일을 정의한다.</td><td class="confluenceTd">Altibase 서버 캐릭터셋에 영향을 받는다.</td></tr><tr><th class="confluenceTh">선택</th><th class="confluenceTh">수동 설정</th><th class="confluenceTh">MALLOC_ARENA_MAX</th><td class="confluenceTd"><ul><li>멀티쓰레드 응용 프로그램 환경에서 쓰레드 간 메모리 경합으로 인한 성능 이슈를 개선하기 위해 Red Hat Enterprise Linux 6에서 추가된 기능이다.</li><li>기본값은<span style="color: rgb(0,0,0);"> CPU 코어 수 * MALLOC_ARENA_TEST 이다.<br /></span></li><li><span style="color: rgb(0,0,0);">MALLOC_ARENA_TEST 환경변수 기본값</span><ul><li><span style="color: rgb(0,0,0);">32-bit 의 경우 2</span></li><li><span style="color: rgb(0,0,0);">64-bit 의 경우 8<br /></span></li></ul></li><li><span style="color: rgb(0,0,0);">MALLOC_ARENA_MAX 환경변수는 glibc2.10 이상에서 올바르게 동작한다. </span></li></ul></td><td class="confluenceTd">-</td></tr></tbody></table></div><ul><li><strong>환경변수 MALLOC_ARENA_MAX</strong><ul><li><span style="color: rgb(0,0,255);">이 환경변수는 선택사항이다.</span></li><li><span style="color: rgb(0,0,255);"><span style="color: rgb(0,0,0);">일반적으로 기본값을 유지하고 메모리 이슈가 발견될 경우 기본값보다 작게 설정하는 것을 고려한다.</span><strong> </strong></span></li><li>이 환경변수는 설정값에 따라 Altibase 서버 프로세스의 성능과 메모리 사용량에 영향을 미치기 때문에 동일한 값을 일괄적으로 권고하기 어렵다.</li><li>이 환경변수의 기본값은 CPU 코어 수에 영향을 받아 CPU 코어 수가 많을수록 Altibase 서버 프로세스의 VSZ이 과도하게 커지는 현상이 발생할 수 있다.</li></ul></li></ul><p> </p><h3 id="Altibase운영을위한Linux설정가이드-환경변수설정방법">환경변수 설정 방법</h3><hr /><h4 id="Altibase운영을위한Linux설정가이드-설정값확인방법.1">설정값 확인 방법</h4><hr /><p>필수 환경변수가 올바르게 설정되어 있는지 확인한다.</p><ul><li><p><strong>env 명령어</strong></p><p>env 결과는 해당 세션에 설정된 모든 환경변수를 출력한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ env</pre>
+</div></div></li><li><p><strong>echo 명령어</strong></p><p>지정한 환경변수 설정값을 출력한다. 값을 출력하지 않으면 환경변수가 설정되어 있지 않은 것을 의미한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">   # echo 명령어를 이용하여 ALTIBASE_HOME 환경변수 설정값을 확인하는 예이다. 
+$ echo $ALTIBASE_HOME</pre>
+</div></div></li></ul><h4 id="Altibase운영을위한Linux설정가이드-설정값변경방법.7">설정값 변경 방법</h4><hr /><p>필수 환경변수 중 수동으로 설정해야 하는 ALTIBASE_NLS_USE, LANG 환경변수를 설정하는 방법이다.</p><ol><li><p><strong>Altibase 서버 캐릭터셋을 확인한다. <br /></strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; SELECT NLS_CHARACTERSET FROM V$NLS_PARAMETERS;</pre>
+</div></div></li><li><p><strong>.bash_profile 파일에 환경변수를 설정한다</strong>.<strong> </strong></p><p>환경변수는 OS 사용자 세션 단위로 설정된다. 따라서 OS 사용자가 접속할 때마다 적용하기 위해 사용자 환경설정 파일 .bash_profile에 추가해야 한다.</p><p>아래 표는 Altibase 서버 캐릭터셋에 따른 ALTIBASE_NLS_USE, LANG 환경변수 설정값을 보여준다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Altibase 서버 캐릭터셋</th><th class="confluenceTh">ALTIBASE_NLS_USE</th><th style="text-align: center;" class="confluenceTh">LANG</th></tr><tr><td style="text-align: center;" class="confluenceTd">MS949</td><td style="text-align: center;" class="confluenceTd">MS949</td><td style="text-align: center;" class="confluenceTd">ko_KR.euckr</td></tr><tr><td style="text-align: center;" class="confluenceTd">KO16KSC5601</td><td style="text-align: center;" class="confluenceTd">KO16KSC5601</td><td style="text-align: center;" class="confluenceTd">ko_KR.euckr</td></tr><tr><td style="text-align: center;" class="confluenceTd">UTF8</td><td style="text-align: center;" class="confluenceTd">UTF8</td><td style="text-align: center;" class="confluenceTd">ko_KR.utf8</td></tr></tbody></table></div><p>위 표를 참고하여 사용자 환경설정 파일 .bash_profile에 환경변수를 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>환경변수 설정 예제 - .bash_profile 에 추가</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">   # Altibase 서버 캐릭터셋이 UTF8인 경우 예제이다. 
+   # .bash_profile에 아래 내용을 추가하고 저장한다. 
+export ALTIBASE_NLS_USE=UTF8
+export LANG=ko_KR.utf8</pre>
+</div></div></li><li><p><strong>환경설정 파일(.bash_profile)을 적용한다.</strong></p><p>아래 명령어로 추가한 환경변수를 적용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">. ~/.bash_profile</pre>
+</div></div></li></ol></div></div></div></div><p> </p><p> </p><h1 id="Altibase운영을위한Linux설정가이드-요약">요약</h1><hr /><p>앞에서 소개한 커널 파라미터와 환경변수의 권고값을 확인하는 방법을 표로 정리하였다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="3" style="text-align: center;" class="confluenceTh">분류</th><th style="text-align: center;" class="confluenceTh">권고설정</th><th class="confluenceTh">확인방법</th></tr><tr><th rowspan="8" class="confluenceTh"><strong><span style="text-decoration: none;"><span style="text-decoration: none;"><span style="color: rgb(67,67,67);">커널 파라미터</span></span></span></strong></th><th colspan="2" rowspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>CPU frequency Governor</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>performance</span></span></span></td><td class="confluenceTd"><span>cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor | sort -u</span></td></tr><tr><td colspan="1" style="text-align: center;" class="confluenceTd">CPU 코어의 클럭 속도가 최대로 고정</td><td colspan="1" class="confluenceTd">grep MHz /proc/cpuinfo | sort -u</td></tr><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>RemoveIPC</span></span></span></th><td colspan="1" style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>no</span></span></span></td><td colspan="1" class="confluenceTd"><span>grep RemoveIPC /etc/systemd/logind.conf</span></td></tr><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span><span>swappiness</span></span></span></span></th><td colspan="1" style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>1</span></span></span></td><td colspan="1" class="confluenceTd"><p style="text-align: left;"><span>cat /proc/sys/vm/swappiness 또는 <br />sysctl -a | grepswappiness</span></p></td></tr><tr><th colspan="2" rowspan="3" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>THP</span></span></span><span style="text-decoration: none;"><span style="text-decoration: none;"> </span></span></th><td colspan="1" style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>never</span></span></span></td><td colspan="1" class="confluenceTd"><p style="text-align: left;"><span>cat /sys/kernel/mm/transparent_hugepage/enabled</span></p></td></tr><tr><td colspan="1" style="text-align: center;" class="confluenceTd">Hugepagesize 외에 모두 0</td><td colspan="1" class="confluenceTd"><span>grep -i huge /proc/meminfo</span></td></tr><tr><td colspan="1" style="text-align: center;" class="confluenceTd">transparent_hugepage=never 포함</td><td colspan="1" class="confluenceTd"><span>cat /proc/cmdline</span></td></tr><tr><th colspan="2" class="confluenceTh">max_map_count</th><td colspan="1" style="text-align: center;" class="confluenceTd">2147483647</td><td colspan="1" class="confluenceTd">cat /proc/sys/vm/max_map_count</td></tr><tr><th rowspan="2" class="confluenceTh"><strong><span style="text-decoration: none;"><span style="text-decoration: none;">공유 메모리</span></span></strong></th><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>shmmni</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>4096</span></span></span></td><td rowspan="2" class="confluenceTd"><p style="text-align: left;"><span>ipcs -m -l</span></p><p style="text-align: left;"><span>sysctl -a | grep -e kernel.shmmax -e kernel.shmmni</span></p></td></tr><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>shmmax</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>2147483648</span></span></span></td></tr><tr><th rowspan="4" class="confluenceTh"><strong><span style="text-decoration: none;"><span style="text-decoration: none;">세마포어</span></span></strong></th><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>semmsl</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>2000</span></span></span></td><td rowspan="4" class="confluenceTd"><p style="text-align: left;"><span>ipcs -s -l</span></p><p style="text-align: left;"><span>sysctl -a | grep -kernel.sem</span></p><br /><br /><br /></td></tr><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>semmns</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>32000</span></span></span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>semopm</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>512</span></span></span></td></tr><tr><th colspan="2" class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>semmni</span></span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>5029</span></span></span></td></tr><tr><th rowspan="6" class="confluenceTh"><strong><span style="text-decoration: none;"><span style="text-decoration: none;">OS 사용자 리소스 제한</span></span></strong><br /><br /><br /><br /><br /></th><th class="confluenceTh"><p style="text-align: left;"><span>data seg size</span></p></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span>(kbytes, -d)</span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>unlimited</span></span></span></td><td rowspan="6" class="confluenceTd"><span><span>u</span><span>limit -a</span></span><br /><br /><br /></td></tr><tr><th class="confluenceTh"><p style="text-align: left;"><span><span>file size</span></span><span style="text-decoration: none;"><br /></span></p></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span><span>(blocks, -f)</span></span><span style="text-decoration: none;"> </span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>unlimited</span></span></span></td></tr><tr><th class="confluenceTh"><span>open files                                     <br /></span></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span>(-n)</span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>1048576</span></span></span></td></tr><tr><th class="confluenceTh"><span>max memory size<br /></span></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span>(kbytes, -m)</span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>unlimited</span></span></span></td></tr><tr><th class="confluenceTh"><span>virtual memory<br /></span></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span>(kbytes, -v)</span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>unlimited</span></span></span></td></tr><tr><th class="confluenceTh"><span><span>max user processes     <br /></span></span></th><th colspan="1" style="text-align: right;" class="confluenceTh"><span><span> (-u)</span></span></th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>unlimited</span></span></span></td></tr><tr><th rowspan="6" class="confluenceTh"><strong><span style="text-decoration: none;"><span style="text-decoration: none;">OS 사용자 환경변수 </span></span></strong><br /><br /><br /><br /><br /></th><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>ALTIBASE_HOME</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>Altibase 설치 경로(절대 경로)<br /></span></span></span></td><td rowspan="6" class="confluenceTd"><span><span>env <br /></span></span><br /><br /><br /><br /><br /></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>PATH</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>$ALTIBASE_HOME/bin</span></span></span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>LD_LIBRARY_PATH</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>$ALTIBASE_HOME/lib</span></span></span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>CLASSPATH</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>$ALTIBASE_HOME/lib</span></span></span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>ALTIBASE_NLS_USE</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>Altibase 서버 캐릭터셋과 동일</span></span></span></td></tr><tr><th class="confluenceTh"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>LANG</span></span></span></th><th colspan="1" class="confluenceTh"> </th><td style="text-align: center;" class="confluenceTd"><span style="text-decoration: none;"><span style="text-decoration: none;"><span>Altibase 서버 캐릭터셋에 따름</span></span></span></td></tr></tbody></table></div><p> </p><h1 id="Altibase운영을위한Linux설정가이드-기타">기타</h1><hr /><h2 id="Altibase운영을위한Linux설정가이드-RedHatEnterpriseLinux권장Swap크기"><span style="color: rgb(0,0,0);">Red Hat Enterprise Linux 권장 Swap 크기</span></h2><hr /><p>Red Hat Linux에서는 Swap 크기 설정에 대해 아래와 같이 권고하고 있다. </p><ul style="list-style-type: square;"><li>과거에는 물리 메모리의 2배의 Swap 공간을 권고했으나 테라바이트 급의 메모리를 가진 오늘날에는 과거 권고는 실용성이 없다.</li><li><span style="color: rgb(255,0,0);">140개 이상의 논리 프로세서를 가진 시스템 혹은 3TB 이상의 RAM을 가진 시스템은 최소 100GB의 Swap 공간을 권장한다. </span></li></ul><p>구체적인 내용은 Red Hat  CUSTOMER PORTAL 페이지에서 참고한다. </p><ul style="list-style-type: square;"><li><a href="https://access.redhat.com/ko/solutions/744483" class="external-link" rel="nofollow">Red Hat Enterprise Linux 권장 swap 크기는 어떻게 되나요?</a></li></ul><p> </p><h2 id="Altibase운영을위한Linux설정가이드-systemd에Altibasestartup서비스등록시timeout설정에의한Altibase서버프로세스강제종료현상">systemd에 Altibase startup 서비스 등록 시 timeout 설정에 의한 Altibase 서버 프로세스 강제 종료 현상</h2><hr /><p>RHEL 7 이상이나 systemd 를 채택하는 Linux 배포판에 해당하는 주의사항입니다. </p><p>systemd 서비스 설정 파일에 timeout 설정이 있다면 OS 부팅 과정에서 Altibase 서버 프로세스 구동 중 OS에 의해 Altibase 서버 프로세스가 강제 종료되는 현상이 있을 수 있습니다.</p><ul style="list-style-type: square;"><li>TimeoutStartSec 또는 TimeoutSec</li></ul><p>이 경우 시스템 로그(messages)에 아래와 같은 메시지가 남습니다. </p><div class="panel" style="border-style: dashed;border-width: 1px;"><div class="panelContent">
+<p>Jun 3 07:25:26 r-sky-ex altibase: [SM] Recovery Phase - 2 : Loading Database</p><div><p>Jun 3 07:26:53 r-sky-ex <span style="color: rgb(255,0,0);">systemd: <span style="color: rgb(51,51,51);">altibase.service</span> start operation timed out. Terminating.</span><br />Jun 3 07:26:53 r-sky-ex systemd: Failed to start altibase 7.1.<br />Jun 3 07:26:53 r-sky-ex systemd: Unit altibase.service entered failed state.<br />Jun 3 07:26:53 r-sky-ex systemd: altibase.service failed.</p></div>
+</div></div><p>Altibase 서버 프로세스 구동 소요 시간은 상황에 따라 장시간 소요될 수 있습니다. </p><ul style="list-style-type: square;"><li>메모리 데이터 및 메모리 인덱스가 크거나 </li><li>Altibase 구동 중에 Restart Recovery 가 진행되는 경우</li></ul><p>TimeoutStartSec 또는 TimeoutSec 설정값 운영 환경에 맞게 여유있게 설정하거나 0 (timeout 비활성화)으로 설정하여야 합니다. </p><p>이와 유사하게 TimeoutStopSec 설정이 있습니다. </p><p>보다 자세한 사항은 man systemd.service 을 참고하시기 바랍니다. </p><p> </p><h2 id="Altibase운영을위한Linux설정가이드-SymantecEndpointProtection(SEP)forLinux가설치된서버에서SYS영역CPU사용량증가현상"><span style="color: rgb(0,0,0);">Symantec Endpoint Protection(SEP) for Linux 가 설치된 서버에서 SYS 영역 CPU 사용량 증가 현상</span></h2><hr /><p>Symantec Endpoint Protection 프로세스에 의해 Altibase 서버 프로세스의 SYS 영역 CPU 사용량이 증가하는 현상이 발견되었습니다. </p><p><span style="color: rgb(0,0,0);">vtune 분석 결과 Altibase 세션 수가 증가할수록 <span>시스템콜 select(), write() 에 의해 </span>SYS 영역의 CPU 사용량이 크게 증가합니다. </span></p><p>Broadcom 사에서 원인 규명이 안 된 상황으로 백신 프로그램을 변경하여 조치한 사례가 있습니다.  (2020.06.기준)</p><p>현상이 보고된 서버 환경은 아래와 같습니다. </p><ul style="list-style-type: square;"><li><span style="color: rgb(0,0,0);">Red Hat Enterprise Linux 7 </span></li><li>Symantec Endpoint Protection(SEP) for Linux </li></ul><p> </p><h1 id="Altibase운영을위한Linux설정가이드-참고자료">참고자료</h1><hr /><h3 id="Altibase운영을위한Linux설정가이드-Linux호환성.1">Linux 호환성</h3><ul><li><a href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/kor/Installation.md#os-patch" class="external-link" rel="nofollow">Altibase 7.1 Korean manuals - Installation Guide#OS-Patch</a></li><li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1244002" class="external-link" rel="nofollow">Bug 1244002 - NFS and Fuse mounts hang while running IO - Malloc/free deadlock </a></li><li><a href="https://docs.altibase.com/pages/viewpage.action?pageId=9110736">Altibase HDB&#44032; &#51648;&#50896;&#54616;&#45716; &#54540;&#47019;&#54268;(OS)&#51008;?</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-CPUfrequencyGovernor.2">CPU <span class="st">frequency</span> Governor</h3><ul><li><a class="external-link" href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/power_management_guide/cpufreq_governors" rel="nofollow">Red Hat Enterprise Linux - 6 - 전원 관리 가이드 - 3.2. CPUfreq 조정기 사용하기</a></li><li><a class="external-link" href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/power_management_guide/tuned-adm" rel="nofollow">Red Hat Enterprise Linux - 6 - 전원 관리 가이드 - 2.5.2. Tuned-adm</a></li><li><a class="external-link" href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/performance_tuning_guide/ch07s02" rel="nofollow">Red Hat Enterprise Linux - 6 - 성능 조정 가이드 - 7.2. 파일 시스템 성능 프로파일</a></li><li><a href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html-single/power_management_guide/index#cpufreq_setup" class="external-link" rel="nofollow">https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html-single/power_management_guide/index#cpufreq_setup</a></li><li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/power_management_guide/index#cpufreq_drivers" class="external-link" rel="nofollow">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/power_management_guide/index#cpufreq_drivers</a></li><li><a href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html-single/power_management_guide/index" class="external-link" rel="nofollow">https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html-single/power_management_guide/index</a></li><li><p><a href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/7/html-single/performance_tuning_guide/index" class="external-link" rel="nofollow">https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/7/html-single/performance_tuning_guide/index</a></p></li><li><a href="https://www.certdepot.net/rhel7-get-started-cpu-governor/" class="external-link" rel="nofollow">RHEL7: How to get started with CPU governor.</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-RemoveIPC.2">RemoveIPC</h3><ul><li><a href="http://man7.org/linux/man-pages/man5/logind.conf.5.html" class="external-link" rel="nofollow">logind.conf(5) - Linux manual page - man7.org</a></li><li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.2_release_notes/known-issues-installation_and_booting" class="external-link" rel="nofollow">Daemons using IPC terminate unexpectedly after update to Red Hat Enterprise Linux 7.2</a></li><li><a href="https://docs.oracle.com/cd/E52668_01/E67200/html/section-t51_kcn_f5.html" class="external-link" rel="nofollow">Database Installation and Operation Fails if RemoveIPC=yes Is Configured for systemd-Oracle docs</a></li><li><a href="https://www.ibm.com/support/knowledgecenter/en/SS5R93_5.3.2/com.ibm.spectrum.sc.doc/fqz0_r_tbs_db2_rhel72.html" class="external-link" rel="nofollow">IBM® Db2® servers might crash when the RemoveIPC option for Red Hat Enterprise Linux Version 7.2 is set to yes.</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-swappiness.2">swappiness</h3><ul><li><a class="external-link" href="https://en.wikipedia.org/wiki/Paging#Swappiness" rel="nofollow">Wikipedia-Paging#Swappiness</a></li><li><a class="external-link" href="https://en.wikipedia.org/wiki/Page_cache" rel="nofollow">Wikipedia-Page_cache</a></li><li><a class="external-link" href="https://en.wikipedia.org/wiki/Talk%3ASwappiness" rel="nofollow">Wikipedia-Talk:Swappiness</a></li><li><a class="external-link" href="https://access.redhat.com/ko/solutions/744483" rel="nofollow">Red Hat Enterprise Linux 권장 swap 크기는 어떻게 되나요?</a></li><li><a href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/7/html/performance_tuning_guide/sect-red_hat_enterprise_linux-performance_tuning_guide-memory-configuration_tools" class="external-link" rel="nofollow">Red Hat Enterprise Linux 7 - 성능 조정 가이드 - 4.3. 설정 도구</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-THP.1">THP</h3><ul><li><a class="external-link" href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-transhuge" rel="nofollow">Red Hat Enterprise Linux-Huge Pages 및 Transparent Huge Pages</a></li><li><a class="external-link" href="https://support.hpe.com/hpsc/doc/public/display?docId=mmr_kc-0111835" rel="nofollow">THP(Transparent Huge Page)때문에 System Hang</a></li><li><a class="external-link" href="https://access.redhat.com/solutions/46111" rel="nofollow">How to use, monitor, and disable transparent hugepages in Red Hat Enterprise Linux 6 and 7? </a></li><li><a class="external-link" href="https://docs.oracle.com/en/database/oracle/oracle-database/18/ladbi/disabling-transparent-hugepages.html#GUID-02E9147D-D565-4AF8-B12A-8E6E9F74BEEA" rel="nofollow">Disabling Transparent HugePages - Oracle Docs</a></li><li><a class="external-link" href="https://help.sap.com/viewer/bed8c14f9f024763b0777aa72b5436f6/2.0.04/en-US/8049ba0c8df2454dbbf8dc7caf636021.html" rel="nofollow">Transparent Huge Pages on Linux - SAP Help Portal</a></li><li><a href="https://access.redhat.com/ja/solutions/1315213" class="external-link" rel="nofollow">Red Hat Enterprise Linux 6 で THP (transparent hugepages) を無効にしても反映されない </a></li><li><a href="https://access.redhat.com/ja/solutions/1565043" class="external-link" rel="nofollow">Red Hat Enterprise Linux 7 で transparent hugepages (THP) を無効にする</a></li><li><a href="https://www.thegeekdiary.com/centos-rhel-6-how-to-disable-transparent-huge-pages-thp/" class="external-link" rel="nofollow">CentOS / RHEL 6 : How to disable Transparent Huge pages (THP)</a></li><li><a href="https://www.thegeekdiary.com/centos-rhel-7-how-to-disable-transparent-huge-pages-thp/" class="external-link" rel="nofollow">CentOS / RHEL 7 : How to disable Transparent Huge pages (THP)</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-max_map_count.2">max_map_count</h3><ul style="list-style-type: square;"><li><a href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt" class="external-link" rel="nofollow">https://www.kernel.org/doc/Documentation/sysctl/vm.txt</a></li><li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/performance_tuning_guide/sect-red_hat_enterprise_linux-performance_tuning_guide-configuration_tools-configuring_system_memory_capacity" class="external-link" rel="nofollow">Red Hat Enterprise Linux 7 - Performance Tuning Guide - 7.5. Configuring System Memory Capacity</a></li><li><a href="https://blogs.sap.com/2018/11/29/additional-os-validations-required-for-sap-applications-on-rhel-7./" class="external-link" rel="nofollow">Additional OS validations required for SAP Applications on RHEL 7.++</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-공유메모리및세마포어">공유 메모리 및 세마포어</h3><ul><li>IPCDA는 Altibase 7 버전부터 지원하는 통신방식이다.</li><li><a class="external-link" href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/kor/Admin_2.md#%ED%86%B5%EC%8B%A0-%EB%B0%A9%EB%B2%95" rel="nofollow">Altibase 7.1 Korean manuals - Administrator's Manual 2#12서버클라이언트-통신</a></li><li><a class="external-link" href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/kor/Installation.md#os%EB%B3%84-%EC%BB%A4%EB%84%90-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%EC%84%A4%EC%A0%95" rel="nofollow">Altibase 7.1 Korean manuals - Installation Guide#OS별-커널-파라미터-설정</a></li></ul><h3 id="Altibase운영을위한Linux설정가이드-로케일(Locale)">로케일(Locale)</h3><ul><li><a href="https://wiki.archlinux.org/index.php/Locale_(%ED%95%9C%EA%B5%AD%EC%96%B4)" class="external-link" rel="nofollow">https://wiki.archlinux.org/index.php/Locale_(한국어)</a></li></ul><h4 id="Altibase운영을위한Linux설정가이드-MALLOC_ARENA_MAX"><strong>MALLOC_ARENA_MAX</strong></h4><ul><li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.0_release_notes/compiler" class="external-link" rel="nofollow">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/6.0_release_notes/compiler</a></li><li><a href="https://www.ibm.com/developerworks/community/blogs/kevgrig/entry/linux_glibc_2_10_rhel_6_malloc_may_show_excessive_virtual_memory_usage?lang=en" class="external-link" rel="nofollow">https://www.ibm.com/developerworks/community/blogs/kevgrig/entry/linux_glibc_2_10_rhel_6_malloc_may_show_excessive_virtual_memory_usage?lang=en</a></li><li><a href="https://github.com/prestodb/presto/issues/8993" class="external-link" rel="nofollow">https://github.com/prestodb/presto/issues/8993</a></li></ul><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436485/14221435.pdf">Altibase_운영을_위한_Linux_설정_가이드_2019.pdf</a> (application/pdf)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

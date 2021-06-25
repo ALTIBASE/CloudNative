@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 4. DATASOURCE 설정</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340945.html">Altibase Spring 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 4. DATASOURCE 설정
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Dec 01, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409846458 {padding: 0px;}
+div.rbtoc1624409846458 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409846458 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409846458'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.DATASOURCE설정-DriverManagerDataSource이용'>DriverManagerDataSource 이용</a></li>
+<li><a href='#id-4.DATASOURCE설정-DBCP를이용'>DBCP를 이용</a></li>
+<li><a href='#id-4.DATASOURCE설정-ALTIBASE의ConnectionPool을이용'>ALTIBASE의 ConnectionPool을 이용</a></li>
+</ul>
+</div>
+<hr />
+<p>Spring에서 DB와 연동하기 위해서는 bean 설정 파일에 DataSource 관련 bean을 설정해야 한다.</p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>(본 문서에서 bean 설정 파일의 이름은 applicationContext.xml으로 정의하였다.)</p>
+                    </div>
+    </div>
+
+
+<p>DataSource를 설정하는 방법 중에서 Spring Framework에서 제공하는 DriverManagerDataSource를 이용하는 방법, Jakarta에서 제공하는 DBCP를 이용하는 방법, DB 벤더에서 제공하는 ConnectionPool을 이용하는 방법 등이 있다. 본 장에서는 이 방법들을 이용하여 ATLIBASE와 연동하는 방법에 대해 설명한다.</p>
+
+<p><br class="atl-forced-newline" /></p>
+<h2 id="id-4.DATASOURCE설정-DriverManagerDataSource이용"><strong>DriverManagerDataSource 이용</strong></h2>
+
+<p>Spring Framework에서 제공하는 DriverManagerDataSource 클래스를 이용하여 DB와 연동할 경우에는 bean 설정파일에서 dataSource bean을 설정할 때 class 속성 값을 org.springframework.jdbc.datasource.DriverManagerDataSource로 지정하면 된다.<br />
+이때 dataSource bean에 DB와 연동하기 위한 여러 가지 property들을 정의 할 수 있는데, 다음과 같은 Property들을 ALTIBASE에 맞게 정의하면 된다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> 설명 </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> driverClassName </p></td>
+<td class="confluenceTd"><p> ALTIBASE JDBC driver class Name <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> ALTIBASE와 연결을 위한 Connection string정보 “jdbc:Altibase://IP:port_no/db_name” 형태로 기입 <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> username </p></td>
+<td class="confluenceTd"><p> 데이터베이스 계정 <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> password </p></td>
+<td class="confluenceTd"><p> 데이터베이스 패스워드 <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<p>다음은 예제로 제공되는 DataManagerDataSourceConnection의 acpplicationContext.xml 파일의 일부이다.<br />
+예) DataManagerDataSourceConnection의 applicationContext.xml 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+…
+&lt;bean id=&quot;dataSource&quot;
+	class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+	&lt;!-- JDBC Driver 클래스 명 설정 --&gt;
+	&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+	&lt;      &lt;!-- connection url --&gt;
+	&lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot; /&gt;
+	&lt;!-- DB 사용자 계정 설정 --&gt;
+	&lt;property name=&quot;username&quot; value=&quot;sys&quot; /&gt;
+	&lt;!-- DB 사용자 패스워드 설정 --&gt;
+	&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…
+</pre>
+</div></div>
+
+<p>예제에 포함된 DataManagerDataSourceConnection 프로젝트를 실행하기 위해서는 Altibase.jar, spring.jar, spring-jdbc.jar, common-loggings.jar 파일이 필요하므로 해당 jar 파일을 추가해주어야 한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340956/7766132.png" data-image-src="attachments/7340956/7766132.png"></p>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+<h2 id="id-4.DATASOURCE설정-DBCP를이용"><strong>DBCP를 이용</strong></h2>
+
+<p>Spring에서 Jakarta에서 제공하는 DBCP(Jakarta Commons Database Connection Pool) API를 이용하여 ConnectionPool 기반의 DataSource를 설정할 수 있다. 이 때 사용하는 DataSource 클래스는 org.apache.commons.dbcp.BasicDataSource 이다. 설정하는 방법은 위에서 설명한 DriverManagerDataSource 클래스를 이용하는 것처럼 applicationContext.xml 파일에 BasicDataSource 클래스를 사용하여 dataSource bean을 작성하면 된다.</p>
+
+<p>예) DBCPConnection의 applicationContext.xml 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+…
+&lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;&gt;
+	&lt;!-- JDBC Driver 클래스 명 설정 --&gt;
+	&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+	&lt;!-- connection url --&gt;
+	&lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot; /&gt;
+	&lt;!-- DB 사용자 계정 설정 --&gt;
+	&lt;property name=&quot;username&quot; value=&quot;sys&quot; /&gt;
+	&lt;!-- DB 사용자 패스워드 설정 --&gt;
+	&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…
+</pre>
+</div></div>
+
+<p>BasicDataSource 클래스는 ConnectionPool을 관리하기 위해 다양한 Property들을 제공한다.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> 설명 </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> driverClassName </p></td>
+<td class="confluenceTd"><p> ALTIBASE JDBC driver class Name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> url </p></td>
+<td class="confluenceTd"><p> ALTIBASE와 연결을 위한 Connection string정보 jdbc:Altibase://IP:port_no/db_name” 형태로 기입 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> username </p></td>
+<td class="confluenceTd"><p> 데이터베이스 계정 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> password </p></td>
+<td class="confluenceTd"><p> 데이터베이스 패스워드 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> maxActive </p></td>
+<td class="confluenceTd"><p> 최대 Connection 수, 0은 무제한. default는 8 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> initialSize </p></td>
+<td class="confluenceTd"><p> 초기 Connection 수. default는 0 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> maxIdle </p></td>
+<td class="confluenceTd"><p> Pool에 idle하게 유지하는 최대 연결 수. default는 8 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> maxWait </p></td>
+<td class="confluenceTd"><p> 최대 연결 시도 시간 (단위 : millisec) -1은 무한 대기 <br class="atl-forced-newline" />
+Default는 무한 대기 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> validationQuery </p></td>
+<td class="confluenceTd"><p> 연결의 validation을 체크하기 위해 사용하는 SQL문 <br class="atl-forced-newline" />
+반드시 최소한 1개이상의 row가 return되는 select문으로 지정 <br class="atl-forced-newline" />
+ex) select 1 from dual </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> defaultAutoCommit </p></td>
+<td class="confluenceTd"><p> autocommit 모드를 설정. default는 true </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> defaultTransactionIsolation </p></td>
+<td class="confluenceTd"><p> Transaction Isolation level을 설정 <br class="atl-forced-newline" />
+NONE, REPEATABLE_READ, SERIALIZABLE의 값을 설정할 수 있고, default는 DB서버의 default 값을 따른다. ALTIBASE의 isolation level은 default 로 READ COMMITTED 이다. </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<p>예제에 포함된 DBCPConnection 프로젝트를 실행하기 위해서는 Spring 설정 library 파일 이외에<br />
+Altibase.jar, common-logging.jar, common-dbcp.jar, common-pools.jar 파일이 필요하다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340956/7766133.png" data-image-src="attachments/7340956/7766133.png"></p>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+<h2 id="id-4.DATASOURCE설정-ALTIBASE의ConnectionPool을이용"><strong>ALTIBASE의 ConnectionPool을 이용</strong></h2>
+
+<p>ALTIBASE에서 제공하는 ABConnectionPoolDataSource 클래스를 사용하면 ALTIBASE의 ConnectionPool을 이용할 수 있다. 위에서 설명한 다른 DataSource처럼 applicationContext.xml에 ABConnectionPoolDataSource 클래스를 이용하여 dataSource bean을 정의하면 된다.</p>
+
+<p>예) AltibaseConnectionPool의 applicationContext.xml 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+…
+&lt;bean id=&quot;dataSource&quot;
+class=&quot;Altibase.jdbc.driver.AltibaseConnectionPoolDataSource&quot;&gt;
+  &lt;!-- connection  URL  대문자 주의 --&gt;
+  &lt;property name=&quot;URL&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+  &lt;!-- DB 사용자 계정 설정 --&gt;
+  &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+  &lt;!-- DB 사용자 패스워드 설정 --&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…
+</pre>
+</div></div>
+
+<p>ABConnectionPoolDataSource을 이용할 경우 ABConnectionPoolDataSource 내부에서 자동으로 ALTIBASE JDBC Driver class를 로딩하므로 driverClassName property를 지정할 필요가 없다. 또한 DB 사용자 계정을 나타내는 property가 username이 아니고 user임을 주의해야 한다.</p>
+
+<p>ABConnectionPoolDataSource 클래스는 ConnectionPool을 관리하기 위해 다양한 property들을 제공한다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> 설명 </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> ALTIBASE와 연결을 위한 Connection string정보<br class="atl-forced-newline" />
+ jdbc:Altibase://IP:port_no/db_name” 형태로 기입 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> user </p></td>
+<td class="confluenceTd"><p> 데이터베이스 계정 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> password </p></td>
+<td class="confluenceTd"><p> 데이터베이스 패스워드 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> maxPoolSize </p></td>
+<td class="confluenceTd"><p> 최대 Connection 수. 기본값 10. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> minPoolSize </p></td>
+<td class="confluenceTd"><p> 최소 Connection 수. 기본값 0. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> initialPoolSize </p></td>
+<td class="confluenceTd"><p> 초기 Connection 수. 기본값 1. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> maxIdleTime </p></td>
+<td class="confluenceTd"><p> idle 대기 시간 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> propertyCycle </p></td>
+<td class="confluenceTd"><p> ConnectionPool이 다 찼을 때 대기 시간(millisec) </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>예제에 포함된 AltibaseConnectionPool 프로젝트를 실행하기 위해서는 Altibase.jar, spring.jar, spring-jdbc.jar, common-logging.jar 파일이 필요하다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340956/7766134.png" data-image-src="attachments/7340956/7766134.png"></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766126.png">datasource_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766127.png">datasource_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766128.png">datasource_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766132.png">datasource_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766133.png">datasource_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766135.png">datasource_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340956/7766134.png">datasource_6.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

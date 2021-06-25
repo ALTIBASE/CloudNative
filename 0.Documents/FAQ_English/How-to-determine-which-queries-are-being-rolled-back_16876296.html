@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to determine which queries are being rolled back</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to determine which queries are being rolled back
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Howtodeterminewhichqueriesarebeingrolledback-/*&lt;![CDATA[*/div.rbtoc1624409147181{padding:0px;}div.rbtoc1624409147181ul{list-style:disc;margin-left:0px;}div.rbtoc1624409147181li{margin-left:0px;padding-left:0px;}/*]]&gt;*/Overview#Howtodeterminewhichqueriesar"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147181 {padding: 0px;}
+div.rbtoc1624409147181 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147181 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147181'>
+<ul class='toc-indentation'>
+<li><a href='#Howtodeterminewhichqueriesarebeingrolledback-Overview'>Overview</a></li>
+<li><a href='#Howtodeterminewhichqueriesarebeingrolledback-Version'>Version</a></li>
+<li><a href='#Howtodeterminewhichqueriesarebeingrolledback-Howtocheck'>How to check</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtodeterminewhichqueriesarebeingrolledback-MethodthatcanbeusedinALTIBASEHDB5.1.5orhigher'>Method that can be used in ALTIBASE HDB 5.1.5 or higher</a></li>
+<li><a href='#Howtodeterminewhichqueriesarebeingrolledback-MethodchangedstartingfromALTIBASEHDBversion6.1.1.2.0'>Method changed starting from ALTIBASE HDB version 6.1.1.2.0</a></li>
+</ul>
+</li>
+</ul>
+</div></h1><p> </p><h1 id="Howtodeterminewhichqueriesarebeingrolledback-Overview">Overview</h1><hr /><p>When a change transaction is in progress, if the session is forcibly disconnected or the transaction is aborted by a session timeout setting, the transaction is rolled back.</p><p>Here's how to check which queries are being rolled back.</p><p> </p><h1 id="Howtodeterminewhichqueriesarebeingrolledback-Version">Version</h1><hr /><p>Altibase version 5.1.5 or later</p><p> </p><h1 id="Howtodeterminewhichqueriesarebeingrolledback-Howtocheck">How to check</h1><hr /><h2 id="Howtodeterminewhichqueriesarebeingrolledback-MethodthatcanbeusedinALTIBASEHDB5.1.5orhigher">Method that can be used in ALTIBASE HDB 5.1.5 or higher</h2><p>If the values of the CURRENT_UNDO_NEXT_LSN_FILENO column and CURRENT_UNDO_NEXT_LSN_OFFSET column are gradually decreasing in the query execution result below, it appears that the transaction is being rolled back.</p><p>The rollback operation performs an undo operation that cancels the operation performed by the change transaction.</p><p>The column starting with CURRENT_UNDO_NEXT_LSN means the value indicating the next log (logfile) to undo while this undo operation is in progress.</p><p>If the change transaction performed before the rollback was recorded from logfile 1 to logilfe 10, the value of the column starting with CURRENT_UNDO_NEXT_LSN decreases because undo proceeds from logfile 10 when rolling back.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT tx.ID TX_ID,
+       tx.SESSION_ID,
+       tx.STATUS,
+       DECODE(tx.FIRST_UPDATE_TIME, 0, &#39;0&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + tx.FIRST_UPDATE_TIME / (60*60*24), &#39;MM/DD HH:MI:SS&#39;)) FIRST_UPDATE_TIME,
+       st.TOTAL_TIME/1000000 TOTAL,
+       tx.CURRENT_UNDO_NEXT_LSN_FILENO,
+       tx.CURRENT_UNDO_NEXT_LSN_OFFSET,
+       SUBSTR(QUERY, 1, 100) QUERY
+  FROM V$TRANSACTION tx,
+       V$STATEMENT st
+ WHERE tx.ID = st.TX_ID
+   AND tx.SESSION_ID &lt;&gt; SESSION_ID();</pre>
+</div></div><ul><li>The time the query was executed is FIRST_UPDATE_TIME</li><li>Rollback start time is FIRST_UPDATE_TIME + TOTAL</li></ul><p> </p><h2 id="Howtodeterminewhichqueriesarebeingrolledback-MethodchangedstartingfromALTIBASEHDBversion6.1.1.2.0">Method changed starting from ALTIBASE HDB version 6.1.1.2.0</h2><p>From ALTIBASE HDB version 6.1.1.2.0, it is now possible to easily check the statement being rolled back with the status column of v$transaction.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>select query from v$statement where session_id in (select session_id from v$transaction where status=4);</span></p>
+</div></div><p>The status column of v$transaction is a value that indicates the transaction status and can have a value of 0 to 6, and the meaning of the value is as follows.</p><ul><li><p>0: BEGIN: transaction started</p></li><li><p>1: PRECOMMIT: do not use</p></li><li><p>2: COMMIT_IN_MEMORY: don not use</p></li><li><p>3: COMMIT: Transaction is committed</p></li><li><p>4: ABORT: Rolled back and aborted</p></li><li><p>5: BLOCKED: Wait for lock or other transaction</p></li><li><p>6: END: Free status after using all transactions</p></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

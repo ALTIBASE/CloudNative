@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to change the tablespace data file path</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to change the tablespace data file path
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145003 {padding: 0px;}
+div.rbtoc1624409145003 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145003 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145003'>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethetablespacedatafilepath-Overview'>Overview</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-Summaryofchangeprocedure'>Summary of change procedure</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-Detailedprocedure'>Detailed procedure</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethetablespacedatafilepath-1.Checkthecurrentpathofthedatafile1.PathCheck'>1. Check the current path of the data file</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-2.StoptheAltibaseserver'>2. Stop the Altibase server</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-3.Changethedatafiledefaultpath'>3. Change the data file default path</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-4.Copythephysicaldatafilepath'>4. Copy the physical data file path</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-5.StarttheAltibaseserverasacontrolstage'>5. Start the Altibase server as a control stage</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-6.ExecutethedatafilepathchangeDDL'>6. Execute the data file path change DDL</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-7.StarttheAltibaseserverasaservicestage'>7. Start the Altibase server as a service stage</a></li>
+</ul>
+</li>
+<li><a href='#Howtochangethetablespacedatafilepath-Errormessagesthatmayoccurduringtheoperation'>Error messages that may occur during the operation</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethetablespacedatafilepath-Thedatafiledoesnotexist'>The data file does not exist</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-Thedatafile&#39;XXXXXX&#39;hasaninvalidheader'>The data file &#39;XXXXXX&#39; has an invalid header</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-Unabletoinvokethecreate()functionon[XXXXXX/dwfile0.dwf]'>Unable to invoke the create() function on [XXXXXX/dwfile0.dwf]</a></li>
+<li><a href='#Howtochangethetablespacedatafilepath-CANNOTIDENTIFYDATAFILE'>CANNOT IDENTIFY DATAFILE</a></li>
+</ul>
+</li>
+<li><a href='#Howtochangethetablespacedatafilepath-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtochangethetablespacedatafilepath-Overview">Overview</h1><hr /><p>This document describes the procedure for changing the path of data files in disk tablespaces and memory checkpoint image files in memory tablespaces.</p><p>Change the data file path after securing service downtime.</p><h1 id="Howtochangethetablespacedatafilepath-Summaryofchangeprocedure">Summary of change procedure</h1><hr /><ol><li>Check the current path of the data file</li><li>Stop the Altibase server.</li><li>Change the data file path.</li><li>Copy the data file to the new path.</li><li>Start Altibase server as a control stage.</li><li>Execute the data file path change DDL.</li><li>Start the Altibase server as a service stage.</li></ol><h1 id="Howtochangethetablespacedatafilepath-Detailedprocedure">Detailed procedure</h1><hr /><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Howtochangethetablespacedatafilepath-1.Checkthecurrentpathofthedatafile1.PathCheck">1. Check the current path of the data file<span class="confluence-anchor-link" id="Howtochangethetablespacedatafilepath-1.PathCheck"></span></h2><hr /><p>The verification method differs depending on the disk tablespace and the memory tablespace, so they need to be checked separately. Use the query below to check and write down the output result.</p><ul><li><p><strong>Data file path of disk tablespace</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>All the Altibase server versions</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Output the disk tablespace name and data file path and name.
+set linesize 1024
+set colsize 100
+SELECT T.NAME TBS_NAME, D.NAME DATAFILE
+  FROM V$DATAFILES D, V$TABLESPACES T
+ WHERE D.SPACEID = T.ID
+ ORDER BY D.SPACEID, D.ID ;</pre>
+</div></div></li><li><p><strong>Path to checkpoint image file in memory tablespace</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check in Altibase version 5 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- For in-memory tablespaces, only check the tablespace name and path can be checked.
+set linesize 1024
+set colsize 100
+SELECT TBS.NAME TBS_NAME,
+       MEM_PATH.CHECKPOINT_PATH DATAFILE
+  FROM V$TABLESPACES TBS,
+       V$MEM_TABLESPACE_CHECKPOINT_PATHS MEM_PATH
+ WHERE MEM_PATH.SPACE_ID = TBS.ID
+ ORDER BY TBS_NAME, DATAFILE;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check in Altibase version 4</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ grep MEM_DB_DIR $ALTIBASE_HOME/conf/altibase.properties | sort -u</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-2.StoptheAltibaseserver">2. Stop the Altibase server</h2><hr /><ul><li><p>The Altibase server must be stopped as the user needs to physically move the data files.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">  # Altibase server stop command
+$ server stop 
+
+  # How to check the Altibase server process
+$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-3.Changethedatafiledefaultpath">3. Change the data file default path</h2><hr /><ul><li>The data file default path refers to the path where the data file will be located if the user specifies only the data file name without specifying a path when creating a tablespace or adding a data file.</li><li>Do this if the user also needs to change the default path when working with data file path change.</li><li><p>Set in the altibase.properties file, find the MEM_DB_DIR, DEFAULT_DISK_DB_DIR properties, and change the default path.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">  # Property names differ depending on the disk and memory tablespaces.
+  # Find the properties MEM_DB_DIR, DEFAULT_DISK_DB_DIR in the altibase.properties file and change the default path. 
+$ egrep &#39;MEM_DB_DIR|DEFAULT_DISK_DB_DIR&#39; $ALTIBASE_HOME/conf/altibase.properties
+MEM_DB_DIR          = ?/dbs # Memory DB Directory
+DEFAULT_DISK_DB_DIR = ?/dbs # Disk   DB Directory</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-4.Copythephysicaldatafilepath">4. Copy the physical data file path</h2><hr /><ul><li><p>Copy all data files and memory checkpoint image files located in the path identified in &quot;1. Check the current path of the data file&quot; to the path the user wants to change.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>cp 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # 시스템 디스크 테이블스페이스의 데이터 파일은 *.dbf 형식으로 생성되고 
+   # 사용자 디스크 테이블스페이스의 데이터 파일은 테이블스페이스 생성 시 사용자 지정대로 생성됩니다. 
+$ cp -p /home/altibase_home/dbs_old_path/*.dbf /home/altibase_home/dbs_new_path/*.dbf
+
+   # 메모리 체크포인트 이미지 파일 이름 형식은 메모리테이블스페이스이름_#_# 입니다. 
+$ cp -p /home/altibase_home/dbs_old_path/SYS_MEM* /home/altibase_home/dbs_new_path/SYS_MEM*</pre>
+</div></div></li><li><p>파일 수 및 파일 크기를 비교하여 정상적으로 복사되었는지 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # Compare the number of files
+$ ls -l /old_path/* | wc -l
+$ ls -l /new_path/* | wc -l 
+
+   # Compare the size of files
+$ du -sk /old_path/*
+$ du -sk /new_path/*</pre>
+</div></div></li><li><p>Change the original path to another name.</p><p>When starting the Altibase server, avoid the possibility of reading the original file and change the original path to a different name for the backup of the original file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ mv /old_path /old_path_backup</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-5.StarttheAltibaseserverasacontrolstage">5. Start the Altibase server as a control stage</h2><hr /><ul><li><p>After connecting to the iSQL with sysdba privileges</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$is -silent -sysdba
+[ERR-910FB : Connected to idle instance]
+iSQL(sysdba)&gt; STARTUP CONTROL</pre>
+</div></div></li><li><p>Start as a control stage</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; STARTUP CONTROL
+Connecting to the DB server.... Connected.
+TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL
+Command executed successfully.
+iSQL(sysdba)&gt; </pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-6.ExecutethedatafilepathchangeDDL">6. Execute the data file path change DDL</h2><hr /><p>The disk data file and memory checkpoint image file path information are stored in the log anchor file. Execute the DDL statement to change the information known to the log anchor.</p><ul><li><p><strong>How to change the disk data file path</strong></p><p><span style="color: rgb(255,0,0);">The ALTER DATABASE statement is repeated as many times as the number of all data files</span> checked in &quot;1. Check the current path of data files&quot;. The user must enter the same file name by changing only the path.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE RENAME DATAFILE
+&#39;/old_path/system001.dbf&#39;  TO &#39;/new_path/system001.dbf&#39;;
+Alter success.</pre>
+</div></div></li><li><p><strong>Check the disk data file change path</strong></p><p>Make sure the path has been changed correctly.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"># Output the disk tablespace name and data file path and name.
+set linesize 1024
+set colsize 100
+SELECT T.NAME TBS_NAME, D.NAME DATAFILE
+  FROM V$DATAFILES D, V$TABLESPACES T
+ WHERE D.SPACEID = T.ID
+ ORDER BY D.SPACEID, D.ID ;</pre>
+</div></div></li><li><p><strong>Change the memory checkpoint image file path </strong></p><p><span style="color: rgb(255,0,0);"><span>1. <span style="color: rgb(0,0,0);"><span style="color: rgb(255,0,0);">Repeat the ALTER TABLESPACE statement as many as the number of memory tablespaces</span> checked in &quot;Check the current path of the data file&quot;. In this case, only the old and new paths are used without specifying a file name.</span></span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 5 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER TABLESPACE memory_tablespace_name RENAME CHECKPOINT PATH 
+&#39;/old_path&#39; TO &#39;/new_path&#39;;
+
+
+Example)
+iSQL(sysdba)&gt; ALTER TABLESPACE SYS_TBS_MEM_DIC RENAME CHECKPOINT PATH 
+&#39;/home/altibase_home/dbs_old_path&#39; TO &#39;/home1/altibase_home/dbs_new_path&#39;;
+Alter success.
+iSQL(sysdba)&gt; ALTER TABLESPACE USER_MEM_TBS RENAME CHECKPOINT PATH 
+&#39;/home/altibase_home/dbs_old_path&#39; TO &#39;/home1/altibase_home/dbs_new_path&#39;;
+Alter success.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 4 버전</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Altibase 4 버전의 경우 DDL 작업이 필요하지 않습니다. 
+# altibase.properties 파일에서 MEM_DB_DIR 프로퍼티 값을 변경 후 저장합니다. 
+
+$ cd $ALTIBASE_HOME/conf/
+$ vi altibase.properties </pre>
+</div></div></li><li><p><strong>How to check the memory checkpoint image file change path</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check in Altibase 5 or later version</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- For in-memory tablespaces, the tablespace name and path can be checked.
+set linesize 1024
+set colsize 100
+SELECT TBS.NAME TBS_NAME,
+       MEM_PATH.CHECKPOINT_PATH DATAFILE
+  FROM V$TABLESPACES TBS,
+       V$MEM_TABLESPACE_CHECKPOINT_PATHS MEM_PATH
+ WHERE MEM_PATH.SPACE_ID = TBS.ID
+ ORDER BY TBS_NAME, DATAFILE;</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-7.StarttheAltibaseserverasaservicestage">7. Start the Altibase server as a service stage</h2><p> </p><hr />Execute while connected to the iSQL with sysdba privilege.<p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup
+The database server is already up and running.
+TRANSITION TO PHASE : META
+...Omitted...
+--- STARTUP Process SUCCESS ---
+Command executed successfully.
+iSQL(sysdba)&gt; </pre>
+</div></div></div></div></div></div><p> </p><h1 id="Howtochangethetablespacedatafilepath-Errormessagesthatmayoccurduringtheoperation">Error messages that may occur during the operation</h1><hr /><p>These are error messages that may occur while changing the data file path, and this section describes how to prevent these errors.</p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Howtochangethetablespacedatafilepath-Thedatafiledoesnotexist">The data file does not exist</h2><hr /><ul><li><strong>Cause</strong><br />This can happen if the change statement was performed without physically moving the data file.</li></ul><ul><li><strong>Solution</strong><br />After moving the data file to the location where you want to change the data file, execute the rename statement that changes the location of the data file in the DB.</li></ul><h2 id="Howtochangethetablespacedatafilepath-Thedatafile&#39;XXXXXX&#39;hasaninvalidheader">The data file 'XXXXXX' has an invalid header</h2><hr /><ul><li><strong>Cause</strong><br />This can happen if the data file copy phase is not physically performed normally. When starting the database in the service stage, the startup fails.<br /><br /></li><li><strong>Solution</strong><br />Redo the operation of the physical data file</li></ul><h2 id="Howtochangethetablespacedatafilepath-Unabletoinvokethecreate()functionon[XXXXXX/dwfile0.dwf]">Unable to invoke the create() function on [XXXXXX/dwfile0.dwf]</h2><hr /><ul><li><strong>Cause</strong><br /><p>This can happen if the double write file does not exist. The double write file is a file required for restart recovery when the database is abnormally terminated. The default path is $ALTIBASE_HOME/dbs.If all files in the $ALTIBASE_HOME/dbs path are moved, an error may occur. The error message may differ depending on the Altibase server version.</p></li></ul><ul><li><p><strong>Solution</strong><br />dwfile0.dwf and dwfile1.dwf files can be created after creating them with the touch command. </p><p>Or change $ALTIBASE_HOME/conf/altibase.properties to USE_DW_BUFFER = 0 (add it if it doesn't exist) and start the Altibase server. When the Altibase server is started, change it to USE_DW_BUFFER = 1 or delete the USE_DW_BUFFER setting from altibase.properties.<br />After changing the default path of the double write file, the Altibase server can be started.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # Change the value of the DOUBLE_WRITE_DIRECTORY property.
+$ vi $ALTIBASE_HOME/conf/altibase.properties
+DOUBLE_WRITE_DIRECTORY       = ?/dbs
+DOUBLE_WRITE_DIRECTORY       = ?/dbs</pre>
+</div></div></li></ul><h2 id="Howtochangethetablespacedatafilepath-CANNOTIDENTIFYDATAFILE">CANNOT IDENTIFY DATAFILE</h2><hr /><ul><li><p><strong>Cause</strong></p><p>When starting the Altibase server as a service phase, it happens that the physical data file cannot be found in the path of the data file stored in the meta table. This can happen if an incorrect data file path was entered in the control stage.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup
+The database server is already up and running.
+TRANSITION TO PHASE : META
+  [SM-WARNING] CANNOT IDENTIFY DATAFILE
+                                [TBS:USER_DATA, PPID-0-FID-0] Datafile Not Found
+  [SM-WARNING] CANNOT IDENTIFY DATAFILE
+                                [TBS:USER_DATA, PPID-1-FID-0] Datafile Not Found
+[FAILURE] The data file does not exist.
+Startup Failed....
+[ERR-91015 : Communication failure.]
+$</pre>
+</div></div></li><li><p><strong>Solution</strong></p><p>The control stage executes the DDL statement by specifying the correct path.</p></li></ul></div></div></div></div><h1 id="Howtochangethetablespacedatafilepath-Reference">Reference</h1><hr /><ul><li><p><a href="https://aid.altibase.com/display/FAQE/How+to+change+the+path+of+log+anchor%2C+online+log+file%2C+archive+log+file%2C+and+double+write+file" class="external-link" rel="nofollow">How to change the path of log anchor, online log file, archive log file, and double write file</a></p></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

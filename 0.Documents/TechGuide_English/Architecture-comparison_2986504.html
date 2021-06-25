@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Architecture comparison</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="1.-Introduction_2986498.html">1. Introduction</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Architecture comparison
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 19, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1><a name="Architecturecomparison-Overview"></a>Overview</h1>
+
+<p>Depending on point of view, ALTIBASE architecture is similar to ORACLE except two major differences.</p>
+<ul>
+	<li>ALTIBASE does not only support DRDB (Disk Relational DB) but MRDB(Memory Relational DB).</li>
+	<li>ALTIBASE is 1 process, multithreaded architecture while Oracle is multiprocess architecture.</li>
+</ul>
+
+
+<p>We'll discuss about the architecture difference&nbsp;between the two DBMS's.</p>
+
+<h1><a name="Architecturecomparison-Comparingarchitecture&amp;nbsp;withORACLE"></a>Comparing architecture&nbsp;with ORACLE</h1>
+
+
+<h2><a name="Architecturecomparison-ORACLEarchitecture"></a>ORACLE architecture</h2>
+
+<p>Here's&nbsp;summation of ORACLE Database architecture.</p>
+
+
+<map id="gliffy-map-3113777-9841" name="gliffy-map-3113777-9841"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 680px;" usemap="#gliffy-map-3113777-9841" src="attachments/2986504/3113778.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>ORACLE instance&nbsp;does consist&nbsp;of the following constituents.</p>
+<ul>
+	<li>SGA (Shared Global Area)<br/>
+SGA is a shared memory used by ORACLE Processes. SGA consist of data buffer cache, shared pool, redo log buffers and so on. This component corresponds to the Disk Buffer in ALTIBASE HDB.</li>
+	<li>ORACLE Processes<br/>
+ORACLE Processes are for executing queries which user sent, or maintaining ORACLE instance. In constrast to ORACLE, ALTIBASE HDB</li>
+	<li>Files<br/>
+Files are used by ORACLE Proess.</li>
+</ul>
+
+
+<h2><a name="Architecturecomparison-ALTIBASEHDBArchitecture"></a>ALTIBASE HDB Architecture</h2>
+
+<p>Here's briefing of ALTIBASE HDB architecture.</p>
+
+
+<map id="gliffy-map-3113793-816" name="gliffy-map-3113793-816"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 580px;" usemap="#gliffy-map-3113793-816" src="attachments/2986504/3113794.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>ALTIBASE, in contrast to ORACLE, is a single process with multithreads and can handle both in-memory data and disk data using intergrated query processor.</p>
+
+<p>Therefore, ALTIBASE HDB does not require big shared memory segments such as SGA.<br/>
+Memory segements that ALTIBASE HDB use&nbsp;consists of</p>
+<ul>
+	<li>Memory Tablespace<br/>
+Because ALTIBASE supports in-memory database facility, user can create tablespaces in main memory. ALTIBASE HDB supports four types of memory tablespaces.
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Tablespace Type </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYS_TBS_MEM_DIC </p></td>
+<td class="confluenceTd"><p> SYS_TBS_MEM_DIC is a tablespace which stores ALTIBASE HDB meta information in memory. <br class="atl-forced-newline" />
+&nbsp;All meta information are stored in memory. <br class="atl-forced-newline" />
+It is almost same with Library Cache in ORACLE. <br class="atl-forced-newline" />
+Besides ORACLE stores its meta data in disk but ALTIBSE HDB stores its meta data in memory. <br class="atl-forced-newline" />
+This tablespace can not be dropped. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SYS_TBS_MEM_DATA </p></td>
+<td class="confluenceTd"><p> SYS_TBS_MEM_DATA is a default memory tablespace. <br class="atl-forced-newline" />
+You can specify its size when you create database. <br class="atl-forced-newline" />
+This tablespace can not be dropped. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> User Memory Tablespace </p></td>
+<td class="confluenceTd"><p> User memory tablespace is a kind of tablespace which resides in memory. <br class="atl-forced-newline" />
+You can create or drop user memory tablespaces in service time if there is no transaction which access the tablespace. <br class="atl-forced-newline" />
+You can specify its size when tablespace creation time. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Volatile User Memory Tablespace </p></td>
+<td class="confluenceTd"><p> This tablespace does not issue any I/O. <br class="atl-forced-newline" />
+It is useful when you want to store temporary data. <br class="atl-forced-newline" />
+Because there is no transaction logging and no checkpoint issued in volatile tablespace, all data is automatically deleted after restarting ALTIBASE HDB. <br class="atl-forced-newline" />
+(But Object schema, such as table and synonym, are not deleted becuase object schemas are stored in SYS_TBS_MEM_DIC tablespace. </p></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
+
+<ul>
+	<li>SQL PLAN Cache<br/>
+SQL PLAN cache is similar facility like Oracle Library cache in Shared pool.</li>
+	<li>Bufferpool<br/>
+To reduce I/O contentions while accessing disk data, ALTIBASE HDB creates Buffer Pool to cache for read or written data. It is almost same as Buffer Cache in ORACLE.</li>
+</ul>
+
+
+<p>and ALTIBASE HDB has its own threads to execute query that user request or to maintain ALTIBASE HDB properly.</p>
+<ul>
+	<li>ALTIBASE thread list.
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Remarks </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Service Thread </p></td>
+<td class="confluenceTd"><p> Server process </p></td>
+<td class="confluenceTd"><p> Executes query that user sent and returns result. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Dispatcher thread </p></td>
+<td class="confluenceTd"><p> Listener </p></td>
+<td class="confluenceTd"><p> Monitors socket that client attempts to connect to and hands over client session to Service Thread. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Session Manager </p></td>
+<td class="confluenceTd"><p> PMON process </p></td>
+<td class="confluenceTd"><p> Check whether the client session is connected or not. <br class="atl-forced-newline" />
+if disconnected, Session manager cleans up the resources that&nbsp;belong to the disconnected session. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Load Balancing Thread </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> This thread is responsible for well-spread workload. <br class="atl-forced-newline" />
+If one service thread is busy, Load balance thread steals a task from the busy thread and rearranges the task. <br class="atl-forced-newline" />
+If all service threads are busy,&nbsp;it creates a new service thread. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Log flusher thread </p></td>
+<td class="confluenceTd"><p> LGWR process </p></td>
+<td class="confluenceTd"><p> This thread is responsible for log flush. <br class="atl-forced-newline" />
+Service thread writes its transaction log into log buffer (which resides in Kernel or User space). <br class="atl-forced-newline" />
+Log flusher thread flushes its transaction log from buffer to disk to ensure durability. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Flusher Thread </p></td>
+<td class="confluenceTd"><p> DBWR process </p></td>
+<td class="confluenceTd"><p> Any changes in Disk tablespaces are written in Disk Buffer Pool first. <br class="atl-forced-newline" />
+and then Flusher thread writes dirty pages (the changed pages) &nbsp;from Disk Buffer Pool to data file. <br class="atl-forced-newline" />
+It is almost same with DBWR process in ORACLE. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Log file manager thread </p></td>
+<td class="confluenceTd"><p> LGWR process </p></td>
+<td class="confluenceTd"><p> This thread is responsible for preparing and creating log files. <br class="atl-forced-newline" />
+Because of WAL (Write Ahread Logging) protocol, all changes should be logged before changes. <br class="atl-forced-newline" />
+To avoid the contentions between writing and creating log files, this thread creates and prepares logfiles. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Logical Ager thread </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> This thread is responsible for index garbage collection in memory tablespaces. <br class="atl-forced-newline" />
+This thread releases and cleans up unused index memory to be reused. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Delete Thread </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> This thread is responsible for data garbage collection in memory tablespaces. <br class="atl-forced-newline" />
+This thread releases and cleans up unused data memory to be reused. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Checkpoint thread </p></td>
+<td class="confluenceTd"><p> CKPT process </p></td>
+<td class="confluenceTd"><p> It is not same the meaning of ALTIBASE HDB checkpoint with ORACLE checkpoint <br class="atl-forced-newline" />
+because ALTIBASE HDB checkpoint thread is responsible for not only Disk Buffer checkpoint but also memory checkpoint. <br class="atl-forced-newline" />
+Checkpoint thread flushes all dirty pages in memory tablespaces and synchronizes memory checkpoint image to memory tablespace <br class="atl-forced-newline" />
+and then it deletes all unnecessary log files. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Archiving thread </p></td>
+<td class="confluenceTd"><p> ARCH process </p></td>
+<td class="confluenceTd"><p> This thread is responsible for archiving log. <br class="atl-forced-newline" />
+This thread is activated only in archive mode. <br class="atl-forced-newline" />
+Archived log is necessary for online backup and recovery for media failure. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Replication Sender thread </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> This thread is responsible for sending xlog to another ALTIBASE HDB which reside in another machine (or same machine). <br class="atl-forced-newline" />
+This thread reads transaction log and translates logfile to xlog to provide HA(High Availability) feature. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Replication Receiver thread </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> This thread is responsible for receiving xlog which another ALTIBASE HDB Replication Sender sent, and apply the xlog to its DB. </p></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
+
+<ul>
+	<li>Files
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Property file </p></td>
+<td class="confluenceTd"><p> Database configuration file. <br class="atl-forced-newline" />
+This file is read by ALTIBASE server when ALTIBASE HDB starts up. <br class="atl-forced-newline" />
+It is same with ORACLE PFILE (parameter file). &nbsp; <br class="atl-forced-newline" />
+The location of this file is $ALTIBASE_HOME/conf/altibase.properties </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Log anchor file </p></td>
+<td class="confluenceTd"><p> Log anchor file is a small binary file that stores physical information of database&nbsp;including tablespace, data file, SCN (System Change Number) information and so on. <br class="atl-forced-newline" />
+ALTIBASE HDB has three log anchor files as Oracle has three control files&nbsp;because these files are very important. <br class="atl-forced-newline" />
+It is almost same with Control file in ORACLE. <br class="atl-forced-newline" />
+You can dump and analyze this file using dumpla command. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Memory checkpoint image </p></td>
+<td class="confluenceTd"><p> Memory checkpoint image is files in disk, which is identical copies of memory tablespaces in ALTIBASE HDB. <br class="atl-forced-newline" />
+During checkpoint phase, ALTIBASE synchronizes the data of memory tablespace to memory checkpoint image in disk. <br class="atl-forced-newline" />
+A memory tablespace needs two memory checkpoint images because ALTIBASE HDB uses ping-pong checkpoint mechanism to reduce I/O and lock contention. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Datafile </p></td>
+<td class="confluenceTd"><p> This file is for storing disk tablespace data as ORACLE does. <br class="atl-forced-newline" />
+It is exactly same with ORACLE data file. <br class="atl-forced-newline" />
+A tablespace consists of datafiles. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Transaction Log file </p></td>
+<td class="confluenceTd"><p> This file is for storing transaction log to ensure durability of ALTIBASE HDB. &nbsp; <br class="atl-forced-newline" />
+According to WAL (Write Aread Logging), All changing transactions have to record their change logs in Transaction log file before change regardless tablespace type. <br class="atl-forced-newline" />
+(Memory tablespace or Disk tablespace) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Archive log </p></td>
+<td class="confluenceTd"><p> Archive log files is for media-failure recovery. <br class="atl-forced-newline" />
+They are identical to transaction log files but these files are not removed automatically. <br class="atl-forced-newline" />
+DBA (Database Administrator) is responsible for managing archive log files manually according to backup policy. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Password file </p></td>
+<td class="confluenceTd"><p> Password file is for storing the password of SYS user (super user) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Double-write buffer file </p></td>
+<td class="confluenceTd"><p> Double-write buffer file&nbsp;is for saving temporarily saved disk pages. </p></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
+
+<h1><a name="Architecturecomparison-ComparingStoragestructuretoOracle"></a>Comparing Storage structure to Oracle</h1>
+
+<p>ALTIBASE is hybrid database management system. That is, ALTIBASE provides both in-memory database feature and disk database feature.&nbsp;So it would be difficult to compare ALTIBASE HDB to Oracle simply.</p>
+
+<h2><a name="Architecturecomparison-DRDB(DiskResidentDatabase)Structure"></a>DRDB (Disk Resident Database) Structure</h2>
+
+<p>In fact,&nbsp; ALTIBASE DRDB is almost same with Oracle storage structure.</p>
+
+
+<map id="gliffy-map-3114119-6640" name="gliffy-map-3114119-6640"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 650px;" usemap="#gliffy-map-3114119-6640" src="attachments/2986504/3114120.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>Here're explanation about elements of storage structure.</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>ALTIBASE uses the term "page" corresponding to ORACLE term "block".</p>
+
+<p>You don't need to distinguish them because they are almost same.</p>
+
+<p>We'll use "page" instead of "block" even if we cover&nbsp;ORACLE architecture.</p>
+                    </div>
+    </div>
+
+<ul>
+	<li>Page<br/>
+A page the minimum unit of database I/O. ALTIBASE HDB / ORACLE manages its data using page structure.</li>
+</ul>
+
+
+<p>Here're the features&nbsp;which ALTIBASE HDB does not support.</p>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Features </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Changable page/block size </p></td>
+<td class="confluenceTd"><p> The page size of ALTIBASE can not be changed. <br class="atl-forced-newline" />
+It is 8Kbytes in DRDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Compression </p></td>
+<td class="confluenceTd"><p> ALTIBASE does not support page compression. </p></td>
+</tr>
+</tbody></table>
+
+
+<p>Except above features, ALTIBASE data page is almost simllar to ORACLE's including PCTFREE / PCTUSED storage parameter.</p>
+<ul>
+	<li>Extent<br/>
+An extent is a logical unit of database storage space allocation made up of contiguous data pages</li>
+	<li>Segement<br/>
+A segment is a set of extents that contains all the data for a logical storage structure within a tablespace</li>
+	<li>Tablespace<br/>
+A tablespace is a logical storage container for segments.</li>
+</ul>
+
+
+<h2><a name="Architecturecomparison-In-memoryDBstucture"></a>In-memory DB stucture</h2>
+
+<p>Although&nbsp;ORACLE does not support in-memory database feature, it is important to understand ALTIBASE memory db structure</p>
+
+<p>&nbsp;in order to maximize ALTIBASE HDB utilization before migrating from ORACLE.</p>
+
+<p>Here's a structure.</p>
+
+
+<map id="gliffy-map-3114121-2779" name="gliffy-map-3114121-2779"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 550px;" usemap="#gliffy-map-3114121-2779" src="attachments/2986504/3114122.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h3><a name="Architecturecomparison-DictionaryTablespace"></a>Dictionary Tablespace</h3>
+
+<p>All table's meta information is stored in Dictionary Tablespace (SYS_TBS_MEM_DIC),</p>
+
+<p>and table header, in the dictionary tablespace, points the location of first memory page.</p>
+
+<h3><a name="Architecturecomparison-MemoryTablespace"></a>Memory Tablespace</h3>
+
+<ul>
+	<li>Page<br/>
+Page is the smallest unit of I/O. Its size is 32KB.</li>
+	<li>Extent<br/>
+In in-memory db, in constrast to DRDB, it doesn't matter whether pages are allocated physically contigous or not because&nbsp;it costs&nbsp;little&nbsp;for random access in memory. An Extent is just a container of memory pages. Default memory extent size is 256KB,&nbsp;It means&nbsp;a extent has 8 pages. If there is no available extent in the table list, a service thread request a extent to the tablespace.</li>
+	<li>Free Page<br/>
+A list that contains free pages of memory tablespace. If free pages are exhausted, ALTIBASE automatically requests memory chunk from OS it reaches MAXSIZE.</li>
+</ul>
+
+
+<h3><a name="Architecturecomparison-Indexsegement"></a>Index segement</h3>
+
+<p>A container where memory indices resides. A index does consist of only ordered-pointers, which points the record address in page, and it does not contain the column value. Moreover index is not persistent, that means that the memory index in ALTIBASE does not issue any logging when index structure is modified. Because of this feature, ALTIBASE always rebuild its memory indices at startup. Here's a brief comparison between memory index and DRDB index.</p>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Features </p></th>
+<th class="confluenceTh"><p> Memory index </p></th>
+<th class="confluenceTh"><p> DRDB Index </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> components </p></td>
+<td class="confluenceTd"><p> ordered-pointers which point physical memory address </p></td>
+<td class="confluenceTd"><p> column value and row logical address that contains the column </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> persistency </p></td>
+<td class="confluenceTd"><p> volatile </p></td>
+<td class="confluenceTd"><p> persistence </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> logging </p></td>
+<td class="confluenceTd"><p> no logging </p></td>
+<td class="confluenceTd"><p> logging at every changes </p></td>
+</tr>
+</tbody></table>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114203">oracle_architecture</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114204.png">oracle_architecture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113795">altibase_architrcture</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113796.png">altibase_architrcture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653093">altibase_architrcture</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653094.png">altibase_architrcture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653091">StorageStructure</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653092.png">StorageStructure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114123">memory_storage_figure</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114124.png">memory_storage_figure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114125">memory_storage_figure</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114126.png">memory_storage_figure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114127">memory_storage_figure</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114128.png">memory_storage_figure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653089">memory_storage_figure</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653090.png">memory_storage_figure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653085">oracle_architecture</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653086.png">oracle_architecture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653058.png">altibase_architrcture[1].png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113777">oracle_architecture</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113778.png">oracle_architecture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114121">memory_storage_figure</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114122.png">memory_storage_figure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114119">StorageStructure</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3114120.png">StorageStructure.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653095">altibase_architrcture</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/4653096.png">altibase_architrcture.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113793">altibase_architrcture</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986504/3113794.png">altibase_architrcture.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

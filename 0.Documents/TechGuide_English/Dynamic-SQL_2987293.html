@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Dynamic SQL</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Dynamic SQL
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348142 {padding: 0px;}
+div.rbtoc1624409348142 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348142 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348142'>
+<ul class='toc-indentation'>
+<li><a href='#DynamicSQL-DynamicSQL'>Dynamic SQL</a></li>
+<li><a href='#DynamicSQL-Method-1'>Method-1</a></li>
+<li><a href='#DynamicSQL-Method-2'>Method-2</a></li>
+<li><a href='#DynamicSQL-Method-3'>Method-3</a></li>
+<li><a href='#DynamicSQL-Method-4'>Method-4</a></li>
+</ul>
+</div>
+
+<h2 id="DynamicSQL-DynamicSQL">Dynamic SQL</h2>
+
+<p>ALTIBASE HDB supports method-1, 2, 3 except method-4 like oracle.</p>
+
+
+<h2 id="DynamicSQL-Method-1">Method-1</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char query [1024];
+...
+sprintf (query, &quot;INSERT INTO employee values (&#39;andy park&#39;, 40)&quot;);
+EXEC SQL EXECUTE IMMEDIATE :query;
+</pre>
+</div></div>
+<ul>
+	<li>This method can process only DML-statement except SELECT-statment.</li>
+</ul>
+
+
+<h2 id="DynamicSQL-Method-2">Method-2</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char query [1024];
+char ename [40];
+int  age;
+...
+sprintf (query, &quot;INSERT INTO employee values (&#39;andy park&#39;, 40)&quot;);
+EXEC SQL PREPARE stmt1 FROM :query;
+...
+sprintf (ename, &quot;andy park&quot;);
+age = 40;
+EXEC SQL EXECUTE stmt1 USING :ename, :age;
+</pre>
+</div></div>
+<ul>
+	<li>This method can process only DML-statement except SELECT-statment.</li>
+</ul>
+
+
+<h2 id="DynamicSQL-Method-3">Method-3</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char query [1024];
+char ename [40];
+...
+sprintf (query, &quot;SELECT * FROM employee WHERE name = ?&quot;);
+EXEC SQL PREPARE sel_stmt FROM :query;
+...
+EXEC SQL DECLARE cursor1 CURSOR FOR sel_stmt;
+...
+sprintf (ename, &quot;andy park&quot;);
+EXEC SQL OPEN cursor1 USING :ename;
+...
+</pre>
+</div></div>
+<ul>
+	<li>ALTIBASE HDB doesn't support a &quot;Fetch Across Commit&quot;.<br />
+Therefore, If you execute a commit while fetching records, your cursor will be closed.</li>
+</ul>
+
+
+<h2 id="DynamicSQL-Method-4">Method-4</h2>
+
+<p>ALTIBASE HDB doesn't support this type.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

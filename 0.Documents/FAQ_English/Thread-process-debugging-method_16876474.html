@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Thread process debugging method</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="12.-Others_16876472.html">12. Others</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Thread process debugging method
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149012 {padding: 0px;}
+div.rbtoc1624409149012 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149012 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149012'>
+<ul class='toc-indentation'>
+<li><a href='#Threadprocessdebuggingmethod-Overview'>Overview</a></li>
+<li><a href='#Threadprocessdebuggingmethod-Usingpstack'>Using pstack</a>
+<ul class='toc-indentation'>
+<li><a href='#Threadprocessdebuggingmethod-Howtouse'>How to use</a></li>
+<li><a href='#Threadprocessdebuggingmethod-Example'>Example</a></li>
+</ul>
+</li>
+<li><a href='#Threadprocessdebuggingmethod-Usingdbx'>Using dbx</a>
+<ul class='toc-indentation'>
+<li><a href='#Threadprocessdebuggingmethod-Howtouse.1'>How to use</a></li>
+<li><a href='#Threadprocessdebuggingmethod-Example.1'>Example</a></li>
+</ul>
+</li>
+<li><a href='#Threadprocessdebuggingmethod-Usinggdb'>Using gdb</a>
+<ul class='toc-indentation'>
+<li><a href='#Threadprocessdebuggingmethod-Howtouse.2'>How to use</a></li>
+<li><a href='#Threadprocessdebuggingmethod-Example.2'>Example</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Threadprocessdebuggingmethod-Overview">Overview</h1><hr /><p>When a process on Unix over-occupies cpu or falls into a situation such as a process hang, the process debugging utility can be used, provided for each Unix OS, to find the cause by analyzing the currently running call stack.</p><p>Unix process debugging methods are different for each utility and slightly different for each Unix, so the command is often confused. It explains how to view each thread stack, focusing on simple commands.</p><p> </p><h1 id="Threadprocessdebuggingmethod-Usingpstack">Using pstack</h1><hr /><p>As a utility provided by SUN and some other Unix and Linux, it is a very useful command to view the call stack of the running process by thread. When it is DB Hang, use it.</p><h2 id="Threadprocessdebuggingmethod-Howtouse">How to use</h2><hr /><ul><li>Linux<br />shell&gt; <strong>pstack</strong> processid</li><li>Sun<br />shell&gt; <strong>pstack</strong> -F processid</li></ul><h2 id="Threadprocessdebuggingmethod-Example">Example</h2><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[omegaman@as48-x64 ~]$ uname -a
+Linux as48-x64 2.6.9-89.ELsmp #1 SMP Mon Apr 20 10:33:05 EDT 2009 x86_64 x86_64 x86_64 GNU/Linux
+[omegaman@as48-x64 ~]$ 
+[omegaman@as48-x64 ~]$ whereis pstack
+pstack: /usr/bin/pstack /usr/share/man/man1/pstack.1.gz
+[omegaman@as48-x64 ~]$ ps -ef | grep altibase | grep omegaman
+omegaman 16745 16454  0 13:55 pts/2    00:00:00 grep altibase
+omegaman 22978     1  0 Dec04 ?        00:00:07 /home/omegaman/altibase_home/bin/altibase -p boot from admin
+[omegaman@as48-x64 ~]$ pstack 22978      :22978 is  a process id of altibase
+Thread 41 (Thread 1084229984 (LWP 22979)):
+#0  0x00000039070c2f56 in __select_nocancel () from /lib64/tls/libc.so.6
+#1  0x0000000000f40f4b in idvClockThread::run ()
+#2  0x0000000000ef797c in idtBaseThread::staticRunner ()
+#3  0x0000003907706137 in start_thread () from /lib64/tls/libpthread.so.0
+#4  0x00000039070c9f03 in clone () from /lib64/tls/libc.so.6
+Thread 40 (Thread 1094719840 (LWP 22980)): </pre>
+</div></div><p> </p><h1 id="Threadprocessdebuggingmethod-Usingdbx">Using dbx</h1><hr /><p>Provided by AIX, HP, and SUN. You can check the call stack information of the running process through the dbx command, or the stack for each thread can be checked in the core file.</p><p>This section describes the method used on AIX as an example.</p><h2 id="Threadprocessdebuggingmethod-Howtouse.1">How to use</h2><hr /><ol><li><p>Check the process id of the procesd in question.<br /><strong>shell&gt; ps -eafl | grep altibase</strong></p></li><li><p>Attach to process.<br /><strong>shell&gt; dbx -a &lt;pid of altibase process&gt;</strong></p></li><li><p>View all thread information<br /><strong>(dbx) thread</strong></p></li><li><p>View individual thread information only<br /><strong>(dbx) thread current &lt;thread number&gt;</strong><br /><strong>(dbx) where</strong></p></li><li><p>Detach<br /><strong>(dbx) detach</strong></p>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Tthe connected process must be releasedby executing the detach command. Otherwise, if exited, it may end up to the target process, so be careful.</p>
+                    </div>
+    </div>
+</li><li><p>Exit<br /><strong>(dbx) quit</strong></p></li></ol><div><strong><br /></strong></div><h2 id="Threadprocessdebuggingmethod-Example.1">Example</h2><hr /><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ dbx -a 421920<br />Waiting to attach to process 421920 ...<br />Successfully attached to altibase.<br />warning: Directory containing altibase could not be determined.<br />Apply 'use' command to initialize source path.</span></p><p><span>Type 'help' for help.<br />reading symbolic information ...warning: no source compiled with -g</span></p><p> </p><p><span>stopped in _event_sleep at 0x9000000004b6a84 ($t6)<br />0x9000000004b6a84 (_event_sleep+0xe8) e8410028          ld   r2,0x28(r1)<br />(dbx) where<br />_event_sleep(??, ??, ??, ??, ??, ??) at 0x9000000004b6a84<br />_event_wait(??, ??) at 0x9000000004b6f5c<br />_cond_wait_local(??, ??, ??) at 0x9000000004c305c<br />_cond_wait(??, ??, ??) at 0x9000000004c3628<br />pthread_cond_timedwait(??, ??, ??) at 0x9000000004c3e38<br />run()() at 0x100187228<br />staticRunner(void*)() at 0x10007ea70<br />(dbx) list<br />no source file<br />(dbx) detach</span></p>
+</div></div><p> </p><h1 id="Threadprocessdebuggingmethod-Usinggdb">Using gdb</h1><hr /><p>If gdb (GNU debugger) is installed, the stack information for each thread can be checked by using gdb.</p><p> </p><h2 id="Threadprocessdebuggingmethod-Howtouse.2">How to use</h2><hr /><ol><li><p>attach gdb to the target process<br />shell&gt; $gdb $ALTIBASE_HOME/bin/altibase process-id</p></li><li><p>Information output for each thread<br />(gdb) info threads</p></li><li><p>Output stack trace of all threads<br />(gdb) thread apply all bt</p></li><li><p>Switch to a specific thread<br />(gdb) t 1: switch to thread 1</p></li><li><p>Output the current thread's stack<br />(gdb) bt: stack output</p></li><li><p>Quit<br />(gdb) quit</p></li></ol><h2 id="Threadprocessdebuggingmethod-Example.2">Example</h2><hr /><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$gdb $ALTIBASE_HOME/bin/altibase    34567</span><br /><span> gdb&gt; info threads</span><br /><span> 42 Thread 31 (LWP 4) 0x329614 in _poll ()</span><br /><span> 41 Thread 30 0x300cf8 in _lwp_sema_wait ()</span><br /><span> 40 Thread 29 0x300cf8 in _lwp_sema_wait ()</span><br /><span> 39 Thread 28 (LWP 29) 0x329614 in _poll ()</span><br /><span> 38 Thread 27 (LWP 28) 0x329614 in _poll ()</span><br /><span> 37 Thread 26 (LWP 27) 0x329614 in _poll ()</span><br /><span> 36 Thread 25 (LWP 26) 0x329614 in _poll ()</span><br /><span> 5 LWP 28 0x329614 in _poll ()</span><br /><span> 4 LWP 29 0x329614 in _poll ()</span><br /><span> 3 LWP 30 0x300cf8 in _lwp_sema_wait ()</span><br /><span> * 2 Thread 1 (LWP 1) 0x329614 in _poll ()</span><br /><span> 1 LWP 1 0x329614 in _poll ()</span><br /><br />gdb&gt; thread apply all bt; Output stack trace of all threads<br /><span>Thread 2 (Thread 1 (LWP 1)):</span><br /><span>#0 0x329614 in _poll ()</span><br /><span>#1 0x2f2548 in select_large_fdset ()</span><br /><span>#2 0x286908 in __1cKidcManagerGselect6FpnGfd_set_pnOPDL_Time_Value__i_ ()</span><br /><span>#3 0x978d8 in __1cMmmtThreadMgrIDispatch6M_nGIDE_RC__ ()</span><br /><span>#4 0x945f4 in __1cGmmiMgrIMainLoop6F_nGIDE_RC__ ()</span><br /><span>#5 0x929e0 in main ()</span><br /><br /><span>Thread 1 (LWP 1 ):</span><br /><span>#0 0x329614 in _poll ()</span><br /><span>#1 0x2f2548 in select_large_fdset ()</span><br /><span>#2 0x286908 in __1cKidcManagerGselect6FpnGfd_set_pnOPDL_Time_Value__i_ ()</span><br /><span>#3 0x978d8 in __1cMmmtThreadMgrIDispatch6M_nGIDE_RC__ ()</span><br /><span>---Type to continue, or q to quit---</span><br /><span>#4 0x945f4 in __1cGmmiMgrIMainLoop6F_nGIDE_RC__ ()</span><br /><span>#5 0x929e0 in main ()</span><br /><span>#0 0x329614 in _poll ()</span><br /><br /><span> gdb&gt; t 1 ; Switch to thread 1</span><br /><span> gdb&gt; bt ; Output stack</span><br /><span>gdb&gt; quit</span></p>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

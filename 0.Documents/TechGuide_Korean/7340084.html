@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 부록</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340053.html">Altibase iBatis 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 부록
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified by <span class='editor'> Consulting Division</span> on Nov 28, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409836448 {padding: 0px;}
+div.rbtoc1624409836448 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409836448 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409836448'>
+<ul class='toc-indentation'>
+<li><a href='#id-부록-DB테이블및시퀀스생성'>DB 테이블 및 시퀀스 생성</a></li>
+<li><a href='#id-부록-프로젝트생성'>프로젝트 생성</a></li>
+<li><a href='#id-부록-SqlMap파일작성'>SqlMap 파일 작성</a></li>
+<li><a href='#id-부록-SqlMapConfig파일작성'>SqlMapConfig 파일 작성</a></li>
+<li><a href='#id-부록-Application작성'>Application 작성</a></li>
+<li><a href='#id-부록-관련JAR파일추가'>관련 JAR 파일 추가</a></li>
+<li><a href='#id-부록-Application실행'>Application 실행</a></li>
+</ul>
+</div>
+<hr />
+<p>sampleConnection 예제를 바탕으로 iBATIS에서 ALTIBASE와 연동하는 방법에 대해 좀 더 자세하게 설명한다.</p>
+
+<p>단, IDE는 Eclipse를 사용한다.</p>
+
+<h2 id="id-부록-DB테이블및시퀀스생성">DB 테이블 및 시퀀스 생성</h2>
+<p>DB에 다음의 테이블과 시퀀스를 생성한다. (create_tbl.sql 파일 참고)</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE TABLE PERSON(
+	PER_ID NUMBER (5, 0) NOT NULL,
+	PER_NAME VARCHAR (40) NOT NULL,
+	PER_BIRTH_DATE DATE,
+	PER_WEIGHT_KG NUMBER (4, 2) NOT NULL,
+	PER_HEIGHT_M NUMBER (4, 2) NOT NULL,
+	PRIMARY KEY (PER_ID)
+);
+
+CREATE SEQUENCE PERSON_SEQ;
+</pre>
+</div></div>
+
+
+<h2 id="id-부록-프로젝트생성">프로젝트 생성</h2>
+<p>Eclipse에서 SimpleConnection 이라는 프로젝트를 생성한다.<br />
+1. 메뉴 – File – Java Project 클릭<br />
+2. Project name : 에 SimpleConnection 입력<br />
+3. Finish 버튼을 클릭</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766111.png" data-image-src="attachments/7340084/7766111.png"></p>
+
+<h2 id="id-부록-SqlMap파일작성">SqlMap 파일 작성</h2>
+
+<p>Person 테이블의 CRUD SQL 구문과 mapping되는 메소드들을 정의한 SqlMap 파일을 작성한다.(Person.xml)<br />
+1. SimpleConnection 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다.<br />
+2. File name: 에 Person.xml을 작성한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766112.png" data-image-src="attachments/7340084/7766112.png"></p>
+
+
+<p>다음의 내용을 Person.xml 파일에 작성한다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMap PUBLIC &quot;-//iBATIS.com//DTD SQL Map 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-mapconfig-2.dtd&quot;&gt;
+
+&lt;sqlMap namespace=&quot;Person&quot;&gt;
+    &lt;resultMap id=&quot;PersonResult&quot; class=&quot;examples.domain.Person&quot;&gt;
+	    &lt;result property=&quot;id&quot; column=&quot;per_id&quot; /&gt;
+	    &lt;result property=&quot;name&quot; column=&quot;per_name&quot; /&gt;
+	    &lt;result property=&quot;birthDate&quot; column=&quot;per_birth_date&quot; /&gt;
+	    &lt;result property=&quot;weightInKilograms&quot; column=&quot;per_weight_kg&quot; /&gt;
+	    &lt;result property=&quot;heightInMeters&quot; column=&quot;per_height_m&quot; /&gt;
+&lt;/resultMap&gt;
+
+&lt;select id=&quot;getPerson&quot; parameterClass=&quot;int&quot; resultClass=&quot;examples.domain.Person&quot;&gt;
+		&lt;![CDATA[
+			SELECT
+			PER_ID as id,
+			PER_NAME as name,
+			PER_BIRTH_DATE as birthDate,
+			PER_WEIGHT_KG as weightInKilograms,
+			PER_HEIGHT_M as heightInMeters
+			FROM PERSON
+			WHERE PER_ID = #value#
+		]]&gt;
+&lt;/select&gt;
+
+&lt;insert id=&quot;insertPerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+		&lt;![CDATA[
+			INSERT INTO
+			PERSON (PER_ID, PER_NAME, PER_BIRTH_DATE,
+PER_WEIGHT_KG, PER_HEIGHT_M)
+			VALUES (#id#, #name#, #birthDate#,
+#weightInKilograms#, #heightInMeters#)
+		]]&gt;
+&lt;/insert&gt;
+
+&lt;update id=&quot;updatePerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+		&lt;![CDATA[
+			UPDATE PERSON
+			SET PER_NAME = #name#,
+			PER_BIRTH_DATE = #birthDate#,
+			PER_WEIGHT_KG = #weightInKilograms#,
+			PER_HEIGHT_M = #heightInMeters#
+			WHERE PER_ID = #id#
+		]]&gt;
+&lt;/update&gt;
+
+&lt;delete id=&quot;deletePerson&quot; parameterClass=&quot;int&quot;&gt;
+		&lt;![CDATA[
+			DELETE PERSON
+			WHERE PER_ID = #id#
+		]]&gt;
+&lt;/delete&gt;
+
+&lt;select id=&quot;getAllPersons&quot;  resultMap=&quot;PersonResult&quot;&gt;
+		&lt;![CDATA[
+			SELECT * FROM person
+		]]&gt;
+&lt;/select&gt;
+&lt;/sqlMap&gt;
+</pre>
+</div></div>
+
+<p>Application에서 SqlMapClient의 insert, update, delete, queryForXXX()메소드를 호출할 때 위의 파일에 정의되어 있는 &lt;insert&gt;, &lt;update&gt;, &lt;delete&gt;, &lt;select&gt; 태그에 정의되어 있는 id와 일치하는 SQL 문들이 자동으로 수행이 된다.</p>
+
+<h2 id="id-부록-SqlMapConfig파일작성">SqlMapConfig 파일 작성</h2>
+
+<p>1. ALTIBASE 연결을 위한 property들을 정의한 properties 파일(db.properties)을 작성한다. ( SimpleConnection 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다. File name: 에 db.properties을 작성한다.)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.1.35:21129/mydb
+username=sys
+password=manager
+</pre>
+</div></div>
+
+<p>2. SqlMapConfig 파일(SqlMapConfigExample.xml)에 ALTIBASE와 연동을 위한 dataSource와 SqlMap 파일을 설정한다. ( SimpleConnection 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다. File name: 에 SqlMapConfigExample.xml을 작성한다.)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMapConfig PUBLIC &quot;-//iBATIS.com//DTD SQL Map Config 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-map-config-2.dtd&quot;&gt;
+
+&lt;sqlMapConfig&gt;
+
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+	&lt;dataSource type=&quot;SIMPLE&quot;&gt;
+	   &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+	   &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+	   &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+	   &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+	&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+
+&lt;/sqlMapConfig&gt;
+</pre>
+</div></div>
+
+
+<h2 id="id-부록-Application작성">Application 작성</h2>
+
+<p>1. person 테이블에 대한 DO객체인 Person 클래스(Person.java)를 작성한다.<br />
+1-1. SimpleConnection 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.<br />
+1-2. Package: 에 examples.domain를 입력하고 Name: 에 Person를 입력한다</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766113.png" data-image-src="attachments/7340084/7766113.png"></p>
+
+<p>다음의 내용을 Person.java 파일에 작성한다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package examples.domain;
+import java.sql.*;
+public class Person {
+	private int id;
+	private String name;
+	private Date birthDate;
+	private double weightInKilograms;
+	private double heightInMeters;
+	public int getId () {
+		return id;
+	}
+	public void setId (int id) {
+		this.id = id;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+	public Date getBirthDate() {
+		return birthDate;
+	}
+	public void setWeightInKilograms(double weightInKilograms) {
+		this.weightInKilograms = weightInKilograms;
+	}
+	public double getWeightInKilograms() {
+		return weightInKilograms;
+	}
+	public void setHeightInMeters(double heightInMeters) {
+		this.heightInMeters = heightInMeters;
+	}
+	public double getHeightInMeters() {
+		return heightInMeters;
+	}
+	public String toString(){
+		        return &quot;id=&quot;+id+&quot;, name=&quot;+name+&quot;, birthData=&quot;+birthDate+&quot;,
+weightInKillograms=&quot;+weightInKilograms+
+&quot;,heightInMeters=&quot;+heightInMeters;
+	}
+}
+</pre>
+</div></div>
+
+<p>2.	DB에 CRUD를 실행하는 main 프로그램(PersonApp.java)을 작성한다.<br />
+2-1.	SimpleConnection 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.<br />
+2-2.	Name: 에 PersonApp를 입력한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766114.png" data-image-src="attachments/7340084/7766114.png"></p>
+
+<p>다음의 내용을 PersonApp.java 파일에 작성한다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.SQLException;
+import java.util.List;
+import examples.domain.Person;
+import com.ibatis.common.resources.Resources;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+
+public class PersonApp {
+
+public static void main(String[] args) throws Exception {
+	String resource =&quot;SqlMapConfigExample.xml&quot;;
+	Reader reader = Resources.getResourceAsReader(resource);
+	SqlMapClient sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+
+	//insert Person
+	Person newPerson1 = new Person();
+	newPerson1.setName(&quot;KIM&quot;);
+	newPerson1.setBirthDate (new java.sql.Date(1978,1-1,1));
+	newPerson1.setHeightInMeters(1.82);
+	newPerson1.setWeightInKilograms(80.23);
+	sqlMap.insert (&quot;insertPerson&quot;, newPerson1);
+
+	Person newPerson2 = new Person();
+	newPerson2.setName(&quot;LEE&quot;);
+	newPerson2.setBirthDate (new java.sql.Date(1975,5-1,5));
+	newPerson2.setHeightInMeters(1.57);
+	newPerson2.setWeightInKilograms(45.23);
+	sqlMap.insert (&quot;insertPerson&quot;, newPerson2);
+	System.out.println();
+	System.out.println(&quot;insert Person&quot;);
+
+	List&lt;Person&gt; list = (List&lt;Person&gt;)sqlMap.queryForList(&quot;getAllPersons&quot;);
+	System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+	for(int i=0; i&lt; list.size();i++){
+		System.out.println(list.get(i));
+	}
+
+	//update Person
+	newPerson1.setHeightInMeters(1.93);
+	newPerson1.setWeightInKilograms(86.36);
+	sqlMap.update(&quot;updatePerson&quot;, newPerson1);
+	System.out.println();
+	System.out.println(&quot;update Person&quot;);
+	list = sqlMap.queryForList(&quot;getAllPersons&quot;);
+	System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+	for(int i=0; i&lt; list.size();i++){
+		System.out.println(list.get(i).toString());
+	}
+	System.out.println();
+	System.out.println(&quot;get Person&quot;);
+
+	//get Person
+	Integer personPk = new Integer(1);
+	Person person = (Person) sqlMap.queryForObject (&quot;getPerson&quot;, personPk);
+	System.out.println(person);
+
+	//delete Person
+	sqlMap.delete (&quot;deletePerson&quot;, new Integer(1));
+	sqlMap.delete (&quot;deletePerson&quot;, new Integer(2));
+	System.out.println();
+	System.out.println(&quot;delete Person&quot;);
+	list = sqlMap.queryForList(&quot;getAllPersons&quot;);
+	System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+	for(int i=0; i&lt; list.size();i++){
+		System.out.println(list.get(i));
+	}
+
+}
+}
+</pre>
+</div></div>
+
+<h2 id="id-부록-관련JAR파일추가">관련 JAR 파일 추가</h2>
+
+<p>Altibase.jar와 ibatis-2.3.4.x.jar 파일을 추가한다.<br />
+SimpleConnection 프로젝트에서 마우스 오른쪽 버튼 클릭하여 Properties를 클릭 – Java Build Path – Libraries 에서 Add External JARS를 클릭하여 Altibase.jar와 ibatis-2.3.4.x.jar 파일을 추가한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766115.png" data-image-src="attachments/7340084/7766115.png"></p>
+
+
+<h2 id="id-부록-Application실행">Application 실행</h2>
+
+<p>SimpleConnection 프로젝트를 실행한다.</p>
+
+<p>SimpleConnection 프로젝트를 클릭한 후 메뉴에서 Run을 실행하거나 Run 실행 단추를 클릭한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340084/7766116.png" data-image-src="attachments/7340084/7766116.png"></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766111.png">additional_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766112.png">additional_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766113.png">additional_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766114.png">additional_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766115.png">additional_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340084/7766116.png">additional_6.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. How to use APRE</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Precompiler-Guide_14647438.html">Altibase Precompiler Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. How to use APRE
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409362168 {padding: 0px;}
+div.rbtoc1624409362168 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409362168 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409362168'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-HowtouseAPRE*C/C++'>How to use APRE*C/C++</a></li>
+<li><a href='#id-2.HowtouseAPRE-BasicMakefile'>Basic Makefile</a></li>
+<li><a href='#id-2.HowtouseAPRE-HostVariables'>Host Variables</a></li>
+<li><a href='#id-2.HowtouseAPRE-SqlcaStructure'>Sqlca Structure</a></li>
+<li><a href='#id-2.HowtouseAPRE-Connect/Disconnect'>Connect/Disconnect </a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-Connectiontype'>Connection type</a></li>
+<li><a href='#id-2.HowtouseAPRE-ConnectionName'>Connection Name</a></li>
+<li><a href='#id-2.HowtouseAPRE-Connectionclose'>Connection close</a></li>
+</ul>
+</li>
+<li><a href='#id-2.HowtouseAPRE-Commit/Rollback'>Commit/Rollback </a></li>
+<li><a href='#id-2.HowtouseAPRE-ExampleofexecutingDML'>Example of executing DML</a></li>
+<li><a href='#id-2.HowtouseAPRE-Cursor'>Cursor</a></li>
+<li><a href='#id-2.HowtouseAPRE-FAC(FetchAcrossCommit)Error'>FAC(Fetch Across Commit) Error </a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-Exampleofcodewhichtheerroroccurs'>Example of code which the error occurs</a></li>
+<li><a href='#id-2.HowtouseAPRE-FACErrorMessage'>FAC Error Message</a></li>
+<li><a href='#id-2.HowtouseAPRE-ExampleofperformingFACbycreatingaseparateconnection'>Example of performing FAC by creating a separate connection</a></li>
+<li><a href='#id-2.HowtouseAPRE-Use&quot;WITHHOLD&quot;statementwhendeclaringcursor'>Use &quot;WITH HOLD&quot; statement when declaring cursor</a></li>
+</ul>
+</li>
+<li><a href='#id-2.HowtouseAPRE-DynamicSQL'>Dynamic SQL </a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-Exampleofquerytransaction'>Example of query transaction</a></li>
+</ul>
+</li>
+<li><a href='#id-2.HowtouseAPRE-CallFunction'>Call Function</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-ExampleofcallingDBMSbuilt-infunction'>Example of calling DBMS built-in function</a></li>
+<li><a href='#id-2.HowtouseAPRE-Exampleofcallinguserfunction'>Example of calling user function</a></li>
+</ul>
+</li>
+<li><a href='#id-2.HowtouseAPRE-CallProcedure'>Call Procedure</a></li>
+<li><a href='#id-2.HowtouseAPRE-WHENEVERStatement'>WHENEVER Statement</a></li>
+<li><a href='#id-2.HowtouseAPRE-SessionFailoverfunctionandCheckingcurrentconnection'>Session Failover function and Checking current connection</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.HowtouseAPRE-ExampleofSessionFailoverbyUserCode'>Example of Session Failover by User Code</a></li>
+<li><a href='#id-2.HowtouseAPRE-ExampleofusingAltibaseFailOverfunction'>Example of using Altibase FailOver function</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>In this chapter, detailed explanations are given with the source of development examples. When converting other DBMS, convert it by referring to this document.</p><h1 class="0cm" id="id-2.HowtouseAPRE-HowtouseAPRE*C/C++">How to use APRE*C/C++</h1><p>Altibase Precompiler is called APRE*C/C++ and the executable file is &quot;apre&quot;. The user should develop the source with &quot;.sc&quot; as the extension. The following is how to use it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">apre -mt -t cpp connect1.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler.
+     Release Version 6.3.1.5.6
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Shell&gt; ls connect1.cpp</pre>
+</div></div><p>When compiled normally, a file called sample.cpp is created in the corresponding directory, and the prompt returns without any error. For detailed options related to apre, refer to &quot;Altibase APRE(SEC)C makefile&quot;.</p><p>If  C++ needs a &quot;*.c&quot; file as a C compiler, precompile it with &quot;-t c&quot; instead of &quot;-t cpp&quot;.</p><h1 id="id-2.HowtouseAPRE-BasicMakefile">Basic Makefile</h1><p>The basic header file and library for Altibase development are located below.</p><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"> </th><th class="confluenceTh"><div class="tablesorter-header-inner">Location</div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Header file</p></td><td class="confluenceTd"><p>$ALTIBASE_HOME/include</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>Library</p></td><td colspan="1" class="confluenceTd"><p>$ALTIBASE_HOME/lib</p></td></tr></tbody></table></div><p>The part to be added in the library is &quot;<strong>-lapre –lodbccli&quot;. </strong>With this reference, a simple Makefile that compiles connect1.sc can be written as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">%.cpp : %.sc
+        apre -unsafe_null -t cpp $&lt;
+connect1: connect1.cpp
+        g++ -Wl,-relax -L. -O3 -L${ALTIBASE_HOME}/lib -I${ALTIBASE_HOME}/include -o connect1 connect1.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt</pre>
+</div></div><p>In addition to the ALTIBASE library, a system library is required for compilation. For a list of system libraries required for each platform and an example of a makefile, use the list defined in the &quot;LIBS&quot; tag in the $ALTIBASE_HOME/install/<a href="http://altibase_env.mk" class="external-link" rel="nofollow">altibase_env.mk</a> file.</p><p>One more point to consider is that if the user uses a C compiler other than a C++ compiler, the ALTIBASE library is provided in C++, so the C++ system library must be linked for compatibility. For details, refer to the &quot;Altibase APRE(SES)C makefile&quot;.</p><h1 id="id-2.HowtouseAPRE-HostVariables">Host Variables</h1><p>When coding using SQL statements on the source, all variables used to control I/O for data to the DBMS are referred to as host variables. Prior to ALTIBASE version 5.3.3, all host variables could be used only those declared in the “EXEC SQL BEGIN DECLARE SECTION” and “EXEC SQL END DECLARE SECTION” clauses.</p><p>However, starting from version 5.3.3 or later, it is possible to recognize general variables as host variables through the apre option. (<strong>apre -parse full</strong> option)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Ex) char H_TODAY [20];
+ 
+EXEC SQL SELECT TO_CHAR(SYSDATE, ‘yyyy-mm-dd’) INTO :H_TODAY  FROM DUAL;</pre>
+</div></div><p>In the process of development, there may be a case where it is necessary to write a host variable in the Target clause of the SELECT statement. From ALTIBASE version 5, it is supported in the following form with an operator called CAST.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+  char  H_var1 [10];
+  char  H_var2 [10];
+  int   H_INT;
+  int   H_Out;
+EXEC SQL END DECLARE SECTION;
+ 
+EXEC SQL SELECT CAST (:H_var1 AS CHAR(10)) INTO :H_Var2 FROM DUAL;
+ 
+……
+ 
+EXEC SQL SELECT CAST (:H_INT AS INTEGER) + Column1 INTO :H_Out FROM T1;</pre>
+</div></div><h1 id="id-2.HowtouseAPRE-SqlcaStructure">Sqlca Structure</h1><p>ALTIBASE returns an error with the sqlca structure. The user can check the error code and error message with the following.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>Structure</strong></p></th><th colspan="2" class="confluenceTh"><p>Description</p></th></tr><tr><td rowspan="4" class="confluenceTd"><p>sqlca.sqlcode</p></td><td class="confluenceTd"><p>SQL_ERROR (-1)</p></td><td class="confluenceTd"><p>When an error occurs</p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS (0)</p></td><td class="confluenceTd">When processed normally<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS_WITH_INFO (1)</p></td><td class="confluenceTd">When it has been processed but the user confirmation is required<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_NO_DATA</p></td><td class="confluenceTd"><p>When there is no target data</p></td></tr><tr><td class="confluenceTd"><p>sqlca.sqlerrm.sqlerrmc</p></td><td colspan="2" class="confluenceTd">Contain an error message<p> </p></td></tr><tr><td class="confluenceTd"><p>sqlca.sqlerrd[2]</p></td><td colspan="2" class="confluenceTd"><p>In the case of modified DML, it has the number of processed records, and in the case of the select statement, when the host variable is an array, it only has the number of arrays (not cumulative) of variables containing the currently fetched records.</p></td></tr><tr><td class="confluenceTd"><p>SQLCODE</p></td><td colspan="2" class="confluenceTd">Contain error codes defined in ALTIBASE<p> </p></td></tr><tr><td class="confluenceTd"><p>SQLSTATE</p></td><td colspan="2" class="confluenceTd"><p>Contain CLI standard error codes (ex) 08S01</p></td></tr></tbody></table></div><p>Since the above code values are already defined in the source in the precompile stage, the developer does not need to redefine or include it in the header.</p><h1 id="id-2.HowtouseAPRE-Connect/Disconnect">Connect/Disconnect </h1><p>ALTIBASE does not have the same configuration as a separate listener and is implemented in a form that directly connects to the thread inside the DBMS. Therefore, the connection is made by directly entering the IP and PORT number of the server to be connected. The following is a basic example code for connecting to ALTIBASE.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">  // Start of host variable declaration
+  EXEC SQL BEGIN  DECLARE SECTION;      
+  char   usr[20];
+  char   pwd[20];
+  char   opt[200];
+  // End of host variable delcaration
+  EXEC SQL END  DECLARE SECTION;        
+ 
+    
+  main()
+  {
+  // Unique ID of DB user account
+  sprintf (usr, “sys”);  
+ 
+  // Password of DB user account
+  sprintf (pwd, “manager”);                
+   
+  // Server IP and conenction port
+  sprintf (opt, “DSN=127.0.0.1; PORT_NO=20300;CONNTYPE=1”);
+ 
+  // Connection trial
+  EXEC SQL CONNECT :usr IDENTIFIED BY  :pwd USING :opt;
+  if (sqlca.sqlcode != 0)
+  {
+          Printf(“ConnectError:: %d %s\n”, SQLCODE,  sqlca.sqlerrm.sqlerrmc);
+  }
+ 
+}</pre>
+</div></div><p> </p><div><h2 id="id-2.HowtouseAPRE-Connectiontype"><strong>Connection type</strong></h2><div><strong><br /></strong>The type of connection method is the setting value of the CONNTYPE property, and one of three types can be selected: TCP/IP, unix domain, and IPC.</div><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>CONNTYPE</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>CONNTYPE=1</p></td><td class="confluenceTd"><p>Communication between the program and DBMS is performed in the TCP/IP method</p></td></tr><tr><td class="confluenceTd"><p>CONNTYPE=2</p></td><td class="confluenceTd"><p>Communication between the program and DBMS is performed in the unix domain method</p></td></tr><tr><td class="confluenceTd"><p>CONNTYPE=3</p></td><td class="confluenceTd"><p>Communication between the program and DBMS is performed in the IPC method</p></td></tr></tbody></table></div><p>CONNTYPE=2, 3 methods can be used only if the program is located in the same equipment as the DBMS server. Since both methods do not incur communication costs up to the hardware level, it is recommended if achieving faster performance than TCP/IP is required. When selecting the IPC connection method, the IPC_CHANNEL_COUNT in the ALTIBASE_HOME/conf/altibase.properties file must be adjusted to a value of 1 or larger. This setting can be used only by restarting the DB, and kernel settings related to IPC must be sufficiently adjusted in advance.</p><h2 id="id-2.HowtouseAPRE-ConnectionName"><strong>Connection Name</strong></h2><div><strong><br /></strong>It is possible to give an explicit name at the time of connection, but it is performed as follows.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL AT CONN1 CONNECT ~~
+ 
+EXEC SQL AT :ConnName CONNECT ~~</pre>
+</div></div><div>It can be processed by saving it as an explicit name or host variable.</div><h2 id="id-2.HowtouseAPRE-Connectionclose"><strong>Connection close</strong></h2><div>The method of disconnecting the connection is as follows. If abnormal connection termination occurs, be sure to perform &quot;EXEC SQL FREE&quot; before attempting to reconnect.</div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL DISCONNECT;
+ 
+EXEC SQL AT CONN1 DISCONNECT;
+ 
+EXEC SQL AT :ConnName DISCONNECT;</pre>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Please note that ALTIBASE DISCONNECT is operated in NonAuto-Commit mode, but it should be noted that the changed transaction normally processed immediately before DISCONNECT by the user is committed. (If the user does not want to reflect it, the user must explicitly perform rollback and then disconnect.)</p>
+                    </div>
+    </div>
+<p> </p></div></div></div><h1 id="id-2.HowtouseAPRE-Commit/Rollback"><strong>Commit/Rollback </strong></h1><div>Commit/Rollback can be executed as follows.</div></div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL COMMIT;
+ 
+EXEC SQL ROLLBACK;
+ 
+EXEC SQL AT CONN1 COMMIT;
+ 
+EXEC SQL AT :ConnName COMMIT;</pre>
+</div></div><h1 id="id-2.HowtouseAPRE-ExampleofexecutingDML"><strong>Example of executing DML</strong></h1><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+ char    H_today [20 + 1];
+EXEC SQL END DECLARE SECTION;
+ 
+main()
+{
+// DB connection (Refer to the example above.)
+ 
+   …
+ 
+ 
+  memset (H_today,  0x00, sizeof(H_today));
+ 
+// Read Today&#39;s date from DB.
+EXEC SQL SELECT TO_CHAR  (sysdate, ‘yyyy-mm-dd’) INTO :H_today FROM Dual;
+ 
+ 
+// Create table.
+EXEC SQL CREATE TABLE TEST ( C1 CHAR(20));
+ 
+// Insert the read data into the test table.
+EXEC SQL INSERT INTO TEST (C1) VALUES (:H_today);
+ 
+EXEC SQL INSERT INTO TEST VALUES (:H_today);
+// Delete a date from the table.
+ 
+EXEC SQL DELETE FROM T1 WHERE C1 like ‘2010%’;
+ 
+EXEC SQL DELETE T1 WHERE C1 = ‘2010’;
+ 
+ 
+}</pre>
+</div></div><p>In the case of ALTIBASE, the INTO clause of the SELECT clause cannot be omitted. For other transactional DML, the user can use SQL as it is.</p><h1 id="id-2.HowtouseAPRE-Cursor"><strong>Cursor</strong></h1><p>A cursor is generally used as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+int  H_Condition;
+int O_C1;
+int O_C2;
+EXEC SQL END DECLARE SECTION;
+ 
+main()
+{
+    // DB Connection
+ 
+    // Delcare Cursor
+   EXEC SQL DECLARE CURSOR1 CURSOR FOR   SELECT C1, C2 FROM TEST1  WHERE C1 &gt;= :H_Condition;
+ 
+   // Open Cursor
+   EXEC SQL OPEN CURSOR1;
+ 
+   While (1)
+   {
+       // Read Cursor result
+       EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+       if (sqlca.sqlcode == SQL_NO_DATA)
+          break;
+       else if (sqlca.sqlcode != SQL_SUCCESS)
+       {
+           printf(“FetchError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+           break;
+       }
+   }
+   // Close cursor
+   EXEC SQL CLOSE CURSOR1;
+}</pre>
+</div></div><h1 id="id-2.HowtouseAPRE-FAC(FetchAcrossCommit)Error"><span style="color: rgb(255,0,0);"><strong>FAC(Fetch Across Commit) Error</strong></span> </h1><div><p><span style="color: rgb(255,0,0);">In a non-autocommit environment, it is not recommending to fetch the cursor by record unit after opening the cursor and commit/rollback during fetching in the ANSI standard. Altibase complies with ANSI standards, and errors occur in FAC by default. However, starting from Altibase version 6.3.1 or later, the FAC function is supported with the option of opening the cursor.</span></p><h2 id="id-2.HowtouseAPRE-Exampleofcodewhichtheerroroccurs"><span style="color: rgb(255,0,0);"><strong>Example of code which the error occurs</strong></span></h2><p><span style="color: rgb(255,0,0);"> </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">while (1)
+{
+    EXEC SQL FETCH CURSOR1 INTO :O_C1,   :O_C2;
+    if (sqlca.sqlcode != 0)
+    {
+        printf(“FetchError::%d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        break;
+    }
+ 
+ 
+    EXEC SQL UPDATE SET CHANGE_V = :O_C2 WHERE C1 = :O_C1;
+    if (sqlca.sqlcode != SQL_SUCCESS)
+       EXEC SQL ROLLBACK;
+    else
+       EXEC SQL COMMIT;
+}</pre>
+</div></div><p>In the above code, an error check is performed at the point after the fetch, and the following errors may occur during the execution. (Based on ALTIBASE version 5.3)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">shell&gt;./SampleTest
+FetchError: 100, Not found data</pre>
+</div></div><p>At this point, there are more actual records, but this error occurs because cursor1 that was previously opened at the time of committing has been internally terminated and there are no more result sets to fetch. (This error may be somewhat ambiguous to judge because it is the same as when there is no actual data, but this situation can be considered if such an error occurs below the expected number.)</p><p>Therefore, when a separate change transaction needs to be created in the process of fetching using a cursor, the session must be executed in auto-commit, or a separate connection object must be created and processed with the session.</p><h2 id="id-2.HowtouseAPRE-FACErrorMessage"><strong>FAC Error Message</strong></h2><p>Depending on the version of Altibase, the FAC error message is displayed slightly differently.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">Version</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Error Code</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Error Message</div></th><th colspan="1" class="confluenceTh"><div class="tablesorter-header-inner">Reference</div></th></tr></thead><tbody><tr><td class="confluenceTd"> Altibase 4.3.9</td><td class="confluenceTd">ERR-4103C</td><td class="confluenceTd"> Request of fetching data to an unprepared SQL statement.</td><td colspan="1" class="confluenceTd"><a class="external-link" href="http://aid.altibase.com/x/6YKZ" rel="nofollow">http://aid.altibase.com/x/6YKZ</a></td></tr><tr><td class="confluenceTd">Altibase 5.3.3 ~ 6.1.1 </td><td class="confluenceTd">100 </td><td class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">Altibase 6.3.1 or later</td><td class="confluenceTd">ERR-410D2 </td><td class="confluenceTd"> Request of fetching data to an unprepared SQL statement.</td><td colspan="1" class="confluenceTd"><a class="external-link" href="http://aid.altibase.com/x/9oKZ" rel="nofollow">http://aid.altibase.com/x/9oKZ</a></td></tr></tbody></table></div><h2 id="id-2.HowtouseAPRE-ExampleofperformingFACbycreatingaseparateconnection"><strong>Example of performing FAC by creating a separate connection</strong></h2><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">main()
+{
+    // DB Connection
+ 
+    // Create conneciton for separate change transaction
+    EXEC SQL AT CONN1 CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+ 
+    // Omit cursor mode
+    while (1)
+    {
+        EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+        // Specify the connection name created above at the time of change.
+        EXEC SQL AT CONN1 UPDATE t1 set change_v = :O_C2 where C1 = :O_C1;
+   
+       // In commit / rollback, specify the connection name created above.
+       If (sqlca.sqlcode != SQL_SUCCESS)
+           EXEC SQL AT CONN1 ROLLBACK;
+        Else
+           EXEC SQL AT CONN1 COMMIT;
+    }
+}</pre>
+</div></div><p><strong><br /></strong></p><p>In the case of using a separate connection, the user must consider that the entire execution flow must be tied to one transaction. When using a separate connection object, some are committed due to an error during execution and some cannot be processed. If it is to be processed in the form of All or Nothing in one transaction,  the commit/rollback statement must be used outside the fetch-loop.</p><h2 id="id-2.HowtouseAPRE-Use&quot;WITHHOLD&quot;statementwhendeclaringcursor"><strong>Use &quot;WITH HOLD&quot; statement when declaring cursor</strong></h2><p>Starting from Altibase version 6.3.1 or later, if the cursor declared with &quot;WITH HOLD&quot; is opened, the cursor is not closed even after the transaction is completed after Commit/Rollback is executed. This is valid only when the session is in non-autocommit mode. For more detailed information, please refer to &quot;ALTIBASE CLI User's Manual&quot; and &quot;ALTIBASE Precompiler Manual&quot;.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">main()
+{
+     .....
+     EXEC SQL AUTOCOMMIT OFF;
+     ......
+     EXEC SQL DECLARE CURSOR1 CURSOR WITH HOLD FOR      // When declaring a cursor, use the With hold option.
+                                 SELECT * FROM  DEPARTMENT;
+     ......
+    while(1)
+    {
+        EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+        ......
+        EXEC SQL UPDATE t1 set change_v = :O_C2 where C1 = :O_C1;
+        // FAC error does not occur even if Commit/Rollback is executed.
+       If (sqlca.sqlcode != SQL_SUCCESS)
+           EXEC SQL ROLLBACK;
+       Else
+           EXEC SQL COMMIT;
+        ......
+    }
+   ...
+}</pre>
+</div></div><h1 id="id-2.HowtouseAPRE-DynamicSQL"><strong><span>Dynamic SQL</span><span> </span></strong></h1><div>Two examples of change transaction and inquiry transaction are described as follow.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+char  sql_text [1024];
+int    H_var1;
+int    H_var2;
+EXEC SQL END DECLARE SECTION;
+ 
+ 
+main()
+{
+    // DB Connection
+    sprintf (sql_text,  “insert into test_table values (?, ?)”);
+ 
+    EXEC SQL PREPARE STMT1 FROM :sql_text;
+    if (sqlca.sqlcode != SQL_SUCCESS)
+    {
+        printf(“PrepareError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    }  
+ 
+    for ( i=0; i&lt;1000; i++)
+    {
+        EXEC SQL EXECUTE STMT1 USING :H_var1, :H_var2;
+       if (sqlca.sqlcode != SQL_SUCCESS)
+       {
+            printf(“PrepareError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+            exit(-1);
+        }
+    }
+ 
+}</pre>
+</div></div><h2 id="id-2.HowtouseAPRE-Exampleofquerytransaction"><strong><br />Example of query transaction</strong></h2><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+char  sql_text [1024];
+int    H_var1;
+int    H_var2;
+EXEC SQL END DECLARE SECTION;
+ 
+main()
+{
+    // DB Connection
+ 
+    sprintf (sql_text,  “select * from test_table where c1 &gt;= ?”);
+    EXEC SQL PREPARE STMT1 FROM :sql_text;
+    if (sqlca.sqlcode != SQL_SUCCESS)
+    {
+        printf(“PrepareError:: %d, %s\n”,SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    }  
+ 
+    EXEC SQL DECLARE CURSOR1 CURSOR FOR STMT1;
+ 
+    EXEC SQL OPEN CURSOR1 USING :H_var1;
+ 
+    // The following code is the same as cursor fetch.</pre>
+</div></div><p>This is a method of creating an SQL statement in a separate char* type variable and dynamically using the SQL statement when the table name is not specified or the column or search condition needs to be changed.</p><p>Starting from ALTIBASE 5.1 or later,  the execution plan executed by all sessions is internally shared in the area called Plan-Cache. However, if the query statement is changed each time like Dynamic SQL, the execution plan already created in Plan-Cache is not used, and the query performance is inevitably slower than that of static SQL statements because it operates in Prepare/Execute form again.</p><h1 id="id-2.HowtouseAPRE-CallFunction"><strong>Call Function</strong></h1><div><strong><br /></strong>This describes an example of how to call a user-created or DBMS built-in function.</div><div><h2 id="id-2.HowtouseAPRE-ExampleofcallingDBMSbuilt-infunction"><strong>Example of calling DBMS built-in function</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+ char H_day [20];
+EXEC SQL END DECLARE SECTION;
+ 
+main()
+{
+    // Example of using a function to retrieve a date
+    EXEC SQL SELECT TO_CHAR(SYSDATE,‘yyyy-mm-dd hh:mi:ss’) INTO :H_day from dual;
+}</pre>
+</div></div><p><strong><br /></strong></p><p> </p><div><div class="syntaxhighlighter nogutter  java"><h2 id="id-2.HowtouseAPRE-Exampleofcallinguserfunction"><strong>Example of calling user function</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// Function that adds the two input values and returns
+Create or replace function user_func (a integer, b integer)
+Return integer
+As
+Begin
+    Return a + b;
+End;
+/
+ 
+---- calling source ----
+main()
+{
+    // Example of using user-generated function
+    EXEC SQL SELECT user_func (1, 2) INTO :H_value from dual;
+}</pre>
+</div></div><p> </p><div><div class="syntaxhighlighter nogutter  java">It doesn't always have to be from dual, and it is fine if the user designates an arbitrary table as needed. (The user should be cautious about the function when char/varchar is returned in the return clause, the returned length must be specified. If not specified, only 1 byte is returned, so the following exception occurs in most functions: “Invalid length of the data type”)</div></div></div></div></div><h1 id="id-2.HowtouseAPRE-CallProcedure"><strong>Call Procedure</strong></h1><p>Unlike other functions, procedures are executed with the separate calling method. Please note that functions can also be used in the same way.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// In the case of a function
+EXEC SQL EXECUTE
+BEGIN
+      :H_var := user_func (:in_param1,  :in_param2);
+END;
+END-EXEC;
+ 
+// In the case of a procedure, there is no return clause.
+EXEC SQL EXECUTE
+BEGIN 
+       user_proc (:in_param1 in, :in_param2 out);
+END;
+END-EXEC;</pre>
+</div></div><h1 id="id-2.HowtouseAPRE-WHENEVERStatement">WHENEVER Statement</h1><p>The WHENEVER statement of ALTIBASE provides such as do/goto/continue/stop. This statement must be declared before executing the embedded SQL statement. The following form is possible in the condition statement of the WHENEVER statement.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Condition</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>NOT FOUND</p></td><td class="confluenceTd">When sqlca.sqlcode is SQL_NO_DATA<p> </p></td></tr><tr><td class="confluenceTd"><p>SQLERROR</p></td><td class="confluenceTd"><p>When sqlca.sqlcode is SQL_ERROR</p></td></tr></tbody></table></div><p> </p><p>The processing part is possible as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Process</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>CONTINUE</p></td><td class="confluenceTd">Ignore the error and continue<p> </p></td></tr><tr><td class="confluenceTd"><p>DO [사용자 함수]</p></td><td class="confluenceTd">Execute a user-defined function<p> </p></td></tr><tr><td class="confluenceTd"><p>DO BREAK</p></td><td class="confluenceTd">Exit the loop. It is only valid within a loop.<p> </p></td></tr><tr><td class="confluenceTd"><p>DO CONTINUE</p></td><td class="confluenceTd">Move to the first position in the loop. This statement is only valid within loops.<p> </p></td></tr><tr><td class="confluenceTd"><p>GOTO [Label]</p></td><td class="confluenceTd">Execute GOTO to the designated by the user<p> </p></td></tr><tr><td class="confluenceTd"><p>STOP</p></td><td class="confluenceTd"><p>Disconnect and close the program</p></td></tr></tbody></table></div><p>Examples are as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL WHENEVER SQLERROR DO user_function();
+EXEC SQL WHENEVER SQLERROR STOP;
+EXEC SQL WHENEVER SQLERROR GOTO ERROR_ROUTINE;
+EXEC SQL WHENVER SQLERROR CONTINUE;</pre>
+</div></div><p> </p><h1 id="id-2.HowtouseAPRE-SessionFailoverfunctionandCheckingcurrentconnection">Session Failover function and Checking current connection</h1><p>In ALTIBASE, there isn't any way to actively return the status of the connection object, but the developer can detect that the connection has been terminated by checking the status of SQLSTATE after executing a query.</p><p>One of the possible methods is to put the following example source into a common function.</p><h2 id="id-2.HowtouseAPRE-ExampleofSessionFailoverbyUserCode"><strong>Example of Session Failover by User Code</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">if ( memcmp (SQLSTATE, “08001”, 5) == 0 ||  memcmp (SQLSTATE, “08S01”, 5) == 0  || memcmp (SQLSTATE, “08003”, 5) == 0 )
+{
+    // Connection is disconnected. Execute FREE, not DISCONNECT call.
+    EXEC SQL FREE;       
+ 
+    EXEC SQL CONNECT ~~ // Opposite server
+}</pre>
+</div></div><p>Starting from ALTIBASE Version 5.3.3 or later, the Session FailOver function of the concept called CTP (Connection Time Failover) and STF (Service Time FailOver) are provided. CTF means FailOver tries to connect when the program first start, and STF means FailOver occurs in the process of executing a query after the connection.</p><p>Since this function does not support transaction FailOver, the user must consider reprocessing the business logic after the Session FailOver. The example is as follows.</p><h2 id="id-2.HowtouseAPRE-ExampleofusingAltibaseFailOverfunction"><strong>Example of using Altibase FailOver function</strong></h2><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Sprintf (opt, &quot;DSN=127.0.0.1;&quot;
+              &quot;AlternateServers=(128.0.0.1:20300,128.0.0.2:20301);&quot;
+              &quot;ConnectionRetryCount=3;&quot;
+              &quot;ConnectionRetryDelay=10;&quot;
+              &quot;SessionFailOver=on;LoadBalance=off&quot;) ;
+ 
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+.................
+ 
+EXEC SQL INSERT INTO   T1 VALUES (:H_var1);
+if (sqlca.sqlcode != SQL_SUCCESS)
+{
+   // If this error appears, it means that FailOver has already been normally performed.!!
+   if (SQLCODE == EMBEDED_ALTIBASE_FAILOVER_SUCCESS)
+   {
+       printf(“FailOver Success\n”);
+       goto Retry_business_logic;
+   }
+}</pre>
+</div></div><p> </p>The meaning of each input item of the connection string is as follows.<div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>AlternateServers</p></td><td class="confluenceTd">The target servers to FailOver are listed in the form of IP:PORT in order based on comma (,).<p> </p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryCount</p></td><td class="confluenceTd"><p>The number of connection attempts to one target serer</p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryDelay</p></td><td class="confluenceTd">After sleep for this interval (in seconds), retry the connection<p> </p></td></tr><tr><td class="confluenceTd"><p>SessionFailOver</p></td><td class="confluenceTd"><p>Determine whether to use the SessionFailOver function during the service time. In other words, this specifies whether to automatically connect to the server in the AlternateServers list when an SQL error occurs. (on/off)</p></td></tr><tr><td class="confluenceTd"><p>LoadBalance</p></td><td class="confluenceTd"><p>When turned on, the server and AlternateServers list specified in the DSB are randomly selected at the time of initial connection. If turned off, the DSN is selected first, and then the connection is attempted in the order described in the AlternateServers list.</p></td></tr></tbody></table></div><p>If an error occurs at the time of cursor opening and needs to be reprocessed, the cursor must be reprocessed after executing the cursor until close release before reprocessing. </p><div><div class="syntaxhighlighter nogutter  java"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="java plain">EXEC  SQL CLOSE RELEASE CURSOR1;</code></div></div></td></tr></tbody></table></div><p> </p></div></div><p>For more detailed information on CTF/STF, please refer to the &quot;Altibase UL FailOver Guide&quot;.</p><p> </p></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

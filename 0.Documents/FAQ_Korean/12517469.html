@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 동일 IP로 여러 개의 이중화 객체를 생성하는 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520884.html">03. 이중화</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 동일 IP로 여러 개의 이중화 객체를 생성하는 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jul 27, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051937 {padding: 0px;}
+div.rbtoc1624409051937 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051937 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051937'>
+<ul class='toc-indentation'>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-개요'>개요</a></li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-버전'>버전</a></li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-절차'>절차</a>
+<ul class='toc-indentation'>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-관련프로퍼티확인'>관련 프로퍼티 확인</a></li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-관련프로퍼티변경'>관련 프로퍼티 변경</a></li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-이중화객체생성'>이중화 객체 생성</a></li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-이중화객체의호스트정보확인방법'>이중화 객체의 호스트 정보 확인 방법</a></li>
+</ul>
+</li>
+<li><a href='#id-동일IP로여러개의이중화객체를생성하는방법-참고'>참고</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="id-동일IP로여러개의이중화객체를생성하는방법-개요">개요</h1><hr /><p>알티베이스 이중화는 다수의 이중화 객체 생성 시 동일한 IP Address 를 사용할 수 없는 제약을 가지고 있었다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>원격지 서버의 IP와 PORT가 192.168.1.145, 30300인 다수의 이중화 객체 생성 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION REP1 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T TO ALTITEST.REP_TEST_T;
+Create success. 
+
+iSQL&gt; CREATE REPLICATION REP2 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T2 TO ALTITEST.REP_TEST_T2;
+[ERR-6110C : Replication hosts already exist.] </pre>
+</div></div><p> </p><p>Altibase 6.5.1 부터 추가된 프로퍼티로 이러한 제약없이 동일한 호스트 정보로 서로 다른 이중화 객체를 생성할 수 있게 되었다.</p><p> </p><p> </p><p> </p><h1 id="id-동일IP로여러개의이중화객체를생성하는방법-버전">버전</h1><hr /><p>Altibase 6.5.1 이상</p><p> </p><p> </p><p> </p><h1 id="id-동일IP로여러개의이중화객체를생성하는방법-절차">절차</h1><hr /><p> </p><h3 id="id-동일IP로여러개의이중화객체를생성하는방법-관련프로퍼티확인">관련 프로퍼티 확인</h3><hr /><p>알티베이스 서버 프로퍼티 REPLICATION_ALLOW_DUPLICATE_HOSTS 의 값을 확인한다.</p><p>이 프로퍼티의 기본값은 0으로 서로 다른 이중화 객체가 동일한 호스트 정보를 가지는 것을 허용하지 않는다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 60
+SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_ALLOW_DUPLICATE_HOSTS&#39;;</pre>
+</div></div><p> </p><p> </p><h3 id="id-동일IP로여러개의이중화객체를생성하는방법-관련프로퍼티변경">관련 프로퍼티 변경</h3><hr /><p>REPLICATION_ALLOW_DUPLICATE_HOSTS프로퍼티의 값이 0인 경우 1로 변경한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET REPLICATION_ALLOW_DUPLICATE_HOSTS = 1;</pre>
+</div></div><p> </p><p>프로퍼티의 변경값을 영구적으로 적용하고자 할 경우 altibase.properties 파일에서 해당 프로퍼티의 값을 수정 후 저장한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">cd $ALTIBASE_HOME/conf
+vi altibase.properties
+REPLICATION_ALLOW_DUPLICATE_HOSTS     = 1</pre>
+</div></div><p> </p><p> </p><h3 id="id-동일IP로여러개의이중화객체를생성하는방법-이중화객체생성">이중화 객체 생성</h3><hr /><p>동일한 호스트 정보를 가진 하나 이상의 이중화 객체를 생성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>원격지 서버의 IP와 PORT가 192.168.1.145, 30300인 다수의 이중화 객체 생성 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION REP1 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T TO ALTITEST.REP_TEST_T;
+Create success. 
+
+iSQL&gt; CREATE REPLICATION REP2 WITH &#39;192.168.1.145&#39;, 30300 FROM ALTITEST.REP_TEST_T2 TO ALTITEST.REP_TEST_T2;
+Create success. </pre>
+</div></div><p> </p><p> </p><h3 id="id-동일IP로여러개의이중화객체를생성하는방법-이중화객체의호스트정보확인방법">이중화 객체의 호스트 정보 확인 방법</h3><hr /><p>이중화 객체에 등록된 호스트 정보는 아래 문장으로 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_ ORDER BY HOST_NO;</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="id-동일IP로여러개의이중화객체를생성하는방법-참고">참고</h1><hr /><ul style="list-style-type: square;"><li>Altibase 6.5.1 New Features Guide</li><li>General Reference (Altibase 6.5.1 이상)</li><li>매뉴얼 다운로드 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

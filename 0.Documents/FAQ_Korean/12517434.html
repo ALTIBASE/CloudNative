@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 테이블/컬럼 정의서</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 테이블/컬럼 정의서
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jun 04, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054718 {padding: 0px;}
+div.rbtoc1624409054718 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054718 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054718'>
+<ul class='toc-indentation'>
+<li><a href='#id-테이블/컬럼정의서-개요'>개요</a></li>
+<li><a href='#id-테이블/컬럼정의서-테이블정의서'>테이블 정의서</a></li>
+<li><a href='#id-테이블/컬럼정의서-컬럼정의서'>컬럼 정의서</a></li>
+</ul>
+</div> <span class="confluence-anchor-link" id="id-테이블/컬럼정의서-table/columndesc"></span></p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="id-테이블/컬럼정의서-개요"><strong>개요</strong></h1><hr /><p>사용자 테이블 및 컬럼 정의서 작성 시 필요한 쿼리입니다.</p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="id-테이블/컬럼정의서-테이블정의서"><strong>테이블 정의서</strong></h1><hr /><p>테이블 소유자, 테이블 이름, 레코드 수, 테이블 생성 날짜 및 마지막 DDL 수행 날짜 정보를 알 수 있습니다.</p><p>레코드는 수는 통계 정보 관련 성능뷰가 추가된 Altibase 6.3.1 부터 확인할 수 있습니다.</p><p>버전 별로 쿼리문에 차이가 있으니 각 버전에 해당하는 문장을 참고하세요.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> 
+-- USER_NAME  : 테이블 소유자
+-- TABLE_NAME : 테이블 이름
+-- RECORD_CNT : 레코드 수. 이 정보를 통계정보를 수집해야 정확한 정보를 볼 수 있다. &#39;-&#39;는 통계정보를 한 번도 수집하지 않은 테이블을 의미한다. 
+-- CREATED_DATE : 테이블 생성 날짜
+-- LAST_DDL_DATE : 마지막 DDL 수행 날짜
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , DECODE(D.NUM_ROW, NULL, &#39;-&#39;, D.NUM_ROW) &#39;RECORD_CNT&#39;              -- 레코드 수, &#39;-&#39; 값은 통계정보를 한 번도 수집하지 않은 테이블
+     , TO_CHAR(T.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;CREATED_DATE&#39;          -- 테이블 생성 날짜
+     , TO_CHAR(T.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;LAST_DDL_DATE&#39;   -- 마지막 DDL 수행 날짜
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+       LEFT OUTER JOIN V$DBMS_STATS D ON D.TARGET_ID = T.TABLE_OID AND D.TYPE = &#39;T&#39;
+ WHERE U.USER_ID NOT IN (0, 1)  -- 시스템 유저 PUBLIC, SYSTEM_ 제외
+   AND T.TABLE_TYPE = &#39;T&#39;  -- 테이블만
+   AND U.USER_ID = T.USER_ID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5.3.3 / 5.5.1 / 6.1.1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME  : 테이블 소유자
+-- TABLE_NAME : 테이블 이름
+-- CREATED_DATE : 테이블 생성 날짜
+-- LAST_DDL_DATE : 마지막 DDL 수행 날짜
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , TO_CHAR(T.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;CREATED_DATE&#39;          -- 테이블 생성 날짜
+     , TO_CHAR(T.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;LAST_DDL_DATE&#39;   -- 마지막 DDL 수행 날짜
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE U.USER_ID NOT IN (0, 1)  -- 시스템 유저 PUBLIC, SYSTEM_ 제외
+   AND T.TABLE_TYPE = &#39;T&#39;  -- 테이블만
+   AND U.USER_ID = T.USER_ID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME  : 테이블 소유자
+-- TABLE_NAME : 테이블 이름
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE U.USER_ID NOT IN (0, 1)  -- 시스템 유저 PUBLIC, SYSTEM_ 제외
+   AND T.TABLE_TYPE = &#39;T&#39;  -- 테이블만
+   AND U.USER_ID = T.USER_ID
+;</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="id-테이블/컬럼정의서-컬럼정의서"><strong>컬럼 정의서</strong></h1><hr /><p>컬럼 이름, 데이터 타입, 크기, NOT NULL, 제약조건 정보 및 컬럼 순서 정보를 알 수 있습니다.</p><p>버전 별로 쿼리문에 차이가 있으니 각 버전에 해당하는 문장을 참고하세요.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME : 이름 소유자 
+-- TABLE_NAME : 테이블 이름
+-- COLUMN_NAME : 컬럼 이름
+-- DATA_TYPE : 데이터 타입
+-- COLUMN_SIZE : 컬럼 크기
+-- CONST_TYPE : 제약조건 유형
+-- CHECK_CONDITION : CHECK 제약조건의 조건
+-- COLUMN_ORDER : 컬럼 순서
+  
+SELECT U.USER_NAME &#39;USER_NAME&#39; 
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , C.COLUMN_NAME &#39;COLUMN_NAME&#39;
+     , DECODE(C.DATA_TYPE, 1, &#39;CHAR&#39;, 12, &#39;VARCHAR&#39;, -8, &#39;NCHAR&#39;, -9, &#39;NVARCHAR&#39;, 2, &#39;NUMERIC/DECIMAL&#39;, 6, &#39;FLOAT/NUMBER&#39;, 8, &#39;DOUBLE&#39;, 7, &#39;REAL&#39;, -5, &#39;BIGINT&#39;, 4, &#39;INTEGER&#39;, 5, &#39;SMALLINT&#39;, 9, &#39;DATE&#39;, 30, &#39;BLOB&#39;, 40, &#39;CLOB&#39;, 20001, &#39;BYTE&#39;, 20002, &#39;NIBBLE&#39;, -7, &#39;BIT&#39;, -100, &#39;VARBIT&#39;, 10003, &#39;GEOMETRY&#39;) &#39;DATA_TYPE&#39;
+     , DECODE(C.DATA_TYPE, 2, C.PRECISION||&#39;.&#39;||C.SCALE, 6, C.PRECISION||&#39;.&#39;||C.SCALE, C.PRECISION) COLUMN_SIZE
+     , DECODE(CONST.CONSTRAINT_TYPE, 0, &#39;FK&#39;, 1, &#39;NOT NULL&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;, 5, &#39;TIMESTAMP&#39;, 6, &#39;LOCAL UNIQUE&#39;, 7, &#39;CHECK&#39;) CONST_TYPE
+     , CONST.CHECK_CONDITION     
+     , C.COLUMN_ORDER &#39;COLUMN_ORDER&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_COLUMNS_ C
+       LEFT OUTER JOIN system_.SYS_CONSTRAINT_COLUMNS_ CONST_COL ON CONST_COL.COLUMN_ID = C.COLUMN_ID 
+       LEFT OUTER JOIN SYSTEM_.SYS_CONSTRAINTS_ CONST ON CONST.CONSTRAINT_ID = CONST_COL.CONSTRAINT_ID
+ WHERE U.USER_NAME NOT IN (&#39;PUBLIC&#39;, &#39;SYSTEM_&#39;)
+   AND T.TABLE_TYPE = &#39;T&#39;
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = C.TABLE_ID  
+ ORDER BY U.USER_NAME, T.TABLE_NAME, C.COLUMN_ORDER   
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4.3.9 / 5.3.3 / 5.5.1 / 6.1.1 </b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME : 이름 소유자 
+-- TABLE_NAME : 테이블 이름
+-- COLUMN_NAME : 컬럼 이름
+-- DATA_TYPE : 데이터 타입
+-- COLUMN_SIZE : 컬럼 크기
+-- CONST_TYPE : 제약조건 유형
+-- COLUMN_ORDER : 컬럼 순서
+  
+SELECT U.USER_NAME &#39;USER_NAME&#39; 
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , C.COLUMN_NAME &#39;COLUMN_NAME&#39;
+     , DECODE(C.DATA_TYPE, 1, &#39;CHAR&#39;, 12, &#39;VARCHAR&#39;, -8, &#39;NCHAR&#39;, -9, &#39;NVARCHAR&#39;, 2, &#39;NUMERIC/DECIMAL&#39;, 6, &#39;FLOAT/NUMBER&#39;, 8, &#39;DOUBLE&#39;, 7, &#39;REAL&#39;, -5, &#39;BIGINT&#39;, 4, &#39;INTEGER&#39;, 5, &#39;SMALLINT&#39;, 9, &#39;DATE&#39;, 30, &#39;BLOB&#39;, 40, &#39;CLOB&#39;, 20001, &#39;BYTE&#39;, 20002, &#39;NIBBLE&#39;, -7, &#39;BIT&#39;, -100, &#39;VARBIT&#39;, 10003, &#39;GEOMETRY&#39;) &#39;DATA_TYPE&#39;
+     , DECODE(C.DATA_TYPE, 2, C.PRECISION||&#39;.&#39;||C.SCALE, 6, C.PRECISION||&#39;.&#39;||C.SCALE, C.PRECISION) COLUMN_SIZE
+     , DECODE(CONST.CONSTRAINT_TYPE, 0, &#39;FK&#39;, 1, &#39;NOT NULL&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;, 5, &#39;TIMESTAMP&#39;, 6, &#39;LOCAL UNIQUE&#39;, 7, &#39;CHECK&#39;) CONST_TYPE    
+     , C.COLUMN_ORDER &#39;COLUMN_ORDER&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_COLUMNS_ C
+       LEFT OUTER JOIN system_.SYS_CONSTRAINT_COLUMNS_ CONST_COL ON CONST_COL.COLUMN_ID = C.COLUMN_ID 
+       LEFT OUTER JOIN SYSTEM_.SYS_CONSTRAINTS_ CONST ON CONST.CONSTRAINT_ID = CONST_COL.CONSTRAINT_ID
+ WHERE U.USER_NAME NOT IN (&#39;PUBLIC&#39;, &#39;SYSTEM_&#39;)
+   AND T.TABLE_TYPE = &#39;T&#39;
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = C.TABLE_ID  
+ ORDER BY U.USER_NAME, T.TABLE_NAME, C.COLUMN_ORDER   
+;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

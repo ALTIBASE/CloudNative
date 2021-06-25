@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Transaction Durability in ALTIBASE HDB</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Architecture_1507342.html">ALTIBASE HDB Architecture</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Transaction Durability in ALTIBASE HDB
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Cy Erbay</span>, last modified on Sep 07, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="TransactionDurabilityinALTIBASEHDB-Transaction">Transaction</h2>
+
+<p>A database transaction is a logical unit of work that comprises one or more SQL statements. A transaction begins with the first execution of an SQL statement by a user, and ends when it is committed or rolled back, either explicitly with a COMMIT or ROLLBACK statement or implicitly when a DDL statement is issued.</p>
+
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-ACID">ACID</h2>
+
+<p>To maintain database integrity, a properly executed transaction must exhibit the four ACID properties: Atomicity, Consistency, Isolation, and Durability.</p>
+
+<p>• <strong>Atomicity</strong> - Either all of the statements that constitute a transaction are completely executed, or none of them are. That is, the transaction cannot be partially successful.</p>
+
+<p>• <strong>Consistency</strong> - A properly executed transaction does not break the consistency of the database.</p>
+
+<p>• <strong>Isolation</strong> - When multiple transactions are underway at the same time, none of the transactions have access to the results of the other transactions.</p>
+
+<p>• <strong>Durability</strong> - Once a transaction has been committed, the resultant changes are not lost regardless of the circumstances, such as system failure.</p>
+
+<p><span style="color: rgb(0,0,0);">ALTIBASE HDB guarantees reliable transactional processing by implementing a database server that satisfies all ACID requirements.</span></p>
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-Durability"><span style="color: rgb(0,0,0);">Durability</span></h2>
+
+<p>Durability means that after a transaction has been committed, the committed transaction must be guaranteed, even if a database failure occurs before the changed data are physically written to a disk.</p>
+
+<p>ALTIBASE HDB provides durability with a combination of checkpointing and transaction logging.</p>
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-WALProtocol">WAL Protocol</h2>
+
+<p><span style="color: rgb(0,0,0);">ALTIBASE</span> <span style="color: rgb(0,0,0);">HDB adheres to WAL (write-ahead</span> <span style="color: rgb(0,0,0);">logging)</span> <span style="color: rgb(0,0,0);">protocol.  Based on WAL protocol, b</span><span style="color: rgb(0,0,0);">efore overwriting an object with &quot;uncommitted&quot; updates,  ALTIBASE HDB writes the log records related to such updates to disk storage  for UNDO operations. And similarly, before committing an update to a database object, it writes the log records related to such an update to the log on disk storage for REDO operations.</span></p>
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-Durability&amp;Performance">Durability &amp; Performance</h2>
+
+<p><span style="color: rgb(0,0,0);">In ALTIBASE HDB transaction durability has a significant  influence on the processing performance. Especially on the memory-based side of the database</span> which can potentially exhibit performance up to 20 times faster than the disk-based side of the database, guaranteeing transaction durability has a much bigger impact on performance. This is due the fact that based on the WAL protocol, in order for a ALTIBASE HDB to provide complete transaction durability, it has to write logs for all database updates to a log file on disk therefore introducing additional disk I/O activity which can degrade the performance.</p>
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-DurabilityLevelsOverview">Durability Levels Overview</h2>
+
+<p>Users need to consider a trade-off  between complete transaction durability and transaction processing performance. ALTIBASE HDB provides multiple levels of durability controls, from most relaxed to most strict, to enable users to have a balance between durability and performance. <span style="color: black;">Each of these levels in ALTIBASE HDB guarantees durability to a different extent and realizes different performance characteristics.</span> <span style="color: black;">Relaxed durability yields the best performance; where as strict durability eliminates loss of transactions.</span></p>
+
+<p><span style="color: black;">Relaxed durability (Level 2): On system or database crash, recovery point is the last checkpoint.</span></p>
+
+<p><span style="color: black;">Enhanced durability (Level 3): On database crash no data loss, recovery point is the last point where OS syncs kernel buffer to disk.</span></p>
+
+<p><span style="color: black;">Strict durability (Level 5): No data loss with system or database crash, each transaction committed only when written to disk.</span></p>
+
+<p><span style="color: black;">In addition to these durability levels listed above, with ALTIBASE HDB, users have the option to use Volatile tablespaces which omit logging process completely.</span></p>
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-ManagingDurabilityLevels">Managing Durability Levels</h2>
+
+<p>ALTIBASE HDB provides users with two properties to manage durability level settings. Those properties are: COMMIT_WRITE_WAIT_MODE and LOG_BUFFER_TYPE.</p>
+
+
+<p><strong>COMMIT_WRITE_WAIT_MODE</strong> specifies whether a transaction waits until an update log has been written to a log file on disk. This property can be specified for the entire system (ALTER SYSTEM) or for individual sessions (ALTER SESSION).</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Value <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Notes <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMMIT_WRITE_WAIT_MODE </p></td>
+<td class="confluenceTd"><p> 0 <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Asynchronous method, a transaction does wait until an update log has  been written to a log file on disk. This is the default setting for  ALTIBASE HDB. When using this setting, a service thread writes  transaction logs in the log buffer, and returns the result to a user  without waiting until the logs files have been written to disk. This  setting is suitable for performance-oriented environments since it  avoids I/O bottlenecks. With the asynchronous mode, there is still some  protection against data loss due to database crashes if LOG_BUFFER_TYPE  is set for 1 (see below). </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMMIT_WRITE_WAIT_MODE </p></td>
+<td class="confluenceTd"><p> 1 <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Synchronous method, a transaction has to wait until related logs have  been written to a log file on disk before returning commit. This mode  guarantees transaction durability, and it is suitable for mission  critical environments in which transaction durability is more important  than performance. </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p><strong>LOG_BUFFER_TYPE</strong> specifies the type of log buffer that is used when update logs are written to a log file. This property can't be changed while the system is running.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Value <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Notes <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_BUFFER_TYPE </p></td>
+<td class="confluenceTd"><p> 0 <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> OS Kernel log buffer. This is the default setting for ALTIBASE HDB. When  using this setting, ALTIBASE HDB uses memory-mapped files for disk I/O  related to transaction logs. With memory mapped file IO, the file to be  read is mapped to the virtual memory of the underlying OS. This mode  provides improved durability in the case that the database crashes but  not the OS, since changes to memory-mapped files are maintained in the  OS kernel memory. In this mode, log flushing is handled by the operating  system leveraging msync() function. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_BUFFER_TYPE </p></td>
+<td class="confluenceTd"><p> 1 <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Process memory log buffer. When using this setting, transaction logs are  written to a memory-resident log buffer. In this mode, log flushing is  handled by the database process using fsync() function. This method is  slightly faster than memory-mapped method, but it compromises from  durability in the case of a database crash. </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-RelaxedDurability(Level2)"><span style="color: black;">Relaxed Durability (Level 2)</span></h2>
+
+<p>When using ALTIBASE HDB Relaxed durability setting, on a <span style="color: black;">system or a database crash, recovery point is the last checkpoint. This level</span> is suitable <span style="color: black;">for use in business environments in which database durability is not critical, but fast processing of transactions is required.</span> <span style="color: black;">Businesses that can tolerate a certain</span> <span style="color: black;">level of data loss may want to take advantage of this level for high performance transactions.</span></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> Value <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMMIT_WRITE_WAIT_MODE </p></td>
+<td class="confluenceTd"><p> 0 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_BUFFER_TYPE </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-EnhancedDurability(Level3)"><span style="color: black;">Enhanced Durability (Level 3)</span></h2>
+
+<p>When using ALTIBASE HDB Enhanced durability setting, o<span style="color: black;">n database crash there is no data loss, and the recovery point is the last point where OS syncs kernel buffer to disk.</span> In other words, even if the database crashes, durability is still ensured by the OS. This level is suitable <span style="color: black;">for environments characterized by low rates of failures such as OS crashes, hardware faults and power outages.</span> <span style="color: black;">Businesses that can tolerate a certain</span> <span style="color: black;">level of data loss may want to take advantage of this level. This is the default setting for ALTIBASE HDB.</span></p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> Value <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMMIT_WRITE_WAIT_MODE </p></td>
+<td class="confluenceTd"><p> 0 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_BUFFER_TYPE </p></td>
+<td class="confluenceTd"><p> 0 </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+<h2 id="TransactionDurabilityinALTIBASEHDB-StrictDurability(Level5)"><span style="color: black;">Strict Durability (Level 5)</span></h2>
+
+<p>When using ALTIBASE HDB Strict durability setting, since <span style="color: black;">each transaction committed only when written to disk</span>, there will be no <span style="color: black;">data loss with either system or database crash, This level</span> is suitable <span style="color: black;">for use in business environments in which data durability is more important than faster performance.</span> <span style="color: black;">Businesses that cannot tolerate any kinds of data</span> <span style="color: black;">loss should use this level.</span></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> Value <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> COMMIT_WRITE_WAIT_MODE </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_BUFFER_TYPE </p></td>
+<td class="confluenceTd"><p> 1 </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

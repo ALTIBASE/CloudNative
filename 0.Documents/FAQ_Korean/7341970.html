@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 언두 테이블스페이스 사용량</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="8454974.html">언두 테이블스페이스(UNDO TABLESPACE)</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 언두 테이블스페이스 사용량
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Mar 06, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054610 {padding: 0px;}
+div.rbtoc1624409054610 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054610 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054610'>
+<ul class='toc-indentation'>
+<li><a href='#id-언두테이블스페이스사용량-개요'>개요</a></li>
+<li><a href='#id-언두테이블스페이스사용량-버전'>버전</a></li>
+<li><a href='#id-언두테이블스페이스사용량-언두테이블스페이스사용량'>언두 테이블스페이스 사용량</a></li>
+<li><a href='#id-언두테이블스페이스사용량-관련버그'>관련 버그</a>
+<ul class='toc-indentation'>
+<li><a href='#id-언두테이블스페이스사용량-BUG-39985'>BUG-39985</a></li>
+</ul>
+</li>
+<li><a href='#id-언두테이블스페이스사용량-참고-V$DISK_UNDO_USAGE성능뷰'>참고 - V$DISK_UNDO_USAGE 성능 뷰</a></li>
+</ul>
+</div></p><h1 id="id-언두테이블스페이스사용량-개요">개요</h1><hr /><ul><li>ALTIBASE HDB 5.5.1 이전 버전에서는 언두 테이블스페이스의 ALLOC 만 확인이 가능할 뿐 USED 를 확인할 수 없었습니다.</li><li>ALTIBASE HDB 5.5.1 부터 추가된 V$DISK_UNDO_USAGE 를 이용하여 언두 테이블스페이스 실 사용량을 확인하는 방법을 소개합니다. </li></ul><p> </p><h4 id="id-언두테이블스페이스사용량-언두테이블스페이스의ALLOC과USED">언두 테이블스페이스의 ALLOC 과 USED</h4><hr /><ul><li>언두 테이블스페이스는 세그먼트 단위로 이루어져 있으며 세그먼트는 익스텐트라는 더 작은 단위로 이루어져 있습니다. </li><li>디스크 테이블에 변경 트랜잭션 발생 시 익스텐트 단위로 할당받게 되며 <strong>익스텐트를 새롭게 할당 받을 때마다 언두 테이블스페이스 ALLOC 크기가 증가</strong>합니다.</li><li>트랜잭션이 종료되면 익스텐트는 재사용 가능한 상태가 됩니다.</li><li>하지만 세그먼트 내의 익스텐트 중 하나라도 사용 중이라면 재 사용 가능한 익스텐트가 있더라도 해당 세그먼트 내의 익스텐트는 모두 사용할 수 없는 상태가 됩니다. (<span>UNSTEALABLE</span> EXTENT)</li><li><strong>변경 트랜잭션이 수행 중이어서 익스텐트를 사용하거나 <span>UNSTEALABLE</span> 익스텐트는 언두 테이블스페이스의 USED</strong> 로 계산됩니다. </li></ul><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량-버전">버전</h1><hr /><p>이 모니터링 쿼리는 아래 버전에서 사용할 수 있습니다.</p><ul><li>ALTIBASE HDB 5.5.1</li><li>ALTIBASE HDB 6.1.1</li><li>ALTIBASE HDB 6.3.1</li></ul><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량-언두테이블스페이스사용량">언두 테이블스페이스 사용량</h1><hr /><ul><li>디스크 테이블에 변경 트랜잭션이 수행 중에는 ALLOC 과 USED 가 증가할 수 있습니다.</li><li>트랜잭션이 커밋된 경우 트랜잭션 수행 중에 증가한 USED 는 줄어듭니다.</li><li><p>트랜잭션이 롤백된 경우 트랜잭션 수행 중에 증가한 ALLOC 과 USED 는 줄어듭니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>언두 테이블스페이스 사용량 조회 쿼리</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT T.NAME TBS_NAME
+     , ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2) &#39;MAX(M)&#39;                                                                        -- 언두 테이블스페이스의 최대 크기
+     , ROUND((TOTAL_PAGE_COUNT * PAGE_SIZE) / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                                                        -- 언두 테이블스페이스로 할당 받은 전체 크기
+     , ROUND((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, 2) &#39;ALLOC(M)&#39;                                                        -- 현재까지 할당 받은 페이지 중 &#39;빈 페이지&#39;를 제외한 &#39;사용 중인 페이지&#39;만의 합계
+     , ROUND(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, 2) &#39;USED(M)&#39;                   -- 변경 트랜잭션에 의해 사용 중이거나 재사용할 수 없는 EXTENT의 크기
+     , ROUND((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, 2) &#39;USAGE(%)&#39;    -- 사용량(MAX 대비 USED)
+     , DECODE(STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE               -- 테이블스페이스 상태
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE FROM V$PROPERTY WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID
+   AND T.ID = 3 ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)      TOTAL(M)    ALLOC(M)    USED(M)     USAGE(%)    STATE           AUTOEXTEND
+---------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_UNDO               2047.99     302         122.25      84.25       4.11        ONLINE          ON
+1 row selected.</pre>
+</div></div></li></ul><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량-관련버그">관련 버그</h1><hr /><h3 id="id-언두테이블스페이스사용량-BUG-39985">BUG-39985</h3><h4 id="id-언두테이블스페이스사용량-버그내용">버그 내용</h4><ul><li>재 사용 할 수 없는 언두 영역을 사용 가능한 공간으로 계산되는 문제를 개선함. (UNSTEALABLE_EXT_CNT 컬럼에 해당되는 익스텐트가 사용 가능한 익스텐트로 계산되는 문제)</li><li>UNSTEALABLE_EXT_CNT 컬럼은 아래 V$DISK_UNDO_USAGE  성능 뷰 설명 참고</li></ul><h4 id="id-언두테이블스페이스사용량-반영버전">반영 버전</h4><ul><li>ALTIBASE HDB 6.1.1.4.9</li><li>ALTIBASE HDB 6.3.1.3.3</li></ul><p> </p><p> </p><p> </p><p> </p><h1 id="id-언두테이블스페이스사용량-참고-V$DISK_UNDO_USAGE성능뷰">참고 - V$DISK_UNDO_USAGE 성능 뷰</h1><hr /><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>컬럼 이름</p></th><th class="confluenceTh"><p>데이터 타입</p></th><th class="confluenceTh"><p>설명</p></th></tr><tr><td class="confluenceTd"><p>TX_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>트랜잭션 상태 정보를 저장하는 세그먼트(Transaction Status Segment, TSS) 용 익스텐트 수. <br class="atl-forced-newline" /> 디스크 테이블에 갱신 트랜잭션 발생 시 할당 받는다.</p></td></tr><tr><td class="confluenceTd"><p>USED_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>트랜잭션에 사용되고 있는 언두 세그먼트 내 익스텐트 수. <br class="atl-forced-newline" /> 디스크 테이블에 갱신 트랜잭션 발생 시 필요한 만큼 할당 받는다.</p></td></tr><tr><td class="confluenceTd"><p>UNSTEALABLE_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>다른 언두 세그먼트에서 가져갈 수 없는 익스텐트 수. <br class="atl-forced-newline" /> 온라인 상태의 언두 세그먼트에 속한 익스텐트, 헤더 정보를 가지고 있는 익스텐트. 트랜잭션이 접근하고 있는 익스텐트들을 포함한다. <br class="atl-forced-newline" /> 해당 언두 세그먼트에 재 사용 가능한 익스텐트가 있다 하더라고 다른 언두 세그먼트에서 가져가지 못한다.</p></td></tr><tr><td class="confluenceTd"><p>REUSABLE_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>재사용 가능한 익스텐트 수 <br class="atl-forced-newline" /> 트랜잭션 진행 중에 사용된 USED_EXT_CNT 는 해당 트랜잭션이 커밋되면 USED_EXT_CNT 는 감소한 만큼 REUSABLE_EXT_CNT 이 증가한다.</p></td></tr><tr><td class="confluenceTd"><p>TOTAL_EXT_CNT</p></td><td class="confluenceTd"><p>BIGINT</p></td><td class="confluenceTd"><p>언두 테이블 스페이스에서 할당 받은 총 익스텐트 수. <br class="atl-forced-newline" /> 트랜잭션이 롤백 된 경우, 그 트랜잭션에 사용된 익스텐트들은 언두 테이블 스페이스로 반환된다. <br class="atl-forced-newline" /> 트랜잭션이 커밋 된 경우, 그 트랜잭션에 사용된 익스텐트들은 해당 언두 세그먼트에서 가지고 있는다.</p></td></tr></tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Hibernate Integration Guide for Altibase</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Hibernate Integration Guide for Altibase
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> R&amp;D Division</span>, last modified by <span class='editor'> david.cho</span> on Dec 22, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="HibernateIntegrationGuideforAltibase-Hibernate">Hibernate</h1><hr /><h2 id="HibernateIntegrationGuideforAltibase-Overview">Overview</h2><p>This chapter describes the concept and features of Hibernate, and how to download and use Hibernate.</p><h3 id="HibernateIntegrationGuideforAltibase-WhatisHibernate?">What is Hibernate?</h3><hr /><p>Hibernate is an ORM (Object Relational Mapping) framework that enables programmers to use DBMS more conveniently. Hibernate maps the relationship between DBMS tables and Java objects to help persistence logic processing. That is, using Hibernate, it is possible to execute DML for CRUD (INSERT, SELECT, UPDATE, DELETE) to the DBMS by mapping the DBMS table and Java Persistence Object (JavaBean).</p><p>The following figure illustrates the architecture of Hibernate.</p><p><img class="confluence-embedded-image" src="attachments/14058388/14221626.png" data-image-src="attachments/14058388/14221626.png"></p><p>For more detailed information about the architecture of Hibernate, please refer to the site below.</p><p><a class="external-link" href="http://www.hibernate.org/" rel="nofollow">http://www.hibernate.org</a></p><h3 id="HibernateIntegrationGuideforAltibase-DownloadingHibernate">Downloading Hibernate</h3><p>In order to use Hibernate, the jar file related to Hibernate is required, and this jar file can be downloaded from <a href="http://hibernate.org/orm/releases/5.4" class="external-link" rel="nofollow">http://hibernate.org/orm/releases/5.4</a>. When the downloaded file is unzipped, there are several directories. In particular, there are various jar files in the sub-directory of the lib directory, and use these files to integrate with Hibernate.</p><p>For this document, Hibernate 5.4.8 version was used and the directory name where this version was extracted is 'hibernate-release-5.4.8.Final'.</p><h2 id="HibernateIntegrationGuideforAltibase-SampleCreationusingHibernate">Sample Creation using Hibernate</h2><hr /><p>Hibernate-configuration XML file and hibernate-mapping XML file must be created to integrate with DBMS using Hibernate.</p><ul><li>hibernate-configuration XML: Definition file for connection information to interwork with DBMS and for dialects to use unique features.</li><li>hibernate-mapping XML: Definition file for mapping between Java Persistence Object and DBMS Table.</li></ul><p>This chapter describes how to create a hibernate-configuration XML file, hibernate-mapping XML file, and how to execute DML by using these files in an application.</p><p>For details on how to create the sample program, please refer to the appendix.</p><h3 id="HibernateIntegrationGuideforAltibase-Creatinghibernate-mappingfile">Creating hibernate-mapping file</h3><hr /><p>The hibernate-mapping XML file is a configuration file containing between DBMS table and Java Object.</p><p>The following is an example of creating a hibernate-mapping XML file that defines the mapping between person table and Person class.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Person.hdm.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;euc-kr&quot; ?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+    &quot;-//Hibernate/Hibernate Mapping DTD//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;!-- person table and Person class mapping --&gt;
+    &lt;class name=&quot;examples.domain.Person&quot; table=&quot;person&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;int&quot;&gt;
+            &lt;generator class=&quot;sequence&quot;&gt;
+                &lt;param name=&quot;sequence_name&quot;&gt;PERSON_SEQ&lt;/param&gt;
+            &lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot;/&gt;
+        &lt;property name=&quot;birthDate&quot; column=&quot;birth_date&quot; type=&quot;date&quot;/&gt;
+        &lt;property name=&quot;weightInKilograms&quot; column=&quot;weight_kg&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;heightInMeters&quot; column=&quot;height_m&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;isMarried&quot; column=&quot;is_Married&quot; type=&quot;boolean&quot;/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><ul><li>Use the &lt;class&gt; tag to specify the Java class, DBMS table, and &lt;property&gt; tag mappings of the table's columns and the corresponding Java variables.</li><li>Depending on the Hibernate version, the sequence object must define the param name as sequence_name or sequence.</li></ul><p>For more information about each tag, please refer to <a href="http://www.hibernate.org." class="external-link" rel="nofollow">http://www.hibernate.org.</a></p><h3 id="HibernateIntegrationGuideforAltibase-Creatinghibernate-configurationfile">Creating hibernate-configuration file</h3><hr /><p>The hibernate-configure file is a file that sets up a variety of connection information for DBMS connections, a dialect class for using unique functions, and a hibernate-mapping file.</p><p>The following is an example of a hibernate-configuration file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&#39;1.0&#39; encoding=&quot;euc-kr&quot;?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC
+    &quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+            &lt;!-- DBMS connection information --&gt;
+            &lt;property name=&quot;connection.driver_class&quot;&gt;
+                    Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+            &lt;property name=&quot;connection.url&quot;&gt;
+                    jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+            &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+            &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+            &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;          
+            &lt;property name=&quot;dialect&quot;&gt;  &lt;!-- Specify dialect class name suitable for DBMS --&gt;
+                    org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+            &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+            &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+            &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><ul><li><strong>&lt;session-factory&gt; tag</strong><br />This sets the DBMS connection information and specifies the dialect class name appropriate for the DBMS to connect tot he dialect property</li><li><strong>&lt;mapping resource&gt; tag</strong><br />This specifies hibernate-mapping files.</li></ul><p>For more information about each tag, please refer to <a href="http://www.hibernate.org." class="external-link" rel="nofollow">http://www.hibernate.org.</a></p><h3 id="HibernateIntegrationGuideforAltibase-WritingApplication">Writing Application</h3><hr /><p>If the Session object is used in the application, DML can be executed on the DBMS table in conjunction with the mapping object, and the method is as follows.</p><ol><li>Retrieve the SessionFactory object with the hibernate-configuration file.</li><li>Retrieve the Session object with the SessionFactory object.</li><li>Call the method corresponding to each DML of the Session object.</li></ol><p>The following is an application to insert, select, update, get, and delete the person table of the DBMS.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">……
+SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+  
+//insert Person
+Person newPerson1 = new Person();
+……
+session.save(newPerson1);
+tx.commit();
+  
+//select all Person
+Criteria crit = session.createCriteria(Person.class);
+crit.addOrder(Order.asc(&quot;id&quot;));
+List&lt;Person&gt; list = crit.list();
+……
+  
+//update Person
+tx = session.beginTransaction();
+newPerson1.setHeightInMeters(1.93);
+newPerson1.setWeightInKilograms(86.36);
+session.update(newPerson1);
+tx.commit();
+  
+//get Person
+Person person = (Person) session.get(Person.class,newPerson1.getId());
+System.out.println(person);
+  
+//delete Person
+tx = session.beginTransaction();
+session.delete(session.get(Person.class, newPerson1.getId()));
+tx.commit();
+…… </pre>
+</div></div><ul><li>First, read the hibernate-configuration file to retrieve the SessionFactory object.<br />SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory()</li><li>Then, retrieve Session object with the SessionFactory object.<br />Session session = sessionFactory.openSession();</li><li>Then, each method of the Session class corresponding to each DML is called.<br />session.save()<br />session.update()<br />session.delete()<br />session.get()<br />session.createCriteria()</li></ul><p>For more information about each tag, please refer to <a href="http://www.hibernate.org." class="external-link" rel="nofollow">http://www.hibernate.org.</a></p><p> </p><h2 id="HibernateIntegrationGuideforAltibase-IntegratingAltibasewithHibernate">Integrating Altibase with Hibernate</h2><hr /><p>To integrate Altibase with Hibernate, the Altibase JDBC driver must be configured and the dialect class for Altibase in the hibernate-configuration file must be specified.</p><p>This chapter describes how to include the AltibaseDialect class specific to Altibase in the Hibernate jar file, how to get the Altibase JDBC driver, how to configure the JDBC driver, and how to configure dialect in the hibernate-configuration file. In addition, this chapter also describes how to use the FailOver function and how to integrate several versions of Altibase.</p><p> </p><h3 id="HibernateIntegrationGuideforAltibase-AddingAltibaseDialectclasstoHibernatejarfile">Adding AltibaseDialect class to Hibernate jar file</h3><hr /><p>DBMS vendors can provide non-standard SQL to its characteristics.</p><p>Hibernate provides a dialect class to execute non-standard SQL statements, but a dialect class for Altibase is not provided by default.</p><p>Altibase specific dialect class must be used in the deployed Hibernate jar file to use various non-standard SQL (limit clause, sequence syntax, etc.) provided by Altibase.</p><p>The dialect class for Altibase is provided with the following URL.</p><p><a href="https://github.com/ALTIBASE/hibernate-orm/blob/master/ALTIBASE_DIALECT_PORTING.md" rel="nofollow" class="external-link"><span class="nolink">https://github.com/ALTIBASE/hibernate-</span>orm/blob/master/ALTIBASE_DIALECT_PORTING.md</a></p><p>To download the AltibaseDialect class and related files for the Hibernate version and include them in the Hibernate jar file is as follows.</p><ol><li><p>Unzip the Hibernate jar file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">$mv hibernate-core-x.x.x.Final.jar to-the-java-file-directory
+$cd to-the-java-file-directory
+$jar xvf hibernate-core-x.x.x.Final.jar</pre>
+</div></div></li><li><p>Deploy and compile the AltibaseDialect.java, AltibaseLimitHandler.java, and SequenceInformationExtractorAltibaseDatabaseImpl.java files that are distributed in the directory where you unzipped the Hibernate jar.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">$mv Altibase*.java to-the-java-file-directory
+$cd to-the-java-file-directory
+$javac -d . -cp . AltibaseLimitHandler.java
+$javac -d . -cp . AltibaseDialect.java
+$javac -d . -cp . SequenceInformationExtractorAltibaseDatabaseImpl.java</pre>
+</div></div></li><li><p>Create a Hibernate jar containing the AltibaseDialect class.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">$jar -cvfm hibernate-core-x.x.x.Final.jar  META-INF/MANIFEST.MF .</pre>
+</div></div></li><li>Use the hibernate-core-x.x.x.Final.jar file created above as a Hibernate jar file.</li></ol><p> </p><h3 id="HibernateIntegrationGuideforAltibase-HowtogettheAltibaseJDBCDriver">How to get the Altibase JDBC Driver</h3><hr /><p>The JDBC driver provided by Altibase is the Altibase.jar file. This file is located in the $ALTIBASE_HOME/lib directory on the server where Altibase is installed.</p><p>Starting from the Altibase version 5, two files are provided in the $ALTIBASE_HOME/lib directory, Altibase.jar file and jar file with major version specified such as Altibase5.jar.</p><p>The Altibase.jar is a general JDBC driver file, and the Altibase5.jar is the JDBC driver file used when integrating Altibase version 5 and other versions together. Therefore, the Altibase.jar file is used when linking with one Altibase server or multiple Altibases of the same version.</p><p>Before using the Altibase JDBC driver, the user must check the compatibility between the Altibase server and the Altibase JDBC driver. The user can check the compatibility by comparing the communication protocol version of the Altibase server with the communication protocol (CMP) version of the Altibase JDBC driver.</p><ul><li><p><strong>How to check the Altibase JDBC driver version</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">$ java –jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 5.3.3.13 for JavaVM v1.4, CMP:5.6.1, $Revision: 14502 $ Jan13 2010 14:35:28 </pre>
+</div></div><p><strong><br /></strong></p></li><li><p><strong>How to check the communication protocol version of the Altibase server</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">$ altibase -v
+version 5.3.3.13 XEON_LINUX_redhat_Enterprise_AS4-64bit-5.3.3.13-release-GCC3.4.6 (xeonredhat-linux-gnu) Jan 13 2010 14:35:30, binary db version 5.4.1, meta version 5.6.1, cm protocol version 5.6.1, replication protocol version 5.4.1</pre>
+</div></div></li></ul><h3 id="HibernateIntegrationGuideforAltibase-HowtoconfiguretheJDBCdriver">How to configure the JDBC driver</h3><hr /><p>To use the Altibase JDBC driver, add the Altibase.jar file to the classpath or place it in the appropriate directory of the web server.</p><p>If the user is developing using the Eclipse, the user can add the Altibase JDBC to the project as follows.</p><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><span lang="en">Project – JRE System Library [J2SE-1.5]-Properties – Installed JREs – Click jre among the items – Edit – Add External JARs to add Altibase.jar.</span></pre><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221636.png" data-image-src="attachments/14058388/14221636.png"></p><h3 id="HibernateIntegrationGuideforAltibase-Settingdialectinhibernate-configurationfiletointegratewithAltibase">Setting dialect in hibernate-configuration file to integrate with Altibase</h3><hr /><p>Use the &lt;property&gt; tag of &lt;sessionFactory&gt; in hibernate-configuration file to specify connection information and dialect class to integrate with Altibase.</p><p>At this time, each defined property is as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">connection.driver_class</td><td class="confluenceTd">ALTIBASE JDBC driver class Name</td></tr><tr><td class="confluenceTd">connection.url</td><td class="confluenceTd">Connection string information for connection with ALTIBASE</td></tr><tr><td class="confluenceTd">connection.username</td><td class="confluenceTd">Database account username</td></tr><tr><td class="confluenceTd">connection.password</td><td class="confluenceTd">Database password</td></tr><tr><td class="confluenceTd">dialect</td><td class="confluenceTd">AltibaseDialect class name</td></tr></tbody></table></div><p>The following is an example of configuring Altibase connection information in the hibernate-configuration file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;hibernate-configuration&gt;    
+    &lt;session-factory&gt;
+        &lt;!-- Altibase connection configuration --&gt;
+            &lt;property name=&quot;connection.driver_class&quot;&gt;
+                    Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+            &lt;property name=&quot;connection.url&quot;&gt;
+                    jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+            &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+            &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+              
+            &lt;!-- Specify the AltibaseDialect class in the dialect property --&gt;
+            &lt;property name=&quot;dialect&quot;&gt;
+                    org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+            &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;
+            &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+            &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+              
+            &lt;!-- hibernate-mapping file Person.hbm.xml file configuration--&gt;
+            &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><ul><li>Set 4 properties for connecting to the Altibase server.<br />connection.driver_class<br />connection.url<br />connection.username<br />connection.password </li><li>Specify the Altibase Dialect class in the dialect property.</li><li>Configure Person.hbm.xml file, hibernate-mapping file.</li></ul><p>To run the AltibaseConnection project above, Hibernate related jar file and Altibase.jar file are required.</p><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221638.png" data-image-src="attachments/14058388/14221638.png"></p><h3 id="HibernateIntegrationGuideforAltibase-ConnectionusingFailOver">Connection using FailOver</h3><hr /><p>FailOver is supported as of ALTIBASE 5.3.3. To use the FailOver function, set the FailOver related property in the connection.url property of the hibernate-configuration file.</p><p>The following is an example of connecting to the Altibase server using FailOver.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>FailOverSample's Hibernate.cfg.xml file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.url&quot;&gt;
+jdbc:Altibase://192.168.1.35:20300/mydb?AlternateServers=(127.0.0.1:20300)&amp;amp;ConnectionRetryCount=1&amp;amp;ConnectionRetryDelay=1&amp;amp;SessionFailOver=on&amp;amp;LoadBalance=off
+&lt;/property&gt;</pre>
+</div></div><p>The FailOver related properties defined in the connection url part specified in the above file are as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">AlternateServer</td><td class="confluenceTd">This indicates the available servers to be connected when a failure occurs (IP Address1:Port1, IP Address2:Port2,...).</td></tr><tr><td class="confluenceTd">ConnectionRetryCount</td><td class="confluenceTd"><p>This indicates the number of retries of connection attempts when an available server connection fails.</p></td></tr><tr><td class="confluenceTd">ConnectionRetryDelay</td><td class="confluenceTd"><p>This indicates the time of delay (in seconds) before attempting to connect again when an available server connection fails.</p></td></tr><tr><td class="confluenceTd">LoadBalance</td><td class="confluenceTd"><p>If set to on, the random selection is made including the default server and available servers when the first connection is attempted.</p><p>If set to off, it connects to the default server when the initial connection is attempted. If the connection to the default server fails, it connects to the AlternateServer.</p></td></tr><tr><td colspan="1" class="confluenceTd">SessionFailOver</td><td colspan="1" class="confluenceTd"><p> Option to use STF(Service Time Fail-Over). on: STF, off: CTF</p><p>The CTF(Connection Time Fail-Over) detects the failure at the time of DBMS connection and retries the connection to the DBMS of another available node instead of the DBMS where the failure occurred.</p><p>The STF(Service Time Fail-Over) detects the failure during DBMS service and access DBMS of another available node again to restore the properties of the session so that the business application logic can continue to be executed.</p><p>Since the STF performs Fail-Over only for DBMS connection, the failed transaction must be reprocessed by the user.</p></td></tr></tbody></table></div><p>To execute the FailoverSample project above, the same jar files as the 'Setting dialect in hibernate-configuration file to integrate with Altibase' section are required.</p><p> </p><h3 id="HibernateIntegrationGuideforAltibase-Simultaneousconnectto2Altibaseversions">Simultaneous connect to 2 Altibase versions</h3><hr /><p>Starting with the Altibase version 5, the JDBC driver for Altibase version 5 is provided so that two or more versions can be connected simultaneously in one application. With this driver, the user can access two versions of Altibase between Altibase V5-Altibase V7, Altibase V5-Altibase V6.</p><p>In order to distinguish it from the existing Altibase.jar, Altibase5.jar dedicated to Altibase version 5 is required, and each version is provided in the form of specifying the major version in a file. Also, the JDBC driver class name specified in the connection.driver_class property of the hibernate-configuration file must be specified as Altibase5.jdbc.driver.AltibaseDriver for Altibase version 5 instead of the existing Altibase.jdbc.driver.AltibaseDriver.</p><p>In order to integrate with other versions of Altibase in Hibernate, create hibernate-configuration files for each version separately and read each hibernate-configuration file from the application.</p><p>Please note that, in this case, the application must first load Altibase5.jdbc.driver.AltibaseDriver and then Altibase.jdbc.driver.AltibaseDriver.</p><p>The following are examples of loading the drivers of two versions of Altibase using Altibase.jar and Altibase5.jar files.</p><p> </p><p><strong>Ex) Hibernate.Altibase5.cfg.xml file of MultiVersionConnection</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Setting for ALTIBASE V5</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.driver_class&quot;&gt;Altibase5.jdbc.driver.AltibaseDriver
+&lt;/property&gt;
+…</pre>
+</div></div><p><strong><br /></strong></p><p><strong>Ex) Hibernate.Altibase7.cfg.xml file of MultiVersionConnection</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Settings for versions other than ALTIBASE V5</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.driver_class&quot;&gt;Altibase.jdbc.driver.AltibaseDriver
+&lt;/property&gt;
+…</pre>
+</div></div><p> </p><p><strong>Ex) PersonApp.java file of MultiVersionConnection</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+SessionFactory sessionFactory1 =
+    new Configuration().configure(&quot;Hibernate.Altibase5.cfg.xml&quot;).buildSessionFactory();
+SessionFactory sessionFactory2 =
+    new Configuration().configure(&quot;Hibernate.Altibase7.cfg.xml&quot;).buildSessionFactory();
+      
+Session session1 = sessionFactory1.openSession();
+Session session2 = sessionFactory2.openSession();
+… </pre>
+</div></div><p>In the example of PersonApp.java above, you can see that Altibase5.jdbc.driver.AltibaseDriver is used as connection.driver_driver_class to load Altibase5.jdbc.driver.AltibaseDriver before Altibase.jdbc.driver.AltibaseDriver.</p><p>Please note that the driver for Altibase 5 must be loaded first.</p><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221639.png" data-image-src="attachments/14058388/14221639.png"></p><h2 id="HibernateIntegrationGuideforAltibase-Hibernate,Spring,AltibaseIntegration">Hibernate, Spring, Altibase Integration</h2><hr /><p>To integrate with the Altibase server, the user can connect by specifying connection information and dialect in the configuration of Hibernate, or by specifying a dataSource in Spring.</p><p>This chapter describes how to integrate with the Altibase server using these two methods.</p><h3 id="HibernateIntegrationGuideforAltibase-WhensettingdataSourceinSpring">When setting dataSource in Spring</h3><hr /><p>The following process is required to use Hibernate and Spring together.</p><ol><li>Create dataSource for DBMS integration in Spring's applicationContext.xml file. For more detailed information on setting the dataSource, please refer to the &quot;ALTIBASE_Spring_Linking Guide&quot; document.</li><li>Specify Hibernate's sessionFactory bean in applicationContext.xml file. At this time, specify the dataSource set in No. 1 in &lt;property name=&quot;dataSource&quot;&gt;, hibernate-mapping files in &lt;property name-&quot;mapping-resource&gt;, and &lt;property name=&quot;hibernate Properties&quot;&gt; defines properties related to Hibernate.</li><li>In the applicationContext.xml file, set each DAO bean to refer to the SessionFactory bean.</li><li>The session object is obtained with the SessionFactory object set in the DAO class, and methods corresponding to each DML are called.<br /><br /></li></ol><p>The following is an example of specifying dataSource and sessionFactory bean in applicationContext.xml file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ApplicationContext.xml file of SpringAltibaseConnection1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;!-- Set dataSource to connect to Altibase server. --&gt;
+&lt;bean id=&quot;dataSource&quot;
+        class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+    &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:20300/mydb&quot;/&gt;
+    &lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+    &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+  
+&lt;!-- Specify Hibernate&#39;s sessionFactory bean. --&gt;
+&lt;bean id=&quot;sessionFactory&quot;
+        class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;          &lt;!-- Enter the dataSource set above. --&gt;
+    &lt;property name=&quot;mappingResources&quot;&gt;
+        &lt;list&gt;
+                &lt;!-- Specify hibernate-mapping files. --&gt;
+                &lt;value&gt;Person.hbm.xml&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+  
+    &lt;!-- Specify properties related to Hibernate. --&gt;
+    &lt;property name=&quot;hibernateProperties&quot;&gt;
+        &lt;props&gt;
+                &lt;prop key=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.AltibaseDialect&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+  
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot; &gt;
+    &lt;constructor-arg ref=&quot;sessionFactory&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><h4 id="HibernateIntegrationGuideforAltibase-RequiredjarfilesforSpringintegration">Required jar files <span class="VIiyi" lang="en">for Spring integration</span></h4><p><span class="VIiyi" lang="en"><span class="VIiyi" lang="en">In order to execute the above example SpringAltibaseConnection1 project, not only the jar files needed in the part of 'Setting dialect in hibernate-configuration file to integrate with Altibase', but also spring related jar files are needed.</span></span></p><p><span class="VIiyi" lang="en"><span class="VIiyi" lang="en">For the detailed directory location of the jar file, refer to 『ALTIBASE_Spring_Integration Guide』.</span></span></p><h3 id="HibernateIntegrationGuideforAltibase-IncaseofsettingaccessinformationinHibernateproperty">In case of setting access information in Hibernate property</h3><hr /><p>When connecting by specifying connection properties to Hibernate in the Hibernate+Spring environment, the following process is required.</p><ol><li>Assign Hibernate's SessionFactory bean in applicationContext.xml file. <br />Then, specify hibernate-mapping files in &lt;property name='mapping-resource&quot;&gt; and connection related information and dialect class in &lt;property name=&quot;hibernate Properties&quot; tag.</li><li>Set each DAO bean to refer to the sessionFactory bean.</li><li>The Session object is obtained with the SessionFactory object set in the DAO class, and methods corresponding to each DML are called.</li></ol><p>The following is an example of setting the connection properties in Hibernate and integrate with Altibase.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ApplicationContext.xml file of SpringAltibaseConnection2</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">...
+&lt;bean id=&quot;sessionFactory&quot;
+    class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;mappingResources&quot;&gt;
+        &lt;list&gt;
+            &lt;value&gt;Person.hbm.xml&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+    &lt;property name=&quot;hibernateProperties&quot;&gt;
+        &lt;props&gt;
+            &lt;prop key=&quot;hibernate.dialect&quot;&gt;
+                            org.hibernate.dialect.AltibaseDialect&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.driver_class&quot;&gt;
+                            Altibase.jdbc.driver.AltibaseDriver&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.url&quot;&gt;
+                            jdbc:Altibase://192.168.1.35:21129/mydb&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.username&quot;&gt;sys&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.password&quot;&gt;manager&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.pool_size&quot;&gt;1&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.current_session_context_class&quot;&gt;thread&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.show_sql&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+      
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot; &gt;
+    &lt;constructor-arg ref=&quot;sessionFactory&quot; /&gt;
+&lt;/bean&gt;
+... </pre>
+</div></div><h4 id="HibernateIntegrationGuideforAltibase-Requiredjarfiles">Required jar files</h4><p>In order to execute the SpringAltibaseConnection2 example, jar files from 'When setting dataSource in Spring' are required.</p><p> </p><h3 id="HibernateIntegrationGuideforAltibase-UsingAltibase&#39;sConnectionPool"><span class="VIiyi" lang="en">Using Altibase's ConnectionPool</span></h3><hr /><p><span class="VIiyi" lang="en">Altibase's ConnectionPool can be used by using the ABConnectionPoolDataSource class provided by Altibase.</span></p><p><span class="VIiyi" lang="en"><span class="JLqJ4b ChMk0b"><span>If it is a Hibernate + Spring integration environment, define dataSource bean by using ABConnectionPoolDataSource class in Spring applicationContext.xml file.</span></span> <span class="JLqJ4b ChMk0b"><span>However, Altibase's ConnectionPool cannot be used if only Hibernate is used without interworking with Spring.</span></span></span></p><p><span class="VIiyi" lang="en">For details on using Altibase's ConnectionPool, refer to the document 『ALTIBASE_Spring_Integration Guide』.</span></p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnectionPool's applicationContext.xml file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">...
+&lt;bean id=&quot;dataSource&quot;        &lt;!-- Using the ABConnectionPoolDataSource class provided by Altibase --&gt;
+        class=&quot;Altibase.jdbc.driver.ABConnectionPoolDataSource&quot;&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+        &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+... </pre>
+</div></div><h4 id="HibernateIntegrationGuideforAltibase-Requiredjarfiles.1">Required jar files</h4><p><span class="VIiyi" lang="en">In order to execute the AltibaseConnectionPool example, jar files from 'When setting dataSource in Spring' are required.</span></p><p> </p><h2 id="HibernateIntegrationGuideforAltibase-ConsiderationswhenintegratingHibernate"><span style="color: rgb(0,0,0);">Considerations when integrating Hibernate</span> </h2><hr /><p>This chapter describes considerations when integrating Altibase in Hibernate.</p><h3 id="HibernateIntegrationGuideforAltibase-TransactionmanagementinHibernate">Transaction management in Hibernate</h3><hr /><p>When processing a transaction in Hibernate, simply call the beginTransaction() method of the Session class in the application and then call the commit()/rollback() method of the Transaction class.</p><p>When calling beginTransaction() method, setAutoCommit(false) is automatically called, and the transaction is maintained. Then when the commit()/rollback() method is called, the corresponding transaction is terminated.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnection's PersonApp.java file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;!-- Call beginTransaction() method to signal the start of a transaction --&gt;
+Transaction tx = session.beginTransaction();
+//insert Person
+Person newPerson1 = new Person();
+…
+session.save(newPerson1);
+&lt;!-- Call the commit() method to signal the end of the transaction --&gt;
+tx.commit();
+…
+//update Person
+&lt;!-- Call beginTransaction() method to signal the start of a transaction --&gt;
+tx = session.beginTransaction();
+newPerson1.setHeightInMeters(1.93);
+newPerson1.setWeightInKilograms(86.36);
+session.flush();
+&lt;!-- Call the commit() method to signal the end of the transaction --&gt;
+tx.commit();
+…
+//delete Person
+&lt;!-- Call beginTransaction() method to signal the start of a transaction --&gt;
+tx = session.beginTransaction();
+session.delete(session.get(Person.class, newPerson1.getId()));
+&lt;!-- Call the commit() method to signal the end of the transaction --&gt;
+tx.commit();
+…</pre>
+</div></div><h2 id="HibernateIntegrationGuideforAltibase-ProcessingLOBdata">Processing LOB data</h2><hr /><p>In order to process LOB in Hibernate, in case of CLOB in &lt;property&gt; tag which defines mapping of column and variable in hibernate-mapping file, define as type=“org.hibernate.type.StringClobType”, sql-type=”clob”, and , in the case of BLOB, type= “org.hibernate.type. PrimitiveByteArrayBlobType”, sql-type=”blob” must be defined.</p><p>If this is failed to comply, incorrect data may be inserted or incorrect data may be queried due to the length limitation. Or, an error such as invalid length may occur.</p><p>The following is an example of defining &lt;property&gt; for CLOB and BLOB type data.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>LobSample.hbm.xml file of LobSample</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;com.altibase.lob.Lobsample&quot; table=&quot;lobsample&quot;&gt;
+        &lt;id name=&quot;lob_id&quot; column=&quot;lob_id&quot; type=&quot;int&quot;&gt;
+        &lt;generator class=&quot;assigned&quot;/&gt;
+        &lt;/id&gt;
+        &lt;!-- To indicate that the column is a CLOB type, type and sql-type are defined as follows. --&gt;
+        &lt;property name=&quot;clobcolumn&quot; type=&quot;org.hibernate.type.StringClobType&quot;&gt;
+            &lt;column name=&quot;clobcolumn&quot; sql-type=&quot;clob&quot;/&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;blobcolumn&quot;
+            type=&quot;org.hibernate.type.PrimitiveByteArrayBlobType&quot;&gt;
+            &lt;column name=&quot;blobcolumn&quot; sql-type=&quot;blob&quot;/&gt;
+        &lt;/property&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;
+…</pre>
+</div></div><p>When handling LOBs, please consider that Altibase must manage the transaction after changing the autocommit mode to false to process LOB data.</p><p>When calling the beginTransaction() method of Session during Hibernate integrating, setAutoCommit(false) is automatically performed, so the beginTransaction() methods must be called before processing the LOB.</p><p>In the case of integrating Hibernate and Spring together, it is recommended to call beginTransaction() method in Java application because false may not be applied to aucocommit even if the transaction is managed in Spring.</p><p>If the beginTransaction() method is not called, the following errors can occur.</p><ol><li><strong>When querying LOB data</strong><br />null value is returned, or errors such as“java.sql.SQLException: [0]:LobLocator can not span the transaction 101858625.” occurs.</li><li><strong>When inserting LOB data</strong><br />“Java.sql.SQLException: [0]: Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on.” error occurs.</li></ol><p>The following is an example of processing LOB in Hibernate.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>LobApp.java file of LobSample</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;"> …    
+&lt;!-- When the beginTransaction() method is called, the autocommit mode becomes false.
+         The beginTransaction() method must be called before processing the LOB. --&gt;
+    Transaction tx = session.beginTransaction();
+      
+    StringBuffer msg=new StringBuffer(&quot;Existing Disk-based RDBMS (also known as
+    Disk-Resident DBMSs or DRDBMSs&quot; );
+      
+    for(int i=0; i&lt;10;i++){
+    msg.append(msg.toString());
+    }
+      
+    Lobsample lob1 = new Lobsample(1,msg.toString(),msg.toString().getBytes());
+    session.save(lob1);
+    tx.commit();
+    session.flush();
+      
+    tx = session.beginTransaction();
+      
+    Lobsample Lobsample1
+        = (Lobsample) session.get(Lobsample.class,lob1.getLob_id());
+      
+    System.out.println(Lobsample1.getClobcolumn().substring(0, 100));
+    System.out.println(Lobsample1.getBlobcolumn());
+      
+    tx.commit();
+…</pre>
+</div></div><h4 id="HibernateIntegrationGuideforAltibase-Requiredjarfiles.2">Required jar files</h4><p>In order to execute the above LobSample project, jar files such from &quot;Setting dialect in hibernate-mapping file to integrate with Altibase&quot; are required.</p><p> </p><h3 id="HibernateIntegrationGuideforAltibase-CallingProcedure/Function"><span style="color: rgb(0,0,0);">Calling Procedure/Function</span></h3><hr /><p>Because Stored Procedure/Function calls created in DBMS in Hibernate are not supported, CallableStatement should be used as in the case of calling in general JDBC after getting the Connection object with the Session object.</p><p>The following is an example of calling the stored procedure/function.</p><p><strong>Ex) ProcedureSample Procedure/Function creation statement</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE sum_proc(
+        p_num1 IN NUMBER,
+        p_num2 IN NUMBER,
+        p_num3 OUT NUMBER
+)
+AS
+BEGIN
+        p_num3 := p_num1 + p_num2;
+END;
+/
+  
+CREATE OR REPLACE FUNCTION sum_func
+(
+        p_num1 IN NUMBER,
+        p_num2 IN NUMBER
+)
+RETURN NUMBER
+AS
+        v_num NUMBER;
+BEGIN
+        v_num := p_num1 + p_num2;
+        RETURN v_num;
+END;
+/</pre>
+</div></div><p><strong>Ex)  ProcedureApp.java of ProcedureSample</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…    SessionFactory sessionFactory =
+            new Configuration().configure().buildSessionFactory();
+              
+    Session session = sessionFactory.openSession();
+    Connection con =session.connection();
+      
+    // Call Stored Procedure
+    String sql1 = &quot;{call sum_proc(?,?,?)}&quot;;
+    CallableStatement altibaseStatement1 = con.prepareCall(sql1);
+    altibaseStatement1.setInt(1,10);
+    altibaseStatement1.setInt(2,20);
+    altibaseStatement1.registerOutParameter(3,java.sql.Types.NUMERIC);
+    altibaseStatement1.execute();
+    System.out.println(altibaseStatement1.getDouble(3));
+      
+      
+    // Call Stored Function
+    String sql2 = &quot;{call ? := sum_func(?,?)}&quot;;
+    CallableStatement altibaseStatement2 = con.prepareCall(sql2);
+    altibaseStatement2.registerOutParameter(1,java.sql.Types.NUMERIC);
+    altibaseStatement2.setInt(2,10);
+    altibaseStatement2.setInt(3,20);
+    altibaseStatement2.execute();
+    System.out.println(altibaseStatement2.getDouble(1));
+…</pre>
+</div></div><p><strong>Required jar files</strong></p><p>In order to execute the ProcedureSample, jar files such from &quot;Setting dialect in hibernate-mapping file to integrate with Altibase&quot; are required.</p><p> </p><h3 id="HibernateIntegrationGuideforAltibase-ExecutingNativeSQL">Executing NativeSQL</h3><hr /><p>Among SQL statements, MOVE statement is only provided by Altibase. The way to execute the specialized function provided by a specific DBMS is as follows.</p><ol><li>Create the nativeSQL statement in hibernate-mapping file.</li><li>In the application, get the Query object by calling the getNamedQuery() method of the session object.</li><li>Call the method that executes each SQL statement of the Query object (ex. executeUpdate(), list(), etc.)</li></ol><p>The following is an example of executing the MOVE statement.</p><p><strong>Ex) NativeSQL.hbm.xml file of NativeSQL</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;hibernate-mapping&gt;…
+    &lt;sql-query name=&quot;nativeSQLMove&quot;&gt;
+            &lt;![CDATA[
+                    MOVE INTO t2 (c1,c2,c3)
+                    FROM t1(c1,c2,c3)
+            ]]&gt;
+    &lt;/sql-query&gt;
+…
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><p><strong>Ex) NativeSQLApp.jave of NativeSQL</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…SessionFactory sessionFactory
+        = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+Session session = sessionFactory.openSession();
+Query query = session.getNamedQuery(&quot;nativeSQLMove&quot;);
+Transaction tx = session.beginTransaction();
+int rows = query.executeUpdate();
+tx.commit();
+System.out.println(rows+&quot; data moved&quot;);
+…</pre>
+</div></div><p><strong>Required jar files</strong></p><p>In order to execute the NativeSQL example, jar files such from &quot;Setting dialect in hibername-mapping file and integrate with Altibase&quot; are required.</p><h2 id="HibernateIntegrationGuideforAltibase-Appendix">Appendix</h2><hr /><p>Based on the AltibaseConnection example, this appendix describes how to integrate with Altibase in Hibernate in detail.</p><p>In the example, the development tool uses Eclipse.</p><h3 id="HibernateIntegrationGuideforAltibase-CreatingDBMStableandsequence">Creating DBMS table and sequence</h3><hr /><p>The following tables and sequences are created in the DBMS.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>create_tbl.sql</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">CREATE TABLE PERSON (    
+    ID          NUMBER (5, 0)   NOT NULL,
+    NAME        VARCHAR (40)    NOT NULL,
+    BIRTH_DATE  DATE,
+    WEIGHT_KG   NUMBER (4, 2)   NOT NULL,
+    HEIGHT_M    NUMBER (4, 2)   NOT NULL,
+    IS_MARRIED  CHAR(1),
+    PRIMARY KEY (ID)
+);
+CREATE SEQUENCE PERSON_SEQ;</pre>
+</div></div><h3 id="HibernateIntegrationGuideforAltibase-Creatingproject">Creating project</h3><hr /><p>Create a project called AltibaseConnection in Eclipse.</p><ol><li>Click Menu - File - New - Java Project</li><li>Project name: Enter AltibaseConnection</li><li>Click the Finish button</li></ol><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221641.png" data-image-src="attachments/14058388/14221641.png"></p><h3 id="HibernateIntegrationGuideforAltibase-Creatinghibernate-mappingfile.1">Creating hibernate-mapping file</h3><hr /><p>Create a hibernate-mapping file that defines mapping information between person table and Person class of DBMS.</p><ol><li>Right-click on the AltibaseConnection project-src directory and click New-File.</li><li>Create Person.hbm.xml in File name:.</li></ol><p><img class="confluence-embedded-image" width="500" src="attachments/14058388/14221642.png" data-image-src="attachments/14058388/14221642.png"></p><p>Create the following in the Person.hbm.xml file.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Person.hbm.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;euc-kr&quot; ?&gt;&lt;!DOCTYPE hibernate-mapping PUBLIC
+      &quot;-//Hibernate/Hibernate Mapping DTD//EN&quot;
+      &quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;examples.domain.Person&quot; table=&quot;person&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;int&quot;&gt;
+            &lt;generator class=&quot;sequence&quot;&gt;
+                &lt;param name=&quot;sequence_name&quot;&gt;PERSON_SEQ&lt;/param&gt;
+            &lt;/generator&gt;
+        &lt;/id&gt;      
+        &lt;!-- Map the columns of the person table and the variables of the Person class through the &lt;property&gt; tag. --&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot;/&gt;
+        &lt;property name=&quot;birthDate&quot; column=&quot;birth_date&quot; type=&quot;date&quot;/&gt;
+        &lt;property name=&quot;weightInKilograms&quot; column=&quot;weight_kg&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;heightInMeters&quot; column=&quot;height_m&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;isMarried&quot; column=&quot;is_Married&quot; type=&quot;boolean&quot;/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><p>The columns of the person table and the variables of the Person class are respectively mapped with the &lt;property&gt; tag.</p><p>Because Java's boolean type is not a type supported by DBMS, a column was created as a type of CHAR(1) to store as 0 (false) or 1 (true).</p><h3 id="HibernateIntegrationGuideforAltibase-Creatinghibernate-configurationfile.1">Creating hibernate-configuration file</h3><hr /><p>Create a hibernate-configuration file that defines the dialect to access the Altibase server.</p><ol><li>Right-click on the AltibaseConnection project-src directory and click New-File</li><li>Create Hibernate.cfg.xml in File name:.</li></ol><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&#39;1.0&#39; encoding=&quot;euc-kr&quot;?&gt;&lt;!DOCTYPE hibernate-configuration PUBLIC
+    &quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;property name=&quot;connection.driver_class&quot;&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+        &lt;property name=&quot;connection.url&quot;&gt;jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+        &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+        &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+        &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;
+        &lt;property name=&quot;dialect&quot;&gt;org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+        &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+        &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+        &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><h3 id="HibernateIntegrationGuideforAltibase-Creatingapplication">Creating application</h3><hr /><ol><li>Create a Person class that is a DO object for the person table.<ol><li>Right-click on the src directory of the AltibaseConnection project and click New-Class.</li><li>Enter examples.doman in Package: and Person in Name:.</li></ol></li></ol><p><img class="confluence-embedded-image" width="500" src="attachments/14058388/14221643.png" data-image-src="attachments/14058388/14221643.png"></p><p>Create the following in the Person.java file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">package examples.domain;
+import java.sql.*;
+public class Person {
+    private int id;
+    private String name;
+    private Date birthDate;
+    private double weightInKilograms;
+    private double heightInMeters;
+    private boolean isMarried;
+      
+    public int getId () {
+        return id;
+    }
+    public void setId (int id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public void setWeightInKilograms(double weightInKilograms) {
+        this.weightInKilograms = weightInKilograms;
+    }
+    public void setIsMarried(boolean isMarried) {
+        this.isMarried = isMarried;
+    }
+    public double getWeightInKilograms() {
+        return weightInKilograms;
+    }
+    public void setHeightInMeters(double heightInMeters) {
+        this.heightInMeters = heightInMeters;
+    }
+    public double getHeightInMeters() {
+        return heightInMeters;
+    }
+    public boolean getIsMarried() {
+        return isMarried;
+    }
+    public String toString(){
+        return &quot;id=&quot;+id+&quot;, name=&quot;+name+&quot;, birthData=&quot;+birthDate+&quot;, weightInKillograms=&quot;
+        +weightInKilograms+&quot;,heightInMeters=&quot;+heightInMeters+&quot;,isMarried=&quot;+isMarried;
+    }
+}</pre>
+</div></div><p style="margin-left: 30.0px;">  2. Write a main program that executes DML in DBMS</p><ol><li style="list-style-type: none;background-image: none;"><ol><li><span class="VIiyi" lang="en"><span class="JLqJ4b ChMk0b"><span>Right-click in the src directory of the AltibaseConnection project and click New - Class.</span></span><span class="JLqJ4b"> </span></span></li><li><span class="VIiyi" lang="en"><span class="JLqJ4b ChMk0b"><span>Enter PersonApp in Name</span></span></span></li></ol></li></ol><p><img class="confluence-embedded-image confluence-external-resource" width="500" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A23%3A11.png?version=1&amp;modificationDate=1575865392000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A23%3A11.png?version=1&amp;modificationDate=1575865392000&amp;api=v2"></p><p> </p><p>Create the following in the PersonApp.java file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">import java.sql.SQLException;import java.util.*;
+import org.hibernate.SessionFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import examples.domain.Person;
+public class PersonApp {
+    public static void main(String[] args) throws  SQLException {
+        SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+          
+        //insert Person
+        System.out.println(&quot;insert Person&quot;);
+        Person newPerson1 = new Person();
+        newPerson1.setName(&quot;KIM&quot;);
+        newPerson1.setBirthDate (new java.sql.Date(1978 - 1900, 2 - 1, 1));
+        newPerson1.setHeightInMeters(1.82);
+        newPerson1.setWeightInKilograms(80.23);
+        newPerson1.setIsMarried(true);
+        session.save(newPerson1);
+          
+        Person newPerson2 = new Person();
+        newPerson2.setName(&quot;LEE&quot;);
+        newPerson2.setBirthDate (new java.sql.Date(1975 - 1900, 5 - 1, 5));
+        newPerson2.setHeightInMeters(1.57);
+        newPerson2.setWeightInKilograms(45.23);
+        newPerson2.setIsMarried(false);
+        session.save(newPerson2);
+        tx.commit();
+          
+        System.out.println();
+        System.out.println(&quot;select all Persons&quot;);
+        Criteria crit = session.createCriteria(Person.class);
+        crit.addOrder(Order.asc(&quot;id&quot;));
+        List&lt;Person&gt; list = crit.list();
+        System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+        for(int i=0; i&lt; list.size();i++){
+            System.out.println(list.get(i));
+          
+        }
+        tx = session.beginTransaction();
+          
+        //update Person
+        //Object values changed within the scope of Session are automatically reflected in the DBMS
+        System.out.println();
+        System.out.println(&quot;update Person&quot;);
+        newPerson1.setHeightInMeters(1.93);
+        newPerson1.setWeightInKilograms(86.36);
+        System.out.println();
+        session.update(newPerson1);
+        tx.commit();
+        Person person = (Person) session.get(Person.class,newPerson1.getId());
+        System.out.println(person);
+          
+        //delete Person
+        tx = session.beginTransaction();
+        System.out.println();
+        System.out.println(&quot;delete Person&quot;);
+        session.delete(session.get(Person.class, newPerson1.getId()));
+        //session.delete(session.get(Person.class, newPerson2.getId()));
+        tx.commit();
+        crit = session.createCriteria(Person.class);
+        crit.addOrder(Order.asc(&quot;id&quot;));
+        list = crit.list();
+        System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+        for(int i=0; i&lt; list.size();i++){
+            System.out.println(list.get(i));
+          
+        }
+          
+    }
+}</pre>
+</div></div><h3 id="HibernateIntegrationGuideforAltibase-Addingrequiredjarfiles">Adding required jar files</h3><hr /><p>Add the Altibase.jar and hibernate related jar files.</p><p>Right-click on the AltibaseConnection project and click Properties – Java Build Path – Click Add External JARS in Libraries to add the required jar files.</p><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221644.png" data-image-src="attachments/14058388/14221644.png"></p><h3 id="HibernateIntegrationGuideforAltibase-Runningtheapplication">Running the application</h3><hr /><p>Run the AltibaseConnection project.</p><p>After clicking the AltibaseConnection project, Run from the menu or click the Run button.</p><p><img class="confluence-embedded-image" width="700" src="attachments/14058388/14221645.png" data-image-src="attachments/14058388/14221645.png"></p><h2 id="HibernateIntegrationGuideforAltibase-Referencedocuments">Reference documents</h2><hr /><ol><li><a href="https://aid.altibase.com/display/arch/Altibase+Development+Guide" class="external-link" rel="nofollow">Altibase Development Guide</a></li><li><a href="https://aid.altibase.com/display/arch/JBOSS+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">JBoss Integration Guide for Altibase</a></li><li><a href="https://aid.altibase.com/display/arch/TOMCAT+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">TOMCAT Integration Guide for Altibase</a></li><li><a href="https://aid.altibase.com/display/arch/WEBLOGIC+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">WEBLOGIC Integration Guide for Altibase</a></li><li><a href="https://aid.altibase.com/display/arch/WebSphere+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">WebSphere Integration Guide for Altibase</a></li><li><a href="https://aid.altibase.com/display/arch/Spring+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">Spring Integration Guide for Altibase</a></li><li><a href="https://aid.altibase.com/display/arch/iBatis+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">iBatis Integration Guide for Altibase</a></li></ol><div><span style="color: rgb(0,0,0);font-size: 20.0px;"><br /></span></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221625.svg">data_access_layers.svg</a> (image/svg+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221624.svg">data_access_layers.svg</a> (image/svg+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221626.png">data_access_layer.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221635.dtd">hibernate-mapping-3.0.dtd</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221637.png">image2019-12-11 8_17_15.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221636.png">image2019-12-11 8_17_15.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221638.png">image2019-12-11 8_4_56.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221640.png">image2019-12-11 8_24_8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221639.png">image2019-12-11 8_24_8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221641.png">image2019-12-9 11_20_23.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221642.png">image2019-12-9 11_21_40.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221643.png">image2019-12-9 13_14_37.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221644.png">image2019-12-10 16_47_36.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058388/14221645.png">image2019-12-10 16_57_21.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

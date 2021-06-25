@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 캐릭터셋 변경 방법 상세 절차</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 캐릭터셋 변경 방법 상세 절차
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span> on Jan 20, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h3 id="id-캐릭터셋변경방법상세절차-/*&lt;![CDATA[*/div.rbtoc1624409051755{padding:0px;}div.rbtoc1624409051755ul{list-style:disc;margin-left:0px;}div.rbtoc1624409051755li{margin-left:0px;padding-left:0px;}/*]]&gt;*/개요#id-캐릭터셋변경방법상세절차-개요대상버전#id-캐릭터셋변경방법상세절차-대상버전변경절차#id-캐릭터셋변경방법상세절차"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051755 {padding: 0px;}
+div.rbtoc1624409051755 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051755 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051755'>
+<ul class='toc-indentation'>
+<li><a href='#id-캐릭터셋변경방법상세절차-개요'>개요</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-대상버전'>대상버전</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-변경절차'>변경절차</a>
+<ul class='toc-indentation'>
+<li><a href='#id-캐릭터셋변경방법상세절차-변경절차요약'>변경절차 요약</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-변경절차상세'>변경절차 상세</a>
+<ul class='toc-indentation'>
+<li><a href='#id-캐릭터셋변경방법상세절차-STEP1.데이터베이스의스키마를다운로드받습니다.'>STEP 1.  데이터 베이스의 스키마를 다운로드 받습니다.</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-STEP2.데이터를현재의characterset으로다운로드받습니다.'>STEP 2.  데이터를 현재의 character set 으로 다운로드 받습니다.</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-STEP3.데이터베이스를삭제하고새로데이터베이스를변경하고자하는characterset설정으로생성합니다.'>STEP 3. 데이터베이스를 삭제하고  새로 데이터베이스를 변경하고자 하는 character set 설정으로 생성합니다.</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-STEP4:STEP1에서다운로드받은스키마정보를이용하여새로생성된DB에스키마를구성합니다.'>STEP 4 :  STEP1에서 다운로드 받은 스키마 정보를 이용하여 새로 생성된 DB에 스키마를 구성합니다.</a></li>
+<li><a href='#id-캐릭터셋변경방법상세절차-STEP5:데이터import툴을사용하여STEP2에서다운로드받은데이터를변경된characterset을사용하여업로드합니다.'>STEP 5 :  데이터 import 툴을 사용하여 STEP2 에서 다운로드 받은 데이터를  변경된 character set 을 사용하여  업로드합니다.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></h3><h1 id="id-캐릭터셋변경방법상세절차-개요">개요</h1><p>데이터베이스의 character set은  데이터베이스 생성 시점에 설정값에 의해서 정해지며 다시 변경할 수 없습니다.  따라서 변경을 하려면 데이터베이스를 삭제하고 새로 생성해야 합니다.</p><p>데이터베이스가 삭제되면 모든 객체와 데이터가 사라지므로 필요한 데이터는 백업후 데이터베이스를 재생성후  다시 import해야만 합니다.</p><p>필요한 데이터를 보존하면서  데이터베이스 character set 을 변경하는 상황을 가정하고 설명합니다.</p><p> </p><h1 id="id-캐릭터셋변경방법상세절차-대상버전">대상버전</h1><p>다국어 지원이 가능한 ALTIBASE HDB 5.3.1 이상 버전에  해당하는 설명입니다.</p><p> </p><h1 id="id-캐릭터셋변경방법상세절차-변경절차">변경절차</h1><h2 id="id-캐릭터셋변경방법상세절차-변경절차요약">변경절차 요약</h2><p>변경절차는 전체적으로  요약하면 아래와  같은  단계로 진행합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<ul><li>STEP 1 :  데이터베이스 export 툴을 사용하여  데이터베이스의  전체 스키마를 다운로드 받습니다.</li><li>STEP 2 :  데이터베이스의 데이터를 현재의 DB character set 으로  다운로드 받습니다.  예)  KSC5601</li><li>STEP 3 :  데이터베이스를 삭제하고  새로 데이터베이스를 변경하고자 하는 character set 설정으로 생성합니다.  예)  UTF8</li><li>STEP 4 :  STEP1에서 다운로드 받은 스키마 정보를 이용하여 새로 생성된 DB에 스키마를 구성합니다.</li><li>STEP 5 :  데이터 import 툴을 사용하여 STEP2 에서 다운로드 받은 데이터를  변경된 character set 을 사용하여  업로드 합니다.  예) UTF8</li></ul>
+</div></div><p> </p><h2 id="id-캐릭터셋변경방법상세절차-변경절차상세">변경절차 상세</h2><p>상세한 변경절차는 아래와 같은 단계로 진행합니다.  현재 DB의 character set 이  US7ASCII 인 DB의 character set 을  MS949로 변경하는 절차에 대한 설명입니다.</p><h3 id="id-캐릭터셋변경방법상세절차-STEP1.데이터베이스의스키마를다운로드받습니다.">STEP 1.  데이터 베이스의 스키마를 다운로드 받습니다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#1.1 현재 DB와 같은 client character set 를  환경변수로 설정합니다.</p><p>$ export ALTIBASE_NLS_USE=US7ASCII</p><p> </p><p>#1.2 현재 DB의 character set 과 client character set 을 확인합니다.</p><p>iSQL&gt; set vertical on;</p><p>iSQL&gt; select * from v$nls_parameters;</p><p>SESSION_ID                                       : 1         </p><p><span style="color: rgb(255,0,0);"><strong>NLS_USE                                            : US7ASCII             &lt;---  client character set                    </strong></span></p><p><span style="color: rgb(255,0,0);"><strong>NLS_CHARACTERSET                      : ASCII                    &lt;---  database character set</strong></span></p><p>NLS_NCHAR_CHARACTERSET       : UTF16</p><p>NLS_COMP                                        : BINARY </p><p>NLS_NCHAR_CONV_EXCP             : FALSE  </p><p>NLS_NCHAR_LITERAL_REPLACE : FALSE  </p><p> </p><p>#1.3 aexport 툴을 사용하여  스키마를 다운로드 받습니다.</p><p>$ aexport</p>
+</div></div><h3 id="id-캐릭터셋변경방법상세절차-STEP2.데이터를현재의characterset으로다운로드받습니다.">STEP 2.  데이터를 현재의 character set 으로 다운로드 받습니다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#2.1 현재 DB와 같은 client character set 를  환경변수에 셋팅한다.</p><p>$ export ALTIBASE_NLS_USE=US7ASCII</p><p> </p><p>#2.2  STEP1 에서  aexport 에 의해서 생성된  run_il_out.sh 에서  formout script와  data export script를 생성합니다.</p><p>iSQL&gt; create table hangul_t (c1 char(500));</p><p>iSQL&gt; insert into hangul_t values('US7ASII_한글테스트합니다');</p><p>iSQL&gt; select * from hangul_t;</p><p>C1 : US7ASII_한글테스트합니다        </p><p> </p><p>$ cat  run_il_out.sh | grep formout &gt; formout.sh</p><p>$ cat run_il_out.sh | grep 'out -f'  &gt;  dataout.sh</p><p> </p><p>#2.3 formout script를 생성하고  form script 의 NLS_USE가 DB와 같은 character set 인지 확인합니다.</p><p>$ sh formout.sh</p><p>$ cat  *.fmt</p><p>table HANGUL_T</p><p>{</p><p>&quot;C1&quot; char (500);</p><p>}</p><p><span style="color: rgb(255,0,0);"><strong>DATA_NLS_USE=US7ASCII</strong></span></p><p> </p><p>#2.4   2.2 단계에서 만든 script를  실행하여 데이터를 파일로 다운로드하고 한글이 정상적으로 포함되어 있는지  한글 데이터를 확인합니다</p><p>$ sh  dataout.sh</p><p>$ cat   *.dat</p><p>&quot;한글 데이터입니다&quot;</p>
+</div></div><p> </p><h3 id="id-캐릭터셋변경방법상세절차-STEP3.데이터베이스를삭제하고새로데이터베이스를변경하고자하는characterset설정으로생성합니다.">STEP 3. 데이터베이스를 삭제하고  새로 데이터베이스를 변경하고자 하는 character set 설정으로 생성합니다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#3.1  데이터베이스를 삭제합니다.</p><p>$ server stop</p><p>$  cd $ALTIBASE_HOME</p><p>$ rm dbs/*</p><p>$ rm logs/*</p><p> </p><p>#3.2 새로운 character set 으로 DB를 생성합니다.</p><p>$ export ALTIBASE_NLS_USE=MS949</p><p>$ server create MS949 UTF16</p><p> </p><p>#3.3  DB의 character set 을 확인합니다.</p><p>iSQL&gt; set vertical on;</p><p>iSQL&gt; select * from v$nls_parameters;</p><p>SESSION_ID                                       : 1         </p><p><span style="color: rgb(255,0,0);"><strong>NLS_USE                                            : MS949                                    </strong></span></p><p><strong><span style="color: rgb(255,0,0);">NLS_CHARACTERSET                      : MS949  </span>             </strong>                    </p><p>NLS_NCHAR_CHARACTERSET       : UTF16                                   </p><p>NLS_COMP                                        : BINARY </p><p>NLS_NCHAR_CONV_EXCP              : FALSE  </p><p>NLS_NCHAR_LITERAL_REPLACE   : FALSE</p>
+</div></div><p> </p><h3 id="id-캐릭터셋변경방법상세절차-STEP4:STEP1에서다운로드받은스키마정보를이용하여새로생성된DB에스키마를구성합니다.">STEP 4 :  STEP1에서 다운로드 받은 스키마 정보를 이용하여 새로 생성된 DB에 스키마를 구성합니다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#4.1   aexport로 생성된 스키마 생성 shell script를 실행하고  스키마가  정상적으로 생성되었는지 확인합니다.</p><p>$ sh run_is.sh</p><p>iSQL&gt; select * from tab;</p>
+</div></div><p> </p><h3 id="id-캐릭터셋변경방법상세절차-STEP5:데이터import툴을사용하여STEP2에서다운로드받은데이터를변경된characterset을사용하여업로드합니다.">STEP 5 :  데이터 import 툴을 사용하여 STEP2 에서 다운로드 받은 데이터를  변경된 character set 을 사용하여  업로드합니다.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#5.1  STEP 2.2 에서 생성된 form 파일안의  NLS_USE 설정을   새로운  character set으로 변경합니다.</p><p>$ export ALTIBASE_NLS_USE=MS949</p><p>$ cat *.fmt</p><p>table HANGUL_T</p><p>{</p><p>&quot;C1&quot; char (500);</p><p>}</p><p><span style="color: rgb(255,0,0);"><strong>DATA_NLS_USE=MS949 </strong></span></p><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">#5.2</span><strong>  </strong><span style="color: rgb(0,0,0);"> aexport 에 의해서 생성된 데이터를 import 해주는 shell script를 실행해서  데이터를 테이블에 업로드합니다.</span></span></p><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">$ sh run_il_in.sh</span></span></p><p><span style="color: rgb(255,0,0);"> </span></p><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">#5.3  데이터가 정상적으로  업로드 되었는지 한글이 들어가 있는  테이블을 조회합니다.</span></span></p><p>iSQL&gt; select * from v$nls_parameters;</p><p>SESSION_ID                                      : 1         </p><p><span style="color: rgb(255,0,0);"><strong>NLS_USE                                           : MS949                                    </strong></span></p><p><span style="color: rgb(255,0,0);"><strong>NLS_CHARACTERSET                    : MS949 </strong> </span>                                 </p><p>NLS_NCHAR_CHARACTERSET     : UTF16                                   </p><p>NLS_COMP                                      : BINARY </p><p>NLS_NCHAR_CONV_EXCP            : FALSE  </p><p>NLS_NCHAR_LITERAL_REPLACE : FALSE</p><p> </p><p>iSQL&gt; select * from hangul_t;</p><p>C1 : US7ASII_한글테스트합니다 .</p>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

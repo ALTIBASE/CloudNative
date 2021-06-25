@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase Quick Install &amp; Start for UNIX</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase Quick Install &amp; Start for UNIX
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Jan 03, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409899269 {padding: 0px;}
+div.rbtoc1624409899269 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409899269 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409899269'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-개요'>개요</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-사전절차'>사전 절차</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지설치및DB생성절차'>Altibase 패키지 설치 및 DB 생성 절차</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지다운로드및설치방법'>Altibase 패키지 다운로드 및 설치 방법</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase디렉토리구성요소'>Altibase 디렉토리 구성 요소</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지관련설치시주의사항'>Altibase 패키지 관련 설치시 주의 사항</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase데이터베이스생성에대한설명'>Altibase 데이터베이스 생성에 대한 설명 </a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase구동'>Altibase 구동</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase구동절차'>Altibase 구동 절차</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase중지'>Altibase 중지</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase중지절차'>Altibase 중지 절차</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase구동및중지에대한설명'>Altibase 구동 및 중지에 대한 설명 </a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-Altibase간단한사용예시'>Altibase 간단한 사용 예시</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-iSQL명령어'>iSQL 명령어</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-DB사용자의계정생성및삭제'>DB 사용자의 계정 생성 및 삭제</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-테이블스페이스의계정생성및삭제'>테이블스페이스의 계정 생성 및 삭제</a></li>
+<li><a href='#AltibaseQuickInstall&amp;StartforUNIX-테이블생성및삭제'>테이블 생성 및 삭제</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="AltibaseQuickInstall&amp;StartforUNIX-개요">개요</h1><hr /><p class="0cm">본 문서는 Altibase  제품을 설치하고 구동/중지하는 방법에 대해 기본적인 내용을 설명한다. <br />기본적인 설치 이후 참고해야 하는 내용은 별도의 문서 및 URL로 제공되니 참고하도록 한다.</p><p class="0cm"> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 <a href="http://support.altibase.com/" class="external-link" rel="nofollow">기술지원포털</a>로 문의 주시기 바랍니다.</p><p>Altibase 기술지원센터 : 02-2082-1114</p>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="AltibaseQuickInstall&amp;StartforUNIX-사전절차">사전 절차</h1><hr /><ol><li>서버(시스템) 내에 Altibase 패키지 설치를 위한 OS 사용자 계정이 생성되어 있어야 한다.</li><li style="text-align: left;">Altibase 패키지 인스톨러를 support.altibase.com 에서 다운로드 받아 시스템에 파일을 업로드 한다.</li><li style="text-align: left;">설치를 진행하기에 전에 Altibase Version 정보, OS Type, OS Bit정보, Mac Address 정보를 확인하여 support.altibase.com 에서 임시 라이선스 발급 또는 Altibase 영업부서에 문의하여 계약여부 확인 후 정식 라이선스 발급을 진행한다.<br /><br /></li></ol><p>Altibase 패키지 인스톨러 파일을 아래 기술한 URL에서 접속하여 회원가입, 로그인 후 패키지 다운로드를 진행한다.</p><p>사용자는 <a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a> 또는 Altibase 로부터 패키지를 받을 수 있다.<br />해당 패키지에는 OS 정보 및 컴파일 비트, 제품의 버전 정보 등이 기술되어 있음으로 적합한 제품 패키지를 요청하거나 다운받도록 한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">http://support.altibase.com/kr/</pre>
+</div></div><p> </p><p>Altibase 패키지 파일명의 예 (Linux용 Altibase 패키지 파일 기준을 예로 6.5.1.XX, 7.1.0.XX 패키지 파일 설명)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">altibase-HDB-server-6.5.1.X.X-LINUX-X86-64bit-release.run
+altibase-server-7.1.0.X.X-LINUX-X86-64bit-release.run</pre>
+</div></div><p class="0cm"> </p><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지설치및DB생성절차">Altibase 패키지 설치 및 DB 생성 절차</h1><hr /><p>Altibase 의 EOS(End of Service) 정책에 따라 지원되는 버전들의 DB 생성 방법을 설명한다. <br />이 문서의 작성 시점 기준으로 최신 Altibase 버전은 'Altibase ver. 7' 이며 'Altibase ver. 6' 미만의 버전들은 EOS 대상이다. <br />Altibase 제품은 DB 생성을 하기 전까지는 구동할 수 없기에 구동 전 아래와 같이 DB 생성을 진행해야 한다.</p><h2 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지다운로드및설치방법">Altibase 패키지 다운로드 및 설치 방법</h2><hr /><ul style="list-style-type: square;"><li><p>Altibase 패키지 파일에 실행 권한을 부여한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ls -al
+-rw-r--r--  1 altibase dba 74639019 Jul 30 14:46 altibase-HDB-server-6.5.1.7.1-LINUX-X86-64bit-release.run
+
+$ chmod 744 altibase-HDB-server-6.5.1.7.1-LINUX-X86-64bit-release.run 
+
+$ ls -al
+-rwxr--r--  1 altibase dba 74639019 Jul 30 14:46 altibase-HDB-server-6.5.1.7.1-LINUX-X86-64bit-release.run</pre>
+</div></div></li><li><p>Altibase 패키지를 실행하고 Installation directory 에 Altibase 엔진 설치를 위해 절대 경로를 설정한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ./altibase-HDB-server-6.5.1.7.1-LINUX-X86-64bit-release.run 
+----------------------------------------------------------------------------
+Welcome to the ALTIBASE HDB Server 6.5.1.7.1 setup wizard.
+----------------------------------------------------------------------------
+Installation Directory
+
+Please specify the installation directory for ALTIBASE HDB Server 6.5.1.7.1
+
+Installation directory [/home/altibase/]: /home/altibase/altibase_home (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB 생성 방식을 결정한다. (기본값 = 1)<br />* Full 패키지 설치 및  패치 선택 옵션이며 Altibase 패키지 기본 설치는 Full 옵션을 선택한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Please select the installation type.
+
+Installation type
+
+[1] Full installation: full package install
+[2] Patch: patch package install
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>커널 설정값 가이드를 확인할 수 있다. (설치 경로 하위 install 디렉토리의 pre_install.sh 를 통해서도 확인할 수 있다.)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">----------------------------------------------------------------------------
+Pre-Installation Requirements for ALTIBASE HDB
+It is first necessary to set your system environment to ensure that ALTIBASE HDB 
+will run properly. Before installing ALTIBASE HDB, the kernel parameter values 
+must be set using the root user account. The kernel parameter values may be 
+modified after installation; however, they must be set prior to starting 
+ALTIBASE HDB.
+
+Please refer to the installation manual and pre_install.sh script file.
+(pre_install.sh: &#39;$Altibase_install_dir&#39;/install/pre_install.sh)
+
+================ LINUX ================
+[ How to modify kernel parameter values ]
+
+echo 512 32000 512 512 &gt; /proc/sys/kernel/sem
+echo 872415232 &gt; /proc/sys/kernel/shmall
+
+# shmall 
+If it is desired to use ALTIBASE HDB in shared memory mode, the value of 
+&#39;shmall&#39; must be set. This value determines the maximum size of an Altibase 
+database.
+
+Press [Enter] to continue :
+These values must be set in order for ALTIBASE HDB to operate properly.
+They must be set such that they are suitable for the system configuration.
+=====================================
+
+Press [Enter] to continue : (엔터 입력)</pre>
+</div></div></li><li><p>DB Name 을 결정한다. (기본값 = mydb)<br />* DB Name 은 변경 시 DB 재구성이 필요하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">----------------------------------------------------------------------------
+ALTIBASE HDB Property Settings
+Step 1: Basic Database Operation Properties
+Database name [mydb] : mydb (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB PORT 를 설정한다. (기본값 = 20300)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">ALTIBASE HDB connection port number (1024-65535)      [20300] : 20300 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>MEM_MAX_DB_SIZE 값을 결정한다. (기본값 = 2G)<br />* MEM_MAX_DB_SIZE 는 memory 에 저장할 데이터의 '최대 값'을 의미하며, <span style="color: rgb(255,0,0);">미리 할당하는 것이 아니라 <strong>제한 값</strong>을 의미한다</span>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Maximum size of memory database
+
+- MIN value: 16M (K = kB, M = MB, G = GB) [2G] : 2G (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>버퍼풀의  총 메모리 크기를 결정한다. (기본값 = 128M)<br />* BUFFER_AREA_SIZE 는 디스크테이블 관련하여 버퍼영역으로 사용할 메모리 크기의 '최대 값'을 의미하며, <span style="color: rgb(255,0,0);">미리 할당하는 <strong>전체 값</strong>을 의미한다</span>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Buffer area size for caching disk-based database pages
+- MIN value: 1M (K = kB, M = MB, G = GB) [128M] : 128M (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB 생성 여부를 결정한다. (기본값 = YES)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Do you want to create a database after the installation process is complete?
+[1] YES
+[2] NO
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB의 초기 Database 크기를 결정한다. (기본값 = 10M)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">ALTIBASE HDB Property Settings
+Step 2: Database Creation Properties
+Initial database size
+- 4M-4G (K = kB,M = MB,G = GB) [10M] : 10M (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB의 아카이브/노아카이브를 설정을 결정한다. (기본값 = No archivelog )</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Database archive logging mode 
+[1] No archivelog
+[2] Archivelog
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li><li><p>DB의 문자셋(Character set) 설정을 결정한다. (기본값 = UTF8)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Database character set
+[1] UTF-8
+[2] MS949
+[3] US7ASCII
+[4] KO16KSC5601
+[5] BIG5
+[6] GB231280
+[7] MS936
+[8] SHIFT-JIS
+[9] EUC-JP
+[10] MS932
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li></ul><ul><li><p>DB의 국가 문자셋(National Character set) 설정을 결정한다. (기본값 = UTF8)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">National character set
+[1] UTF-8
+[2] UTF-16
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li></ul><ul><li><p>DB의 데이터파일(디스크테이블스페이스 데이터파일, 메모리테이블스페이스 체크포인트 이미지파일)과 아카이브 로그파일, 로그파일, 로그앵커파일 경로를 설정한다. <br />* 해당 경로는 설정하고자 하는 경로로 설정이 가능하며 기본 값은 Altibase 엔진이 설치된 디렉토리의 dbs, arch_logs, logs 경로로 설정된다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">ALTIBASE HDB Property Settings
+Step 3: Set Database Directories
+Default disk database directory [/home/altibase/altibase_home/dbs] : /home/altibase/altibase_home/dbs (설정 값 입력 후 엔터 입력)
+Memory database directory [/home/altibase/altibase_home/dbs] : /home/altibase/altibase_home/dbs (설정 값 입력 후 엔터 입력)
+Archive log directory [/home/altibase/altibase_home/arch_logs] : /home/altibase/altibase_home/arch_logs (설정 값 입력 후 엔터 입력)
+Transaction log directory [/home/altibase/altibase_home/logs] : /home/altibase/altibase_home/logs (설정 값 입력 후 엔터 입력)
+[Log Anchor file directories ]
+ALTIBASE HDB maintains three sets of log anchor files. These files contain 
+important information
+about the database. By default, they are located in the &quot;logs&quot; folder. 
+The location can be changed here or by modifying the contents of the ALTIBASE 
+HDB properties file, 
+which is named &quot;altibase.properties&quot;.
+Directory 1. [/home/altibase/altibase_home/logs] : /home/altibase/altibase_home/logs (설정 값 입력 후 엔터 입력)
+Directory 2. [/home/altibase/altibase_home/logs] : /home/altibase/altibase_home/logs (설정 값 입력 후 엔터 입력)
+Directory 3. [/home/altibase/altibase_home/logs] : /home/altibase/altibase_home/logs (설정 값 입력 후 엔터 입력)</pre>
+</div></div></li></ul><ul><li><p>DB의 기본 설정을 적용한 프로퍼티 값을 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Property Review
+Please check your property settings.
+
+To change these properties after installation is complete, 
+please modify the following file:
+  /home/altibase/altibase_home/conf/altibase.properties.
+1. ALTIBASE HDB Property Settings:
+    Step 1: Basic Database Operation Properties
+    1) Database name: 
+         [mydb]
+    2) ALTIBASE HDB connection port number (1024-65535): 
+         [20300]
+    3) Maximum size of memory database:
+         [2G]
+    4) Buffer area size for caching disk-based database pages:
+         [128M]
+2. ALTIBASE HDB Property Settings:
+Press [Enter] to continue : (엔터 입력)
+    Step 2: Database Creation Properties
+    1) Initial database size
+         [10M]
+    2) Database archive logging mode
+         [noarchivelog]
+    3) Database character set
+         [UTF8]
+    4) National character set
+         [UTF8]
+3. ALTIBASE HDB Property Settings:
+    Step 3: Set Database Directories
+    The database will not operate properly if any of these directories are 
+removed.
+    1) Disk database directory: 
+         [/home/altibase/altibase_home/dbs] 
+Press [Enter] to continue : (엔터 입력)
+    2) Memory database directory:
+         [/home/altibase/altibase_home/dbs] 
+    3) Archive log directory: 
+         [/home/altibase/altibase_home/arch_logs] 
+    4) Transaction log directory: 
+         [/home/altibase/altibase_home/logs] 
+    5) Log Anchor file directories:
+         Directory 1: 
+         [/home/altibase/altibase_home/logs] 
+         Directory 2: 
+         [/home/altibase/altibase_home/logs] 
+         Directory 3: 
+         [/home/altibase/altibase_home/logs] 
+Press [Enter] to continue : (엔터 입력)</pre>
+</div></div></li></ul><ul><li><p>DB 생성을 진행하기 위해 패키지 설치를 진행한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">Setup is now ready to install ALTIBASE HDB Server 6.5.1.7.1.
+Do you want to continue? [Y/n]: Y (진행을 위해 Yes 후 엔터 입력)
+----------------------------------------------------------------------------
+Please wait until the setup wizard finishes installing ALTIBASE HDB Server 
+6.5.1.7.1.
+ Installing
+ 0% ______________ 50% ______________ 100%
+ #########################################</pre>
+</div></div></li><li><p>DB 생성을 위해 패키지 설치 완료 후 발급 받은 라이선스를 입력한다. (기본값 = 1)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">ALTIBASE HDB License
+If a license has not been issued or if it has expired,
+ALTIBASE HDB services will not start.
+If this is the case, Please visit   http://support.altibase.com
+Choose an option for ALTIBASE HDB license registration.
+[1] I will input a license key.
+[2] I will select a license file.
+[3] I want to register an ALTIBASE HDB license later.
+Please choose an option [1] : 1 (설정 값 입력 후 엔터 입력)
+----------------------------------------------------------------------------
+ALTIBASE HDB License
+Please enter your ALTIBASE HDB license key.
+ []: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX (발급 받은 라이선스를 입력 후 엔터)</pre>
+</div></div></li><li><p>DB 생성을 진행한다. (위 프로퍼티를 설정한 값을 기준으로 DB구성에 필요한 데이터파일, 체크포인트 이미지파일, 로그파일, 로그앵커파일 생성)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">ALTIBASE HDB Quick Setting Guide
+[  Installation complete  ]
+Please refer to the file listed below to verify the ALTIBASE HDB version.
+    /home/altibase/altibase_home/APatch/patchinfo 
+[ Quick Guide to Making Settings in ALTIBASE HDB ] 
+1. Set kernel variables using the root user account.
+    run the &#39;/home/altibase/altibase_home/install/pre_install.sh&#39; file 
+    - This script helps you make kernel parameter settings.
+================ LINUX ================
+[ How to modify kernel parameter values ]
+echo 512 32000 512 512 &gt; /proc/sys/kernel/sem
+echo 872415232 &gt; /proc/sys/kernel/shmall
+# shmall 
+If it is desired to use ALTIBASE HDB in shared memory mode, the value of 
+&#39;shmall&#39; must be set. This value determines the maximum size of an Altibase 
+database.
+Press [Enter] to continue : (엔터 입력)
+These values must be set in order for ALTIBASE HDB to operate properly.
+They must be set such that they are suitable for the system configuration.
+=====================================
+2. Provide a license.
+    Please rename and locate the license file as shown below.
+    /home/altibase/altibase_home/conf/license 
+    If no license file has been issued or if the license file has expired,
+    ALTIBASE HDB services will not start.
+    In this case, please visit http://support.altibase.com
+3. Configure user environment variables (using the user account with which 
+ALTIBASE HDB was installed).
+    Run the &#39;/home/altibase/altibase_home/install/post_install.sh&#39; file 
+    under the account with which ALTIBASE HDB was installed.
+Press [Enter] to continue : (엔터 입력)
+    This script performs necessary post-installation configuration. 
+    1) Create the ALTIBASE HDB user environment file and apply it to the user 
+profile.
+         (/home/altibase/altibase_home/conf/altibase_user.env)
+    2) Create a database.
+         If you selected &#39;YES&#39; in response to the question about whether to 
+create 
+         a database after installation, at &quot;ALTIBASE HDB Property setting step 
+1&quot;, 
+         a database will be automatically created.
+         If you selected &#39;NO&#39; in response to this question,
+         you need to create a database manually.
+         shell&gt; server create [DB Character Set] [National Character Set]
+4. Start up and shut down the server
+    shell&gt; server start
+    shell&gt; server stop
+Press [Enter] to continue : (엔터 입력)
+5. Connect to the database using iSQL
+    shell&gt; isql -s 127.0.0.1 -u SYS -p MANAGER
+Press [Enter] to continue : (엔터 입력)
+Would you like to launch &#39;post_install.sh&#39; now ?
+ - This will create the ALTIBASE HDB database. [Y/n]: Y (진행을 위해 Yes 후 엔터 입력)
+Result
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+        Creating MMDB FILES     [SUCCESS]
+        Creating Catalog Tables [SUCCESS]
+Press [Enter] to continue :
+        Creating DRDB FILES     [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:0]  [SUCCESS]
+DB Writing Completed. All Done.
+Create success.
+Press [Enter] to continue : (엔터 입력)
+----------------------------------------------------------------------------
+Setup has finished installing the ALTIBASE HDB Server 6.5.1.7.1 on your host.
+Info: [Linux Env.]
+        Target : /home/altibase/altibase_home/conf/altibase_user.env
+        created  ----------------------- Altibase environment setup file.
+        added    ----------------------- ALTIBASE_HOME
+        added    ----------------------- PATH
+        added    ----------------------- LD_LIBRARY_PATH
+        added    ----------------------- CLASSPATH
+        export ----------------------- &#39;altibase_user.env&#39;
+        into &#39;/home/altibase/.bash_profile&#39;
+  
+==============================================
+Please perform [re-login] 
+or [source /home/altibase/.bash_profile] 
+or [. /home/altibase/.bash_profile]
+==============================================
+Press [Enter] to continue : (엔터 입력)</pre>
+</div></div></li><li><p>DB생성 작업이 완료되면 Altibase 엔진 경로안에 conf라는 해당 디렉토리 안에 altibase.properties 파일에 설정 값이 적용되어 있다. ($ALTIBASE_HOME/conf/altibase.properties)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/conf/altibase.properties
+========================= 생               략 =========================
+DB_NAME             =  mydb
+========================= 생               략 =========================
+MEM_DB_DIR          = ?/dbs # Memory DB Directory     ($ALTIBASE_HOME/dbs 영역이며 기본 메모리 테이블스페이스의 체크포인트 이미지파일의 저장경로로 기본 디폴트는 ?/dbs로 확인)   
+========================= 생               략 =========================
+DEFAULT_DISK_DB_DIR = ?/dbs # Disk   DB Directory     ($ALTIBASE_HOME/dbs 영역이며 기본 디스크 테이블스페이스의 데이터파일의 저장경로로 기본 디폴트는 ?/dbs로 확인)    
+========================= 생               략 =========================
+LOGANCHOR_DIR       = ?/logs # LOGANCHOR_DIR1         ($ALTIBASE_HOME/logs 영역이며 로그앵커파일(3개중 첫 번째 파일)의 저장경로로 기본 디폴트는 ?/logs로 확인)   
+LOGANCHOR_DIR       = ?/logs # LOGANCHOR_DIR2         ($ALTIBASE_HOME/logs 영역이며 로그앵커파일(3개중 두 번째 파일)의 저장경로로 기본 디폴트는 ?/logs로 확인)   
+LOGANCHOR_DIR       = ?/logs # LOGANCHOR_DIR3         ($ALTIBASE_HOME/logs 영역이며 로그앵커파일(3개중 세 번째 파일)의 저장경로로 기본 디폴트는 ?/logs로 확인)   
+========================= 생               략 =========================
+LOG_DIR             = ?/logs # LOG_DIR                ($ALTIBASE_HOME/logs 영역이며 로그파일의 저장경로로 기본 디폴트는 ?/logs로 확인)                     
+========================= 생               략 =========================
+ARCHIVE_DIR         =  ?/arch_logs # ARCHIVE_DIR      ($ALTIBASE_HOME/arch_logs 영역이며 아카이브 로그파일의 저장경로로 기본 디폴트는 ?/arch_logs로 확인)         
+========================= 생               략 =========================
+MEM_MAX_DB_SIZE     = 2G # MEM_MAX_DB_SIZE             
+========================= 생               략 =========================
+BUFFER_AREA_SIZE    = 128M # BUFFER_AREA_SIZE
+========================= 생               략 =========================
+PORT_NO             = 20300 # PORT_NO
+========================= 생               략 =========================</pre>
+</div></div></li></ul><ul><li><p>정상적으로 DB생성 작업이 완료되면 dbs, logs 디렉토리에는 아래와 같이 데이터파일, 체크포인트 이미지파일, 로그앵커파일, 로그파일들이 생성되어야 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ls -al $ALTIBASE_HOME/dbs
+
+SYS_TBS_MEM_DATA-0-0
+SYS_TBS_MEM_DATA-1-0
+SYS_TBS_MEM_DIC-0-0
+SYS_TBS_MEM_DIC-1-0
+dwfile-1.dwf
+dwfile0.dwf
+dwfile1.dwf
+system001.dbf
+temp001.dbf
+undo001.dbf
+ 
+$ ls -al $ALTIBASE_HOME/logs
+loganchor0
+loganchor1
+loganchor2
+logfile0
+logfile1
+logfile2
+logfile3
+logfile4
+logfile5</pre>
+</div></div></li><li><p>정상적으로 DB생성 작업이 완료되면 Altibase 패키지 설치를 진행한 OS 사용자 계정에 대해 자동으로 $ALTIBASE_HOME 설정 및 PATH가 환경변수에 등록된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi .bash_profile
+# .bash_profile
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+export PATH    
+
+# ALTIBASE_ENV
+. /home/altibase/altibase_home/conf/altibase_user.env
+ 
+$ vi altibase_user.env
+ALTIBASE_HOME=/home/altibase/altibase_home;export ALTIBASE_HOME
+PATH=${ALTIBASE_HOME}/bin:${PATH};export PATH
+LD_LIBRARY_PATH=${ALTIBASE_HOME}/lib:${LD_LIBRARY_PATH};export LD_LIBRARY_PATH
+CLASSPATH=${ALTIBASE_HOME}/lib/Altibase.jar:${CLASSPATH};export CLASSPATH
+</pre>
+</div></div></li></ul><h2 class="title" id="AltibaseQuickInstall&amp;StartforUNIX-Altibase디렉토리구성요소">Altibase 디렉토리 구성 요소</h2><hr /><p>Altibase 패키지를 설치하면 아래와 같은 디렉토리가 생성된다. <br />기본 설치 및 구동에 대한 부분으로 설치 후 사용자가 확인할 주요 디렉토리들만 설명한다. (상세한 것은 매뉴얼을 참고하도록 한다.)</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>디렉토리</strong></p></td><td class="confluenceTd"><p><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>admin</p></td><td class="confluenceTd"><p>Altibase 성능뷰를 쉽게 볼 수 있는 예제 SQL 및 View 생성 파일 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>bin</p></td><td class="confluenceTd"><p>Altibase 실행 파일, 유틸리티(실행파일) 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>include</p></td><td class="confluenceTd"><p><span>Altibase </span>응용 프로그램 개발을 위해 제공되는 헤더파일 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>install</p></td><td class="confluenceTd"><p><span>Altibase </span>응용 프로그램 개발을 위한 makefile을 위한 매크로 설정 예 등등이 포함된 altibase_env.mk 파일과 README 파일 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>lib</p></td><td class="confluenceTd"><p><span>Altibase </span>응용 프로그램 개발을 위해 제공되는 라이브러리 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>sample</p></td><td class="confluenceTd"><p><span>Altibase </span>응용 프로그램을 샘플로 제공한 예제 프로그램 소스(CLI, APRE, JDBC, C/C++ 등등) 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>trc</p></td><td class="confluenceTd"><p>Altibase 운영 상태 정보가 기록되는 Trace 로그파일 위치</p></td></tr><tr><td class="confluenceTd"><p>conf</p></td><td class="confluenceTd"><p>Altibase 설정 파일(altibase.properties, aexport.properties)의 위치 및 해당 프로퍼티 예제 파일(sample), 라이선스 파일의 위치 디렉토리</p></td></tr><tr><td class="confluenceTd"><p>logs</p></td><td class="confluenceTd"><p>Altibase 로그앵커파일과 로그파일이 생성되는 기본 경로</p></td></tr><tr><td class="confluenceTd"><p>dbs</p></td><td class="confluenceTd"><p>Altibase 데이터파일들이 생성되는 기본 경로</p></td></tr><tr><td colspan="1" class="confluenceTd">arch_logs</td><td colspan="1" class="confluenceTd">Altibase 복구를 위해 로그 파일을 백업하는 백업 디렉토리</td></tr><tr><td colspan="1" class="confluenceTd">altiComp</td><td colspan="1" class="confluenceTd">Altibase 데이터베이스간의 이중화 운영시 장애로 인해 발생한 데이터 불일치를 해결하는 유틸리티 디렉토리</td></tr><tr><td colspan="1" class="confluenceTd">msg</td><td colspan="1" class="confluenceTd">Altibase 오류 메시지를 수록한 파일들을 포함하는 디렉토리</td></tr></tbody></table></div><p> </p><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase패키지관련설치시주의사항">Altibase 패키지 관련 설치시 주의 사항</h1><hr /><ul><li>Altibase는 공식적으로 32비트 패키지 제품을 제공하지 않는다. <br />단, 클라이언트 제품(클라이언트 서버)에 대해 개발 및 연동을 위한 패키지 제품을 제공한다. <br />클라이언트의 제품은 패키지 이름 앞에 “altibase-HDB-client-6.5.1.x.x” 라는 이름으로 시작한다. <br />제품 패키지에는 컴파일러 정보가 포함되기 때문에 예로 gcc/g++ 을 사용할 경우 해당 컴파일러의 버전을 사전에 확인하도록 한다.</li><li>Altibase 클라이언트 패키지 사용 여부, 제공 가능한 버전에 대한 내용은 추가적으로 02-2082-1114 또는 support.altibase.com 으로 기술 문의를 통해 자세한 내용을 안내 받으실 수 있다. <br /><br /></li></ul><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase데이터베이스생성에대한설명">Altibase 데이터베이스 생성에 대한 설명 </h1><hr /><ul><li>Altibase 데이터베이스 생성 방법에 대한 자세한 내용은 아래의 URL에 구체적으로 기술한다.<br /><a href="13436812.html">25. ALTIBASE &#45936;&#51060;&#53552;&#48288;&#51060;&#49828; &#49373;&#49457; &#44032;&#51060;&#46300;</a><br /><br /></li></ul><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase구동">Altibase 구동</h1><hr /><p>Altibase 패키지를 위와 같이 기본 설치 및 DB생성이 완료되어야 정상적인 구동이 가능하다.<br />해당 파트에서는 사용자가 DB를 구동하는 방법에 대해 설명한다.</p><ul><li>Altibase 패키지는 설치 및 DB생성까지 완료한 경우 구동을 위해서는 해당 설치된 OS사용자 계정에서 환경변수파일을 실행한다.</li><li><p>환경변수파일은 OS종류마다 다르기에 해당 버젼에 대해 환경변수에 $ALTIBASE_HOME 설정 및 PAHT가 제대로 구성되었는지 확인한다. </p></li><li><pre>Linux를 예를 들어 환경변수 파일에 $ALTIBASE_HOME 설정 및 PATH가 제대로 설정되어 있는지 확인 후 환경파일을 실행한다. ($ . $HOME/.bash_profile 또는 source $HOME/.bash_profile 실행)</pre><p> </p></li></ul><h2 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase구동절차">Altibase 구동 절차</h2><hr /><ul><li><p>OS계정의 프롬프트창에서 아래와 같이 &quot;server start&quot; 라는 명령어를 수행하여 Altibase 구동이 가능하다. (사용자가 쉽게 구동할 수 있도록 &quot;server&quot; 라는 쉘스크립트를 통해 명령어를 수행하게끔 제공하고 있다.) </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server start
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL
+
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version =&gt; Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database 
+  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...
+                            Refining Disk Table 
+  [SM] Refine Memory Table : ........................................................................... [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:137] ............................................................ [SUCCESS]
+
+TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : [PASS]
+--- STARTUP Process SUCCESS ---
+Command executed successfully.</pre>
+</div></div></li><li><p>위와 같은 방법 이외에 iSQL로 접속하시어 &quot;startup service&quot; 명령어를 수행하여 Altibase 구동이 가능하다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -sysdba
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write UserID : SYS                       (&quot;SYS&quot; 유저 입력)
+Write Password : MANAGER                 (기본 패스워드 &quot;MANAGER&quot; 입력) 
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+iSQL(sysdba)&gt; startup service;
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+
+TRANSITION TO PHASE : CONTROL
+
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version =&gt; Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database 
+  [SM] Recovery Phase - 3 : Starting Recovery
+                            Initializing Active Transaction List 
+                            Redo 
+                            Refine Disk Table..
+                            Undo 
+  [SM] Refine Memory Table : ........................................................................... [SUCCESS]
+  [SM] Rebuilding Indices [Total Count:137] ............................................................ [SUCCESS]
+
+TRANSITION TO PHASE : SERVICE
+  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : [PASS]
+--- STARTUP Process SUCCESS ---
+Command executed successfully.</pre>
+</div></div></li><li><p>Altibase 구동 실패에 대한 간단한 예시</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">1) 환경변수에 $ALTIBASE_HOME 설정, PATH가 설정되어 있지 않거나 환경변수파일이 수행되어 있지 않을 경우
+ $ server start
+-bash: server: command not found
+
+$ isql -sysdba
+[ISQL]ERROR: Could not SQLConnect
+ 
+2) DB생성을 하지 않은 경우
+$ server start
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+
+TRANSITION TO PHASE : CONTROL
+[FAILURE] The log anchor file does not exist or is not valid.
+Startup Failed....
+[ERR-91015 : Communication failure.]
+ 
+3) 라이선스를 입력하지 않은 경우 
+$ server start
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server...............................Startup Failure. Check Your Environment.
+ 
+$ vi $ALTIBASE_HOME/trc/altibase_boot.log ($ALTIBASE_HOME/trc 디레토리안에는 Trace로그가 기록되며 구동 실패에 대한 로그를 altibase_boot.log에서 확인하실 수 있다.)
+========================= 생               략 =========================
+[2019/09/01 02:03:35 6][PID:108941][Thread-140685391135488][LWP-108941]
+No valid license present!
+========================= 생               략 =========================</pre>
+</div></div></li></ul><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase중지">Altibase 중지</h1><hr /><p>Altibase 설치가 완료 및 정상적으로 구동되었다면 해당 파트에서는 사용자가 DB를 중지하는 방법에 대해 설명한다.</p><h2 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase중지절차">Altibase 중지 절차</h2><hr /><ul><li><p>OS계정의 프롬프트창에서 아래와 같이 &quot;server stop&quot; 라는 명령어를 수행하여 Altibase 중지가 가능하다. (사용자가 쉽게 종료할 수 있도록 &quot;server&quot; 라는 쉘스크립트를 통해 명령어를 수행하게끔 제공하고 있다.) </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server stop
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+Ok..Shutdown Proceeding....
+
+TRANSITION TO PHASE : Shutdown Altibase
+  [RP] Finalization : PASS
+shutdown immediate success.</pre>
+</div></div></li><li><p>위와 같은 방법 이외에 iSQL로 접속하시어 &quot;shutdown immediate&quot; 명령어를 수행하여 Altibase 중지이 가능하다. (shutdown 명령어 수행시 옵션은 abort, immediate, normal 로 종료가 가능) </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -sysdba
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write UserID : SYS                       (&quot;SYS&quot; 유저 입력)
+Write Password : MANAGER                 (기본 패스워드 &quot;MANAGER&quot; 입력) 
+ 
+iSQL(sysdba)&gt; shutdown abort;
+ 
+iSQL(sysdba)&gt; shutdown immediate;
+
+iSQL(sysdba)&gt; shutdown normal;</pre>
+</div></div><p>*  위 shutdown을 진행시 3가지 방법으로 중지가 가능하며 아래의 설명을 참고한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>옵션</strong></p></td><td class="confluenceTd"><p style="text-align: left;"><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>abort</p></td><td class="confluenceTd"><p>현재 접속된 모든 세션(클라이언트)을 강제 종료시키고 즉시 구동을 중지한다. Altibase를 중지하기 때문에 정상적인 shutdown과정 없이 즉시 종료한다. (이후 구동시 데이터 복구작업을 진행하며 아무런 문제가 없음.)</p></td></tr><tr><td class="confluenceTd"><p>immediate</p></td><td class="confluenceTd"><p>현재 접속된 모든 세션(클라이언트)을 강제 종료시키고 정상적인 shutdown과정을 거쳐 중지한다.</p></td></tr><tr><td class="confluenceTd"><p>normal</p></td><td class="confluenceTd"><p>현재 접속된 모든 세션(클라이언트)이 정상 종료하기를 대기한 이후에 정상적인 shutdown과정을 거쳐 중지한다.</p></td></tr></tbody></table></div><p> “normal” 옵션을 사용하는 경우 세션(클라이언트)이 종료하기를 기다려야 하기 때문에 이런 이유를 인지하지 못한 채 Altibase를 중지하면 shutdown과정이 진행되지 않는 것처럼 착각할 수 있음으로 사용에 주의 및 종료여부에 대해 확인을 필요로 한다.</p><p> </p></li></ul><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase구동및중지에대한설명">Altibase 구동 및 중지에 대한 설명 </h1><hr /><ul><li>Altibase 구동 및 중지에 대한 자세한 내용은 아래의 URL에 구체적으로 기술한다.<br /><a href="13434993.html">43. Altibase &#44396;&#46041;/&#51473;&#51648; &#44284;&#51221;&#51032; &#51060;&#54644;</a></li></ul><p> </p><h1 id="AltibaseQuickInstall&amp;StartforUNIX-Altibase간단한사용예시">Altibase 간단한 사용 예시</h1><hr /><ul><li>본 장에서는 DB사용자의 생성 및 테이블스페이스의 생성이나 테이블의 생성 방법에 대해 간단하게 예시로 설명한다. </li><li>Altibase는 SQL92표준을 준수하기 때문에 다른 DBMS와 구문상의 큰 차이는 없다.</li><li>자세한 SQL문 사용법에 대해서는 Altibase가 제공하는 매뉴얼을 참조하도록 한다. (메뉴얼은 <a href="http://support.altibase.com" class="external-link" rel="nofollow">support.altibase.com</a> 으로 접속 및 로그인하시어 문서 확인 및 다운로드가 가능하다.) </li></ul><h2 id="AltibaseQuickInstall&amp;StartforUNIX-iSQL명령어">iSQL 명령어</h2><hr /><ul><li><p>Altibase는 사용자가 SQL문을 터미널 및 응용프로그램에서 사용할 수 있도록 제공하는 유틸리티 프로그램이다.<br />* DB를 생성한 시점에는 “SYS” 라는 DBA권한의 사용자만 존재하기 때문에 $ALTIBASE_HOME/bin/is 만 실행 및 접속이 가능하다. (“is”는 iSQL을 쉽게 접속 및 사용할 수 있도록 만든 쉘 스크립트로 제공한다.)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL&gt; select sysdate from dual;
+SYSDATE      
+---------------
+01-SEP-2019  
+1 row selected.
+ 
+$ isql -s 127.0.0.1 -u sys -p manager -port 20300
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20300
+iSQL&gt; select sysdate from dual;
+SYSDATE      
+---------------
+01-SEP-2019  
+1 row selected.</pre>
+</div></div><p>* 각 입력 옵션은 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>입력</strong><strong> </strong><strong>옵션</strong></p></td><td class="confluenceTd"><p><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>-u</p></td><td class="confluenceTd"><p>DB 사용자의 계정 이름을 입력한다.</p></td></tr><tr><td class="confluenceTd"><p>-p</p></td><td class="confluenceTd"><p>DB 사용자의 계정의 비밀번호(패스워드)를 입력한다.</p></td></tr><tr><td class="confluenceTd"><p>-s</p></td><td class="confluenceTd"><p>접속하고자 하는 대상 DB가 위치하는 서버의 네트웍 IP 주소를 입력하거나 로컬서버의 경우 127.0.0.1 을 입력한다.</p></td></tr><tr><td class="confluenceTd"><p>-port</p></td><td class="confluenceTd"><p>접속하고자 하는 대상 DB에 설정되어 있는 PORT_NO를 입력한다. ($ALTIBASE_HOME/conf/altibase.properties 파일에서 PORT_NO를 확인할 수 있다.</p></td></tr></tbody></table></div></li><li><p>만일, DB문자셋(Character set)을 US7ASCII로 설정하지 않은 경우에는 DB를 생성할 때 지정하였던 문자셋을 환경변수로 설정을 해주어야 한다. <br />* DB를 생성한 시점에는 문자셋(Character set)을 예로 MS949로 설정하여 생성 및 구동하였을 경우 <br />  한글 데이터에 대한 입력 및 출력에 대해서는 접속하는 세션(클라이언트)도 동일하게 MS949로 ALTIBASE_NLS_USE의 문자셋(Character set)을 설정 및 적용하여 접속해야 한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">예시)
+$ server create MS949 UTF8
+-&gt; Altibase의 DB생성시 문자셋(Character set)을 MS949로 설정 및 구성하였을 경우
+ 
+$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL&gt; create table test (c1 varchar(100));
+Create success.
+iSQL&gt; insert into test values (&#39;Altibase&#39;);
+1 row inserted.
+iSQL&gt; insert into test values (&#39;알티베이스&#39;);
+1 row inserted.
+-&gt; Altibase의 문자셋(Character set)을 MS949인 상황에서 임의의 한글데이터를 입력하여 저장
+ 
+$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL&gt; set vertical on;
+iSQL&gt; select * from v$nls_parameters;
+SESSION_ID                : 1 
+NLS_USE                   : US7ASCII          (접속되어 있는 세션의 경우 US7ASCII의 문자셋으로 접속되어 있음을 확인)
+NLS_CHARACTERSET          : MS949             (Altibase 문자셋은 MS949로 설정되어 있음을 확인)  
+NLS_NCHAR_CHARACTERSET    : UTF8  
+NLS_COMP                  : BINARY  
+NLS_NCHAR_CONV_EXCP       : FALSE  
+NLS_NCHAR_LITERAL_REPLACE : FALSE  
+1 row selected.
+
+iSQL&gt; select * from test;
+C1                              
+----------------------------------
+Altibase                        
+?????                           
+2 rows selected.
+-&gt; US7ASCII로 접속된 세션에서 한글데이터 조회시 입력되어 있는 &quot;알티베이스&quot; 데이터가 ?????로 깨져서 출력될 수 있음
+ 
+$ export ALTIBASE_NLS_USE=MS949
+-&gt; Altibase에 접속되는 세션에 대해 MS949의 문자셋으로 접속할 수 있게끔 동적으로 환경변수 설정 및 적용한다. (ALTIBASE_NLS_USE 설정)
+-&gt; 환경변수에 export ALTIBASE_NLS_USE=MS949 저장 및 실행한다.
+-&gt; 명시적으로 문자셋을 환경변수에 지정하여야만 한글을 입력/출력하는데 있어 올바르게 처리가 된다. 
+-&gt; 만일, 위 환경변수를 설정했음에도 한글이 깨진 글자체로 보일 경우가 발생하는데 그런 경우는 현재 사용 및 접속하는 터미널의 환경을 한글 사용이 가능하도록 설정하여야 한다.
+ 
+$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.7.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+iSQL&gt; set vertical on;
+iSQL&gt; select * from v$nls_parameters;
+SESSION_ID                : 1 
+NLS_USE                   : MS949            (접속되어 있는 세션의 경우 위와 같은 상황에서는 US7ASCII였으나 MS949로 Altibase DB 문자셋과 동일한 값으로 설정 및 적용되어 접속되어 있음을 확인)
+NLS_CHARACTERSET          : MS949            (Altibase 문자셋은 MS949로 설정되어 있음을 확인) 
+NLS_NCHAR_CHARACTERSET    : UTF8  
+NLS_COMP                  : BINARY  
+NLS_NCHAR_CONV_EXCP       : FALSE  
+NLS_NCHAR_LITERAL_REPLACE : FALSE  
+1 row selected.
+
+iSQL&gt; select * from test;
+C1                              
+----------------------------------
+Altibase                        
+알티베이스                      
+2 rows selected.
+-&gt; Altibase DB문자셋(Character set)과 동일한 설정으로 접속된 세션에서 한글데이터 조회시 정상적으로 출력됨을 확인</pre>
+</div></div></li></ul><h2 id="AltibaseQuickInstall&amp;StartforUNIX-DB사용자의계정생성및삭제">DB 사용자의 계정 생성 및 삭제</h2><hr /><ul><li><p>Altibase 기본적으로 “SYS” 계정이라는 DBA권한을 가진 사용자가 생성되어 있다. 이 계정으로 접속하여 새로운 사용자를 만들 수 있다.<br />* 해당 파트에서는 신규 사용하고자 하는 유저에 대해 생성 및 삭제하는 명령어를 간단한 예시로 설명한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">1) 생성 예시
+iSQL&gt; CREATE USER new_user IDENTIFIED BY new_user_password DEFAULT TABLESPACE SYS_TBS_DISK_DATA ACCESS SYS_TBS_MEM_DATA ON;
+Create success.
+
+2) 삭제 예시
+iSQL&gt; DROP USER new_user CASCADE;
+Drop success.</pre>
+</div></div><p>*  사용한 각 입력 부분은 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>입력</strong><strong> </strong><strong>항목</strong></p></td><td class="confluenceTd"><p><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>CREATE USER 이후</p></td><td class="confluenceTd"><p>Altibase에서 사용할 새롭게 만들 사용자의 이름을 기술한다.</p></td></tr><tr><td class="confluenceTd"><p>IDENTIFIED BY 이후</p></td><td class="confluenceTd"><p>사용자의 비밀번호(패스워드)를 지정하기 위해 기술한다.</p></td></tr><tr><td class="confluenceTd"><p>DEFAULT TABLESPACE 이후</p></td><td class="confluenceTd"><p>이 부분부터는 기술하지 않아도 사용자는 생성 가능하다. 다만, 접근 가능한 테이블스페이스를 명시해 주는 절이며 “ALTER USER” 구문을 통해 변경이 가능하다.</p></td></tr><tr><td class="confluenceTd"><p>ACCESS ~ ON</p></td><td class="confluenceTd"><p>ACCESS ~ ON 사이에 기술된 테이블스페이스에 접근 가능하도록 권한을 부여한다.</p></td></tr></tbody></table></div></li></ul><h2 id="AltibaseQuickInstall&amp;StartforUNIX-테이블스페이스의계정생성및삭제">테이블스페이스의 계정 생성 및 삭제</h2><hr /><ul><li><p>Altibase 기본적으로 HDB(Hybrid DBMS)이며 메모리 테이블스페이스, 디스크 테이블스페이스를 모두 사용이 가능하다.<br />* 해당 파트에서는 유저 메모리 테이블스페이스, 유저 디스크 테이블스페이스에 대해  생성 및 삭제하는 명령어를 간단한 예시로 설명한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">1) 유저 메모리 테이블스페이스 생성 예시
+iSQL&gt; CREATE MEMORY TABLESPACE new_tbs_mem SIZE 1G AUTOEXTEND ON NEXT 128M MAXSIZE 2G;
+Create success.
+-&gt; 정상적으로 위 구문과 같은 예로 수행하면 “$ALTIBASE_HOME/dbs/NEW_TBS_MEM-X-X”라는 체크포인트 이미지파일이 생성되며 초기 1G부터 시작하여 128M 단위로 사이즈가 증가하며 2G까지 자동 확장되어 사용 가능한 공간으로 설정된다.
+ 
+2) 유저 디스크 테이블스페이스 생성 예시 
+iSQL&gt; CREATE DISK TABLESPACE new_tbs_disk DATAFILE &#39;new_tbs.dbf&#39; SIZE 1G AUTOEXTEND ON NEXT 128M MAXSIZE 2G;
+Create success.
+-&gt; 정상적으로 위 구문과 같은 예로 수행하면 “$ALTIBASE_HOME/dbs/new_tbs.dbf”라는 데이터파일이 생성되며 해당 테이블스페이스는 초기 1G부터 시작하여 128M 단위로 사이즈가 증가하며 2G까지 자동 확장되어 사용 가능한 공간으로 설정된다.
+-&gt; 디스크 테이블스페이스 생성 구문의 경우 CREATE DISK TABLESPACE 또는 DISK를 생략하여 CREATE TABLESPACE 로도 가능하다.
+ 
+3) 삭제 예시
+iSQL&gt; DROP TABLESPACE new_tbs_disk INCLUDING CONTENTS AND DATAFILES;
+Drop success.
+-&gt; 해당 구문은 해당 테이블스페이스뿐 아니라 포함된 객체 및 데이터파일까지 삭제한다. 
+   만일, 정상적으로 삭제되지 않는다면 해당 테이블스페이스 접근 및 사용 중인 세션(클라이언트)이 존재하는 경우임으로 해당 세션(클라이언트)을 찾아 정리한 후 삭제 구문을 재수행하면 된다.</pre>
+</div></div></li></ul><h2 id="AltibaseQuickInstall&amp;StartforUNIX-테이블생성및삭제">테이블 생성 및 삭제</h2><hr /><ul><li><p>Altibase 기본적으로 HDB(Hybrid DBMS)이며 메모리 테이블스페이스, 디스크 테이블스페이스를 모두 사용이 가능하기에 메모리 테이블, 디스크 테이블을 생성할 수 있다.<br />* 해당 파트에서는 메모리 테이블, 디스크 테이블에 대해  생성 및 삭제하는 명령어를 간단한 예시로 설명한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">1) 메모리 테이블스페이스, 디스크 테이블스페이스 조회 방법
+iSQL&gt; select type, name from v$tablespaces;
+TYPE        NAME                                      
+---------------------------------------------------------
+0           SYS_TBS_MEM_DIC                           
+1           SYS_TBS_MEM_DATA                  (기본 생성되는 메모리 테이블스페이스)                          
+3           SYS_TBS_DISK_DATA                 (기본 생성되는 디스크 테이블스페이스)        
+7           SYS_TBS_DISK_UNDO                         
+5           SYS_TBS_DISK_TEMP                         
+5 rows selected.
+  
+1) 메모리 테이블 생성 예시 
+iSQL&gt; create table mem_tbl (c1 int, c2 varchar(100), c3 char(100));
+Create success.
+
+iSQL&gt; desc mem_tbl;
+[ TABLESPACE : SYS_TBS_MEM_DATA ]             (기본 생성되는 메모리 테이블스페이스)                
+[ ATTRIBUTE ]                                                         
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL 
+------------------------------------------------------------------------------
+C1                                       INTEGER         FIXED       
+C2                                       VARCHAR(100)    FIXED       
+C3                                       CHAR(100)       FIXED       
+MEM_TBL has no index
+MEM_TBL has no primary key
+-&gt; Altibase는 테이블 생성시 테이블스페이스를 지정하지 않으면 기본적으로 메모리 테이블스페이스를 사용하며 메모리 테이블로 생성된다.
+ 
+3) 디스크 테이블 생성 예시
+iSQL&gt; create table disk_tbl (c1 int, c2 varchar(100), c3 char(100)) tablespace SYS_TBS_DISK_DATA;
+Create success.
+
+iSQL&gt; desc disk_tbl;
+[ TABLESPACE : SYS_TBS_DISK_DATA ]            (기본 생성되는 디스크 테이블스페이스)
+[ ATTRIBUTE ]                                                         
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL 
+------------------------------------------------------------------------------
+C1                                       INTEGER                     
+C2                                       VARCHAR(100)                
+C3                                       CHAR(100)                   
+DISK_TBL has no index
+DISK_TBL has no primary key
+-&gt; Altibase는 테이블 생성시 디스크 테이블스페이스를 지정하면 해당 디스크 테이블스페이스를 사용하며 디스크 테이블로 생성된다.
+ 
+4) 테이블 삭제 예시
+iSQL&gt; drop table mem_tbl;
+Drop success.
+
+iSQL&gt; drop table disk_tbl;
+Drop success.
+-&gt; 테이블 삭제는 메모리 테이블과 디스크 테이블 모두 동일한 방식으로 삭제할 수 있다.</pre>
+</div></div></li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:58</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

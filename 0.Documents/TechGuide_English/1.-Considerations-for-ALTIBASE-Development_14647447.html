@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Considerations for ALTIBASE Development</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Precompiler-Guide_14647438.html">Altibase Precompiler Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Considerations for ALTIBASE Development
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409362103 {padding: 0px;}
+div.rbtoc1624409362103 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409362103 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409362103'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforPerformance'>Considerations for Performance</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-MinimizationofPrepare/ExecuteorDirect-Executemethod'>Minimization of Prepare/Execute or Direct-Execute method</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-ChecktheSQLstatementexecutionplan(PLAN)'>Check the SQL statement execution plan (PLAN)</a></li>
+</ul>
+</li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforThreads'>Considerations for Threads</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforHostVariables'>Considerations for Host Variables</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-CheckingErrors'>Checking Errors</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-CommitMode'>Commit Mode</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-SystemSignalHandling'>System Signal Handling</a></li>
+<li><a href='#id-1.ConsiderationsforALTIBASEDevelopment-Otherunsupporteditems'>Other unsupported items</a></li>
+</ul>
+</div></p><hr /><p>When developing with the Altibase Precompiler, it describes a few things to be considered in advance. In this chapter, we will refer to the development of the program by first mentioning performance, threads, and so on.</p><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforPerformance">Considerations for Performance</h1><p>Developers should consider at least two things regard to performance.</p><ol><li><h3 id="id-1.ConsiderationsforALTIBASEDevelopment-MinimizationofPrepare/ExecuteorDirect-Executemethod">Minimization of Prepare/Execute or Direct-Execute method</h3><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Form of performance</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Simple Insert Performance (2.4GHz / 8EA)</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Prepare/Execute each time</p></td><td class="confluenceTd"><p>0.0008.43sec (Processing time per case)</p></td></tr><tr><td class="confluenceTd"><p>Prepare once/Execute each time</p></td><td class="confluenceTd"><p>0.0005.55sec (<span>Processing time per case</span>)</p></td></tr></tbody></table></div><p>Since the above performance comparison is for a very simple insert, it should be premised that the effect of improving performance may vary depending on the query complexity, load, and equipment at the time of application. However, if the communication cost due to each DBMS and Prepare is reduced, the application server can be very effective in a structure that is separated from the DBMS server. In other words, it is expected to reduce the cost of 1 prepare communication from the communication cost of prepare 1 and execute 1.</p></li><li><h3 id="id-1.ConsiderationsforALTIBASEDevelopment-ChecktheSQLstatementexecutionplan(PLAN)">Check the SQL statement execution plan (PLAN)</h3><div>Altibase can check the execution plan with the following command.</div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET EXPLAIN PLAN = on;</pre>
+</div></div><p>The prompt &quot;iSQL&quot; refers to executed in the SQL statement execution utility provided by Altibase. This utility is provided in $ALTIBASE_HOME/bin/isql. (In addition to this, &quot;Orange for Altibase&quot; of Wear Valley, which is provided by ALTIBASE, can be used in the Windows environment.) When the query is executed in the query processor after executing the above command, the execution plan of the query is displayed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">QL&gt; select * from t1 where a = 1;
+------------------------------------------------------------
+PROJECT (COLUMN_COUNT: 2, TUPLE_SIZE: 8 )
+SCAN ( TABLE: T1,INDEX: __SYS_IDX_ID_102, ACCESS: 1, SELF_ID: 2 )</pre>
+</div></div><p>The developer needs to tune the SQL statement in a form that reduces the cost of the number of accesses by checking at least what index (INDEX) the table accesses and how many times the data is fetched from the corresponding index. Since ALTIBASE's memory DB hardly performs disk I/O, it can perform a certain portion of fast performance even if a full scan is performed, but on the contrary, unnecessarily frequent access to memory causes frequent system calls, resulting in relatively high CPU load. In other words, it is necessary to cover the CPU cost as frequently as the process of loading the memory space into the cache, which is the space that the CPU can compute, occurs frequently. Therefore, it should be considered that reducing these costs with the appropriate index scans can maximize performance and minimize CPU load.</p></li></ol><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforThreads">Considerations for Threads</h1><p>ALTIBASE does not guarantee inter-thread protection for connection objects. In other words, if a query is executed by accessing it simultaneously with one connection, an unknown error occurs. Therefore, when developing in the form of taking a connection object for each individual thread, or when multiple threads need to access one connection, the user must perform concurrency control on the connection object. If such concurrency control is not performed, the following errors may occur.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">- Invalid request to process the SQL statement
+- Communication link failure (EXEC-&gt;PREP) 
+- Communication link failure (PREP-&gt;EXEC)
+- Communication link failure (EXEC-&gt;INVL)
+- Connection does not exist</pre>
+</div></div><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-ConsiderationsforHostVariables">Considerations for Host Variables</h1><p>When specifying the size of a char type host variable when declaring a host variable in ALTIBASE, &quot;+1byte&quot; in consideration of null-padding must be added. In the precompiled option, +1 byte can be omitted with the &quot;-n&quot; option, but in this case, the user must control the clear length of the char type host variable.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Assuming that there is a table declared as Table (C1 char(10)), the size of the host variable is char C1 [10 + 1]; It is declared in the form.</p>
+                    </div>
+    </div>
+<p>The indicator-related part that occurs when a NULL value is returned is also a case of a problem that occurs frequently. This is explained in the last part of the document, &quot;Frequently Occurred Error Messages&quot;. &quot;?&quot; is used for parameter markers of host variables with all the ALTIBASE precompilers.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">sprintf(&quot;delete from sample_table where column1 = ?&quot;);</pre>
+</div></div><p>Also, a colon (:) must be used before the host variable in the source.</p><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-CheckingErrors">Checking Errors</h1><p>The SQLCA object of ALTIBASE can be used without a separate declaration. It is recommended for Developers to insert code that performs error checking at all stages of using EXEC SQL statements. In the case of ALTIBASE, when using a cursor, if an error is not checked in the Cursor Prepare/Declare step, only an error indicating that the cursor has not been defined is checked at the time of opening the cursor. Please make sure to check for errors in the Cursor Prepare/Declare step that is omitted. The following error may occur during the open or fetch phase.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">The statement does not exist
+ 
+The cursor must be opened for fetch.
+ 
+The cursor does not exist.</pre>
+</div></div><p>The variables provided by ALTIBASe for error checking are as follows. The error check does not matter which variable is selected, but it is recommended to use sqlca.sqlcode to check errors, and to output SQLCODE when printing the debugging log to check errors.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Variable</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>sqlca.sqlcode</p></td><td class="confluenceTd"><p>Error code that can determine the success/failure of SQL</p></td></tr><tr><td class="confluenceTd"><p>SQLCODE</p></td><td class="confluenceTd"><p>Error codes defined internally by ALTIBASE (ex. -69720)</p></td></tr><tr><td class="confluenceTd"><p>SQLSTATE</p></td><td class="confluenceTd"><p>Error code of char* type according to CLI standard (ex. 08S01)</p></td></tr></tbody></table></div><ul><li>Example of application</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* open cursor */
+EXEC SQL OPEN DEPT_CUR;
+if (sqlca.sqlcode  != SQL_SUCCESS)
+{
+     fprintf (stdout, &quot;DB_ERR: %d, %s\n&quot;, SQLCODE,  sqlca.sqlerrm.sqlerrmc);
+}</pre>
+</div></div><p>Since SQLCODE is all defined in $ALTIBASE_HOME/msg/manual.txt, refer to the relevant file, and some predefined values as below can also be used. If there is a case of conversion in another DBMS or a case that the user has separately redefined, it must be converted appropriately.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Error</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Code value</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>SES_DUPKEY_ERR</p></td><td class="confluenceTd"><p align="right">-69720</p></td><td class="confluenceTd"><p>In case of index duplication</p></td></tr><tr><td class="confluenceTd"><p>SQL_ERROR</p></td><td class="confluenceTd"><p align="right">-1</p></td><td class="confluenceTd">If there is an error in processing<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_INVALID_HANDLE</p></td><td class="confluenceTd"><p align="right">-2</p></td><td class="confluenceTd">If an internal object required for SQL processing is an error<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_NO_DATA</p></td><td class="confluenceTd"><p align="right">100</p></td><td class="confluenceTd">If there is no data<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS</p></td><td class="confluenceTd"><p align="right">0</p></td><td class="confluenceTd">If processing is successful<p> </p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS_WITH_INFO</p></td><td class="confluenceTd"><p align="right">1</p></td><td class="confluenceTd"><p>If processing is successful or if there is an error in the result</p></td></tr></tbody></table></div><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-CommitMode">Commit Mode</h1><div><div class="syntaxhighlighter nogutter  java">ALTIBASE basically operates in Auto-Commit mode unless the configuration is changed. That is, when a change transaction occurs, if the execution result is normal, it is automatically reflected in the DB. If the user wants to change this setting to NonAuto-Commit mode, change &quot;AUTO_COMMIT = 1&quot; defined in $ALTIBASE_HOME/conf/altibase.properties to &quot;0&quot; or execute the following command in the program.</div><div class="syntaxhighlighter nogutter  java"><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL AUTOCOMMIT OFF;</pre>
+</div></div><p> </p></div></div><div>After changing to NonAuto-Commit mode, explicit Commit/Rollback must be performed after all transactions are executed.</div><p>Starting from ALTIBASE version 5, it is not necessary to perform explicit Commit/Rollback for the SELECT statement. However, when handling LOBs, NonAuto-Commit mode must be accessed, and explicitly Commit/Rollback must be performed. When accessing through Auto-Commit, the following error occurs.</p><ul><li><p>Error in change transaction (INSERT, UPDATE, DELETE)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on</pre>
+</div></div></li><li><p>Error in query transaction (SELECT)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">LobLocator can not span the transaction 34734145 // This number was expressed as a random number</pre>
+</div></div><p>Additionally, it should be considered that if an explicit Commit/Rollback is not performed after accessing the LOB, the lock is maintained by the corresponding transaction, which may cause a resource failure.</p></li></ul><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-SystemSignalHandling">System Signal Handling</h1><p>Altibase client library is not safe when a system signal occurs. For example, if the network connection is terminated due to an external cause, an application program in progress may be forcibly terminated by receiving a SIGPIPE signal. To prevent this forced termination, the SIGPIPE signal must be handled by the user application. However, if a function in the Alitbase client library is called while processing the SIGPIPE signal, this should not be called because the program may be stopped.</p><p>However, after signal processing is completed, it is possible to call a function in the Altibase client library.</p><ul><li><p>Example of signal handling</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">int  main()
+{
+.......
+signal(SIGPIPE, SIG_IGN );
+....
+EXEC SQL CONNECT :user identified by :pwd;
+.....
+EXEC SQL DISCONNECT;
+....
+}</pre>
+</div></div></li></ul><h1 id="id-1.ConsiderationsforALTIBASEDevelopment-Otherunsupporteditems">Other unsupported items</h1><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>1. Dynamic Method 4 method is not supported
+2. Context syntax is not supported (refer to &quot;Considerations for threads)
+3. Procedure typeset, Ref-Cursor, and result set in the form of array cannot be retrieved with the precompiler
+4. It is not safe for the system signal occurrence. System signal processing should be handled by the user code</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

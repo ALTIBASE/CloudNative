@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 1. Application side diagnostics</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Performance-Tuning_1802802.html">ALTIBASE HDB Performance Tuning</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Performance-diagnostics-for-ALTIBASE-HDB_1802804.html">Performance diagnostics for ALTIBASE HDB</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 1. Application side diagnostics
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 04, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                        <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Before testing the queries in this document, please make sure to set TIMED_STATISTICS property value to &quot;1&quot; as shown below.</p>
+                    </div>
+    </div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+ALTER SYSTEM SET TIMED_STATISTICS = 1;
+</pre>
+</div></div>
+
+<p>Most of performance problems are caused by user application logic. Therefore, when facing performance problems, checking the application is always a good staring point.</p>
+
+<p>The following are the most frequently observed  cases from applications side.</p>
+
+
+<h2 id="id-1.Applicationsidediagnostics-Preparingstatementforeveryexecution(orusingdynamicSQL)">Preparing statement for every execution ( or using dynamic SQL)</h2>
+
+<p>When you prepare a statement, ALTIBASE HDB performs parsing , validating and optimizing for the given statement. (See also ﻿﻿<a href="How-a-query-is-executed-in-ALTIBASE-HDB_1802795.html">How a query is executed in ALTIBASE HDB</a>)  The statement prepared earlier can be reused, so the overhead of preparing statement can be eliminated. In the same context, Dynamic SQL can cause performance problems.</p>
+
+<p>Even if you may not have access to the application source code, you can find out how many times an application prepares statements. ALTIBASE HDB provides v$sysstat / v$sesstat performance view tables which contain the information of statements.</p>
+
+<ul>
+	<li>The number of prepare operations occurred
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT   TO_CHAR(SYSDATE, &#39;YYYYMMDD HH:MI:SS&#39;) CUR_TIME,
+		     RPAD(NAME, 50) NAME ,
+         VALUE
+ FROM    V$SYSSTAT
+ WHERE   SEQNUM IN (27, 29);
+</pre>
+</div></div>
+Normally, &quot;execute success count&quot; is much bigger than &quot;prepare success count&quot;. If not, you need to check your application.
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>You can get the various information from V$SYSSTAT or V$SESSTAT. Please refer the <a href="http://atc.altibase.com/sub09/551b/html/Admin/ch03s128.html" class="external-link" rel="nofollow">V$STATNAME explanation</a> in the Administrators Manual to get more information in detail.</p>
+                    </div>
+    </div>
+</li>
+</ul>
+
+
+<h2 id="id-1.Applicationsidediagnostics-AbadSQLthatconsumesalotresources">A bad SQL that consumes a lot resources</h2>
+
+<p>A SQL that performs full table or index scans can cause serious performance problems. You can locate &quot;bad SQL statements&quot; in your ALTIBASE HDB environment by using the following queries.</p>
+
+<ul>
+	<li>The longest &quot;Top 5 queries&quot; currently running in ALTIBASE HDB server
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  EXECUTE_TIME/ 1000000 EXEC_SECOND,
+        RPAD(QUERY, 500) QUERY
+FROM    V$STATEMENT
+WHERE   EXECUTE_FLAG = 1
+ORDER BY 1 DESC
+LIMIT 5;
+</pre>
+</div></div></li>
+	<li>A query that has a &quot;FULL SCAN&quot; plan node.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  RPAD(QUERY,200) ,
+        COUNT(*) CNT
+FROM    V$STATEMENT
+WHERE  (SESSION_ID, ID) IN
+       (
+        SELECT SID , STMT_ID
+        FROM V$PLANTEXT
+        WHERE TEXT LIKE &#39;%FULL%&#39;
+       )
+GROUP BY QUERY
+</pre>
+</div></div></li>
+</ul>
+
+
+<h2 id="id-1.Applicationsidediagnostics-ConnectinganddisconnectingforeveryDBMSrequest">Connecting and disconnecting for every DBMS request</h2>
+
+<p>The cost of creating a connection is expensive for both ALTIBASE HDB and applications. It can cause serious performance degradation. You can find out how many times an application makes connections by using the following query.</p>
+
+<ul>
+	<li>The cumulative connection count after a server start-up.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT   TO_CHAR(SYSDATE, &#39;YYYYMMDD HH:MI:SS&#39;) CUR_TIME,
+         RPAD(NAME, 50) NAME ,
+         VALUE
+ FROM    V$SYSSTAT
+ WHERE   SEQNUM = 1;
+</pre>
+</div></div>
+Note that this value is a snapshot of the current cumulative connection count. In order to get meaningful values, you have to get the results for several times in short period of time.</li>
+</ul>
+
+
+<h2 id="id-1.Applicationsidediagnostics-ConsiderIPCconnectionifaclientandadatabasebothresideonthesamemachine">Consider IPC connection if a client and a database both reside on the same machine</h2>
+
+<p>ALTIBASE HDB provides three communication protocols.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Connection Type </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TCP / IP (CON_TYPE=1) </p></td>
+<td class="confluenceTd"><p> Default connection type in ALTIBASE HDB. ALTIBASE HDB uses TCP/IP socket to communicate with the client. The client located on the different machine can connect to ALTIBASE HDB by using this connection. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Unix Domain (CON_TYPE=2) </p></td>
+<td class="confluenceTd"><p> Unix Domain uses &quot;pipe&quot; provided by Unix OS. It is faster than TCP/IP but application and ALTIBASE HDB have to be running on the same machine. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IPC (Inter-Process Communication) (CON_TYPE=3) </p></td>
+<td class="confluenceTd"><p> The fastest connection type between the client and ALTIBASE HDB. Like Unix domain, application and ALTIBASE HDB have to be running on the same machine. </p></td>
+</tr>
+</tbody></table></div>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Note that you must set the value of IPC_CHANNEL_COUNT in altibase.properties bigger than 0 before using IPC connection. IPC_CHANNEL_COUNT is the maximum concurrent connection counts for IPC connection type. Default value is 0. (IPC connection is disabled.)</p>
+                    </div>
+    </div>
+
+
+<p>In order to increase the performance of ALTIBASE HDB, you may want to consider using &quot;IPC&quot; connection type whenever possible. If you want to determine what connection type an application uses, you can use the following query.</p>
+
+<ul>
+	<li>The session count categorized by the connection type
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT	SUBSTR(COMM_NAME, 1,4) CON_TYPE,
+        COUNT(*) CNT
+FROM    V$SESSION
+GROUP BY SUBSTR(COMM_NAME, 1,4) ;
+</pre>
+</div></div></li>
+</ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

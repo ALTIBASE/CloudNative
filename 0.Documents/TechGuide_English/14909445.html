@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Stopping/Deleting Altibase Service Container</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Docker-Guide_14647741.html">Altibase Docker Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Stopping/Deleting Altibase Service Container
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h1 id="id-5.Stopping/DeletingAltibaseServiceContainer-StoppingAltibaseServiceContainer">Stopping Altibase Service Container</h1><hr /><p>To stop a running container, use the docker stop command. Stopped containers are not deleted and can be rerun with the docker start command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">docker stop [OPTIONS] CONTAINER [CONTAINER...]
+Options:
+         -t, --time int   Seconds to wait for stop before killing it (default 10)</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker stop altibase_test
+altibase_test</pre>
+</div></div><h1 id="id-5.Stopping/DeletingAltibaseServiceContainer-DeletingAltibaserServiceContainer">Deleting Altibaser Service Container</h1><hr /><p>To delete a container, the container must be stopped.</p><p>When retrieving the container, use the docker ps command. Add the -a option when retrieving the stopped container.</p><p>To delete a stopped container, use the docker rm command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">docker ps [OPTIONS]OPTIONIS :
+          -a, --all             Show all containers (default shows just running)
+          -f, --filter filter   Filter output based on conditions provided
+          --format string       Pretty-print containers using a Go template
+          -n, --last int        Show n last created containers (includes all states) (default -1)
+          -l, --latest          Show the latest created container (includes all states)
+          --no-trunc            Don&#39;t truncate output
+          -q, --quiet           Only display numeric IDs
+          -s, --size            Display total file sizes
+ 
+docker rm [OPTIONS] CONTAINER [CONTAINER...]
+OPTIONIS :
+          -f, --force     Force the removal of a running container (uses SIGKILL)
+          -l, --link      Remove the specified link
+          -v, --volumes   Remove the volumes associated with the container</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker psCONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+19d325fa6e26        registry            &quot;/entrypoint.sh /etc…&quot;   3 days ago          Up 3 days           0.0.0.0:5000-&gt;5000/tcp   local-registry
+ 
+# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                       PORTS                    NAMES
+dbab08cc5be8        altitest:0.0        &quot;/bin/bash /home/alt…&quot;   19 hours ago        Exited (137) 2 minutes ago                            altibase_test
+6074f9f6876a        305569b058db        &quot;/bin/sh -c &#39;apt-get…&quot;   19 hours ago        Exited (1) 19 hours ago                               agitated_dirac
+7cd392776788        2c7e9ce62325        &quot;/bin/sh -c &#39;apt-get…&quot;   20 hours ago        Exited (1) 20 hours ago                               sleepy_shamir
+2c835abffa8a        399a593362f0        &quot;/bin/sh -c &#39;useradd…&quot;   21 hours ago        Created                                               great_gould
+9f1daafaaf3d        93d6a98de683        &quot;/bin/bash &#39;useradd …&quot;   2 days ago          Exited (127) 2 days ago                               strange_aryabhata
+19d325fa6e26        registry            &quot;/entrypoint.sh /etc…&quot;   3 days ago          Up 3 days                    0.0.0.0:5000-&gt;5000/tcp   local-registry
+ 
+# docker rm altibase_test
+altibase_test
+ 
+# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                    PORTS                    NAMES
+6074f9f6876a        305569b058db        &quot;/bin/sh -c &#39;apt-get…&quot;   19 hours ago        Exited (1) 19 hours ago                            agitated_dirac
+7cd392776788        2c7e9ce62325        &quot;/bin/sh -c &#39;apt-get…&quot;   20 hours ago        Exited (1) 20 hours ago                            sleepy_shamir
+2c835abffa8a        399a593362f0        &quot;/bin/sh -c &#39;useradd…&quot;   21 hours ago        Created                                            great_gould
+9f1daafaaf3d        93d6a98de683        &quot;/bin/bash &#39;useradd …&quot;   2 days ago          Exited (127) 2 days ago                            strange_aryabhata
+19d325fa6e26        registry            &quot;/entrypoint.sh /etc…&quot;   3 days ago   </pre>
+</div></div><h1 id="id-5.Stopping/DeletingAltibaseServiceContainer-Reference">Reference</h1><hr /><p>Docker Documentation: <a class="external-link" href="https://docs.docker.com/" rel="nofollow">https://docs.docker.com/</a></p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

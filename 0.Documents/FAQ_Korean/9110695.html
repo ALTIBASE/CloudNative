@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Online Backup 및 Time Based Recovery 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520903.html">04. 백업 및 복구</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Online Backup 및 Time Based Recovery 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409052734 {padding: 0px;}
+div.rbtoc1624409052734 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409052734 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409052734'>
+<ul class='toc-indentation'>
+<li><a href='#OnlineBackup및TimeBasedRecovery방법-개요'>개요</a></li>
+<li><a href='#OnlineBackup및TimeBasedRecovery방법-버전'>버전</a></li>
+<li><a href='#OnlineBackup및TimeBasedRecovery방법-온라인백업절차'>온라인 백업 절차</a></li>
+<li><a href='#OnlineBackup및TimeBasedRecovery방법-TimeBased복구'>Time Based 복구</a></li>
+<li><a href='#OnlineBackup및TimeBasedRecovery방법-참고'>참고</a></li>
+</ul>
+</div></p><h1 id="OnlineBackup및TimeBasedRecovery방법-개요"><strong>개요</strong></h1><hr /><p>아카이브 로그 모드로 알티베이스 서버를 운영할 경우 수행할수 있는 온라인 백업(Online Backup) 및 특정시간을 기준으로(Time Based Recovery) 백업하는 방법에 대해 설명합니다. </p><p>아카이브 모드(Archivelog Mode)가 아니면 온라인 백업(Online Backup)이 불가능 합니다.</p><p> </p><p> </p><p> </p><h1 id="OnlineBackup및TimeBasedRecovery방법-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 4 이상</p><p> </p><p> </p><p> </p><h1 id="OnlineBackup및TimeBasedRecovery방법-온라인백업절차"><strong>온라인 백업 절차</strong></h1><hr /><p><br />1. 온라인백업은 반드시 아카이브모드로 DB가 운영중일 경우에만 가능하며, 아카이브모드 확인 및 변경하는 절차는 다음과 같습니다.</p><p><br />가.  Archivelog Mode 확인방법 </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select ARCHIVE_MODE from v$archive;ARCHIVE_MODE       
+ -----------------------
+0                        // 0 : Archive_mode 미 사용, 1 : Archive mode 사용</pre>
+</div></div><p> </p><p>나. Archive Mode 변경방법<br />온라인 중에 Archive Mode를 변경할 수 없으며 DB shutdown 후 Control 단계에서 변경가능합니다.</p><p><br /> sysdba 모드로 접속 후 Control 단계로 startup  하여 아카이브 모드로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[cheol@as48-x64 ~]$ is -sysdba
+iSQL(sysdba)&gt; startup control;
+Connecting to the DB server... 
+Connected.TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL
+Command execute success. 
+ 
+2) Archivelog mode로 변경합니다
+iSQL(sysdba)&gt; alter database archivelog;Alter success.</pre>
+</div></div><p> </p><p>2. DB가 Archivelog Mode로 운영중 일 경우 Online Backup을 수행하는 절차</p><p><br />가. 데이터베이스 시스템에 의한 데이터베이스  Online Backup</p><p>1) 데이터베이스 단위 온라인 백업</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter database backup database to &#39;/backup&#39;;  // backup 디렉토리는 임의로 변경가능 합니다.</pre>
+</div></div><p> </p><p>아래와 같은 파일들이 /backup 디렉토리로 copy 됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SYS_TBS_MEM_DIC-0-0   
+SYS_TBS_MEM_DATA-0-0
+system001.dbf 
+system002.dbf 
+undo001.dbf
+loganchor0 
+loganchor2 
+loganchor1</pre>
+</div></div><p><br />2) 특정 테이블스페이스 단위 Online Backup하는 경우</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter database backup tablespace SYS_TBS_MEM_DIC to ‘/backup_dir’;  // SYS_TBS_MEM_DIC 데이터 파일 중에서 안정(stable)된 버전이 /backup_dir 디렉터리에 온라인 백업됩니다.
+$ ls /backup_dirSYS_TBS_MEM_DIC-0-0</pre>
+</div></div><p><br />3) 로그앵커 온라인 백업</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter database backup loganchor to ‘/backup_dir’;  // 모든 로그앵커 파일이  /backup_dir 디렉터리에 온라인 백업됩니다.
+$ ls /backup_dir
+loganchor0 loganchor1 loganchor2</pre>
+</div></div><p><br />나. DBA에 의한 온라인 백업</p><p> 1) 테이블스페이스 단위 온라인 백업</p><p>Ex) /backup_dir 에  USER_MEMORY_TBS 와 USER_DISK_TBS 테이블스페이스의 데이터 파일들을 온라인 백업 합니다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Ex) /backup_dir 에  USER_MEMORY_TBS 와 USER_DISK_TBS 테이블스페이스의 데이터 파일들을 온라인 백업 합니다.  </pre>
+</div></div><p> </p><p>메모리 테이블스페이스 데이터 파일은 안정(stable) 버전의 데이터 파일인지 확인 후 온라인 백업합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter tablespace USER_MEMORY_TBS begin backup;
+iSQL(sysdba)&gt; select * from v$stable_mem_datafiles;
+MEM_DATA_FILE 
+--------------------------------------------------
+/altibase_home/dbs/USER_MEM_TBS-0-0  //안정적인 버전 
+ 
+$ cp $ALTIBASE_HOME/dbs/USER_MEMORY_TBS-0-0  /backup_dir/  
+ 
+iSQL(sysdba)&gt; alter tablespace USER_MEMORY_TBS end backup; 
+iSQL(sysdba)&gt; alter tablespace USER_DISK_TBS begin backup;  
+ 
+$ cp $ALTIBASE_HOME/dbs/USER_DISK_TBS.dbf /backup_dir/  
+ 
+iSQL(sysdba)&gt; alter tablespace USER_DISK_TBS end backup; 
+ 
+$ ls /backup_dir
+USER_MEMORY_TBS-0-0 USER_DISK_TBS.dbf</pre>
+</div></div><p> </p><p> 2) DBA에 의한 온라인 백업 마무리</p><p>백업과 관련된 로그 파일을 강제로 아카이브(archive) 하는 명령을 수행해야 하여  현재 로그 파일을 다 쓰지 않았어도 닫고 다음 로그 파일에 로깅을 계속하도록 명령합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER SYSTEM SWITCH LOGFILE;</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="OnlineBackup및TimeBasedRecovery방법-TimeBased복구"><strong>Time Based 복구</strong></h1><hr /><p><br /> Archivelog Mode로 운영중이며, 원하는 복구 시점 이전에 전체 DB에 대한 Online Backup(또는 Cold Backup)을 1회 이상 수행 하였을 경우 복구 절차 입니다.</p><p><br />ex) 실수로 테이블스페이스  USER_DISK_TBS 가 삭제되었다. (2015년 7월 23일 14:11)</p><p>테이블스페이스가 존재했던  10 분 전의 상태로 데이터베이스 복구절차</p><p> </p><p>마지막 백업 시 다음과 같이 전체  DB 를 백업하였습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE BACKUP DATABASE TO ‘/backup_dir’;</pre>
+</div></div><p> </p><p>가. 백업 받은 데이터베이스의 모든 디스크 테이블스페이스의 데이터 파일들을 데이터 파일들의 원래 위치로 복사합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cp /backup_dir/*.dbf $ALTIBASE_HOME/dbs
+$ cp /backup_dir/SYS_TBS_* $ALTIBASE_HOME/dbs</pre>
+</div></div><p> </p><p>나. 복구에 필요한 아카이브 로그 파일을 확인 및 백업된 로그앵커 파일을 복사하여 사용합니다.</p><p>1) 복구에 필요한 아카이브 로그파일 확인</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; select last_deleted_logfile from v$lfg;
+LAST_DELETED_LOGFILE 
+------------------------ 
+15021                // 복구에 필요한 아카이브 로그파일번호</pre>
+</div></div><p> </p><p>$ALTIBASE_HOME/trc 디렉터리에 생성되는  altibase_sm.log 파일에서 백업 완료 시 강제로 아카이브 처리된 파일을 확인 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[2015/07/23 13:59:59] [Thread-6] [Level-9]Waiting logfile15341 to archive  //강제로 아카이브 처리된 파일번호즉 복구를 위해 logfile15021 ~ logfile15341 파일이 필요합니다.</pre>
+</div></div><p><strong><br /></strong></p><p>2) 백업된 로그앵커 파일 복사</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cp /backup_dir/loganchor* /ALTIBASE_HOME/logs;</pre>
+</div></div><p> </p><p>3) SYS_TBS_DISK_TEMP 테이블스페이스는 백업되지 않기 때문에 해당 일을 새로 만듭니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE CREATE DATAFILE ‘temp001.dbf’</pre>
+</div></div><p> </p><p>4)불완전 미디어 복구를 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE RECOVER DATABASE  UNTIL TIME &#39;2015-07-23:14:01:00&#39;;</pre>
+</div></div><p> </p><p>불완전 미디어 복구를 수행하였기 때문에 meta 구동 단계로 가면서 resetlogs 옵션을 사용해야 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE mydb META RESETLOGS;</pre>
+</div></div><p> </p><p>5)서버를 구동하고 로그가 리셋되었기 때문에 전체데이터 베이스 백업 합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE mydb SERVICE;
+iSQL(sysdba)&gt; ALTER DATABASE BACKUP DATABASE TO ‘/backup_dir’;</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="OnlineBackup및TimeBasedRecovery방법-참고"><strong>참고</strong></h1><hr /><p>좀 더 상세한 내용은 Admin Manual  <strong>백업 및 복구사례</strong> 목차에서 확인 할수 있습니다.</p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

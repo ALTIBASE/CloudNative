@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. iBATIS, Spring, Altibase Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iBatis-Integration-Guide-for-Altibase_14058303.html">iBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. iBATIS, Spring, Altibase Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> 정준헌</span> on Dec 24, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>To integrate with Altibase, the user can specify a dataSource in iBATIS or a dataSource in Spring. This chapter describes how to interface with Altibase using these two methods.</span></p><h3 class="md-end-block md-heading" id="id-4.iBATIS,Spring,AltibaseIntegration-WhenSettingdataSourceinSpring"><span class="md-plain">When Setting dataSource in Spring</span></h3><p>To use iBATIS and Spring together, the user can specify iBATIS SqlMapClientFactoryBean bean in Spring's applicationContext.xml file.</p><p>If SqlMapClientFactoryBean bean is then set up to refer to each DAO bean, the methods corresponding to the CRUD can be invoked using the SqlMapClient object in the other bean.</p><p class="md-end-block md-p"><span class="md-plain">To set up dataSource on Spring in an environment linked to iBATIS and Spring, select one of the methods described in the &quot;<span><span class="md-plain md-expand"> </span><span><em><span class="md-plain">Spring Integration Guide for Altibase</span></em></span></span>&quot; document, specify the dataSource in applicationContext.xml, and connect with iBATIS in the SqlMapClientFactoryBean bean of iBATIS.</span></p><p class="md-end-block md-p"><span class="md-plain">At this time, specify the name of the SqlMapConfig file in the configLocation property of the SqlMapClientFactoryBean bean.</span></p><p class="md-end-block md-p">spring-jdbc.jar, spring-orm.jar,</p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) ApplicationContext.xml file of SpringbatisConnection1</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;!-- DriverManagerDataSource Data Source setting using classes --&gt;
+ &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+&lt;!--  JDBC Driver class name setting --&gt;
+&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+&lt;!-- connection url--&gt;
+   &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+   &lt;!-- DB User account setting --&gt;
+   &lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+   &lt;!-- DB User password setting --&gt;
+   &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+&lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+   &lt;property name=&quot;configLocation&quot; value=&quot;SqlMapConfigExample.xml&quot;/&gt;
+&lt;/bean&gt;  
+ 
+&lt;!-- Bean setting of DAO class --&gt;
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot;&gt;
+&lt;property name=&quot;sqlMapClient&quot; ref=&quot;sqlMapClient&quot;/&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p><span class="md-plain md-expand">Altibase.jar, ibatis-2.3.4.x.jar file and spring-jdbc.jar, spring-orm.jar, spring.jar, commons-logging.jar files are required to execute the above examples SpringIbatisConnection1 project. spring-jdbc.jar, spring-orm.jar and commonslogJar file are the framework file included in spring. For detailed directory location, refer to the document &quot;</span><span><em><span class="md-plain">Spring Integration Guide for Altibase</span></em><span class="md-plain md-expand">&quot;.</span></span></p><p><span><span class="md-plain md-expand"><img class="confluence-embedded-image" width="500" src="attachments/14058311/15335431.png" data-image-src="attachments/14058311/15335431.png"><br /></span></span></p><h3 class="md-end-block md-heading" id="id-4.iBATIS,Spring,AltibaseIntegration-WhenSettingdataSourcetoiBATIS"><span class="md-plain">When Setting dataSource to iBATIS</span></h3><p class="md-end-block md-p"><span class="md-plain">To set up dataSource on iBATIS in an environment connected to iBATIS and Spring is the same as described in the section &quot;Configuring the data source in the SqlMapConfig file to interact with ALTIBASE&quot; above. The user can specify Altibase in </span><span>&lt;</span><span class="md-plain">Attributes for connecting to transactionManager&gt; in SqlMapConfig file.</span></p><p class="md-end-block md-p"><span class="md-plain"> However, in order to link iBATIS in Spring, the SqlMapClientFactoryBean of iBATIS must be specified in the applicationContext.xml file as in the above &quot;</span><span><em><span class="md-plain">When Setting the dataSource in Spring</span></em><span class="md-plain">&quot;.</span></span></p><p class="md-end-block md-p"><span class="md-plain">The following example sets the dataSource on iBATIS in iBATIS and Spring integrating environments to work with ALTIBASE.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) ApplicationContext.xml file of SpringIbatisConnection2</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;sqlMapClient&quot; class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+&lt;property name=&quot;configLocation&quot; value=&quot;SqlMapConfigExample.xml&quot;/&gt;
+&lt;/bean&gt;  
+ 
+&lt;!-- Bean setting of DAO class --&gt;
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot;&gt;
+&lt;property name=&quot;sqlMapClient&quot; ref=&quot;sqlMapClient&quot;/&gt;
+&lt;/bean&gt;
+ …</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>Ex) SqlMapConfigExample.xml file of SpringIbatisConnection2</span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMapConfig&gt;
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+&lt;dataSource type=&quot;SIMPLE&quot;&gt;
+&lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+     &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+     &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+     &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/
+&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+ 
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+     
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">The example above shows that the dataSource is set in SqlMapConfigExample.xml, and the SqlMapClientFactoryBean is set in the applicationContext.xml file by reading this SqlMapConfigExample.xml file.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">To run SpringIbatisConnection2 example, Altibase.jar, ibatis-2.3.4.x.jar file and spring-orm.jar, spring.jar, and commons-logging.jar files are required. The spring-orm.jar, spring.jar, and commons-logging.jar files are files included in the Spring Framework. For detailed directory location, refer to the document &quot;</span><span><em><span class="md-plain">Spring Integration Guide for Altibase</span></em><span class="md-plain">&quot;.</span></span></p><p class="md-end-block md-p md-focus"><span><span class="md-plain"><img class="confluence-embedded-image" width="500" src="attachments/14058311/15335431.png" data-image-src="attachments/14058311/15335431.png"><br /></span></span></p><h3 class="md-end-block md-heading md-focus" id="id-4.iBATIS,Spring,AltibaseIntegration-UsingAltibase&#39;sConnectionPool"><span class="md-plain">Using Altibase's ConnectionPool</span></h3><p class="md-end-block md-p"><span class="md-plain">The user can use AltibaseConnectionPool by using the ABConnectionPoolDataSource class provided by Altibase.  In iBATIS and Spring interworking environment, the user can define dataSource bean by using ABConnectionPoolDataSource class in Spring's applicationContext.xml file.</span></p><p class="md-end-block md-p"><span class="md-plain">It should be noted that there is no way to used Altibase ConnectionPool only in iBATIS without integrating with Spring. For more detailed information, please refer to the document &quot;Spring Integration Guide for Altibase&quot;.</span></p><p class="md-end-block md-p"><span class="md-plain">Ex) AltibaseConnection Pool's applicationContext.xml file attached to &quot;</span><span><span class="md-plain md-expand">Spring Integration Guide for Altibase&quot;</span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot;
+class=&quot;Altibase.jdbc.driver.AltibaseConnectionPoolDataSource&quot;&gt;
+&lt;       &lt;!-- connection url--&gt;
+          &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+  &lt;!-- DB User account setting --&gt;
+  &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+  &lt;!-- DB User password setting --&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-4.iBATIS,Spring,AltibaseIntegration-TransactionManagement"><span class="md-plain md-expand">Transaction Management</span></h3><p class="md-end-block md-p"><span class="md-plain">In iBATIS, if you specify the dataSource in &lt;transactionManager&gt; of the SqlMapConfig file, the setAutoComit (false); is automatically invoked when each CRUD method defined in the SqlMap file is invoked. After that, when the method is terminated, the transaction is committed and the mode is changed back to the default autocommit mode.</span></p><p class="md-end-block md-p"><span class="md-plain">This also allows programmers to explicitly manage transactions in the application.</span></p><p class="md-end-block md-p"><span class="md-plain">If iBATIS and Spring are integrated, transactions can be managed in Spring as well.</span></p><p class="md-end-block md-p"><span class="md-plain">This chapter introduces these transaction management methods.</span></p><h4 class="md-end-block md-heading md-focus" id="id-4.iBATIS,Spring,AltibaseIntegration-TransactionManagementiniBATIS"><span class="md-plain">Transaction Management in iBATIS</span></h4><p class="md-end-block md-p"><span class="md-plain">When linking with DB in iBATIS, if dataSource is specified in </span><span>&lt;</span><span class="md-plain">transactionManager&gt; of SqlMapConfig file, setAutoCommit (false) automatically when each CRUD method defined in SqlMap file is called; is called. After that, when the method is terminated, the transaction is committed and the mode is changed back to the default autocommit mode.</span></p><p class="md-end-block md-p"><span class="md-plain">In addition, the programmer can manage transactions directly in the application.</span></p><p class="md-end-block md-p"><span class="md-plain">At this time, to start a transaction, call startTransaction () method of SqlMapClient, commitTransaction () method to commit, or endTransaction () method to rollback without commit.</span></p><p class="md-end-block md-p"><span class="md-plain">The following is an example of explicitly processing a transaction in an application.</span></p><p class="md-end-block md-p"><span class="md-plain md-expand">Ex) PersonS.java file of TransactionSample</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+SqlMapClient sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+ 
+//start transaction
+sqlMap.startTransaction();
+ 
+//insert Person
+Person newPerson1 = new Person();
+…
+sqlMap.insert (&quot;insertPerson&quot;, newPerson1);
+ 
+//commit
+sqlMap.commitTransaction ();
+                 
+Person newPerson2 = new Person();
+…
+sqlMap.insert (&quot;insertPerson&quot;, newPerson2);
+ 
+// selected 2 rows.
+List&lt;Person&gt; list = (List&lt;Person&gt;)sqlMap.queryForList(&quot;getAllPersons&quot;);
+System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+for(int i=0; i&lt; list.size();i++){
+System.out.println(list.get(i));
+}
+         
+//rollback
+sqlMap.endTransaction();
+ 
+// selected only 1 row.
+list = (List&lt;Person&gt;)sqlMap.queryForList(&quot;getAllPersons&quot;);
+System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+for(int i=0; i&lt; list.size();i++){
+System.out.println(list.get(i));
+}
+…</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">In order to execute the above example TransactionSample project, Altibase.jar and abates-2.3.4x.jar files are needed as in &quot;Set dataSource in SqlMapConfig file to link with ALTIBASE&quot;.</span></p><h4 class="md-end-block md-heading" id="id-4.iBATIS,Spring,AltibaseIntegration-TransactionManagementinSpring"><span class="md-plain">Transaction Management in Spring</span></h4><p class="md-end-block md-p md-focus"><span class="md-plain">If iBATIS and Spring are connected, transactions can be managed in Spring. This document includes an example (LobSpringIbatisSample) for managing/processing transactions declaratively in Spring's applicationContext.xml file. For more detailed information, refer to the document </span><span><em><span class="md-plain">&quot;Spring Integration Guide for Altibase&quot;</span></em><span class="md-plain">.</span></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058311/14221517.png">eclipse_jdbc5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058311/14221518.png">eclipse_jdbc5 (1).png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058311/15335431.png">Capture_11.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

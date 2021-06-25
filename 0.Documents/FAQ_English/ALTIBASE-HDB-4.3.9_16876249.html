@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB 4.3.9</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-tablespace-usage_16876245.html">Disk tablespace usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB 4.3.9
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 24, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147066 {padding: 0px;}
+div.rbtoc1624409147066 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147066 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147066'>
+<ul class='toc-indentation'>
+
+</ul>
+</div></p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk tablespace usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">set linesize 1024;
+set colsize 30;
+SELECT TBS.NAME TBS_NAME                                                                                                    -- Disk tablespace name
+     , TO_CHAR(ROUND(DAT.MAX * TBS.PAGE_SIZE / 1024 /1024, 2)) &#39;MAX(M)&#39;                                                     -- Maximum size that can be allocated
+     , ROUND(TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                                              -- Total number of pages allocated so far
+     , DECODE(TBS.TYPE, 5, ROUND( UNDO.ALLOC * TBS.PAGE_SIZE/1024/1024, 2) /* UNDO TABLESPACE*/
+                         , ROUND( TBS.ALLOCATED_PAGE_COUNT * TBS.PAGE_SIZE / 1024 / 1024, 2) ) &#39;ALLOC(M)&#39;                   -- Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far
+     , DECODE(TBS.TYPE, 3, &#39;-&#39; /* TEMP TABLESPACE */
+                      , 5, ROUND( UNDO.USED * TBS.PAGE_SIZE /1024/1024, 2) /* UNDO TABLESPACE*/                             -- Size of the pages in use at which data is loaded. TEMP TABLESPACE cannot be obtained.
+                         , DECODE(SEG.USED, &#39;&#39;, 0, ROUND((SEG.USED * TBS.PAGE_SIZE * TBS.A_EXTENT_PAGE_COUNT)/1024/1024, 2)) /* USER TABLESPACE &amp; SYS_TBS_DATA */) &#39;USED(M)&#39;   
+     , DECODE(TBS.TYPE, 5, ROUND( UNDO.ALLOC / DAT.MAX * 100, 2) --UNDO
+                         , ROUND( TBS.ALLOCATED_PAGE_COUNT / DAT.MAX * 100, 2) ) &#39;USAGE(%)&#39;
+     , DECODE(TBS.STATE, 1, &#39;ONLINE&#39;, 2, &#39;BEGIN BACKUP&#39;, 3, &#39;END BACKUP&#39;, &#39;NOT DEFINED&#39;) STATE
+     , DAT.AUTOEXTEND
+  FROM V$TABLESPACES TBS LEFT OUTER JOIN (SELECT SPACE_ID , SUM(EXTENT_TOTAL_COUNT) ALLOC , SUM(EXTENT_FULL_COUNT ) USED
+                                            FROM X$SEGMENT
+                                            GROUP BY SPACE_ID
+                                         ) SEG ON TBS.ID = SEG.SPACE_ID
+     ,(SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) DAT
+     , (SELECT SUM(ALLOCATED_PAGE_COUNT) ALLOC
+             , SUM(USED_PAGE_COUNT) USED
+          FROM V$UNDO_TBS ) UNDO
+ WHERE TBS.ID = DAT.SPACEID;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)                          TOTAL(M)    ALLOC(M)    USED(M)                         USAGE(%)    STATE         AUTOEXTEND  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DATA                    2049                            249         249         0                               12.15       ONLINE        ON   
+SYS_TBS_UNDO                    2048                            246         245.72      0.02                            12          ONLINE        ON   
+SYS_TBS_TEMP                    2048                            100         1           -                               0.05        ONLINE        ON   
+USER_DATA                       2048                            2048        832         831                             40.63       ONLINE        OFF  
+USER_IDX                        2048                            2048        157         155.75                          7.67        ONLINE        OFF  
+USER_IDX_TBS                    512                             512         1           0                               0.2         ONLINE        OFF  
+6 rows selected.</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

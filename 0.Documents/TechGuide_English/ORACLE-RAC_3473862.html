@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : ORACLE RAC</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7.-HA-Support_2986528.html">7. HA Support</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : ORACLE RAC
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 12, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409353037 {padding: 0px;}
+div.rbtoc1624409353037 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409353037 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409353037'>
+<ul class='toc-indentation'>
+<li><a href='#ORACLERAC-Overview'>Overview</a></li>
+<li><a href='#ORACLERAC-FeaturesofORACLERAC'>Features of ORACLE RAC</a></li>
+<li><a href='#ORACLERAC-HowdoesApplicationFailoversetup'>How does Application Failover setup</a>
+<ul class='toc-indentation'>
+<li><a href='#ORACLERAC-ConnectionStringinaClientApplication'>Connection String in a Client Application</a></li>
+<li><a href='#ORACLERAC-ConnectionPropertiesintheSettingsFile((altibase_cli.iniorodbc.inifile)'>Connection Properties in the Settings File((altibase_cli.ini or odbc.ini file)</a></li>
+<li><a href='#ORACLERAC-ConnectionStringoftheclientapplication&#39;sconnectionfunction'>Connection String of the client application&#39;s connection function</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ORACLERAC-Overview">Overview</h2>
+
+<p>The RAC system comprises internal network between several nodes.</p>
+
+<p>Therefore when node A is requested to transfer changed data from node B, Node A delivers DB block(changed data) to node B via Inter-Connect Network.</p>
+
+<p>we call it as a Cache Fusion.</p>
+
+<h2 id="ORACLERAC-FeaturesofORACLERAC">Features of ORACLE RAC</h2>
+
+<ul>
+	<li>The plural nodes constituting RAC system have each independent SIDs.</li>
+</ul>
+
+
+<p>Using Altibase HDB Replication, The replication target servers have different DB_NAME as different nodes.
+<br class="atl-forced-newline" /></p>
+<ul>
+	<li> An independent nodes comprising RAC system share Disk.</li>
+</ul>
+
+
+<p>In case of the Altibase HDB Replication, it only applies redo logs(xLog) delivered from the remote server over TCP/IP protocol.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+<ul>
+	<li>Application Failover</li>
+</ul>
+
+
+<p>The Fail-Over feature is provided so that a fault that occurs while a database is providing service can be overcome and service can continue to be provided as though no fault had occurred.</p>
+
+<p>Oracle RAC provides CTF(Connection Time Failover) and TAF(Transparent Application Failover).</p>
+
+<p>Altibase HDB Replication supports CTF and STF </p>
+<ol>
+	<li>CTF: When the fault is noted at the time of connection to the DBMS, and connection is made to a DBMS on another available node rather than to the DBMS suffering from the fault, so that service can continue to be provided.</li>
+	<li>TAF: After a fault occurs while service is being provided after successful connection to the DBMS, reconnection is made to a DBMS on another available node, and session properties are restored, so that the business logic of the user's application can continue to be used. In other words, it is called as STF(Service Time Failover)
+<br class="atl-forced-newline" /></li>
+</ol>
+
+
+<ul>
+	<li>Load Balancing</li>
+</ul>
+
+
+<ol>
+	<li>Client-Side Connect-Time Load Balancing: This functionality can be done by sending a request for connection among available listener list. As it were, A client attempts to a DB server in a random order.This can be available by setting to &quot;LOAD_BALANCE = ON&quot;  in tnsnames.ora file of the client. If this value is set to off, a client tries to connect to the server listed in the first address of tnsnames.ora                   If failed, the access to the next address will be attempted. </li>
+	<li>Server-Side Connect-Time Load Balancing: It is done by setting on the side of server. PMON Process does register service information to Listener automatically.                                                               After then, at the time of client's request for connection, server makes an attempt to connect using the protocol address in the tnsnames.ora file of the client.</li>
+</ol>
+
+
+<h2 id="ORACLERAC-HowdoesApplicationFailoversetup">How does Application Failover setup</h2>
+
+<p>Oracle</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$TNS_ADMIN/tnsnames.ora
+AP =
+(DESCRIPTION = (FAILOVER=ON) (LOAD_BALANCE=ON)
+(ADDRESS_LIST =
+(ADDRESS = (PROTOCOL = TCP)(HOST = vip-sc1)(PORT = 1521))
+(ADDRESS = (PROTOCOL = TCP)(HOST = vip-sc2)(PORT = 1521))
+)
+(CONNECT_DATA =
+(SERVICE_NAME = AP)
+(FAILOVER_MODE =
+(TYPE=SESSION)
+(METHOD=BASIC)
+)
+)</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+
+<p>Altibase</p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>To register Fail-Over option, You may choose from the followings. For further information, refer to <a href="http://aid.altibase.com/display/migfromora/Database+Connect" class="external-link" rel="nofollow">this page</a></p>
+                    </div>
+    </div>
+
+
+<h3 id="ORACLERAC-ConnectionStringinaClientApplication">Connection String in a Client Application</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">• JDBC
+Jdbc:Altibase://192.168.3.51:20300/mydb?AlternateServers=(
+192.168.3.54:20300,192.168.3.53:20300)&amp;ConnectionRetryCount=3&amp;ConnectionRetryDelay=
+3&amp;LoadBalance=off&amp;SessionFailOver=on;
+• ODBC, Embedded SQL
+DSN=192.168.3.51;UID=altibase;PWD=altibase;PORT_NO=20300;AlternateServer
+s=(192.168.3.54:20300,192.168.3.53:20300);ConnectionRetryCount=3;ConnectionRetryDelay=
+5;LoadBalance=on;SessionFailOver=on;</pre>
+</div></div>
+
+<h3 id="ORACLERAC-ConnectionPropertiesintheSettingsFile((altibase_cli.iniorodbc.inifile)">Connection Properties in the Settings File((altibase_cli.ini or odbc.ini file)</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[MyDataSource1]
+Server=192.168.3.51
+Port=20300
+User=altibase
+Password=altibase
+DataBase = mydb
+AlternateServers=(192.168.3.54:20300,192.168.3.53:20300)
+ConnectionRetryCount=3
+ConnectionRetryDelay=5
+LoadBalance = on
+SessionFailOver = off</pre>
+</div></div>
+<p>  </p>
+
+<h3 id="ORACLERAC-ConnectionStringoftheclientapplication&#39;sconnectionfunction">Connection String of the client application's connection function</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">• JDBC
+The data source name is specified as part of the Connection URL as follows:
+Jdbc:Altibase://MyDataSource1//
+
+• ODBC, Embedded SQL
+The data source name is specified in the DSN properties as follows:
+DSN=MyDataSource</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

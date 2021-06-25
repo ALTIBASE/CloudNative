@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : unixODBC Manager의 연동</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698379.html">Altibase와 unixODBC 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : unixODBC Manager의 연동
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><hr /><p>실제 ALTIBASE의 unix ODBC Driver와 연동하기 위한 방법을 설명한다.</p><p> </p><h1 id="unixODBCManager의연동-ODBC.INI설정">ODBC.INI 설정</h1><p>사용자계정의 환경변수에 다음을 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export ODBCINI=/home/unixODBC/etc/odbc.ini</pre>
+</div></div><p>해당 설정은  odbc driver의 접속정보를 기록하는 설정파일을 지정한 파일로 사용하겠다는 의미이다.</p><p>/home/unixODBC/etc/odbc.ini에는 다음과 같이 기록한 후 저장한다</p><ul><li><p>odbc.ini 예제</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC Data Sources]
+Altiodbc = Altibase ODBC Driver
+[Altiodbc]
+Driver = /altibase_home/lib/libaltibase_odbc-64bit-ul32.so
+Description = Sample Altibase DSN
+UserName = SYS
+Password = MANAGER
+ServerType = Altibase
+Server = 127.0.0.1
+User = SYS
+Port = 20300
+Database = mydb
+FetchBufferSize = 64
+ReadOnly = no
+LongDataCompat=ON
+TraceFile = /tmp/odbc.trace
+Trace = 1</pre>
+</div></div><ul><li>주요 설정값</li></ul><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="1" class="confluenceTh">설정항목</th><th class="confluenceTh">설정값</th><th class="confluenceTh">설명</th></tr><tr><td rowspan="3" class="confluenceTd"><p>Driver</p></td><td class="confluenceTd"><a href="http://libaltibase_odbc-64bit-ul64.so" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul<strong><span style="color: rgb(255,0,0);">64</span></strong>.so</a></td><td rowspan="2" class="confluenceTd"><p>Bit에 따라 제공되며 중요한 것은 ul64/32의 확인이다. 일부 ODBC Manager의 컴파일단계에서 SQLLEN에 대한 정의를 4byte/8byte로 달리하여 접속단계부터 오류가 날 수</p><p>있음으로 해당 ODBC Manager를 컴파일 할 때 SQLLEN을 어떻게 정의했는지를 확인해야 한다. (32/64bit의 구분이 아님)</p></td></tr><tr><td class="confluenceTd"><a href="http://libaltibase_odbc-64bit-ul32.so" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul<strong><span style="color: rgb(255,0,0);">32</span></strong>.so</a></td></tr><tr><td class="confluenceTd"><a href="http://libaltibase_odbc.so" class="external-link" rel="nofollow">libaltibase_odbc.so</a></td><td class="confluenceTd"><p>libaltibase_odbc.so는 32bit용 unixodbc driver와 사용되는 odbc driver이다. altibase 32bit client package 에 포함되어 있는 파일이다.</p><p>정확하게는 파일의 비트를 사용자가 확인해서 써야 한다. (file &lt;FileName&gt;으로 확인)</p><p>unixodbc 를 32bit 로 컴파일해서 사용하는 경우 이 Driver를 지정해서 사용해야 한다.</p></td></tr><tr><td colspan="1" class="confluenceTd">LongDataCompat</td><td colspan="1" class="confluenceTd">ON</td><td colspan="1" class="confluenceTd">lob 데이타를 사용할 경우 ON 설정을 한다.</td></tr></tbody></table></div><p> </p><p> </p><p>위의 SQLLEN의 길이정보는 다음과 같이 확인한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>shell&gt; /home/unixODBC/bin]<strong style="line-height: 1.42857;"> ./odbcinst -j</strong></p><p>unixODBC 2.3.2<br />DRIVERS............: <span>/home/unixODBC</span>/etc/odbcinst.ini</p><p>....................</p><p><strong>SQLULEN Size.......: 4 ( 64bit인 경우 8 )</strong><br /><strong>SQLLEN Size........: 4 ( 64bit인 경우 8 )</strong></p><p>SQLSETPOSIROW Size.: 2</p>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>unixODBC에서 정의된 SQLLEN 사이즈에 따라서 사용해야 하는 odbc driver가 달라져야 한다. SQLLEN = (4byte/32bit) 인 경우는 odbc driver를<span style="color: rgb(0,0,0);"><strong> <a href="http://libaltibase_odbc-64bit-ul32.so/" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">libaltibase_odbc-64bit-ul<span style="color: rgb(0,0,0);"><span style="color: rgb(255,0,0);">32</span></span>.so</span></a></strong> </span>를 사용해야 한다. SQLLEN = ( 8byte/64bit) 인 경우는<span style="color: rgb(0,0,0);"><strong> <a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">libaltibase_odbc-64bit-ul<span style="color: rgb(255,0,0);">64</span>.so</span></a> </strong></span>를 사용한다.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="unixODBCManager의연동-ODBC연결테스트">ODBC연결테스트</h1><p>위과 같이 설정이 완료되면 unixODBC Manager가 설치된 디렉토리에서 다음과 같은 수행을 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; cd /home/unixODBC/bin
+Shell&gt; ./isql Altiodbc
++---------------------------------------+
+| Connected!                            |
+|                                       |
+| sql-statement                         |
+| help [tablename]                      |
+| quit                                  |
+|                                       |
++---------------------------------------+
+SQL&gt;</pre>
+</div></div><p>위와 같이 정상적인 접속 프롬프트가 보여지면 정상적으로 DB에 연결될 상태라고 볼 수 있다.   AIX의 경우는 간혹 <a href="http://libodbcinst.so" style="line-height: 1.42857;" class="external-link" rel="nofollow">libodbcinst.so</a> 의 파일이 LIBRARY_PATH에 잡히지 않거나 특이한 이유로 정상적으로 설치했음에도 불구하고 접속이 안 되는 경우가 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; ls unixODBC-2.../odbcinst/.libs/libodbcinst.so.1</pre>
+</div></div><p><a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a>.1 파일이 컴파일 한 소스디렉토리에 존재하는지 확인하고 이것에 대한 <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a> 가 존재하지 않을 경우 <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a>.1에 대한 심볼릭 링크를 걸어 LD_LIBRARY_PATH내에 위치시킬 경우 해결이 가능하다.</p><p>SUN의 경우는 LD_LIBRARY_PATH_64 에 unixODBC Manager의 lib경로를 설정해야 접속이 가능하다</p><p> </p><h1 id="unixODBCManager의연동-ODBCtracelog설정">ODBC trace log 설정</h1><p>unixODBC 에서 호출하는 ODBC 함수를 파일로 로깅하여 문제 원인분석시 유용하게 활용할 수 있다.   unixODBC가  trace log 를 남기도록 설정하는 방법은 아래와 같다.</p><ol><li><p>ODBCINST.INI 파일 설정</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC]
+TraceFile = /home/unixODBC/bin/trace.log  
+Trace = Yes</pre>
+</div></div><p>odbc.ini 파일이 위치한 경로와 동일 디렉토리 경로에  odbcinst.ini 에  위와 같이 설정한다.   DSN 명은 반드시  [<a class="createlink" href="/pages/createpage.action?spaceKey=DOCK&amp;title=ODBC&amp;linkCreation=true&amp;fromPageId=11698381">ODBC</a>] 를 사용하여야 한다.   TraceFIle 설정값은 로깅할 내용이 기록될  파일의 위치와 파일명이다.  Trace = Yes/No 로깅 여부를 선택할 수 있다.<br /><br /><br /></p></li><li><p>unixODBC Trace 출력예</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC][19094][1473224991.140071][__handles.c][460]
+                Exit:[SQL_SUCCESS]
+                        Environment = 0x1b3a760
+[ODBC][19094][1473224991.140170][SQLAllocHandle.c][375]
+                Entry:
+                        Handle Type = 2
+                        Input Handle = 0x1b3a760
+[ODBC][19094][1473224991.140216][SQLAllocHandle.c][493]
+                Exit:[SQL_SUCCESS]
+                        Output Handle = 0x1b3b090
+..................................</pre>
+</div></div><p>trace.log  열어 보면 위와 같은 파일 내용을 확인할 수 있다. <br /><br /></p></li></ol><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

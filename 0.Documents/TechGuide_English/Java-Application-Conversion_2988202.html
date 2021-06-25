@@ -1,0 +1,3222 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Java Application Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Java Application Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348376 {padding: 0px;}
+div.rbtoc1624409348376 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348376 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348376'>
+<ul class='toc-indentation'>
+<li><a href='#JavaApplicationConversion-JDBCDriver'>JDBC Driver</a></li>
+<li><a href='#JavaApplicationConversion-Connection'>Connection</a></li>
+<li><a href='#JavaApplicationConversion-ALTIBASEJDBCDriverSupport'>ALTIBASE JDBC Driver Support</a>
+<ul class='toc-indentation'>
+<li><a href='#JavaApplicationConversion-Drivers'>Drivers</a></li>
+<li><a href='#JavaApplicationConversion-Connection.1'>Connection</a></li>
+<li><a href='#JavaApplicationConversion-DatabaseMetaData'>DatabaseMetaData</a></li>
+<li><a href='#JavaApplicationConversion-ResultSet'>ResultSet</a></li>
+<li><a href='#JavaApplicationConversion-ResultSetMetaData'>ResultSetMetaData</a></li>
+<li><a href='#JavaApplicationConversion-Statement'>Statement</a></li>
+<li><a href='#JavaApplicationConversion-PreparedStatement'>PreparedStatement</a></li>
+<li><a href='#JavaApplicationConversion-CallableStatement'>CallableStatement</a></li>
+<li><a href='#JavaApplicationConversion-Blob'>Blob</a></li>
+<li><a href='#JavaApplicationConversion-Clob'>Clob</a></li>
+<li><a href='#JavaApplicationConversion-SavePoint'>SavePoint</a></li>
+<li><a href='#JavaApplicationConversion-ConnectionPoolDataSource'>ConnectionPoolDataSource</a></li>
+<li><a href='#JavaApplicationConversion-DataSource'>DataSource</a></li>
+<li><a href='#JavaApplicationConversion-PooledConnection'>PooledConnection</a></li>
+<li><a href='#JavaApplicationConversion-XAConnection'>XAConnection</a></li>
+<li><a href='#JavaApplicationConversion-XADataSource'>XADataSource</a></li>
+<li><a href='#JavaApplicationConversion-XAResource'>XAResource</a></li>
+<li><a href='#JavaApplicationConversion-Xid'>Xid</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<p>It is quite easy to convert java application from Oracle to ALTIBASE except SQL conversion</p>
+
+<h2 id="JavaApplicationConversion-JDBCDriver">JDBC Driver</h2>
+
+<p>There're 4 types in JDBC driver.
+<br class="atl-forced-newline" /></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Type </p></th>
+<th class="confluenceTh"><p> Comment </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Type1 </p></td>
+<td class="confluenceTd"><p> JDBC-ODBC Bridge driver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Type2 </p></td>
+<td class="confluenceTd"><p> Java + Native code driver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Type3 </p></td>
+<td class="confluenceTd"><p> All Java + Middleware translation driver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Type4 </p></td>
+<td class="confluenceTd"><p> Pure java driver </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>ALTIBASE HDB only supports Type 4 JDBC Driver.</p>
+
+<p>You can find ALTIBASE JDBC Driver, which is named &quot;Altibase.jar&quot; or &quot;Altibase5.jar&quot;, in $ALTIBASE_HOME/lib.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>The drivers, Altibase.jar and Altibase5.jar, are totally identical except its package name. Altibase5.jar can be used if you have to connect to both ALTIBASE 4 and ALTIBASE 5.</p>
+                    </div>
+    </div>
+
+
+<p>ALTIBASE JDBC Driver is compatible to JDBC 3.0 specification.
+<br class="atl-forced-newline" /></p>
+
+
+<h2 id="JavaApplicationConversion-Connection">Connection</h2>
+
+<p>Here's are samples when you make a connection to ALTIBASE.</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+try {
+	 /* Load ALTIBASE JDBC driver to JVM */
+	 Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);
+	 /* Connect to ALTIBASE using url */
+	 Connection cn = DriverManager.getConnection (&quot;jdbc::Altibase:/127.0.0.1:20300/mydb?user=SYS&amp;password=MANAGER&amp;encoding=US7ASCII&quot;);
+}	catch (Exception ex )
+{
+	ex.printStackTrace();
+}
+</pre>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Type </p></th>
+<th class="confluenceTh"><p> value </p></th>
+<th class="confluenceTh"><p> Comment </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Driver name </p></td>
+<td class="confluenceTd"><p> Altibase.jdbc.driver.AltibaseDriver </p></td>
+<td class="confluenceTd"><p> The driver used to connect to ALTIBASE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> jdbc:Altibase://127.0.0.1:20300 </p></td>
+<td class="confluenceTd"><p> Connection string. It specifies the connecttion information </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="JavaApplicationConversion-ALTIBASEJDBCDriverSupport">ALTIBASE JDBC Driver Support</h2>
+
+<p>Followings are JDBC 3.0 specification.</p>
+
+<h3 id="JavaApplicationConversion-Drivers">Drivers</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> acceptsURL(String url) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> connect(String url, Properties info) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getMajorversion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getMinorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DriverPropertyInfo[] </p></td>
+<td class="confluenceTd"><p> getPropertyInfo(String url, Properties info) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> jdbcCompliant() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-Connection.1">Connection</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> clearWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> close() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> commit() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Statement </p></td>
+<td class="confluenceTd"><p> createStatement() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Statement </p></td>
+<td class="confluenceTd"><p> createStatement(int resultSetType, int resultSetConcurrency) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Statement </p></td>
+<td class="confluenceTd"><p> createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> getAutoCommit() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getCatalog() </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getHoldability() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DatabaseMetaData </p></td>
+<td class="confluenceTd"><p> getMetaData() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getTransactionIsolation() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Map </p></td>
+<td class="confluenceTd"><p> getTypeMap() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQLWarning </p></td>
+<td class="confluenceTd"><p> getWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> isClosed() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> isReadOnly() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> nativeSQL(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CallableStatement </p></td>
+<td class="confluenceTd"><p> prepareCall(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CallableStatement </p></td>
+<td class="confluenceTd"><p> prepareCall(String sql, int resultSetType, int resultSetConcurrency) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CallableStatement </p></td>
+<td class="confluenceTd"><p> prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql, int autoGeneratedKeys) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql, int[] columnIndexes) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql, int resultSetType, int resultSetConcurrency) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PreparedStatement </p></td>
+<td class="confluenceTd"><p> prepareStatement(String sql, String[] columnNames) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> releaseSavepoint(Savepoint savepoint) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> rollback() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> rollback(Savepoint savepoint) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setAutoCommit(boolean autoCommit) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setCatalog(String catalog) </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setHoldability(int holdability) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setReadOnly(boolean readOnly </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Savepoint </p></td>
+<td class="confluenceTd"><p> setSavepoint() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Savepoint </p></td>
+<td class="confluenceTd"><p> setSavepoint(String name) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTransactionIsolation(int level) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTypeMap(Map map) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-DatabaseMetaData">DatabaseMetaData</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> allProceduresAreCallable() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> allTablesAreSelectable() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> dataDefinitionCausesTransactionCommit() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> dataDefinitionIgnoredInTransactions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> deletesAreDetected(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Boolean </p></td>
+<td class="confluenceTd"><p> doesMaxRowSizeIncludeBlobs() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getAttributes(String catalog, String schemaPattern, String typeNamePattern, String attributeNamePattern) Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getCatalogs() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getCatalogSeparator() </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getCatalogTerm() </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> getConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getCrossReference(String primaryCatalog, String primarySchema, String primaryTable, String foreignCatalog, String foreignSchema, String foreignTable) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getDatabaseMajorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getDatabaseMinorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getDatabaseProductName() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getDatabaseProductVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getDefaultTransactionIsolation() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getDriverMajorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getDriverMinorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getDriverName() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getDriverVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getExportedKeys(String catalog, String schema, String table) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getExtraNameCharacters() Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getIdentifierQuoteString() Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getImportedKeys(String catalog, String schema, String table) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getIndexInfo(String catalog, String schema, String table, Boolean unique, Boolean approximate) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getJDBCMajorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getJDBCMinorVersion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxBinaryLiteralLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxCatalogNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxCharLiteralLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxColumnNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getMaxColumnsInGroupBy() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getMaxColumnsInIndex() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxColumnsInOrderBy() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxColumnsInSelect() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxColumnsInTable() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxConnections() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxCursorNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxIndexLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxProcedureNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxRowSize() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxSchemaNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxStatementLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxStatements() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxTableNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxTablesInSelect() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxUserNameLength() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getNumericFunctions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getPrimaryKeys(String catalog, String schema, String table) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getProcedures(String catalog, String schemaPattern, String procedureNamePattern) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getProcedureTerm() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getResultSetHoldability() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getSchemas() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSchemaTerm() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSearchStringEscape() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSQLKeywords() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getSQLStateType() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getStringFunctions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getSuperTables(String catalog, String schemaPattern, String tableNamePattern) X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSystemFunctions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getTableTypes() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getTimeDateFunctions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getTypeInfo() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getURL() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getUserName() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getVersionColumns(String catalog, String schema, String table) X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> insertsAreDetected(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isCatalogAtStart() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isReadOnly() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> locatorsUpdateCopy() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> nullPlusNonNullIsNull() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> nullsAreSortedAtEnd() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> nullsAreSortedAtStart() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> nullsAreSortedHigh() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> nullsAreSortedLow() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> othersDeletesAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> othersInsertsAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> othersUpdatesAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> ownDeletesAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> ownInsertsAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> ownUpdatesAreVisible(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesLowerCaseIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesLowerCaseQuotedIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesMixedCaseIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesMixedCaseQuotedIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesUpperCaseIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> storesUpperCaseQuotedIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsAlterTableWithAddColumn() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsAlterTableWithDropColumn() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsANSI92EntryLevelSQL() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsANSI92FullSQL() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsANSI92IntermediateSQL() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsBatchUpdates() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCatalogsInDataManipulation() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCatalogsInIndexDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCatalogsInPrivilegeDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCatalogsInProcedureCalls() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCatalogsInTableDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsColumnAliasing() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsConvert() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsConvert(int fromType, int toType) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCoreSQLGrammar() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsCorrelatedSubqueries() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsDataDefinitionAndDataManipulationTransactions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsDataManipulationTransactionsOnly() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsDifferentTableCorrelationNames() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsExpressionsInOrderBy() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsExtendedSQLGrammar() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsFullOuterJoins() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsGetGeneratedKeys() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsGroupBy() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsGroupByBeyondSelect() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsGroupByUnrelated() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsIntegrityEnhancementFacility() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsLikeEscapeClause() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsLimitedOuterJoins() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMinimumSQLGrammar() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMixedCaseIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMixedCaseQuotedIdentifiers() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMultipleOpenResults() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMultipleResultSets() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsMultipleTransactions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsNamedParameters() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsNonNullableColumns() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOpenCursorsAcrossCommit() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOpenCursorsAcrossRollback() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOpenStatementsAcrossCommit() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOpenStatementsAcrossRollback() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOrderByUnrelated() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsOuterJoins() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsPositionedDelete() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsPositionedUpdate() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsResultSetConcurrency(int type, int concurrency) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsResultSetHoldability(int holdability) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsResultSetType(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSavepoints() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSchemasInDataManipulation() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSchemasInIndexDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSchemasInPrivilegeDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSchemasInProcedureCalls() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSchemasInTableDefinitions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSelectForUpdate() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsStatementPooling() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsStoredProcedures() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSubqueriesInComparisons() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSubqueriesInExists() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSubqueriesInIns() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsSubqueriesInQuantifieds() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsTableCorrelationNames() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsTransactionIsolationLevel(int level) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsTransactions() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsUnion() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> supportsUnionAll() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> updatesAreDetected(int type) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> usesLocalFilePerTable() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> usesLocalFiles() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-ResultSet">ResultSet</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> absolute(int row) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> afterLast() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> beforeFirst() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> cancelRowUpdates() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> clearWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> close() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> deleteRow() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> findColumn(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> first() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Array </p></td>
+<td class="confluenceTd"><p> getArray(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Array </p></td>
+<td class="confluenceTd"><p> getArray(String colName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getAsciiStream(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getAsciiStream(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(int columnIndex, int scale) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(String columnName, int scale) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getBinaryStream(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getBinaryStream(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Blob </p></td>
+<td class="confluenceTd"><p> getBlob(int i) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Blob </p></td>
+<td class="confluenceTd"><p> getBlob(String colName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getBoolean(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getBoolean(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte </p></td>
+<td class="confluenceTd"><p> getByte(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte </p></td>
+<td class="confluenceTd"><p> getByte(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[] </p></td>
+<td class="confluenceTd"><p> getBytes(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[] </p></td>
+<td class="confluenceTd"><p> getBytes(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Reader </p></td>
+<td class="confluenceTd"><p> getCharacterStream(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Reader </p></td>
+<td class="confluenceTd"><p> getCharacterStream(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Clob </p></td>
+<td class="confluenceTd"><p> getClob(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Clob </p></td>
+<td class="confluenceTd"><p> getClob(String colName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getConcurrency() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getCursorName() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(int columnIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(String columnName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> double </p></td>
+<td class="confluenceTd"><p> getDouble(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> double </p></td>
+<td class="confluenceTd"><p> getDouble(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getFetchDirection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getFetchSize() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> float </p></td>
+<td class="confluenceTd"><p> getFloat(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> float </p></td>
+<td class="confluenceTd"><p> getFloat(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getInt(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getInt(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> getLong(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> getLong(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSetMetaData </p></td>
+<td class="confluenceTd"><p> getMetaData() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(int i, Map map) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(String colName, Map map) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Ref </p></td>
+<td class="confluenceTd"><p> getRef(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Ref </p></td>
+<td class="confluenceTd"><p> getRef(String colName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getRow() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> short </p></td>
+<td class="confluenceTd"><p> getShort(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> short </p></td>
+<td class="confluenceTd"><p> getShort(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Statement </p></td>
+<td class="confluenceTd"><p> getStatement() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getString(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getString(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(int columnIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(String columnName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(int columnIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(int columnIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(String columnName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(String columnName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getType() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getUnicodeStream(int columnIndex) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getUnicodeStream(String columnName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> getURL(int columnIndex) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> getURL(String columnName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQLWarning </p></td>
+<td class="confluenceTd"><p> getWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> insertRow(). </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isAfterLast() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isBeforeFirst() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isFirst() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isLast() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> last() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> moveToCurrentRow() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> moveToInsertRow() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> next() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> previous() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> refreshRow() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> relative(int rows) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> rowDeleted() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> rowInserted() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> rowUpdated() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFetchDirection(int direction) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFetchSize(int rows) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateArray(int columnIndex, Array x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateArray(String columnName, Array x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateAsciiStream(int columnIndex, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateAsciiStream(String columnName, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBigDecimal(int columnIndex, BigDecimal x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBigDecimal(String columnName, BigDecimal x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBinaryStream(int columnIndex, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBinaryStream(String columnName, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBlob(int columnIndex, Blob x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBlob(String columnName, Blob x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBoolean(int columnIndex, Boolean x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBoolean(String columnName, Boolean x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateByte(int columnIndex, byte x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateByte(String columnName, byte x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBytes(int columnIndex, byte[] x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateBytes(String columnName, byte[] x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateCharacterStream(int columnIndex, Reader x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateCharacterStream(String columnName, Reader reader, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateClob(int columnIndex, Clob x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateClob(String columnName, Clob x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateDate(int columnIndex, Date x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateDate(String columnName, Date x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateDouble(int columnIndex, double x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateDouble(String columnName, double x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateFloat(int columnIndex, float x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateFloat(String columnName, float x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateInt(int columnIndex, int x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateInt(String columnName, int x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateLong(int columnIndex, long x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateLong(String columnName, long x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateNull(int columnIndex) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateNull(String columnName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateObject(int columnIndex, Object x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateObject(int columnIndex, Object x, int scale) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateObject(String columnName, Object x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateObject(String columnName, Object x, int scale) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateRef(int columnIndex, Ref x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateRef(String columnName, Ref x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateRow() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateShort(int columnIndex, short x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateShort(String columnName, short x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateString(int columnIndex, String x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateString(String columnName, String x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateTime(int columnIndex, Time x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateTime(String columnName, Time x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateTimestamp(int columnIndex, Timestamp x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> updateTimestamp(String columnName, Timestamp x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> wasNull() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-ResultSetMetaData">ResultSetMetaData</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getCatalogName(int column) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getColumnClassName(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getColumnCount() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getColumnDisplaySize(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getColumnLabel(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getColumnName(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getColumnType(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getColumnTypeName(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getPrecision(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getScale(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSchemaName(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getTableName(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isAutoIncrement(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isCaseSensitive(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isCurrency(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isDefinitelyWritable(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> isNullable(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isReadOnly(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isSearchable(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isSigned(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isWritable(int column) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-Statement">Statement</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> addBatch(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> cancel() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> clearBatch() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> clearWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> close() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> execute(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> execute(String sql, int autoGeneratedKeys) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> execute(String sql, int[] columnIndexes) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> execute(String sql, String[] columnNames) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int[] </p></td>
+<td class="confluenceTd"><p> executeBatch() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> executeQuery(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> executeUpdate(String sql) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> executeUpdate(String sql, int autoGeneratedKeys) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> executeUpdate(String sql, int[] columnIndexes) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> executeUpdate(String sql, String[] columnNames) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> getConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getFetchDirection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getFetchSize() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getGeneratedKeys() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxFieldSize() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getMaxRows() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getMoreResults() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getMoreResults(int current) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getQueryTimeout() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> getResultSet() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getResultSetConcurrency() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getResultSetHoldability() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getResultSetType() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getUpdateCount() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SQLWarning </p></td>
+<td class="confluenceTd"><p> getWarnings() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setCursorName(String name) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setEscapeProcessing(Boolean enable) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFetchDirection(int direction) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFetchSize(int rows) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setMaxFieldSize(int max) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setMaxRows(int max) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setQueryTimeout(int seconds) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-PreparedStatement">PreparedStatement</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> addBatch() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> clearParameters() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> execute() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSet </p></td>
+<td class="confluenceTd"><p> executeQuery() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> executeUpdate() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ResultSetMetaData </p></td>
+<td class="confluenceTd"><p> getMetaData() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ParameterMetaData </p></td>
+<td class="confluenceTd"><p> getParameterMetaData() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setArray(int i, Array x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setAsciiStream(int parameterIndex, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBigDecimal(int parameterIndex, BigDecimal x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBinaryStream(int parameterIndex, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBlob(int i, Blob x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBoolean(int parameterIndex, Boolean x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setByte(int parameterIndex, byte x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBytes(int parameterIndex, byte[] x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setCharacterStream(int parameterIndex, Reader reader, int length) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setClob(int i, Clob x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDate(int parameterIndex, Date x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDate(int parameterIndex, Date x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDouble(int parameterIndex, double x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFloat(int parameterIndex, float x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setInt(int parameterIndex, int x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLong(int parameterIndex, long x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setNull(int parameterIndex, int sqlType) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Void </p></td>
+<td class="confluenceTd"><p> setNull(int paramIndex, int sqlType, String typeName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Void </p></td>
+<td class="confluenceTd"><p> setObject(int parameterIndex, Object x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Void </p></td>
+<td class="confluenceTd"><p> setObject(int parameterIndex, Object x, int targetSqlType) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Void </p></td>
+<td class="confluenceTd"><p> setObject(int parameterIndex, Object x, int targetSqlType, int scale) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setRef(int i, Ref x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setShort(int parameterIndex, short x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setString(int parameterIndex, String x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTime(int parameterIndex, Time x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTime(int parameterIndex, Time x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTimestamp(int parameterIndex, Timestamp x) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTimestamp(int parameterIndex, Timestamp x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setUnicodeStream(int parameterIndex, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setURL(int parameterIndex, URL x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-CallableStatement">CallableStatement</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Array </p></td>
+<td class="confluenceTd"><p> getArray(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Array </p></td>
+<td class="confluenceTd"><p> getArray(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(int parameterIndex, int scale) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BigDecimal </p></td>
+<td class="confluenceTd"><p> getBigDecimal(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Blob </p></td>
+<td class="confluenceTd"><p> getBlob(int i) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Blob </p></td>
+<td class="confluenceTd"><p> getBlob(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getBoolean(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> getBoolean(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte </p></td>
+<td class="confluenceTd"><p> getByte(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte </p></td>
+<td class="confluenceTd"><p> getByte(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[] </p></td>
+<td class="confluenceTd"><p> getBytes(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[] </p></td>
+<td class="confluenceTd"><p> getBytes(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Clob </p></td>
+<td class="confluenceTd"><p> getClob(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Clob </p></td>
+<td class="confluenceTd"><p> getClob(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(int parameterIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(String parameterName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Date </p></td>
+<td class="confluenceTd"><p> getDate(String parameterName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> double </p></td>
+<td class="confluenceTd"><p> getDouble(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> double </p></td>
+<td class="confluenceTd"><p> getDouble(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> float </p></td>
+<td class="confluenceTd"><p> getFloat(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> float </p></td>
+<td class="confluenceTd"><p> getFloat(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getInt(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getInt(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> getLong(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> getLong(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(int i, Map map) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Object </p></td>
+<td class="confluenceTd"><p> getObject(String parameterName, Map map) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Ref </p></td>
+<td class="confluenceTd"><p> getRef(int i) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Ref </p></td>
+<td class="confluenceTd"><p> getRef(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> short </p></td>
+<td class="confluenceTd"><p> getShort(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> short </p></td>
+<td class="confluenceTd"><p> getShort(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getString(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getString(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(int parameterIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Time </p></td>
+<td class="confluenceTd"><p> getTime(String parameterName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(int parameterIndex, Calendar cal) </p></td>
+<td class="confluenceTd"><p> Δ </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Timestamp </p></td>
+<td class="confluenceTd"><p> getTimestamp(String parameterName, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> getURL(int parameterIndex) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> getURL(String parameterName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(int parameterIndex, int sqlType) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(int parameterIndex, int sqlType, int scale) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(int paramIndex, int sqlType, String typeName) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(String parameterName, int sqlType) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(String parameterName, int sqlType, int scale) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> registerOutParameter(String parameterName, int sqlType, String typeName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setAsciiStream(String parameterName, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBigDecimal(String parameterName, BigDecimal x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBinaryStream(String parameterName, InputStream x, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBoolean(String parameterName, Boolean x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setByte(String parameterName, byte x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setBytes(String parameterName, byte[] x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setCharacterStream(String parameterName, Reader reader, int length) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDate(String parameterName, Date x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDate(String parameterName, Date x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setDouble(String parameterName, double x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setFloat(String parameterName, float x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setInt(String parameterName, int x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLong(String parameterName, long x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setNull(String parameterName, int sqlType) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setNull(String parameterName, int sqlType, String typeName) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setObject(String parameterName, Object x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setObject(String parameterName, Object x, int targetSqlType) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setObject(String parameterName, Object x, int targetSqlType, int scale) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setShort(String parameterName, short x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setString(String parameterName, String x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTime(String parameterName, Time x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTime(String parameterName, Time x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTimestamp(String parameterName, Timestamp x) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setTimestamp(String parameterName, Timestamp x, Calendar cal) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setURL(String parameterName, URL val) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> wasNull() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-Blob">Blob</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> InputStream </p></td>
+<td class="confluenceTd"><p> getBinaryStream() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[] </p></td>
+<td class="confluenceTd"><p> getBytes(long pos, int length) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> length() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> position(Blob pattern, long start) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> long </p></td>
+<td class="confluenceTd"><p> position(byte[] pattern, long start) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OutputStream </p></td>
+<td class="confluenceTd"><p> setBinaryStream(long pos) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> setBytes(long pos, byte[] bytes) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> setBytes(long pos, byte[] bytes, int offset, int len) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> truncate(long len) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-Clob">Clob</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> setString(long pos, String str) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> setString(long pos, String str, int offset, int len) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-SavePoint">SavePoint</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getSavepointId() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> String </p></td>
+<td class="confluenceTd"><p> getSavepointName() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h3 id="JavaApplicationConversion-ConnectionPoolDataSource">ConnectionPoolDataSource</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getLoginTimeout() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PrintWriter </p></td>
+<td class="confluenceTd"><p> getLogWriter() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PooledConnection </p></td>
+<td class="confluenceTd"><p> getPooledConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PooledConnection </p></td>
+<td class="confluenceTd"><p> getPooledConnection(String user, String password) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLoginTimeout(int seconds) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLogWriter(PrintWriter out) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-DataSource">DataSource</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> getConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> getConnection(String username, String password) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getLoginTimeout() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PrintWriter </p></td>
+<td class="confluenceTd"><p> getLogWriter() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLoginTimeout(int seconds) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLogWriter(PrintWriter out) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-PooledConnection">PooledConnection</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> addConnectionEventListener(ConnectionEventListener listener) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> close() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Connection </p></td>
+<td class="confluenceTd"><p> getConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> removeConnectionEventListener(ConnectionEventListener listener) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-XAConnection">XAConnection</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XAResource </p></td>
+<td class="confluenceTd"><p> getXAResource() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-XADataSource">XADataSource</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getLoginTimeout() </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PrintWriter </p></td>
+<td class="confluenceTd"><p> getLogWriter() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XAConnection </p></td>
+<td class="confluenceTd"><p> getXAConnection() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XAConnection </p></td>
+<td class="confluenceTd"><p> getXAConnection(String user, String password) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLoginTimeout(int seconds) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> setLogWriter(PrintWriter out) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h3 id="JavaApplicationConversion-XAResource">XAResource</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> commit(Xid xid, Boolean onePhase) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> end(Xid xid, int flags) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> forget(Xid xid) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> getTransactionTimeout() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> isSameRM(XAResource xares) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> int </p></td>
+<td class="confluenceTd"><p> prepare(Xid xid) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Xid[] </p></td>
+<td class="confluenceTd"><p> recover(int flag) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> rollback(Xid xid) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> boolean </p></td>
+<td class="confluenceTd"><p> setTransactionTimeout(int seconds) </p></td>
+<td class="confluenceTd"><p> X </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> start(Xid xid, int flags) </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="JavaApplicationConversion-Xid">Xid</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Return Type </p></th>
+<th class="confluenceTh"><p> Function Name </p></th>
+<th class="confluenceTh"><p> Support </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[ ] </p></td>
+<td class="confluenceTd"><p> getBranchQualfier() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Int </p></td>
+<td class="confluenceTd"><p> getFormatId() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> byte[ ] </p></td>
+<td class="confluenceTd"><p> getGlobalTransactionId() </p></td>
+<td class="confluenceTd"><p> O </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

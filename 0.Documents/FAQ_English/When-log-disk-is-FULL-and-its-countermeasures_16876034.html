@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : When log disk is FULL and its countermeasures</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : When log disk is FULL and its countermeasures
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145596 {padding: 0px;}
+div.rbtoc1624409145596 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145596 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145596'>
+<ul class='toc-indentation'>
+<li><a href='#WhenlogdiskisFULLanditscountermeasures-Overview'>Overview</a></li>
+<li><a href='#WhenlogdiskisFULLanditscountermeasures-Applicableversions'>Applicable versions</a></li>
+<li><a href='#WhenlogdiskisFULLanditscountermeasures-Altibaseoperationstatuswhenthediskisfull'>Altibase operation status when the disk is full</a></li>
+<li><a href='#WhenlogdiskisFULLanditscountermeasures-Whenthedirectorycontaininglogfilesisfull'>When the directory containing log files is full</a></li>
+<li><a href='#WhenlogdiskisFULLanditscountermeasures-Countermeasureswhenthelogdiskisfull'>Countermeasures when the log disk is full</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="WhenlogdiskisFULLanditscountermeasures-Overview">Overview</h1><hr /><p>This document describes the situation and countermeasures that can occur only when a full disk occurs in the directory where the log file exists during the operation.</p><h1 id="WhenlogdiskisFULLanditscountermeasures-Applicableversions">Applicable versions</h1><hr /><ul><li>This document is written based on ALTIBASE HDB 6.3.1.</li><li>If you need additional inquiries or updates, please leave a request post at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or make a comment on this page.</li></ul><h1 id="WhenlogdiskisFULLanditscountermeasures-Altibaseoperationstatuswhenthediskisfull">Altibase operation status when the disk is full</h1><hr /><p>The filesystem full phenomenon during the Altibase operation may be a full file system with a DB file or a full file system with a log file.</p><p>If the file system with the DB file is full, it does not affect general transactions.</p><p>However, the checkpoint operation cannot be performed because there is not enough free disk space when performing checkpoint.</p><p>Therefore, all changes made to the DB are reflected only in the DB in memory.</p><p>When the file system with the LOG file is full, transactions that make changes to the DB are no longer executed and the Altibase process enters a waiting state. In other words, services except for 'select' are stopped.</p><p>In general, disk full occurs because the file system size is small, and it is recommended to operate Altibase after securing sufficient disk space.</p><h1 id="WhenlogdiskisFULLanditscountermeasures-Whenthedirectorycontaininglogfilesisfull">When the directory containing log files is full</h1><hr /><p>The following are cases in which there are abnormally many log files because the log files are not deleted even though the disk space is secured and operated.</p><ol><li><p>When using replication, replication data is not reflected the other server due to network instability or other reasons<br />=&gt; To confirm this, check the replication gap.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">SELECT * FROM V$REPGAP; </pre>
+</div></div></li><li><p>When the value of the ARCHIVE_FULL_ACTION property is set to 1<br />=&gt; This property controls the operation of the archive thread that performs archive log backup when there is not enough disk space in the file system to which the directory set in ARCHIVE_DIR belongs.<br />If the value is 0, the archive thread outputs an error message and then stops backing up the archive log file. Even after sufficient disk space is secured thereafter, archive log backup is not resumed unless the user explicitly enters a command to enable archive log backup. In this case, when a checkpoint occurs, unnecessary log files are deleted even if the archive log files are not backed up, so be cautious during the operation.<br />If the value is 1, the archive thread waits until enough disk space is available to back up the archive log file. During this period, even if a checkpoint occurs, log files are not deleted because archive log files cannot be backed up.<br />The user can refer to the $ALTIBASE_HOME/conf/altibase.properties file or check the value of this property in isql.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select name, value1 from v$property where name like &#39;%ARCHIVE_FULL_ACTION%&#39;; </pre>
+</div></div></li><li><p>If the checkpoint has not been performed<br />=&gt; Since log file deletion occurs only at the checkpoint, check whether or not the checkpoint has been successfully executed.<br />Checkpoint execution can be checked by referring to the $ALTIBASE_HOME/trc/altibase_sm.log file.<br />Logs are recorded when the checkpoint is normally executed as shown below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT BY USER]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-BEGIN]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step2] Write BeginChkpt Log [0,0,6232554]
+Active Tx Recovery LSN [0,0,6232554]
+Disk Buffer Oldest LSN [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step3] Flush Dirty Page(s)
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[PRE-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[NEW-DirtyPageCount=8]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[DUP-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + Begin Sync For All-LFG - Request LSN [0,0,6232995]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + End Sync For All-LFG
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[FLU-DirtyPageCount=8]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[REM-DirtyPageCount=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step4] sync Database File
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-0]
+==========================================================
+SM IO STAT  - Checkpoint 
+DB SIZE      :       262144 Byte ( 8 Page)
+LOG SIZE     :          441 Byte
+TOTAL TIME   :      0 s 2416 us
+LOG SYNC TIME:      0 s 665 us
+DB FLUSH TIME:      0 s 1751us
+      SYNC TIME :      0 s 860 us
+      WAIT TIME :      0 s 0 us
+      WRITE TIME:      0 s 891 us
+LOG IO PERF  : 136.16138155429 MB/sec
+DB IO PERF   : 142.775556824672 MB/sec
+=========================================================
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step5] Write End_Chkpt Log [0,0,6233141]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step6] Sync Log File
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + Begin Sync For All-LFG - Request LSN [0,0,6233182]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+    + End Sync For All-LFG
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step7] Check LogFiles That Is Not Needed
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+Replication MinSN48192
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step8] Update and Flush Log Anchor
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-step9] Remove Online Log File[None]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=0, PPID=0, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=0, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=0, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,504], [0,0,504]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=0, PPID=1, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=0, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=0, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,504], [0,0,504]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=1, PPID=0, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=1, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=1, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,1426], [0,0,1426]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+[CHECK DATABASE SID=1, PPID=1, FID=0]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+LogAnchor SpaceID=1, SmVersion=100794369, LFGCount=1
+DBFileHdr SpaceID=1, SmVersion=100794369, LFGCount=1
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+RedoLSN=control[0,0,6232554], [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-6]
+CreateLSN=control[0,0,1426], [0,0,1426]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-summary] BeginChkptLSN=[0,0,6232554], EndChkptLSN=[0,0,6233141], DiskRecLSN=[0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+Minimum LSN = [0,0,6232554]
+[2015/12/14 10:42:50] [Thread-140330825209600] [Level-9]
+[CHECKPOINT-END]
+[2015/12/14 10:42:50] [Thread-140326782105344] [Level-9]
+Sleep checkpoint thread ( next time : 2015-12-14 12:22:50 )</pre>
+</div></div><p><br /><br /></p></li><li>When the checkpoint is executed normally<br />(1) Among the message contents displayed when executing checkpoint<br />[CHECKPOINT-step9] Check the Remove Online Log File part.<br />In the case of [None] and skip appearing at the end of each checkpoint execution, it has appeared that the log files cannot be deleted because the checkpoint is normally executed, but there is a long transaction or the redundant data does not pass.<br />(2) If the log partition is full even though the log file is deleted every time a checkpoint occurs, check whether the transaction is very busy and the size of the file system.<br />=&gt;Since transactions are very busy while the checkpoint is being executed, new log files may be created as many as the number of log files deleted. Consider this and set the size of the file system to be large enough.</li></ol><p> </p><h1 id="WhenlogdiskisFULLanditscountermeasures-Countermeasureswhenthelogdiskisfull">Countermeasures when the log disk is full</h1><hr /><p>Move the log files in the $ALTIBASE_HOME/logs space to free space, attach a soft link, and secure the logs space to secure space for the DBMS to I/O log files.</p><p>*Script to move log files and make symbolic links</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">echo &quot;Move Logfile Number&quot;
+read i
+echo &quot;Move Logfile Count&quot;
+read j
+echo &quot;ALTIBASE LOG DIR&quot;
+ALTI_DIR=/sas_home/hychoi/altibase_home_631/logs
+echo $ALTI_DIR
+echo &quot;MOVE LOG DIR&quot;
+MOVE_DIR=/sas_home/hychoi/altibase_home_631/backuplog
+echo $MOVE_DIR
+MAX=`expr $i + $j`
+cd
+while true
+  do
+  log=&#39;logfile&#39;$i
+mv $ALTI_DIR/$log $MOVE_DIR
+ln -s $MOVE_DIR/$log $ALTI_DIR/$log
+i=`expr $i + 1`
+if [ $i -eq $MAX ]
+  then
+    exit;
+  fi;
+done</pre>
+</div></div><p>For reference, if the current DB is running, the user must move and link the log files in use except for the log files in use.</p><p>* How to check the log files in use</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">lsof -p PID(ALTIBASE DB) | grep logfile </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Comparing main functionality with Oracle Procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Comparing main functionality with Oracle Procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 03, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346695 {padding: 0px;}
+div.rbtoc1624409346695 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346695 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346695'>
+<ul class='toc-indentation'>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Overview'>Overview</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-ErrorHandling'>Error Handling</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Blocks'>Blocks</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-PL/SQLDATATYPES'>PL/SQL DATATYPES</a>
+<ul class='toc-indentation'>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Example5-1TheblockstructureofPL/SQLandAltibaseProcedures'> Example 5-1  The block structure of  PL/SQL and Altibase Procedures</a></li>
+</ul>
+</li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-VariablesandConstants'>Variables and Constants</a>
+<ul class='toc-indentation'>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Example5-2ThiscodecanbeusedinbothPL/SQLandAltibaseprocedures.'>Example 5-2  This code can be used in both PL/SQL and Altibase procedures.</a></li>
+</ul>
+</li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Subprograms'>Subprograms</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Packages'>Packages</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Triggers'>Triggers</a></li>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-InputandOutput'>Input and Output</a>
+<ul class='toc-indentation'>
+<li><a href='#ComparingmainfunctionalitywithOracleProcedure-Table5-1ComparingwithPL/SQLpackagesandAltibasefunctionscanbereplacedforinputandoutput(I/O)processing.'>Table 5-1 Comparing with PL/SQL packages and Altibase functions can be replaced  for input and output(I/O) processing.</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-Overview">Overview</h2>
+
+<p>The basic sturctures of PL/SQL is very smilar to that of Altibase Procedures.</p>
+
+<p>The both tools support procedural operations with using SQL statement that can manipulate data.</p>
+
+<p>When you can solve a problem with SQL, you can issue SQL statements from your Altibase Procedures, without learning new APIs.</p>
+
+<p>Like other procedural programming languages, Altibase Procedures lets you declare constants and variables, control program flow, define subprograms, and trap run-time errors.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-ErrorHandling">Error Handling</h2>
+
+
+<p>PL/SQL makes it easy to detect and handle errors. When an error occurs, PL/SQL raises an exception.</p>
+
+<p>Normal execution stops and control transfers to the exception-handling part of the PL/SQL block.</p>
+
+<p>You do not have to check every operation to ensure that it succeeded, as in a C program. </p>
+
+<p>The Altibase Procedures have the same error-handling structures with Oracle PL/SQL, So it is very easy to convert error handling part of PL/SQL to Altibase procedures.</p>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-Blocks">Blocks</h2>
+
+<p>The basic unit of a PL/SQL and Altibase Procedures source program is the block, which groups related declarations and statements.<br />
+A  block is defined by the keywords DECLARE, BEGIN, EXCEPTION, and END. </p>
+
+<p>Example 5-1 shows the basic struture of  PL/SQL and Altibase Procedures.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-PL/SQLDATATYPES">PL/SQL DATATYPES</h2>
+
+<p>PL/SQL provides many predefined datatypes.</p>
+
+<p>As described below, PL/SQL DATATYPES and Altibase datatypes are compatible each other.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BINARY_DOUBLE, BINARY_FLOAT, BINARY_INTEGER, DEC, DECIMAL, <br class="atl-forced-newline" />
+DOUBLE PRECISION, FLOAT, INT, INTEGER, NATURAL, NATURALN, NUMBER, <br class="atl-forced-newline" />
+NUMERIC, PLS_INTEGER, POSITIVE, POSITIVEN, REAL, SIGNTYPE, <br class="atl-forced-newline" />
+SMALLINT </p></td>
+<td class="confluenceTd"><p> INTEGER, FLOAT, DECIMAL, DOUBLE, NUMBER, REAL </p></td>
+<td class="confluenceTd"><p> PL/SQL Number Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHAR, CHARACTER, LONG, LONG RAW, NCHAR, NVARCHAR2, RAW, ROWID, <br class="atl-forced-newline" />
+STRING, UROWID, VARCHAR, VARCHAR2 </p></td>
+<td class="confluenceTd"><p> CHAR, VARCHAR, NCHAR, NVARCHAR </p></td>
+<td class="confluenceTd"><p> PL/SQL Character and String Types and PL/SQL National Character Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BOOLEAN </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> PL/SQL Boolean Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATE, TIMESTAMP, TIMESTAMP WITH TIMEZONE, TIMESTAMP WITH LOCAL <br class="atl-forced-newline" />
+TIMEZONE, INTERVAL YEAR TO MONTH, INTERVAL DAY TO SECOND </p></td>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> PL/SQL Date, Time, and Interval Types </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="ComparingmainfunctionalitywithOracleProcedure-Example5-1TheblockstructureofPL/SQLandAltibaseProcedures"> Example 5-1  The block structure of  PL/SQL and Altibase Procedures</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Block Structure of  PL/SQL and Altibase Procedures </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &lt;&lt;label&gt;&gt; (optional) <br class="atl-forced-newline" />
+DECLARE    --  Declarative part (optional) <br class="atl-forced-newline" />
+ -- Declaration of local types, variables <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN   -- Executable part ( required ) <br class="atl-forced-newline" />
+   -- Statements <br class="atl-forced-newline" />
+[Exceptions --Exception-handling part (optional) <br class="atl-forced-newline" />
+   -- Exception handlers for exceptions] <br class="atl-forced-newline" />
+END; </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>The both PL/SQL and Altibase Procedures have same block structures.</p>
+
+<p>TCAhere is no differences between PL/SQL and Altibase Procedures.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-VariablesandConstants">Variables and Constants</h2>
+
+<p>PL/SQL lets you declare variables and constants, and then use them wherever you can use an expression. </p>
+
+<p>The differences between variables and constant is that  if the program runs, the values of variables can change, but the values of constants cannot.<br />
+In Altibase Procedures, you can reuse the  variables and constants that used in PL/SQL source without any changes except a several SQL data types that can not support in Altibase. </p>
+
+<p>The example 5-2 shows the source code including variables and constants can be used in both PL/SQL and Altibase procedures.</p>
+
+<h3 id="ComparingmainfunctionalitywithOracleProcedure-Example5-2ThiscodecanbeusedinbothPL/SQLandAltibaseprocedures.">Example 5-2  This code can be used in both PL/SQL and Altibase procedures.</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">create or replace procedure sp_test()
+as
+begin
+    declare
+      part_number      number(6);     -- SQL data type
+      part_name        varchar2(20);  -- SQL data type
+      in_stock         BOOLEAN;       -- PL/SQL data type
+      part_price       number(6,2 );
+      part_description varchar2(50);
+      days_in_year     constant integer := 365;  -- constant varaibles
+    begin
+      null;
+    end;
+end;
+/</pre>
+</div></div>
+
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-Subprograms">Subprograms</h2>
+
+<p>A PL/SQL subprogram is a named PL/SQL block that can be invoked repeatedly.</p>
+
+<p>If the subprogram has parameters, their values can differ for each invocation.</p>
+
+<p>PL/SQL has two types of subprograms, procedures and functions. A function returns a result.<br />
+Altibase Procedures also have two types of subprograms, procedures and functions as like oracle's PL/SQL.<br />
+PL/SQL lets you invoke external programs written in other languages. 
+<br class="atl-forced-newline" /></p>
+
+<p>if a C procedure or Java method is stored in the database, you can invoke it from PL/SQL.<br />
+In the Altibase, the external programs can't be stored in the database, so  we couldn't invoke external programs from Altibase procedures.</p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-Packages">Packages</h2>
+
+<p>The package in  Oracle PL/SQL is a schema object that groups logically related PL/SQL types, variables, constants, subprograms, cursors, and exceptions.</p>
+
+<p>A package is compiled and stored in the database, where many applications can share its contents.<br />
+Altibase does not provide the same functionality such like a Oracle PL/SQL's packages. </p>
+
+<p>Although it is  inconvenient for you, but you should find the other way for functionality of PL/SQL's packages.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-Triggers">Triggers</h2>
+
+<p>A trigger is a named PL/SQL unit that is stored in the database and run in response to an event that changes the data in a table. </p>
+
+<p>The basic syntax of Altibase triggers is almost same with that of Oracle triggers.<br />
+The major differences between Oracle and Altibase in triggers  is that Oracle can control multiple trigger event for one table,</p>
+
+<p>but Altibase can't.<br />
+In Altibase, Only one of three trigger event ( DELETE, UPDATE, INSERT) can be handled in triggers.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingmainfunctionalitywithOracleProcedure-InputandOutput">Input and Output</h2>
+
+<p>Most PL/SQL input and output (I/O) to get some values or display results is done with SQL statements.<br />
+PL/SQL provide the functionality for input and out in the shape of packages,</p>
+
+<p>In contrast, Altibase provides some of functionality for it with the built-in functions. </p>
+
+<h3 id="ComparingmainfunctionalitywithOracleProcedure-Table5-1ComparingwithPL/SQLpackagesandAltibasefunctionscanbereplacedforinputandoutput(I/O)processing.">Table 5-1 Comparing with PL/SQL packages and Altibase functions can be replaced  for input and output(I/O) processing.<br class="atl-forced-newline" /></h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle Packages </p></th>
+<th class="confluenceTh"><p> Usage description </p></th>
+<th class="confluenceTh"><p> Altibase functions can be replaced </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DBMS_OUTPUT </p></td>
+<td class="confluenceTd"><p> This lets PL/SQL display output. Especially useful for displaying PL/SQL debugging information </p></td>
+<td class="confluenceTd"><p> PRTINT and PRTINTLN function </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DBMS_PIPE </p></td>
+<td class="confluenceTd"><p> This lets two or more session in the same instance communicate </p></td>
+<td class="confluenceTd"><p> Not supported </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UTL_FILE </p></td>
+<td class="confluenceTd"><p> This lets PL/SQL programs read and write operating system files </p></td>
+<td class="confluenceTd"><p> FOPEN FCLOSE FCLOSE_ALL FCOPY ..... ..... NEW_LINE and so on. </p></td>
+</tr>
+</tbody></table></div>
+
+<p> </p>
+
+<p><br class="atl-forced-newline" />
+ </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

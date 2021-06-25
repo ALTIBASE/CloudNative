@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Numeric</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Data-Types_2986513.html">2. Data Types</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Data-type-conversion_2986613.html">Data type conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Numeric
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="Numeric-NUMBER(p,s)">NUMBER (p,s)</h2>
+
+<p>In ORACLE, NUMBER data type stores zero as well as positive and negative fixed numbers with absolute value.
+<br class="atl-forced-newline" /></p>
+
+<p>It works exactly same in ALTIBASE HDB as well.</p>
+
+<h2 id="Numeric-FLOAT(p)">FLOAT (p)</h2>
+
+<p>A subtype of the NUMBER data type having precision p.
+<br class="atl-forced-newline" /></p>
+
+<p>A FLOAT value is represented internally as NUMBER.
+<br class="atl-forced-newline" /></p>
+
+<p>The precision p can range from 1 to 126 binary digits
+<br class="atl-forced-newline" /></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>A subtype in the above me does not mean a native data type, inherently supported from the beginning by ALTIBASE HDB,<br />
+by a subordinate data type of certain data type.</p>
+
+<p>Even if a user creates table using subtype, it internally transforms to a native data type,</p>
+
+<p>and works as a native data type whenever a user performs a query execution on the table having subtype.</p>
+
+<p>It can be major reason of performance degradation.</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Numeric-BINARY_FLOAT">BINARY_FLOAT</h2>
+
+<p>32bit, single-precision floating-point number data type.
+<br class="atl-forced-newline" /></p>
+
+<p>Each BINARY_FLOAT value requires 4 bytes.
+<br class="atl-forced-newline" /></p>
+
+<p>ALTIBASE HDB does not support this data  type but you can use REAL type instead.
+<br class="atl-forced-newline" /></p>
+
+<p>ALTIBASE HDB REAL type stores 4-byte fixed decimal floating value and it is equivalent to the float type in C Language.</p>
+
+<h2 id="Numeric-BINARY_DOUBLE">BINARY_DOUBLE</h2>
+
+<p>64bit, double-precision floating-point number data type.
+<br class="atl-forced-newline" /></p>
+
+<p>Each BINARY_DOUBLE value requires 8 bytes.</p>
+
+<p>ALTIBASE HDB does not support this data type but you can use DOUBLE type instead.</p>
+
+<p>ALTIBASE HDB DOUBLE type stores 8-byte fixed decimal floating value and it is equivalent to the double type in C Language.</p>
+
+
+<h2 id="Numeric-NUMERIC(p,s)">NUMERIC (p,s)</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(p, s) data type in ORACLE.</p>
+
+<p>So, this conversion rule is identical to &quot;NUMBER(p, s)&quot;.</p>
+
+<h2 id="Numeric-DECIMAL(p,s)">DECIMAL (p,s)</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(p, s) data type in ORACLE.</p>
+
+<p>So, this conversion rule is identical to &quot;NUMBER(p, s)&quot;.</p>
+
+<h2 id="Numeric-INT">INT</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(38) in ORACLE.</p>
+
+<p>So, this data type can be converted to NUMBER(38) in ALTIBASE HDB as well.</p>
+
+
+<h2 id="Numeric-INTEGER">INTEGER</h2>
+
+<p>Same as above INT.</p>
+
+
+<h2 id="Numeric-SMALLINT">SMALLINT</h2>
+
+<p>Same as above INT.</p>
+
+<h2 id="Numeric-FLOAT">FLOAT</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(126) in ORACLE.</p>
+
+<p>But, ALTIBASE HDB NUMBER type maximum precesion is 38.</p>
+
+<p>So, if you want to change, it can be FLOAT(38).</p>
+
+<h2 id="Numeric-DOUBLE">DOUBLE</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(126) in ORACLE.</p>
+
+<p>But, ALTIBASE HDB NUMBER type maximum precesion is 38.</p>
+
+<p>So, if you want to change, it can be FLOAT(38).</p>
+
+<h2 id="Numeric-REAL">REAL</h2>
+
+<p>This is ANSI data type.</p>
+
+<p>This data type can be converted to NUMBER(63) in ORACLE.</p>
+
+<p>But, ALTIBASE HDB NUMBER type maximum precesion is 38.</p>
+
+<p>So, if you want to change, it can be FLOAT(38).</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

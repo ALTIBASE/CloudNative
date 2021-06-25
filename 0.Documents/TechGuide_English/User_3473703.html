@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : User</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : User
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 21, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409344441 {padding: 0px;}
+div.rbtoc1624409344441 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409344441 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409344441'>
+<ul class='toc-indentation'>
+<li><a href='#User-Overview'>Overview</a></li>
+<li><a href='#User-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="User-Overview">Overview</h2>
+
+<p>The majority of ALTIBASE HDB syntax includes Oracle syntax.</p>
+
+<p>And ALTIBASE HDB syntax is more simple than Oracle's one.</p>
+
+<p>First, we explain example of converting 'create user' statement and then explain considerations about 'create user'.</p>
+
+<h2 id="User-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> create user user01 identified by user01 <br class="atl-forced-newline" />
+default tablespace user_tbs <br class="atl-forced-newline" />
+temporary tablespace temp <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>quota</strong></span> 1g on quota_table <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>password expire</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>profile app_user</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>account</strong></span> <span style="color: rgb(0,0,0);">lock</span>; </p></td>
+<td class="confluenceTd"><p> create user user01 identified by user01 <br class="atl-forced-newline" />
+default tablespace user_tbs <br class="atl-forced-newline" />
+temporary tablespace temp <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,255);"><strong>access</strong></span> <span style="color: rgb(0,0,0);">other_tbs</span> <span style="color: rgb(0,0,255);"><strong>on</strong></span><span style="color: rgb(0,0,255);">;</span><br class="atl-forced-newline" />
+<br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> To enable an user to access to <br class="atl-forced-newline" />
+multiple tablespaces, <br class="atl-forced-newline" />
+ALTIBASE HDB provides access clause. <br class="atl-forced-newline" />
+To forbid some user's access to a specific tablespace, <br class="atl-forced-newline" />
+set to off; </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IDENTIFIED BY | EXTERNALLY | GLOBALLY <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> IDENTIFIED BY </p></td>
+<td class="confluenceTd"><p> EXTERNALLY | GLOBALLY not supported <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DEFAULT TABLESPACE <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> DEFAULT TABLESPACE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TEMPORARY TABLESPACE <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> TEMPORARY TABLESPACE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUOTA </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PROFILE </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PASSWORD EXPIRE <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ACCOUNT LOCK | UNLOCK <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ENABLE EDITIONS <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> ACCESS tablespace_name ON | OFF <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> - <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>Specify whether the specified tablespace can be used or not by the user.<br />
+ACCESS tablespace_name ON : The user can access the specified tablespace.<br />
+ACCESS tablespace_name OFF : The user can not access the specified tablespace.</p>
+
+<p>If the user is not explicitly granted the system privilege for the tablespace, no access will be allowed to the specified tablespace.</p>
+
+<p>When the new user is created in ALTIBASE HDB, usually you must grant these privileges. (CREATE privilege is to create or drop objects.)<br />
+CREATE SESSION<br />
+CREATE TABLE<br />
+CREATE SEQUENCE<br />
+CREATE SYNONYM<br />
+CREATE PROCEDURE<br />
+CREATE VIEW<br />
+CREATE TRIGGER</p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Only the SYS user or a user who has GRANT ANY PRIVILEGES can grant all system access privileges to other users.</p>
+
+<p>ALTIBASE HDB does not support ROLE object.</p>
+                    </div>
+    </div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

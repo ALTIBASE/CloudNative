@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 7. HA Support</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 7. HA Support
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 12, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348898 {padding: 0px;}
+div.rbtoc1624409348898 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348898 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348898'>
+<ul class='toc-indentation'>
+<li><a href='#id-7.HASupport-Overview'>Overview</a></li>
+<li><a href='#id-7.HASupport-RACarchitecture'>RAC architecture</a></li>
+<li><a href='#id-7.HASupport-ReplicationArchitecture'>Replication Architecture</a></li>
+<li><a href='#id-7.HASupport-ComparingReplicationtoRAC&amp;nbsp;'>Comparing Replication to RAC </a>
+<ul class='toc-indentation'>
+<li><a href='#id-7.HASupport-Shared/SharedNothing'>Shared / Shared Nothing</a></li>
+<li><a href='#id-7.HASupport-DataReplicationandDataShare'>Data Replication and Data Share</a></li>
+<li><a href='#id-7.HASupport-RemoteReplication'>Remote Replication</a></li>
+</ul>
+</li>
+<li><a href='#id-7.HASupport-AboutALTIBASEreplication'>About ALTIBASE replication</a>
+<ul class='toc-indentation'>
+<li><a href='#id-7.HASupport-LAZYReplication'>LAZY Replication</a></li>
+<li><a href='#id-7.HASupport-EAGERReplication'>EAGER Replication</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2><a name="id-7.HASupport-Overview"></a>Overview</h2>
+
+<p>HA(High Availablity) feature is a very important functionality for DBMS to avoid service failure.</p>
+
+<p>To avoid service offline, ORACLE supports RAC (Real Application Cluster) and ALTIBASE HDB supports Replication.</p>
+
+<p>In this chapter, we will cover</p>
+<ul>
+	<li>Brief architecture comparison between ORACLE RAC and ALTIBASE HDB Replication.</li>
+	<li>Considerations when you want to migrate from ORACLE RAC environment to ALTIBASE HDB Replication.</li>
+</ul>
+
+
+
+<h2><a name="id-7.HASupport-RACarchitecture"></a>RAC architecture</h2>
+
+<p>Here's a brief architecture.</p>
+
+
+<map id="gliffy-map-3114205-4669" name="gliffy-map-3114205-4669"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 500px;" usemap="#gliffy-map-3114205-4669" src="attachments/2986528/3114206.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>ORACLE RAC is a cluster environment, which consists of ORACLE instances.</p>
+
+<p>All ORACLE instances share storage, even datafiles and redo log files.</p>
+
+<p>ORACLE datafiles and redo logfiles should be located in shared disk.</p>
+
+
+<h2><a name="id-7.HASupport-ReplicationArchitecture"></a>Replication Architecture</h2>
+
+
+<map id="gliffy-map-3114209-1" name="gliffy-map-3114209-1"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 570px;" usemap="#gliffy-map-3114209-1" src="attachments/2986528/3114210.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>ALTIBASE Replication is a HA solution to replicate changed data to another ALTIBASE DBMS.</p>
+
+<p>Here's how replication works in ALTIBASE.</p>
+<ol>
+	<li>A changed transaction occured in ALTIBASE DBMS #1.</li>
+	<li>Service thread writes its change log to redo logs before actual change.</li>
+	<li>Replication sender thread is always waiting for the changes of redo logfile. Once it changes, Sender reads changes from redo logs and translate the changes to XLOGs (Transferable log) and send XLOGs to replication receiver in ALTIBASE#2 .</li>
+	<li>A Replication receiver thread, in ALTIBASE #2, gets XLOG from ALTIBASE #1. Then Receiver apply the changes from XLOG to datafiles or memory tablespaces.</li>
+</ol>
+
+
+<p>ALTIBASE Replication sends its XLOG over TCP/IP.</p>
+
+<p>Therefore, ALTIBASE Replication can be configured within remote .distance</p>
+
+<h2><a name="id-7.HASupport-ComparingReplicationtoRAC&amp;nbsp;"></a>Comparing Replication to RAC&nbsp;</h2>
+
+<p>ORACLE RAC and ALTIBASE HDB Replication are quiet different.</p>
+
+<p>ORACLE RAC와 ALTIBASE HDB 이중화는 매우 다르다.
+<br class="atl-forced-newline" /></p>
+
+<p>We'll conver the differences between Oracle RAC and ALTIBASE.</p>
+
+<p>우리는 ORACLE RAC와 ALTIBASE HDB의 차이점을 다룰 것이다.
+<br class="atl-forced-newline" /></p>
+
+<h3><a name="id-7.HASupport-Shared/SharedNothing"></a>Shared / Shared Nothing</h3>
+
+<p>The major difference is that Oracle instance in RAC shares the datafiles and redo log files with another instance at the same time.</p>
+
+<p>Because all instances in Oracle RAC environment share the datafiles, all instance shares their schema as well.</p>
+
+<p>However, the participants in ALTIBASE Replication environment do not share the storage.</p>
+
+<p>Each paricipant has its own datafiles.</p>
+
+<p>Replication sender thread in ALTIBASE&nbsp;is responsible&nbsp;for catching the changed data in local ALTIBASE and transfer the changes to another ALTIBASE.</p>
+
+<h3><a name="id-7.HASupport-DataReplicationandDataShare"></a>Data Replication and Data Share</h3>
+
+<p>ALTIBASE Replication handles only data in table besides Oracle RAC shares schema.</p>
+
+<p>It means that ALTIBASE does not sychronize object, synonyms.</p>
+
+<p>Replication can be created after&nbsp;replication-related table was made</p>
+
+<p>A major advantage in Replication is user can choose tables which user want to replicate.</p>
+
+<p>Only specified tables are replicated.</p>
+
+<p>It would be useful when user does not want share all data in database.</p>
+
+<h3><a name="id-7.HASupport-RemoteReplication"></a>Remote Replication</h3>
+
+<p>Oracle RAC requires high speed network (such as infini-band) to support cache fusion feature.</p>
+
+<p>If an Oracle instance in RAC environment requires a lock in Oracle Buffer cache, All nodes should be notified that fact to ensure data consistency.</p>
+
+<p>Therefore it requires high-speed network.</p>
+
+<p>Moreover Each Oracle node shares storage.</p>
+
+<p>ALTIBASE Replication, in constrast to Oracle RAC, handles only changed data in redo logfiles and each nodes has its own storage.</p>
+
+<p>And network traffic is not heavy as Oracle&nbsp;is because there is no cost in Replication when ALTIBASE performs "SELECT" statement.</p>
+
+<p>It would be a solution when user want to synchronize each node which resides in different place to protect data from disaster such as earth quake, terror attack, fire.</p>
+
+<h2><a name="id-7.HASupport-AboutALTIBASEreplication"></a>About ALTIBASE replication</h2>
+
+<p>There're 2 types of ALTIBASE Replication types.</p>
+
+
+<map id="gliffy-map-3114285-7978" name="gliffy-map-3114285-7978"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 700px;" usemap="#gliffy-map-3114285-7978" src="attachments/2986528/3114286.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h3><a name="id-7.HASupport-LAZYReplication"></a>LAZY Replication</h3>
+
+<p>Default replication mode in ALTIBASE. When a transaction is issued, Service thread does not wait the completion of replication.</p>
+
+<p>There're no sychonoization mechanism between service thread and replication sender thread.</p>
+
+<p>Here's the benefits and risk when you want to use lazy replication.</p>
+
+
+<h3><a name="id-7.HASupport-EAGERReplication"></a>EAGER Replication</h3>
+
+<p>In other words, replication in EAGER mode is a synchronization method.
+<br class="atl-forced-newline" /></p>
+
+<p>This is one of two available replication modes, and prioritizes data consistency over performance.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<p>In this mode, a transaction is not committed on the local server until the local server receives a message<br/>
+from the remote server stating that the task has been performed and the transaction replayed<br/>
+on the remote server.</p>
+
+<p>The benefit of EAGER mode is that it is possible to replicate transactions in parallel, because they are<br/>
+synchronized.</p>
+
+
+<p>Therefore, when replication is running in EAGER mode, multiple Sender threads can<br/>
+operate in parallel.</p>
+
+
+<p>In a lazy mode, replication delay can occur since it uses an asynchronized method.<br/>
+While in an eager mode, replication delay does not happen.<br/>
+and ALTIBASE HDB replication suffers performance degradation in an eager mode.<br/>
+replication delay does not happen even on a server having busy transactions.<br/>
+but replication delay can occur in a lazy mode.</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653083">OracleRAC</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653084.png">OracleRAC.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114211">ALTIBASE_Replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114212.png">ALTIBASE_Replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114213">ALTIBASE_Replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114214.png">ALTIBASE_Replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114217">ALTIBASE_Replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114218.png">ALTIBASE_Replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653081">ALTIBASE_Replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653082.png">ALTIBASE_Replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114384">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114385.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114387">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114388.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653077">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653078.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653115">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653116.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114209">ALTIBASE_Replication</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114210.png">ALTIBASE_Replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114205">OracleRAC</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114206.png">OracleRAC.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653117">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653118.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114285">eager_lazy</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/3114286.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653137">replication</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653138.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653139">topology</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653140.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653141">ALTIBASE_Replication1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2986528/4653142.png">ALTIBASE_Replication1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

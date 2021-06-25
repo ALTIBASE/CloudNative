@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 3. System side diagnostics</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Performance-Tuning_1802802.html">ALTIBASE HDB Performance Tuning</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Performance-diagnostics-for-ALTIBASE-HDB_1802804.html">Performance diagnostics for ALTIBASE HDB</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 3. System side diagnostics
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 06, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="id-3.Systemsidediagnostics-Kernel/EnvironmentVariables(SystemResources)">Kernel / Environment Variables (System Resources)</h2>
+
+<p>It would be advisable to check the OS kernel and environment variables to make sure that all correct settings are applied as explained in the Installation manual and in the pre_install.sh script prior to checking other aspects of the system.</p>
+
+<h2 id="id-3.Systemsidediagnostics-DiskI/OPerformance">Disk I/O Performance</h2>
+
+<p> ALTIBASE HDB's performance rely on the performance of the hardware. Therefore, it is neccessary to check the performance of Disk I/O.</p>
+
+<p>You can use following command to see the performance of  a disk (this will create a 1GB file full of 0’s.)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+time dd if=/dev/zero of=MyTestFile bs=1M count=1024
+</pre>
+</div></div>
+
+<p>It simply displays the time it takes to copy a file.</p>
+
+<h2 id="id-3.Systemsidediagnostics-DirectI/OUse">Direct I/O Use</h2>
+
+<p>ALTIBASE HDB provides two disk I/O methods related to database files:<br />
+• Direct I/O<br />
+• Buffered I/O</p>
+
+<p>One advantage of Direct I/O is that it reduces CPU resource consumption during occurance of Disk I/O. On the other hand, since the Buffered I/O uses techniques of read-ahead and asynchronous write, it may not access disk every time when an disk I/O is required. It means that the Buffered I/O is faster than the Direct I/O. However the Buffered I/O consumes a higher level of CPU resources when compared to the Direct I/O.</p>
+
+<p>There are three properties that users have to look at to use the Direct I/O in ALTIBASE HDB</p>
+<ul>
+	<li>LOG_IO_TYPE</li>
+	<li>DATABASE_IO_TYPE</li>
+	<li>DIRECT_IO_ENABLED</li>
+</ul>
+
+
+<p>To use Direct I/O, you have to mount disk with following options.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> OS </p></th>
+<th class="confluenceTh"><p> File System </p></th>
+<th class="confluenceTh"><p> mount option </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Solaris </p></td>
+<td class="confluenceTd"><p> UFS </p></td>
+<td class="confluenceTd"><p> none </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> HP-UX </p></td>
+<td class="confluenceTd"><p> Veritas VxFS </p></td>
+<td class="confluenceTd"><p> mount with convosync=direct </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Solaris </p></td>
+<td class="confluenceTd"><p> Veritas VxFS </p></td>
+<td class="confluenceTd"><p> mount with convosync=direct </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AIX </p></td>
+<td class="confluenceTd"><p> Veritas VxFS </p></td>
+<td class="confluenceTd"><p> mount with convosync=direct </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AIX </p></td>
+<td class="confluenceTd"><p> JFS </p></td>
+<td class="confluenceTd"><p> mount with use -o dio </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Windows NT/2000 </p></td>
+<td class="confluenceTd"><p> All </p></td>
+<td class="confluenceTd"><p> none </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Tru64 Unix </p></td>
+<td class="confluenceTd"><p> AdvFS </p></td>
+<td class="confluenceTd"><p> none </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Linux(2.4 &gt; k) </p></td>
+<td class="confluenceTd"><p> All </p></td>
+<td class="confluenceTd"><p> none </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>In systems where direct I/O cannot be used,  ALTIBASE HDB will use Buffered I/O regardless of the property settings.</p>
+
+<h2 id="id-3.Systemsidediagnostics-vmstatutility">vmstat utility</h2>
+
+<p>The vmstat is a system utility that is available in most Unix-based operating systems, and it is used to assess the state of the system in conjunction with memory and CPU. Some OSs support their own proprietary utilities such as &quot;nmon analyzer&quot;. The resources controlled by OS is closely related to the performance problems. Therefore, important thing is to gather this information effectively. So here is an example way you can do this:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+-- vmstat.sh
+while true
+do
+        DATE=`date +&quot;%y%m%d&quot;`
+        TIME=`date +&quot;%H%M%S&quot;`
+        tmp=`vmstat 1 1 | tail -1`
+        echo &quot;[$TIME] $tmp&quot; &gt;&gt; vmstat_$DATE.log
+done
+</pre>
+</div></div>
+<p>Please refer to the man page in each OS for further details. This shell above is applicable to AIX OS.</p>
+
+<h2 id="id-3.Systemsidediagnostics-iostatutility">iostat utility</h2>
+
+<p>The iostat which is a system tool to assess the I/O state of the system. It is similar to vmstat. I/O flow is also coupled with the performance on the system. Here is an example shell using of iostat:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+-- iostat.sh
+while true
+do
+        echo &quot;======================================&quot; &gt;&gt; iostat_$DATE.log
+        DATE=`date +&quot;%y%m%d&quot;`
+        TIME=`date +&quot;%H%M%S&quot;`
+        iostat 1 1 &gt; iostat_tmp
+
+## hdisk0, hdisk1, hdisk2 belongs to MEMORY storage.
+        tmp=`cat iostat_tmp | egrep &quot;hdisk0|hdisk1|hdisk2&quot; |
+           awk &#39; BEGIN { c2 += $2 }
+                       { c3 += $3 }
+                       { c4 += $4 }
+                       { c5 += $5 }
+                       { c6 += $6 }
+                   END { print c2, c3, c4, c5, c6} &#39;`
+        echo &quot;[$TIME] MEM $tmp&quot; &gt;&gt; iostat_$DATE.log
+
+## hdisk3, hdisk4, hdisk5 belongs to DISK storage.
+        tmp=`cat iostat_tmp | egrep &quot;hdisk3|hdisk4|hdisk5&quot; |
+           awk &#39; BEGIN { c2 += $2 }
+                       { c3 += $3 }
+                       { c4 += $4 }
+                       { c5 += $5 }
+                       { c6 += $6 }
+                   END { print c2, c3, c4, c5, c6} &#39;`
+        echo &quot;[$TIME] DISK $tmp&quot; &gt;&gt; iostat_$DATE.log
+
+## hdisk6, hdisk7 belongs to LOGS storage.
+        tmp=`cat iostat_tmp | egrep &quot;hdisk6|hdisk7&quot; |
+           awk &#39; BEGIN { c2 += $2 }
+                       { c3 += $3 }
+                       { c4 += $4 }
+                       { c5 += $5 }
+                       { c6 += $6 }
+                   END { print c2, c3, c4, c5, c6} &#39;`
+        echo &quot;[$TIME] LOGS $tmp&quot; &gt;&gt; iostat_$DATE.log
+        echo &quot;&quot; &gt;&gt; iostat_$DATE.log
+done
+</pre>
+</div></div>
+<p>Please refer to the man page in each OS for further detail. This shell above is applicable to AIX OS.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to check the privileges granted to an object</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="05.-SQL_16876149.html">05. SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to check the privileges granted to an object
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146358 {padding: 0px;}
+div.rbtoc1624409146358 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146358 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146358'>
+<ul class='toc-indentation'>
+<li><a href='#Howtochecktheprivilegesgrantedtoanobject-Overview'>Overview</a></li>
+<li><a href='#Howtochecktheprivilegesgrantedtoanobject-Version'>Version</a></li>
+<li><a href='#Howtochecktheprivilegesgrantedtoanobject-Howtocheck'>How to check</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtochecktheprivilegesgrantedtoanobject-Overview">Overview</h1><hr /><p>DB users can grant privileges to objects using the grant statement. the user can search the relationship of object authority between DB users granted to the entire DB by using a query.</p><p> </p><h1 id="Howtochecktheprivilegesgrantedtoanobject-Version">Version</h1><hr /><p>Available in all versions of ALTIBASE HDB 4.3.9 or later</p><p> </p><h1 id="Howtochecktheprivilegesgrantedtoanobject-Howtocheck">How to check</h1><hr /><p>It can be searched with the query below.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>SELECT a.user_name grantee,                                     -- User grantee
+       c.user_name grantor,                                     -- User grantor
+       f.user_name object_owner,                                -- Owner of the object
+       e.table_name object_name,                                -- Name of object
+       e.table_type object_type,                                -- Type of object
+       replace(d.priv_name, &#39;_&#39;, &#39; &#39;) priv_name,                -- Name of privilege
+       decode(b.with_grant_option, 0, &#39;NO&#39;, &#39;YES&#39;) grantable    -- Whether it is possible to re-grant the rights to the object
+  FROM system_.sys_users_ a,
+       system_.sys_grant_object_ b,
+       system_.sys_users_ c,
+       system_.sys_privileges_ d,
+       system_.sys_tables_ e,
+       system_.sys_users_ f
+ WHERE c.user_name &lt;&gt; &#39;SYSTEM_&#39;
+   and b.grantee_id = a.user_id
+   and b.grantor_id = c.user_id
+   and b.priv_id = d.priv_id
+   and b.obj_id = e.table_id
+   and e.user_id = f.user_id
+ ORDER BY grantee,
+       grantor,
+       object_owner,
+       object_type,
+       object_name,
+       priv_name ;</pre>
+</div></div><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Example</b></div><div class="panelContent">
+<p>iSQL&gt; create user user1 identified by user1;</p><p>iSQL&gt; create user user2 identified by user2;</p><p>iSQL&gt; connect user1/user1;</p><p>iSQL&gt; create table user1_t1 ( c1 integer );</p><p>iSQL&gt; grant select on user1_t1 to user2;</p><p>iSQL&gt; grant insert on user1_t1 to user2;</p><p> </p><p>GRANTEE        GRANTOR         OBJECT_OWNER         OBJECT_NAME         OBJECT_TYPE          PRIV_NAME      GRANTABLE <br />---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br />USER2               USER1              USER1                           USER1_T1                     T                              INSERT                   NO <br />USER2               USER1              USER1                           USER1_T1                     T                             SELECT                   NO <br />2 rows selected.</p>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

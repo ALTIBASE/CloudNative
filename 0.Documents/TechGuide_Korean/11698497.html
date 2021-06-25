@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Linux gcc 용 Makefile</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698493.html">Altibase APRE(SES) *C/C++  Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Linux gcc 용 Makefile
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>앞서 &quot;기초적인 Makefile의 작성방법&quot; 을 통해서   기본적인 APRE library를 추가하는 방법을 알아 보았다.  이번 장에서는 Linux gcc 환경에서 Makefile에 추가적으로 기술해 주어야 하는 Library 와  컴파일옵션에 대해서 설명한다.</p><h1 id="Linuxgcc용Makefile-Linux환경에서APRE컴파일을위한추가Library와컴파일옵션">Linux 환경에서 APRE 컴파일을 위한 추가 Library와 컴파일 옵션</h1><h2 id="Linuxgcc용Makefile-Makefile에추가해주어야하는Library"><strong>Makefile 에 추가해 주어야 하는 Library</strong></h2><p>앞서 이미 설명한 바와 같이 아래와 같이 기본적인 APRE library인 &quot;-lapre -lodbccli&quot; 가 Makefile 에 기술되어 있어야 한다. </p><p>기본적인 Library 만 추가한 상태에서 컴파일을 할 경우  APRE library 에서 참조하는 시스템 Library들이 있어 참조 오류가 발생한다.   따라서  APRE에서 사용하는  시스템 library들을  Makefile 에  아래와 같이 명시해 주어야 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Library 종류</th><th class="confluenceTh">Makefile Library</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">Posix thread library</td><td class="confluenceTd"><strong>-lpthread</strong></td><td class="confluenceTd">POSIX  thread 함수를 위한 thread Library</td></tr><tr><td colspan="1" class="confluenceTd">Math 관련 library</td><td colspan="1" class="confluenceTd"><strong>-lm</strong></td><td colspan="1" class="confluenceTd">math 함수 사용을 위한 Library</td></tr><tr><td colspan="1" class="confluenceTd"><p>Dynamic Linking Loader(DL) Library</p></td><td colspan="1" class="confluenceTd"><strong>-ldl</strong></td><td colspan="1" class="confluenceTd"><span style="color: rgb(0,0,0);">Dynamically loaded (DL) library </span></td></tr><tr><td colspan="1" class="confluenceTd"><p>C++ library</p></td><td colspan="1" class="confluenceTd"><strong>-lstdc++</strong></td><td colspan="1" class="confluenceTd">Altibase 5.3.3 이하 버전에서 gcc 를 사용하여 컴파일경우 C++ library 명시</td></tr><tr><td colspan="1" class="confluenceTd">Realtime Extensions Library 추가</td><td colspan="1" class="confluenceTd"><strong>-lrt</strong></td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div><h2 id="Linuxgcc용Makefile-컴파일옵션"><strong>컴파일 옵션</strong></h2><p><span style="color: rgb(0,0,0);">성능 향상과 컴파일 bit  타입 지정을 위한 아래의 옵션 지정이 필요하다.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">옵션명</th><th class="confluenceTh">옵션표시</th><th class="confluenceTh">설명</th></tr><tr><td rowspan="2" class="confluenceTd"><span style="color: rgb(34,34,34);">32bit/64bit 컴파일 모드 지정</span><br /><br /><br /></td><td class="confluenceTd">-m64</td><td class="confluenceTd"><p>64비트 코드를 생성</p></td></tr><tr><td class="confluenceTd">-m32</td><td class="confluenceTd">32비트 코드를 생성</td></tr></tbody></table></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                             $ALTIBASE_HOME/install/<a href="http://altibase_env.mk/" class="external-link" rel="nofollow">altibase_env.mk</a> 파일과 <span> $ALTIBASE_HOME/sample/APRE/Makefile을 </span> 참고하면 APRE 컴파일시에 최적화된 컴파일 및 링크 옵션들을 참조할 수 있다.
+                    </div>
+    </div>
+<h1 id="Linuxgcc용Makefile-간단한Makefile예"><strong>간단한 Makefile 예</strong></h1><p><span style="color: rgb(0,0,0);">이제 Linux  gcc 환경에서 APRE를 컴파일할 수 있는 가장 간단한 형태의 Makefile 이 아래와 같이 완성되었다.   이외에도  프로그램에서 참조하는 library 가  추가적으로 있다면 해당 Library 를  Makefile 에 추가적으로 기술해 주어야 한다.</span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ cat Makefile<br />ALTI_INCLUDE=${ALTIBASE_HOME}/include<br />ALTI_LIBRARY=${ALTIBASE_HOME}/lib <strong>-lapre -lodbccli</strong></p><p>SYS_LIBS=<strong><strong><strong> -lpthread -lm -ldl -lcrypt -lstdc++ <strong>-lrt</strong></strong></strong></strong></p><p>connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc" class="external-link" rel="nofollow"> apre -t c </a><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(SYS_LIBS)</p>
+</div></div><h1 id="Linuxgcc용Makefile-32비트컴파일을위한Makefile예"><strong>32비트 컴파일을 위한  Makefile 예</strong></h1><p>32bit 컴파일 옵션을 명시한  gcc 용 APRE Makefile 의 예는 아래와 같다.   컴파일 옵션으로 &quot;-m32&quot;를 명시하고  Header 파일 과 Library를 참조하는 경로에   32bit 용 APRE Library가 설치되어 있는 경로를 지정해야 한다.  또한 APRE Precompiler도  32bit 용 APRE 가 실행되도록 경로를 명시한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>/alticlient32/include</strong><br />ALTI_LIBRARY=<strong>/alticlient32/lib</strong> -lapre -lodbccli</p><p>SYS_LIBS=<strong>-lpthread -lm -ldl -lc</strong></p><p>connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc" class="external-link" rel="nofollow"> <strong>/alticlient32/bin/apre</strong> -t c </a><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">gcc <strong>-m32</strong> -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(SYS_LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698497/11665705">Makefile flow</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698497/11665706.png">Makefile flow.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:58</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

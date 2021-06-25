@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Sample Examples</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JEUS-Integration-Guide-for-Altibase_14058459.html">JEUS Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Sample Examples
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409359683 {padding: 0px;}
+div.rbtoc1624409359683 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409359683 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409359683'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.SampleExamples-Exampleofusingpool'>Example of using pool</a></li>
+<li><a href='#id-3.SampleExamples-ExampleofusinggetConnection'>Example of using getConnection</a></li>
+<li><a href='#id-3.SampleExamples-Howtorun'>How to run</a></li>
+</ul>
+</div></p><hr /><p>After learning how to integrate ALTIBASE with JEUS, check the integration between ALTIBASE and JEUS by accessing and querying Altibase using the node setting below.</p><h2 id="id-3.SampleExamples-Exampleofusingpool"><strong>Example of using pool</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;javax.naming.*&quot; %&gt;
+&lt;%@ page import=&quot;java.sql.*&quot; %&gt;
+&lt;%@ page import=&quot;javax.sql.*&quot; %&gt;
+&lt;%
+Connection con=null;
+Statement  st=null;
+ResultSet  rs=null;
+try
+{
+InitialContext ctx = new InitialContext();
+DataSource ds = (DataSource)ctx.lookup(&quot;DataSource1&quot;);
+con=ds.getConnection();
+st=con.createStatement();
+rs=st.executeQuery(&quot;select *  from dual&quot;);
+while(rs.next())
+{
+out.println(&quot;TABLE_NAME :&quot; + rs.getString(1)+&quot;&lt;br&gt;&quot;);
+}
+}
+catch(Exception e)
+{
+out.println(&quot;Error:&quot; + e.getMessage());
+e.printStackTrace();
+}
+finally
+{
+if(rs!=null)rs.close();
+if(st!=null)st.close();
+if(con!=null)con.close();
+}
+%&gt;</pre>
+</div></div><h2 id="id-3.SampleExamples-ExampleofusinggetConnection"><strong>Example of using getConnection</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;java.util.*&quot;%&gt;
+&lt;%@ page import=&quot;java.sql.*&quot;%&gt;
+&lt;%
+Connection conn = null;
+PreparedStatement pstmt = null;
+ResultSet rs = null;
+ 
+String db_url = &quot;jdbc:Altibase://127.0.0.1:20300/mydb&quot;;
+String db_user = &quot;sys&quot;;
+String db_passwd = &quot;manager&quot;;
+String enc = &quot;KO16KSC5601&quot;;
+Properties props = new Properties();
+props.put(&quot;user&quot;, db_user);
+props.put(&quot;password&quot;, db_passwd);
+props.put(&quot;encoding&quot;, enc);
+ 
+try {
+try {
+Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);
+conn = DriverManager.getConnection(db_url, props);
+out.print(&quot; Connection ok&quot; + &quot;&lt;br&gt;&quot; );
+} catch (Exception e) {
+out.println(&quot;### CONN ERROR=&gt;&quot; + e.toString() + &quot;###&quot; + &quot;&lt;br&gt;&quot;);
+}
+String Query = &quot;select * from dual&quot;;
+pstmt = conn.prepareStatement(Query);
+String get_1 = null;
+ 
+try {
+rs = pstmt.executeQuery();
+while(rs.next()) {
+get_1 = rs.getString(1);
+out.println(&quot; get_1 = &quot; + get_1 + &quot;&lt;br&gt;&quot;);
+}
+} catch (Exception e) {
+out.println(&quot;### SELECT ERROR=&gt;&quot; + e.toString() + &quot;###&quot; + &quot;&lt;br&gt;&quot;);
+}
+} catch (Exception e) {
+out.println(&quot;### ERROR=&gt;&quot; + e.toString() + &quot;###&quot; + &quot;&lt;br&gt;&quot;);
+try {
+conn.rollback();
+} catch(Exception ex) {
+out.println(&quot;### rollback ERROR=&gt;&quot; +  ex.toString()  + &quot;###&quot; + &quot;&lt;br&gt;&quot;);
+}   // end of try
+} finally {
+try {
+conn.close();
+} catch(Exception ex) {
+out.println(&quot;### close ERROR=&gt;&quot; +  ex.toString()  + &quot;###&quot; + &quot;&lt;br&gt;&quot;);
+}   // end of try
+}   // end of try
+%&gt;</pre>
+</div></div><p> </p><div><div class="syntaxhighlighter nogutter  java"><h2 id="id-3.SampleExamples-Howtorun"><strong>How to run</strong></h2><p>This section describes how to test after deploying the JSP file using WebAdmin.</p><p>Deployment refers to all operations to upload and control module files in JEUS to start the application service.</p><p>JEUS can upload and deploy EJB modules (.jar files), web application modules (.war files), resource adapter modules (.rar files), and the standalone module composed of one module can also be deployed as a type of Java EE application. In the sample test, it describes how to create a WAR file using the examples provided above and deploy it to a JEUS server to run it.</p><p>To learn how to upload and deploy other modules, please refer to the &quot;Deployment&quot; section of the JEUS manual.</p><p>The WAR file used in the sample test was created using Eclipse.</p><p>1. Run Eclipse and select File  New  Project, then select Web  “Dynamic Web Project” in the following wizard to set the project name.</p><p><img class="confluence-embedded-image" src="attachments/14058486/14221677.png" data-image-src="attachments/14058486/14221677.png"></p></div></div><p>2. When the project is created as the following, create the sample example above as a JSP file and add it under the “WebContent” directory.<br />Then, add Altibase.jar file to the Lib folder.</p><p><img class="confluence-embedded-image" src="attachments/14058486/14221678.png" data-image-src="attachments/14058486/14221678.png"><img class="confluence-embedded-image" src="attachments/14058486/14221679.png" data-image-src="attachments/14058486/14221679.png"></p><p>3. After adding the JSP file and Altibase.jar file, select File  Export, select Web  “War file”, and specify the path to create, then the WAR file is created.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058486/14221680.png" data-image-src="attachments/14058486/14221680.png"></p><p>4. When the WAR file is created, select the “Application Module Deployment”  File Upload tab in the WebAdmin node tree to upload the corresponding WAR file.</p><p><img class="confluence-embedded-image" src="attachments/14058486/14221681.png" data-image-src="attachments/14058486/14221681.png"></p><p>5. After uploading the file, deploy the uploaded module. The name of the deployed module (the name of the WAR file) becomes the path to run the example file.</p><p><img class="confluence-embedded-image" src="attachments/14058486/14221682.png" data-image-src="attachments/14058486/14221682.png"></p><p>6. When the deployment is completed, open the Internet window and enter the following URL to run it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">http://server_ip:8088/module name/jsp file name
+ 
+Ex) http://192.168.1.76:8088/AltiTest/test.jsp</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221677.png">sample1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221678.png">sample2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221679.png">sample3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221680.png">sample4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221681.png">sample5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058486/14221682.png">sample6.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

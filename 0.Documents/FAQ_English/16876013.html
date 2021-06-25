@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Notes/Considerations when changing TRANSACTION_TABLE_SIZE</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Notes/Considerations when changing TRANSACTION_TABLE_SIZE
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145395 {padding: 0px;}
+div.rbtoc1624409145395 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145395 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145395'>
+<ul class='toc-indentation'>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Overview'>Overview</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Restriction'>Restriction</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Howtochange'>How to change</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Change(offline)'>Change (offline)</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Change(ALTERSYSTEM)'>Change (ALTER SYSTEM)</a></li>
+</ul>
+</li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Changeprocedures'>Change procedures</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Whendatamigrationisrequired'>When data migration is required</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Whenitispossibletochangetooffline'>When it is possible to change to offline</a></li>
+</ul>
+</li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Maximumvalue'>Maximum value</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-TRANSACTION_TABLEandMemoryusage'>TRANSACTION_TABLE and Memory usage</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-WhenTRANSACTION_TABLE_SIZEisexceeded'>When TRANSACTION_TABLE_SIZE is exceeded</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-PerformanceView'>Performance View</a></li>
+<li><a href='#Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-ErrorMessages'>Error Messages</a></li>
+</ul>
+</div></p><p> </p><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Overview">Overview</h1><hr /><p>TRANSACTION_TABLE_SIZE is an Altibase server property and means the maximum number of transactions that can be executed simultaneously while operating the database.</p><p>There is always one transaction in one session. Therefore, if the number of concurrent connection sessions increases, the number of concurrent transactions may increase. Therefore, when increasing the MAX_CLIENT property value,  consider changing the TRANSACTION_TABLE_SIZE.</p><p>TRANSACTION_TABLE_SIZE also refers to the unique number (TID) of the transaction. This property requires caution when changing because different transactions can be recognized as one transaction if the TID causes problems due to an incorrect change.</p><p>Also, the change method differs depending on the ALTIBASE HDB version, so the related contents are summarized.</p><p> </p><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Restriction">Restriction</h1><hr /><ul><li>Depending on the ALTIBASE HDB version, there are versions that require data migration to change TRANSACTION_TABLE_SIZE. Please refer to the 'How to change' section below.</li><li>It can only be changed to a 2^n value greater than the current value.</li><li>It can be changed in the order of 2^n 16 -&gt; 32 -&gt; 64 -&gt; 128 -&gt; 256 -&gt; 512 -&gt; 1024 -&gt; 2048 -&gt; 4096 -&gt; 8192 -&gt; 16384.</li><li>It cannot be changed from a large value to a small value.</li><li>The number of concurrent transactions must be set higher than MAX_CLIENT because it includes all user transactions, replication transactions, and internal transactions.</li><li>In a replication environment, it may be necessary to set up to twice of MAX_CLIENT in consideration of replication transactions.</li><li><p>In a replication environment, the TRANSACTION_TABLE_SIZE must all be the same between the replication target servers. If the TRANSACTION_TABLE_SIZE is different, the replication sender thread will not start.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; alter replication REP_MEM start;
+[ERR-6100D : [Sender] Failed to handshake with the peer server (Transaction Table Size mismatch [1024:4096])]</pre>
+</div></div></li></ul><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Howtochange">How to change</h1><hr /><h3 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Change(offline)">Change (offline)</h3><p>From the version specified below, it <span style="color: rgb(0,0,255);">can be changed to offline.</span> (Except for ALTIBASE HDB 4 version)</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB server version</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>From 5.1.5.93</p></th><th class="confluenceTh"><p>From 5.3.3.48 </p></th><th class="confluenceTh"><p>From 5.3.5.17</p></th><th class="confluenceTh"><p>From 5.5.1.1.0</p></th></tr><tr><td class="confluenceTd"><p>Change (offline)</p></td><td class="confluenceTd"><p>Cannot be changed.<br />Data migration required.</p></td><td class="confluenceTd"><p>Changeable <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>Changeable <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>Changeable <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>Changeable <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB server version</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5.0 ~  5.1.5.92</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.47</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.16</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.0.9</p></th></tr><tr><td class="confluenceTd"><p>Change (offline)</p></td><td class="confluenceTd"><p><span>Cannot be changed.</span><br /><span>Data migration required.</span></p></td><td class="confluenceTd"><p><span>Cannot be changed.</span><br /><span>Data migration required.</span></p></td><td class="confluenceTd"><p><span>Cannot be changed.</span><br /><span>Data migration required.</span></p></td><td class="confluenceTd"><p><span>Cannot be changed.</span><br /><span>Data migration required.</span></p></td><td class="confluenceTd"><p><span>Cannot be changed.</span><br /><span>Data migration required.</span></p></td></tr></tbody></table></div><p> </p><h3 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Change(ALTERSYSTEM)">Change (ALTER SYSTEM)</h3><p>Alter success when changing to ALTER SYSTEM may appear to be changeable by falling off, but <span style="color: rgb(255,0,0);">TRANSACTION_TABLE_SIZE cannot be changed while online.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  server version</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5</p></th><th class="confluenceTh"><p>From 5.3.3.64</p></th><th class="confluenceTh"><p>From 5.3.5.26</p></th><th class="confluenceTh"><p>From 5.5.1.2.13</p></th></tr><tr><td class="confluenceTd"><p>Change (online)<br class="atl-forced-newline" /> (alter system)</p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p>Cannot be changed</p></td><td class="confluenceTd"><p><span>Cannot be changed</span></p></td><td class="confluenceTd"><p><span>Cannot be changed</span></p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB server version</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.63</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.25</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.2.12</p></th></tr><tr><td class="confluenceTd"><p>Change (online) (alter system)</p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td><td class="confluenceTd"><p><span>It looks like it can be done with an alter system, but</span><span> it cannot be changed.</span></p></td></tr></tbody></table></div><p>In the version where BUG-33467 is reflected, [ERR-0104E: The property [TRANSACTION_TABLE_SIZE] is read-only.] error occurs when changing to ALTER SYSTEM.</p><h5 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Relatedbug">Related bug</h5><p>BUG-33467 Change TRANSACTION_TABLE_SIZE property attribute to read-only. Modify so that it cannot be changed with ALTER SYSTEM.</p><p>BUG-31862 Improves the ability to change TRANSACTION_TABLE_SIZE without migration. It can only be changed to <span style="color: rgb(255,0,0);">a value of 2^n greater than the current value</span>.</p><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Changeprocedures">Change procedures</h1><hr /><h3 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Whendatamigrationisrequired">When data migration is required</h3><ol><li>Secure service downtime</li><li>Database backup using aexport, iloader</li><li>Shutdown Altibase server</li><li>Change TRANSACTION_TABLE_SIZE in altibase.properties</li><li>Recreate database</li><li>Upload data to the backup backed up in 2</li><li>Startup Altibase server</li></ol><h3 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Whenitispossibletochangetooffline">When it is possible to change to offline</h3><ol><li>Securing service downtime</li><li>Altibase server shutdown</li><li>Change TRANSACTION_TABLE_SIZE in altibase.properties</li><li>Startup Altibase server</li></ol><p> </p><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Maximumvalue">Maximum value</h1><hr /><p>Depending on the ALTIBASE HDB server version, the maximum value for TRANSACTION_TABLE_SIZE is different. In previous versions, some manuals have errors in the description of the maximum value, so please refer to the table below.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB server version</p></th><th class="confluenceTh"><p>From 4.3.9.222   </p></th><th class="confluenceTh"><p>From 5.1.5.112     </p></th><th class="confluenceTh"><p>From 5.3.3.91    </p></th><th class="confluenceTh"><p>From 5.3.5.35      </p></th><th class="confluenceTh"><p>From 5.5.1.5.3        </p></th></tr><tr><td class="confluenceTd"><p>Maximum value</p></td><td class="confluenceTd"><p>16384  </p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  server version</p></th><th class="confluenceTh"><p>4.3.9.0 ~ 4.3.9.221</p></th><th class="confluenceTh"><p>5.1.5.0 ~ 5.1.5.111</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.90</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.34</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.5.2</p></th></tr><tr><td class="confluenceTd"><p>Maximum value</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td></tr></tbody></table></div><h5 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-Relatedbug.1">Related bug</h5><p>BUG-37851 The maximum value of the TRANSACTION_TABLE_SIZE value needs to be modified.</p><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-TRANSACTION_TABLEandMemoryusage">TRANSACTION_TABLE and Memory usage</h1><hr /><p>When running the ALTIBASE HDB server, memory for TRANSACTION_TABLE_SIZE is allocated in advance. So, depending on the TRANSACTION_TABLE_SIZE setting, memory usage may increase slightly.</p><p>The following is an example of comparing memory usage according to the TRANSACTION_TABLE_SIZE setting value.</p><p>Memory usage may vary depending on the system environment. Please note only the difference according to the TRANSACTION_TABLE_SIZE setting value. The unit is KB.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p> </p></th><th class="confluenceTh"><p>1024</p></th><th class="confluenceTh"><p>2048</p></th><th class="confluenceTh"><p>4096</p></th><th class="confluenceTh"><p>8192</p></th><th class="confluenceTh"><p>16384</p></th></tr><tr><td class="confluenceTd"><p>VSZ</p></td><td class="confluenceTd"><p>1,484,952</p></td><td class="confluenceTd"><p>1,647,264</p></td><td class="confluenceTd"><p>2,019,544</p></td><td class="confluenceTd"><p>2,911,096</p></td><td class="confluenceTd"><p>5,309,148</p></td></tr><tr><td class="confluenceTd"><p>RSS</p></td><td class="confluenceTd"><p>660,900</p></td><td class="confluenceTd"><p>825,956</p></td><td class="confluenceTd"><p>1,164,640</p></td><td class="confluenceTd"><p>2,093,068</p></td><td class="confluenceTd"><p>4,465,108</p></td></tr></tbody></table></div><p>The test server environment is as follows:</p><ul><li>Linux</li><li>Environment variable MALLOC_ARENA_MAX=4</li><li>ALTIBASE HDB 6.3.1.2.7</li></ul><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-WhenTRANSACTION_TABLE_SIZEisexceeded">When TRANSACTION_TABLE_SIZE is exceeded</h1><hr /><p>If the number of concurrent transactions exceeds TRANSACTION_TABLE_SIZE, the database may appear to hang due to the following phenomena.</p><ul><li>Unable to connect to a new session</li><li>No response when executing SQL in the connected session</li></ul><p>The following message appears in altibase_boot.log.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">TRANSACTION_TABLE_SIZE is full !!
+Current TRANSACTION_TABLE_SIZE is 1024
+Please check TRANSACTION_TABLE_SIZE</pre>
+</div></div><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-PerformanceView">Performance View</h1><hr /><p>The TRANSACTION_TABLE_SIZE setting value and the number of running transactions can be checked in V$TRANSACTION_MGR.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- TOTAL_COUNT refers to the value of TRANSACTION_TABLE_SIZE setting, and ACTIVE_COUNT refers to the number of transactions in progress.
+
+iSQL&gt; SELECT TOTAL_COUNT, ACTIVE_COUNT FROM V$TRANSACTION_MGR;
+TOTAL_COUNT ACTIVE_COUNT
+----------------------------
+8192        4
+1 row selected.
+</pre>
+</div></div><h1 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-ErrorMessages">Error Messages</h1><hr /><h5 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-ERR-10166(errno=2)TRANSACTION_TABLE_SIZE[&#39;4094&#39;]isnotapoweroftwo.">ERR-10166(errno=2) TRANSACTION_TABLE_SIZE ['4094'] is not a power of two.</h5><p>This is an error message that occurs when the value of the TRANSACTION_TABLE_SIZE property is not 2^n.</p><p>2^n values are 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384.</p><h5 id="Notes/ConsiderationswhenchangingTRANSACTION_TABLE_SIZE-ERR-10018(errno=0)Theversionofdatafileforbackupisnotcompatiblewiththeversionofstoragemanager.BackupDB=&gt;[VersionID=4.11.1,Bit=64,Endian=BIGLogSize=10485760TransactionTableSize=1024]Server=&gt;[VersionID=4">ERR-10018(errno=0) The version of data file for backup is not compatible with the version of storage manager. Backup DB =&gt; [ Version ID = 4.11.1,  Bit = 64, Endian = BIG LogSize = 10485760  Transaction Table Size = 1024 ]  Server=&gt;[ Version ID = 4.11.1,  Bit = 64, Endian = BIG LogSize = 10485760 Transaction Table Size = 2048 ]</h5><p>This is an error message that occurs in the version where the TRANSACTION_TABLE_SIZE set when creating the database cannot be changed.</p><p>This can happen when changing from a large value to a small value.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

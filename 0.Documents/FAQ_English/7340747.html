@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-110F0 Unable to extend the tablespace (SYS_TBS_MEM_DIC) because the database would be larger than MEM_MAX_DB_SIZE(12582912K)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-110F0 Unable to extend the tablespace (SYS_TBS_MEM_DIC) because the database would be larger than MEM_MAX_DB_SIZE(12582912K)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 27, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409152827 {padding: 0px;}
+div.rbtoc1624409152827 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409152827 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409152827'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Version'>Version</a></li>
+<li><a href='#ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Explanation'>Explanation</a></li>
+<li><a href='#ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Cause'>Cause</a></li>
+<li><a href='#ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Action'>Action</a></li>
+<li><a href='#ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Explanation">Explanation</h2>
+
+<p>INSERT/UPDATE/DELETE statements cannot be executed on memory tablespaces. Only the SELECT statement is executable.</p>
+
+
+
+<h2 id="ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Cause">Cause</h2>
+
+<p>This error occurs when the total sum of memory tablespaces (SYS_TBS_MEM_DIC+SYS_TBS_MEM_DATA+USER_MEMORY_TABLESPACE) exceeds MEM_MAX_DB_SIZE.</p>
+
+
+<h2 id="ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Action">Action</h2>
+
+<p>MEM_MAX_DB_SIZE is the maximum amount of memory that can be used by memory tablespaces. For further information, refer to the <em>[Technical Article] ALTIBASE Monitoring Query Guide, [TS01] Memory Table Space Usage (page 29)</em>.</p>
+
+<p>The tablespace area cannot be returned unless a tablespace is dropped. (The COMPACT command can return the blank page, but the effect is negligible. Thus, it is not recommended.)</p>
+
+<p>Therefore, if MEM_MAX_DB_SIZE is set lower than the actual amount, change the value of MEM_MAX_DB_SIZE from $ALTIBASE_HOME/conf/altibase.proeperties and restart the Altibase server process. </p>
+
+<p>It is recommended to set the maximum value of MEM_MAX_DB_SIZE as the sum of VOLATILE_MAX_DB_SIZE and MEM_MAX_DB_SIZE within 60 to 70 percent of the physical memory.</p>
+
+<ul>
+	<li>Checking MEM_MAX_DB_SIZE
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT value1/32/1024 FROM v$property WHERE name = &#39;MEM_MAX_DB_SIZE&#39;;
+VALUE1/32/1024 : 32768
+
+1 row selected.</pre>
+</div></div>
+The above example shows the maximum number of pages that can be used (It is divided by 32 as the size of one page is 32K).</li>
+	<li>Checking Usage
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT space_name, maxsize/32/1024, alloc_page_count FROM v$mem_tablespaces;
+SPACE_NAME       : SYS_TBS_MEM_DIC
+MAXSIZE/32/1024  : 4294967295
+ALLOC_PAGE_COUNT : 129
+
+SPACE_NAME       : SYS_TBS_MEM_DATA
+MAXSIZE/32/1024  : 4294967295
+ALLOC_PAGE_COUNT : 29313
+
+SPACE_NAME       : MEM_TBS
+MAXSIZE/32/1024  : 3200
+ALLOC_PAGE_COUNT : 3201
+
+3 rows selected.</pre>
+</div></div>
+1. The above example shows the current usage of the memory tablespace. There are 32,643 pages allocated in total.</li>
+</ul>
+
+
+
+
+<p>2. For SYS_TBS_MEM_DIC and SYS_TBS_MEM_DATA, they have not reached MAXSIZE but the error has occurred because the sum of all the memory tablespaces has almost reached MEM_MAX_DB_SIZE.</p>
+
+<p>The current sum shows the value of 32,643 and the actual MEM_MAX_DB_SIZE is 32,768. Thus, there are still 125 pages that can be allocated. However, as the default value of EXPAND_CHUNK_PAGE_COUNT (the number of pages by which to increase the size of the memory tablespace) is 128, it means that all the pages are currently being used.</p>
+
+<p>(The error occurs when  MEM_MAX_DB_SIZE is exceeded because the transaction tried to expand.)</p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Each memory tablespace has its own MAXSIZE. This error not only occurs when it has reached its MAXSIZE but also when the sum of all the memory tablespaces exceeds MEM_MAX_DB_SIZE.</p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>Restarting Altibase server after increasing MEM_MAX_DB_SIZE
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">Shell&gt; vi $ALTIBASE_HOME/conf/altibase.properties
+....
+....
+UNIXDOMAIN_FILEPATH    =?/trc/cm-unix
+MEM_MAX_DB_SIZE        =  1G             &lt;===== Change this value to the appropriate size (Using GB/MB unit)
+LOG_FILE_SIZE          =  10M
+....
+....
+:wq!
+
+Shell&gt; server restart</pre>
+</div></div>
+It needs to restart the server after modification.</li>
+</ul>
+
+
+
+
+<ul>
+	<li>Checkpoint Image File Size</li>
+</ul>
+
+
+
+<p>For in-memory databases of ALITBASE HDB, any modified data from in-memory databases is saved on disk when checkpointing is executed. The disk file where memory data is saved is called the Checkpoint Image file. This file cannot be resized, which means that once it is expanded, it cannot be reduced.</p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>In order to reduce the Checkpoint Image file size, REORG has to be executed. This has to be done with the migration of all data, including the disk database.</p>
+                    </div>
+    </div>
+
+
+
+
+<h2 id="ERR-110F0Unabletoextendthetablespace(SYS_TBS_MEM_DIC)becausethedatabasewouldbelargerthanMEM_MAX_DB_SIZE(12582912K)-Reference">Reference</h2>
+
+<p>N/A</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

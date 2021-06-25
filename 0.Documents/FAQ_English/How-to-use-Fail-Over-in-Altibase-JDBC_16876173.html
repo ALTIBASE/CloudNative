@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to use Fail-Over in Altibase JDBC</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JDBC_16876171.html">JDBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to use Fail-Over in Altibase JDBC
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146570 {padding: 0px;}
+div.rbtoc1624409146570 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146570 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146570'>
+<ul class='toc-indentation'>
+<li><a href='#HowtouseFail-OverinAltibaseJDBC-Overview'>Overview</a></li>
+<li><a href='#HowtouseFail-OverinAltibaseJDBC-Glossaryofterms'>Glossary of terms</a></li>
+<li><a href='#HowtouseFail-OverinAltibaseJDBC-Fail-overrelatedconnectionproperties'>Fail-over related connection properties</a></li>
+<li><a href='#HowtouseFail-OverinAltibaseJDBC-Example'>Example</a></li>
+<li><a href='#HowtouseFail-OverinAltibaseJDBC-Reference'>Reference</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="HowtouseFail-OverinAltibaseJDBC-Overview">Overview</h1><hr /><p>When a failure occurs while operating the database system, it provides a fail-over function and overcomes a failure and so that the service can be continued.</p><p>This section describes the functions and usage of Altibase JDBC Fail-Over.</p><p> </p><h1 id="HowtouseFail-OverinAltibaseJDBC-Glossaryofterms">Glossary of terms</h1><hr /><ul><li>CTF (Connection Time Fail-Over): When a failure is detected at the time of accessing the DBMS, thㅅis refers to retrying the connection to the DBMS of another available node.<ul><li>If the AlternateServer property is set in the Connection String, CTF operates by default.</li><li>An application usually should try to connect again.</li><li>In the form of maintaining a connection pool like WAS, it can be performed automatically through the connection validation setting of WAS.</li></ul></li><li>STF (Service Time Fail-Over): When a failure is detected while the DBMS is processing a client's request, this refers to reconnecting to the DBMS of another available node.<ul><li>Since the success or failure is returned as an error after executing only the connection, user coding to proceed from the preparation of the statement again must be followed.</li></ul></li><li>Primary Server: This refers to the server information specified at the first in the Connection URL.</li><li>Alternative Server: This refers to the information of servers specified in AlternateServer connection properties.</li><li>Explicit Connection: This refers to when calling the connect method of the Connection object.</li><li>Implicit Connection: This refers to when the connect method fails or STF occurs, and JDBC internally retries the connection to the DBMS of another available node.</li></ul><p> </p><h1 id="HowtouseFail-OverinAltibaseJDBC-Fail-overrelatedconnectionproperties">Fail-over related connection properties</h1><hr /><p><strong>* Case insensitive.</strong></p><ul><li>AlternateServer: It refers to alternate servers and is described in (IP1:Port1, IP2:Port2,...) format.<ul><li>Alternate servers can be the connection target server in the following cases depending on the settings of LoadBalance and SessionFailOver.<ul><li>When calling the connect method</li><li>When attempting to reconnect due to a failure of the connect method</li><li>When attempting to reconnect due to STF occurrence</li></ul></li></ul></li><li>ConnectionRetryCount: Set the number of retry attempts to connect to the same server.</li><li>ConnectionRetryDelay: Waiting time for connection attempts to the same server. The unit is seconds.<br />Note) ConnectionRetryCount and ConnectionRetryDelay properties are applied only for internal connection, and if it fails after executing ConnectionRetryCount * ConnectionRetryDelay, it tries to connect to another available server in the same way.</li><li>LoadBalance: When connecting to DBMS, set the order of connection attempts between the primary server and the alternate server.<ul><li>When set to ON, it tries to connect randomly between the default server and the alternate server.</li><li>If it is set to OFF, it tries to connect from the primary server, and if it fails, it tries to connect to the alternate server in the order listed.</li><li>This setting is for both explicit and internal connections.</li></ul></li><li>SessionFailOver: Whether to perform STF or not.<ul><li>When set to ON, it operates as CTF+STF.</li><li>When set to OFF, only CTF operates.</li></ul></li><li>FailOver_Source: When performing a failover, specify the description of the failover source delivered to the server. This information is stored in the FAILOVER_SOURCE column of the V$SESSION performance view.</li><li>HealthCheckDuration: Altibase JDBC maintains a list of available servers for failover. Upon failover, it tries to reconnect to the servers in the available server list. This is to prevent all servers from attempting to connect in an infinite loop in a failure situation.<ul><li>The HealthCheckDuration property specifies the wait time for the server on which the failover occurred to be set back to the list of available servers.</li><li>When a failover occurs, the server is removed from the list of available servers and added back to the list of available servers after the HealthCheckDuration time elapses. The unit of this property is seconds.</li></ul></li></ul><p> </p><h1 id="HowtouseFail-OverinAltibaseJDBC-Example">Example</h1><hr /><p>When writing a program, refer to the following example.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>import Altibase.jdbc.driver.*;<br />import Altibase.jdbc.driver.ex.*;<br />import java.util.Properties;<br />import java.sql.*;<br />import <a href="http://java.io/" class="external-link" rel="nofollow">java.io</a>.*;<br /><br />class  FailOverSampleSTF <br />{<br />    public static void main(String args[])  throws Exception<br />    {<br />        //---------------------------------------------------<br />        // Initialization<br />        //---------------------------------------------------<br />        <br />        String sURL = &quot;jdbc:<a href="altibase://127.0.0.1" rel="nofollow">Altibase://127.0.0.1</a>:&quot; + args[0]+&quot;/mydb?<span style="color: rgb(255,0,0);">AlternateServers=(128.1.3.52:20300,128.1.3.53:20300)&amp;ConnectionRetryCount=3&amp;ConnectionRetryDelay=10&amp;SessionFailOver=on&amp;LoadBalance=off</span>&quot;;<br />       </p><p>        try<br />        {<br />            Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);<br />        }<br />        catch ( Exception e )<br />        {<br />            System.err.println(&quot;Can't register Altibase Driver\n&quot;);<br />            return;<br />        }<br /><br />        //---------------------------------------------------<br />        // Test Body<br />        //---------------------------------------------------<br /><br />        Properties sProp = new Properties();<br />        Connection sCon;<br />        PreparedStatement  sStmt = null;<br />        ResultSet sRes = null ;<br />        sProp.put(&quot;user&quot;, &quot;SYS&quot;);<br />        sProp.put(&quot;password&quot;, &quot;MANAGER&quot;);<br />        <br />        sCon = DriverManager.getConnection(sURL, sProp);</p><p>        sStmt = sCon.prepareStatement(&quot;SELECT C1 FROM T2   ORDER BY C1&quot;);</p><p>        while(true)<br />        {<br />            try <br />            {<br />                sRes = sStmt.executeQuery();<br />                while( sRes.next() )<br />                {<br />                    System.out.println( &quot;VALUE : &quot; + sRes.getString(1)  );<br />                }<br />            }<br />            catch ( SQLException e )<br />            {<br />                //Failover 확인.<br />               <strong> //if (e.getSQLState().equals(&quot;ES_08FO01&quot;))  // 6.1.1 이하</strong><br />               <span style="color: rgb(255,0,0);"> if (e.getSQLState().equals(&quot;08F01&quot;))             // 6.3.1 이상</span><br /><span style="color: rgb(255,0,0);">                {</span><br /><span style="color: rgb(255,0,0);">                    sStmt = sCon.prepareStatement(&quot;SELECT * FROM tb_test1&quot;);   // Failover 발생 시 prepare를 다시 해주어야 한다.</span><br /><span style="color: rgb(255,0,0);">                    continue;</span><br /><span style="color: rgb(255,0,0);">                }</span><br />                System.out.println( &quot;EXCEPTION : &quot; + e.getMessage() );<br />                break;<br />            }<br />            break;<br />        }<br />        <br />        sRes.close();</p><p>        //---------------------------------------------------<br />        // Finalize<br />        //---------------------------------------------------<br />       <br />        sStmt.close();<br />        sCon.close();<br />    }<br />}</p>
+</div></div><p> </p><h1 id="HowtouseFail-OverinAltibaseJDBC-Reference">Reference</h1><hr /><ul><li><p>Replication Manual -&gt; Chapter 4 FailOver</p></li><li><p>JDBC User's Manual </p><ul><li><p>Chapter 1 Getting Started with JDBC -&gt; Connection Information</p></li><li>Chapter 3 Advanced Features -&gt; JDBC and FailOver</li></ul></li><li><a href="https://aid.altibase.com/display/arch/JBOSS+Integration+Guide+for+Altibase" class="external-link" rel="nofollow">JBOSS Integration Guide for Altibase</a></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

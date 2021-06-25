@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : WebLogic 용어 설명</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340101.html">Altibase WEBLOGIC 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : WebLogic 용어 설명
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified by <span class='editor'> Consulting Division</span> on Dec 01, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409836661 {padding: 0px;}
+div.rbtoc1624409836661 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409836661 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409836661'>
+<ul class='toc-indentation'>
+<li><a href='#WebLogic용어설명-도메인'>도메인</a></li>
+<li><a href='#WebLogic용어설명-WebLogic서버인스턴스(관리서버,관리된서버)'>WebLogic 서버 인스턴스 (관리 서버, 관리된 서버)</a></li>
+<li><a href='#WebLogic용어설명-JDBC데이터소스'>JDBC 데이터 소스</a></li>
+<li><a href='#WebLogic용어설명-커넥션풀(pool)'>커넥션 풀(pool)</a></li>
+<li><a href='#WebLogic용어설명-배치,배포'>배치, 배포</a></li>
+</ul>
+</div>
+<hr />
+<p>ALTIBASE와 WebLogic의 연동에 앞서 기본적으로 알아야 할 WebLogic과 관련 용어에 대해 간략하게 설명한다.</p>
+
+<h2 id="WebLogic용어설명-도메인"><strong>도메인</strong></h2>
+
+<p>도메인이란 WebLogic 서버 인스턴스(instance)에 대한 논리적인 그룹으로 하나의 도메인은 하나 이상의 WebLogic 서버 인스턴스로 구성된다.</p>
+
+<p>사용자는 하나의 WebLogic (WebLogic Server/WLS)을 설치하여 여러 개의 도메인을 구성하거나 여러 개의 WebLogic을 설치하여 하나의 도메인으로 구성할 수 있다.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />  <img class="confluence-embedded-image" src="attachments/7340103/7766032.png" data-image-src="attachments/7340103/7766032.png"><br class="atl-forced-newline" /></p>
+
+<h2 id="WebLogic용어설명-WebLogic서버인스턴스(관리서버,관리된서버)"><strong>WebLogic 서버 인스턴스 (관리 서버, 관리된 서버)</strong></h2>
+
+<p>WebLogic 서버 인스턴스란 웹 응용프로그램(Web Application), 웹 서비스(Web Services), EJB 등을 배치(deploy)할 수 있는 하나의 프로세스(process)로서</p>
+
+<p>“관리 서버”, “관리된 서버”로 구분한다.</p>
+
+<p><img class="confluence-embedded-image" src="attachments/7340103/7766030.png" data-image-src="attachments/7340103/7766030.png"></p>
+
+<ul>
+	<li>   관리 서버 (Administration Server)</li>
+</ul>
+
+
+<p>도메인 전체를 관리할 수 있도록 관리 콘솔(Administration Console)이 함께 배치된 WebLogic 서버 인스턴스로 도메인 생성시 함께 생성된다.</p>
+
+<ul>
+	<li>   관리된 서버 (Managed Server)</li>
+</ul>
+
+
+<p>관리 서버를 제외한 모든 WebLogic 서버 인스턴스로 별도로 추가하거나 인스턴스간 클러스트링(clustering)이 가능하다.</p>
+
+<p>즉, 하나의 도메인은 1개의 관리 서버와 0개 이상의 관리된 서버로 구성된다.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="WebLogic용어설명-JDBC데이터소스"><strong>JDBC 데이터 소스</strong></h2>
+
+<p>JDBC 데이터 소스란 WebLogic 서버 인스턴스가 RDBMS에 접속하기 위한 자바 객체이다.</p>
+
+<p>연동할 RDBMS에 대한 JDBC 데이터 소스를 생성 후 해당 JDBC 데이터 소스를 사용할 WebLogic 서버 인스턴스를 지정하면 해당 WebLogic 서버 인스턴스에 배치된 웹 응용프로그램은 소스코드에 JDBC 데이터 소스의 JNDI (Java Naming and Directory Interface) 이름을 명시하여 대상 RDBMS와 연동을 할 수 있다.</p>
+
+<p>JBDC 데이터 소스를 생성하기 위해서는 관련 JDBC 드라이버가 WebLogic에서 사용할 수 있도록 사전에 설정되어 있어야만 한다.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="WebLogic용어설명-커넥션풀(pool)"><strong>커넥션 풀(pool)</strong></h2>
+
+<p>JDBC 데이터 소스 생성 시 자동으로 생성되는 접속 대상 RDBMS와의 접속 집합으로 “초기 용량”, “최대 용량”과 같은 다양한 속성에 의해 조절된다.</p>
+
+<p>커넥션 풀, 접속 풀은 동의어로 본 문서에서는 “커넥션 풀”로 통일한다.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="WebLogic용어설명-배치,배포"><strong>배치, 배포</strong></h2>
+
+<p>배치, 배포는 모두 deploy 를 의미하는 동의어로 본 문서에서는 “배치”로 통일한다.
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340103/7766031.png">Weblogic_managed_server.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340103/7766030.png">Weblogic_managed_server.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340103/7766032.png">weblogic_domain.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-7101D ( 462877) Protocol header error.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-7101D ( 462877) Protocol header error.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148236 {padding: 0px;}
+div.rbtoc1624409148236 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148236 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148236'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-Version'>Version</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-Cause'>Cause</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-Solution'>Solution</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-Version">Version</h1><hr /><p>All the versions of Altibase</p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-Symptom">Symptom</h1><hr /><p>The following error message is recorded in the Altibase trace log altibase_boot.log below and in $ALTIBASE_HOME/trc/altibase_boot.log.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">ERR-7101d(errno=0) Protocol header error.(TCP 127.0.0.1:13036)
+Protocol processing failed. Close connection...</pre>
+</div></div><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-Cause">Cause</h1><hr /><p>The description of the error can be checked using the altierr utility as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ altierr 0x7101D</span><br /><span> 0x7101D ( 462877) cmERR_ABORT_PROTOCOL_HEADER_ERROR Protocol header error.(&lt;0%s&gt;)</span><br /><span> # *Cause: Protocol header error</span><br /><span> # *Action: Please send a bug report to the vendor.</span></p>
+</div></div><p>This error is a message recorded in the server's altibase_boot.log when an incompatible version of the Altibase server attempts to connect to the server.</p><p>This message leaves history and does not affect the operation of the Altibase server.</p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-Solution">Solution</h1><hr /><p>If this error message continues to be logged, find the client trying to connect and reinstall the client with a version compatible with the server.</p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-Reference">Reference</h1><hr /><ul><li><p>In the versions below Altibase version 5.3.3, the server and the client must have the same cm protocol version to connect from the client to the server.</p></li><li><p>From version 5.3.3 or higher of Altibase, backward compatibility between the server and the client is guaranteed, so that regardless of the cm protocol version, the client can connect to the server of the same version or higher version.</p></li><li><p>However, in the opposite case, that is, if the version of the client is higher than that of the server, the connection is not made.</p></li><li><p>The version referred to here means the first 3 digits of the product version. (The patch version of the 4th digit or less does not matter when checking the version.)</p></li></ul><p># Connection example according to server and client version</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p> </p></th><th class="confluenceTh"><p>Server version</p></th><th class="confluenceTh"><p>Client version</p></th><th class="confluenceTh"><p>Connection result</p></th><th class="confluenceTh"><p>Remark</p></th></tr><tr><td class="confluenceTd"><p>Server Version&gt; Client Version<br /> (Version 5.3.3 or later)</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>5.3.3</p></td><td class="confluenceTd"><p>Successful</p></td><td class="confluenceTd"><p>Backward compatibility guaranteed in version 5.3.3 or later</p></td></tr><tr><td class="confluenceTd"><p>Server Version&gt; Client Version<br /> (Versions earlier than 5.3.3)</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>4.3.9</p></td><td class="confluenceTd"><p>Failed</p></td><td class="confluenceTd"><p>Backward compatibility guaranteed when both server and client are version 5.3.3 or later.<br />Since the client is earlier than 5.3.3, backward compatibility is not guaranteed, and in the case of 4.3.9, the connection is only possible if the cm protocol version is the same.</p></td></tr><tr><td class="confluenceTd"><p>Server version &lt;client version</p></td><td class="confluenceTd"><p>6.1.1</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>Failed</p></td><td class="confluenceTd"><p>If the client version is high, the connection fails regardless of the Altibase version.<br />The client version must be the same as or earlier than the server version.</p></td></tr></tbody></table></div><p> </p><p># How to check server and client version</p><ul><li><p>How to check the server version</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<span>$ </span><strong><em>altibase -v</em></strong><br /><span> version </span><span style="color: rgb(255,0,0);"><strong>5.1.5.68</strong></span><span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22, binary db version 5.1.2, meta version 5.3.3, </span><span style="color: rgb(255,0,0);"><strong>cm protocol version 5.4.5</strong></span><span>, replication protocol version 5.2.1</span>
+</div></div></li><li><p>How to check the client version</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span># 5.3.3 or earlier</span><br /><span> $ </span><strong><em>sesc -v</em></strong><br /><span> SES C/C++ Precompiler 3 Ver </span><span style="color: rgb(255,0,0);"><strong>5.1.5.68</strong></span><span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22</span><br /><span>   </span><br /><span> # 5.3.3 or later</span><br /><span> $ </span><strong><em>apre -v</em></strong><br /><span> Altibase Precompiler2(APRE) Ver.1 </span><span style="color: rgb(255,0,0);"><strong>6.3.1.0.9</strong></span><span> X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.0.9-release-GCC3.4.6 (x86_64-unknown-linux-gnu) Mar 20 2014 18:19:25</span></p>
+</div></div></li><li><p>How to check the version using JDBC Driver</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ </span><strong><em>java -jar $ALTIBASE_HOME/lib/Altibase.jar</em></strong><br /><span> JDBC Driver Info : Altibase Ver = </span><span style="color: rgb(255,0,0);"><strong>6.3.1.0.9</strong></span><span> for JavaVM v1.4, </span><span style="color: rgb(255,0,0);"><strong>CMP:7.1.1</strong></span><span>, Mar 20 2014 17:07:25</span></p>
+</div></div></li><li><p>How to check version using ODBC library in WINDOWS environment</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>In the lib directory under the Altibase installation directory (e.g. C:\Program Files (x86)\Altibase\altibase-server-6.3.1)<br /> altiodbc.dll -&gt; Properties -&gt; Details -&gt; Product version</p>
+</div></div><p><img class="confluence-embedded-image" src="attachments/16876373/17039380.png" data-image-src="attachments/16876373/17039380.png"></p></li></ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876373/17039380.png">odbcdll.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

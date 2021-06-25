@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-4109C Invalid session property</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-4109C Invalid session property
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Feb 02, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055155 {padding: 0px;}
+div.rbtoc1624409055155 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055155 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055155'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty-현상'>현상</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty-동일메이저버전내에서발생하는경우'>동일 메이저 버전 내에서 발생하는 경우</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty-ALTIBASEHDB5.5.1'>ALTIBASE HDB 5.5.1</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty-ALTIBASEHDB6.1.1'>ALTIBASE HDB 6.1.1</a></li>
+</ul>
+</li>
+<li><a href='#ERR-4109CInvalidsessionproperty-원인'>원인</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty-조치'>조치</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty-참고'>참고</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty-ALTIBASEHDB서버버전확인방법(Unix/Linux/Windows모두동일)'>ALTIBASE HDB 서버 버전 확인 방법(Unix/Linux/Windows 모두 동일)</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty-알티베이스클라이언트버전확인방법'>알티베이스 클라이언트 버전 확인 방법</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty-현상"><strong>현상</strong></h1><hr /><p>ALTIBASE HDB 클라이언트에서 알티베이스 서버로 접속이 실패합니다.</p><p>아래 두 가지 경우에 해당될 때 에러가 발생할 수 있습니다. 버전에서 앞 세자리가 메이저 버전, 뒷 자리가 패치 버전입니다.</p><ul style="list-style-type: square;"><li>서버와 클라이언트의 메이저 버전이 동일하나 클라이언트의 패치 버전이 서버 보다 높을 때.</li><li>클라이언트의 메이저 버전이 서버의 메이저 버전보다 높을 때.</li></ul><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예) 서버와 클라이언트의 메이저 버전이 동일하나 클라이언트의 패치 버전이 서버 보다 높을 때</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># 클라이언트 버전
+$ apre -v
+Altibase Precompiler2(APRE) Ver.1 6.1.1.1.10 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.1.10-release-GCC3.4.6 (xeon-redhat-linux-gnu) Mar  4 2013 09:43:18
+
+# 알티베이스 서버 버전
+$ altibase -v
+version 6.1.1.0.0 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.0.0-release-GCC3.4.6 (xeon-redhat-linux-gnu) Apr 18 2012 18:20:15, binary db version 6.1.1, meta version 5.9.1, cm protocol version 5.6.2, replication protocol version 6.1.1
+
+
+# 메이저 버전이 6.1.1 이고 패치 버전이 1.10 인 클라이언트에서 6.1.1.0.0 서버로 접속 시 
+$ isql -u sys -p manager -s 127.0.0.1 -port 26110
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.1.1.1.10
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 26110
+[ERR-4109C : Invalid session property]</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예) 클라이언트의 메이저 버전이 서버의 메이저 버전보다 높을 때.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># 클라이언트 버전
+$ apre -v
+Altibase Precompiler2(APRE) Ver.1 6.1.1.3.2 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.3.2-release-GCC3.4.6 (xeon-redhat-linux-gnu) Aug 28 2013 17:54:46
+
+# 알티베이스 서버 버전
+$ altibase -v
+version 5.5.1.4.10 XEON_LINUX_redhat_Enterprise_ES4-64bit-5.5.1.4.10-release-GCC3.4.6 (xeon-redhat-linux-gnu) Aug 14 2013 18:09:27, binary db version 5.4.1, meta version 5.9.1, cm protocol version 5.6.3, replication protocol version 5.6.1
+
+# 클라이언트 버전 6.1.1.3.2 에서 알티베이스 서버 5.5.1.4.10 로 접속 시 
+$ isql -u sys -p manager -s 127.0.0.1 -port 25514
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.1.1.3.2
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 25514
+[ERR-4109C : Invalid session property]
+</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty-동일메이저버전내에서발생하는경우"><strong>동일 메이저 버전 내에서 발생하는 경우</strong></h1><hr /><h2 id="ERR-4109CInvalidsessionproperty-ALTIBASEHDB5.5.1">ALTIBASE HDB 5.5.1</h2><hr /><h3 id="ERR-4109CInvalidsessionproperty-JDBC클라이언트">JDBC 클라이언트</h3><p><span>ALTIBASE JDBC DRIVER <span>버전 5.5.1.3.7</span> 을 포함한 상위 버전에서 5.5.1.3.7 보다 낮은 버전의 서<span>버로 접속 시 연결이 실패합니다. (예, JDBC 드라이버 버전 5.5.1.3.7 -&gt; ALTIBASE HDB 서버 5.5.1.3.6) <br /></span></span></p><h3 id="ERR-4109CInvalidsessionproperty-CLI클라이언트">CLI 클라이언트</h3><p><span>5.5.1.4.6 을 포함한 상위 버전 클라이언트에서 5.5.1.4.6 보다 낮은 버전의 서버로 접속 시 연결이 실패합니다. (예, iSQL 버전 5.5.1.4.6 -&gt; ALTIBASE HDB 서버 5.5.1.4.4)</span></p><p><span><br /></span></p><p><span><br /></span></p><h2 id="ERR-4109CInvalidsessionproperty-ALTIBASEHDB6.1.1">ALTIBASE HDB 6.1.1</h2><hr /><h3 id="ERR-4109CInvalidsessionproperty-JDBC클라이언트.1">JDBC 클라이언트</h3><p><span>ALTIBASE JDBC DRIVER <span>버전 <span><span><span>6.1.1.0.9</span></span></span></span> 을 포함한 상위 버전에서 <span><span><span>6.1.1.0.9</span></span></span> 보다 낮은 버전의 서<span>버로 접속 시 연결이 실패합니다. (예, JDBC 드라이버 버전 <span><span><span>6.1.1.0.9</span></span></span> -&gt; ALTIBASE HDB 서버 <span><span><span>6.1.1.0.8</span></span></span>) </span></span></p><h3 id="ERR-4109CInvalidsessionproperty-CLI클라이언트.1">CLI 클라이언트</h3><p><span><span><span>6.1.1.1.10</span></span> 을 포함한 상위 버전 클라이언트에서 <span><span>6.1.1.1.10</span></span> 보다 낮은 버전의 서버로 접속 시 연결이 실패합니다. (예, iSQL 버전 <span><span>6.1.1.1.10</span></span> -&gt; ALTIBASE HDB 서버 <span><span>6.1.1.1.9</span></span>)</span></p><p><span><span><br /></span></span></p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty-원인"><strong>원인</strong></h1><hr /><p>클라이언트가 서버로 접속 시 서버가 모르는 서버 프로퍼티를 요청하여 발생하는 에러입니다.</p><p>클라이언트는 접속 시점에 클라이언트 설정에 필요한 서버 프로퍼티를 ALTIBASE HDB 서버로 요청합니다.</p><p> </p><p><img class="confluence-embedded-image" src="attachments/8454428/8618034.png" data-image-src="attachments/8454428/8618034.png"></p><p> </p><p>그런데 상위 버전에서 서버 프로퍼티가 추가되고 상위 버전의 클라이언트가 하위 버전으로 접속하게 되면 아래와 같은 상황으로 에러가 납니다.</p><p><img class="confluence-embedded-image" src="attachments/8454428/8618033.png" data-image-src="attachments/8454428/8618033.png"></p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty-조치"><strong>조치</strong></h1><hr /><ul style="list-style-type: square;"><li>ALTIBASE HDB 서버와 동일한 버전이나 낮은 버전의 클라이언트를 사용합니다.</li><li>상위 버전의 클라이언트를 사용해야 할 경우 ALTIBASE HDB 서버 버전도 동일한 버전으로 패치 또는 업그레이드 합니다.</li></ul><p> </p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty-참고"><strong>참고</strong></h1><hr /><h2 id="ERR-4109CInvalidsessionproperty-ALTIBASEHDB서버버전확인방법(Unix/Linux/Windows모두동일)"><strong>ALTIBASE HDB 서버 버전 확인 방법(Unix/Linux/Windows 모두 동일)</strong></h2><hr /><h4 id="ERR-4109CInvalidsessionproperty-쉘프롬프트또는도스창에서아래명령어수행.">쉘 프롬프트 또는 도스 창에서 아래 명령어 수행.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> $ altibase -v</pre>
+</div></div><h4 id="ERR-4109CInvalidsessionproperty-ALTIBASEHDB서버에접속하여아래쿼리로조회.">ALTIBASE HDB 서버에 접속하여 아래 쿼리로 조회.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT PRODUCT_VERSION FROM V$VERSION;</pre>
+</div></div><p> </p><h2 id="ERR-4109CInvalidsessionproperty-알티베이스클라이언트버전확인방법"><strong>알티베이스 클라이언트 버전 확인 방법</strong></h2><hr /><h4 id="ERR-4109CInvalidsessionproperty-알티베이스클라이언트패키지를설치했을경우(Unix/Linux/Windows모두동일)">알티베이스 클라이언트 패키지를 설치했을 경우 (Unix/Linux/Windows 모두 동일)</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ apre -v</pre>
+</div></div><p> </p><h4 id="ERR-4109CInvalidsessionproperty-ODBC드라이버의경우">ODBC 드라이버의 경우</h4><p>윈도우 탐색기에서 altiodbc.dll 파일의 속성에서 확인.</p><p><img class="confluence-embedded-image confluence-external-resource" src="http://nok.altibase.com/download/attachments/26185018/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C.png?version=1&amp;modificationDate=1385971928000&amp;api=v2" data-image-src="http://nok.altibase.com/download/attachments/26185018/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C.png?version=1&amp;modificationDate=1385971928000&amp;api=v2"></p><p>       </p><h4 id="ERR-4109CInvalidsessionproperty-JDBC드라이버의경우">JDBC 드라이버의 경우</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ java -jar Altibase.jar</pre>
+</div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454428/8618032.jpg">캡처.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454428/8618033.png">image2015-1-19 13:57:28.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454428/8618034.png">image2015-1-19 13:39:35.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

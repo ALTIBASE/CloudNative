@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 1. Session</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 1. Session
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jun 05, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409833604 {padding: 0px;}
+div.rbtoc1624409833604 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409833604 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409833604'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.Session-Session'>Session</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.Session-[SS01]전체세션개수SS01[맨위로]'>[SS01] 전체 세션 개수[맨 위로]</a></li>
+<li><a href='#id-1.Session-[SS02]세션정보SS02[맨위로]'>[SS02] 세션 정보[맨 위로]</a></li>
+<li><a href='#id-1.Session-[SS03]SYSDBA권한으로접속중인세션정보SS03[맨위로]'>[SS03] SYSDBA 권한으로 접속 중인 세션 정보[맨 위로]</a></li>
+</ul>
+</li>
+</ul>
+</div><span class="confluence-anchor-link" id="id-1.Session-SS_list"></span></strong></p><p><strong><br /></strong></p><h2 id="id-1.Session-Session"><strong>Session</strong></h2><hr /><p>세션의 상태를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다. 특정 세션에 관한 정보만 모니터링 하려면 WHERE절에 v$session의 'id' 컬럼을 추가하여 사용한다.</p><p> </p><p> </p><h4 id="id-1.Session-[SS01]전체세션개수SS01[맨위로]">[SS01] 전체 세션 개수<span class="confluence-anchor-link" id="id-1.Session-SS01"></span><a href="#id-1.Session-SS_list">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><p><span style="line-height: 1.42857;">알티베이스 서버에 접속되어 있는 세션 수를 보여준다. </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 4 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT COUNT(*) TOTAL_SESSION_CNT FROM V$SESSION ;</pre>
+</div></div></li></ul><p> </p><h4 id="id-1.Session-[SS02]세션정보SS02[맨위로]">[SS02] 세션 정보<span class="confluence-anchor-link" id="id-1.Session-SS02"></span><a href="#id-1.Session-SS_lis">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><span style="line-height: 1.42857;">세션의 클라이언트 정보 및 로그인 시각 등 세션 관련 정보를 볼 수 있다. </span></li><li><p><span style="line-height: 1.42857;">아래 쿼리는 알티베이스 5 버전부터 사용할 수 있으나 CLIENT_APP_INFO 컬럼을 삭제하거나 주석 처리하면 알티베이스 4버전에서도 사용할 수 있다. </span><span style="line-height: 1.42857;"><span style="line-height: 1.42857;"> </span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 5 버전 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.ID SESSION_ID
+     , A.DB_USERNAME USER_NAME
+     , REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP
+     , A.CLIENT_APP_INFO             -- 알티베이스 4 버전에서 사용 시 제거 
+     , A.CLIENT_PID
+     , A.SESSION_STATE
+     , DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;YY/MM/DD HH:MI:SS&#39;)) LOGIN_TIME
+     , DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.IDLE_START_TIME / (24*60*60), &#39;YY/MM/DD HH:MI:SS&#39;)) IDLE_TIME
+     , NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+  FROM V$SESSION A LEFT OUTER JOIN V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID ;</pre>
+</div></div></li><li><p><strong style="line-height: 1.42857;">주요 컬럼 설명 <span class="confluence-anchor-link" id="id-1.Session-ss02_col"></span></strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">CLIENT_IP</td><td class="confluenceTd">세션과 관련된 클라이언트 응용프로그램의 ip 주소.</td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">CLIENT_APP_INFO</td><td class="confluenceTd">세션과 관련된 클라이언트 응용프로그램의 이름.</td><td colspan="1" class="confluenceTd">알티베이스 5 버전부터 추가된 컬럼</td></tr><tr><td class="confluenceTd">CLIENT_PID</td><td class="confluenceTd">세션과 관련된 클라이언트 응용프로그램의 프로세스 아이디로 클라이언트 응용프로그램이 실행되는 OS에서 관련 프로세스를 식별할 수 있다.</td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">SESSION_STATE</td><td colspan="1" class="confluenceTd">세션의 상태를 나타내는 문자열로 INIT, AUTH, SERVICE READY, SERVICE, END, ROLLBACK, UNKNOWN 7가지 상태가 있다.</td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">IDLE_TIME</td><td colspan="1" class="confluenceTd">세션이 아무것도 하지 않기 시작한 시간으로 idle_timeout 의 기준이 된다. 단위는 유닉스 시간(unix time)이다.</td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">CURRENT_QUERY</td><td colspan="1" class="confluenceTd">세션에서 가장 마지막으로 수행하였거나 현재 수행 중인 쿼리.</td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div></li></ul><p> </p><div><h4 id="id-1.Session-[SS03]SYSDBA권한으로접속중인세션정보SS03[맨위로]">[SS03] SYSDBA 권한으로 접속 중인 세션 정보<span class="confluence-anchor-link" id="id-1.Session-SS03"></span><a href="#id-1.Session-SS_list">[&#47592; &#50948;&#47196;]</a></h4></div><ul><li><span>SYSDBA 권한으로 접속한 세션의 정보를 볼 수 있다. </span></li><li><p><span>아래 쿼리는 알티베이스 5 버전부터 사용할 수 있으나 CLIENT_APP_INFO 컬럼을 삭제하거나 주석 처리하면 알티베이스 4버전에서도 사용할 수 있다. </span><span><span> </span></span></p></li><li><p>SELECT 절에 사용된 컬럼은 <a href="#id-1.Session-ss02_col">[SS02] &#49464;&#49496; &#51221;&#48372;</a>와 같으니 해당 쿼리의 컬럼 설명을 참고한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.ID SESSION_ID
+     , A.DB_USERNAME USER_NAME
+     , REPLACE2(REPLACE2(A.COMM_NAME, &#39;SOCKET-&#39;, NULL), &#39;-SERVER&#39;, NULL) CLIENT_IP
+     , A.CLIENT_APP_INFO              -- 알티베이스 4 버전에서 사용 시 제거
+     , A.CLIENT_PID
+     , A.SESSION_STATE
+     , DECODE(A.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , DECODE(A.LOGIN_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + A.LOGIN_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LOGIN_TIME
+     , DECODE(A.IDLE_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) +A.IDLE_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) IDLE_TIME
+     , NVL(LTRIM(B.QUERY), &#39;NONE&#39;) CURRENT_QUERY
+  FROM V$SESSION A LEFT OUTER JOIN V$STATEMENT B ON A.CURRENT_STMT_ID = B.ID
+ WHERE A.SYSDBA_FLAG = 1 ;</pre>
+</div></div></li></ul><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

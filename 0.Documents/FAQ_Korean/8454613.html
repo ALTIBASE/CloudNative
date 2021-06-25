@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 메모리 테이블 및 인덱스 사용량</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 메모리 테이블 및 인덱스 사용량
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jul 20, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053994 {padding: 0px;}
+div.rbtoc1624409053994 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053994 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053994'>
+<ul class='toc-indentation'>
+<li><a href='#id-메모리테이블및인덱스사용량-개요'>개요</a></li>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블데이타사용량조회쿼리'>메모리테이블  데이타 사용량 조회쿼리</a></li>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블인덱스사용량조회'>메모리테이블 인덱스 사용량 조회</a>
+<ul class='toc-indentation'>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블인덱스정보구하는쿼리(HDB4~HDB6까지모두사용가능)'>메모리테이블 인덱스 정보 구하는 쿼리 ( HDB 4 ~ HDB 6 까지 모두 사용 가능 )</a></li>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블인덱스당사용량구하는쿼리(HDB5.x이상부터사용가능)'>메모리 테이블 인덱스당 사용량 구하는 쿼리 ( HDB 5.x  이상부터 사용가능)</a></li>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블당총인덱스사용량구하는쿼리(HDB5.x이상부터사용가능)'>메모리 테이블당 총인덱스 사용량 구하는 쿼리 (  HDB 5.x 이상부터 사용가능 )</a></li>
+<li><a href='#id-메모리테이블및인덱스사용량-메모리테이블인덱스당크기조회쿼리(6.x용)'>메모리테이블 인덱스당 크기 조회 쿼리(  6.x 용 )</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="id-메모리테이블및인덱스사용량-개요">개요</h1><p>메모리 테이블의  데이타 사용량 과  인덱스 사용량을 조회하는 쿼리를 설명합니다.</p><h1 id="id-메모리테이블및인덱스사용량-메모리테이블데이타사용량조회쿼리">메모리테이블  데이타 사용량 조회쿼리</h1><p>다음의 쿼리는  HDB 4.3.9.x  부터 HDB 6.3.1.x 까지 모든 버전에서 사용할 수 있습니다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>set linesize 2048;
+set colsize 30;
+SELECT   a.user_name
+        ,NVL(d.name,&#39;SYS_TBS_MEMORY&#39;)  AS &#39;TABLESPACE_NAME&#39;
+        , b.table_name
+        , round((c.fixed_alloc_mem + c.var_alloc_mem)/(1024*1024),2) &#39;ALLOC(M)&#39;
+        , round((c.fixed_used_mem + c.var_used_mem)/(1024*1024),2) &#39;USED(M)&#39;
+        , round((c.fixed_used_mem + c.var_used_mem)/(c.fixed_alloc_mem + c.var_alloc_mem)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM   system_.sys_users_ a
+     , system_.sys_tables_ b
+     , v$memtbl_info c left outer join v$tablespaces d  on c.tablespace_id = d.id
+WHERE  b.table_type = &#39;T&#39;
+  and a.user_id = b.user_id
+  and b.table_oid = c.table_oid
+order by 1,2,3, 4 desc ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       TABLESPACE_NAME                 TABLE_NAME                      TABLE_OID            ALLOC(M)    USED(M)     EFFICIENCY(%)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             SYS_TBS_MEM_DATA                TEST_T2                         3323512              0.41        0.38        93.9
+SYS                             USER_MEM_TBS                    MEM_T1                          3321192              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_COLUMNS_                    1453416              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_DATUMS_                     1469656              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_ELLIPSOIDS_                 1471976              0.03        0           0</pre>
+</div></div><p> </p><h1 id="id-메모리테이블및인덱스사용량-메모리테이블인덱스사용량조회">메모리테이블 인덱스 사용량 조회</h1><p>메모리테이블의 인덱스 사용량은  쿼리로  직접 구할 수 없습니다   알티베이스 메모리테이블은  인덱스 칼럼의 갯수와 타입에 상관없이  인덱스당 16byte 크기를 갖으며  인덱스 사용량은  16byte * 레코드 건수로 계산할 수 있습니다.</p><p>.</p><h2 id="id-메모리테이블및인덱스사용량-메모리테이블인덱스정보구하는쿼리(HDB4~HDB6까지모두사용가능)">메모리테이블 인덱스 정보 구하는 쿼리 ( HDB 4 ~ HDB 6 까지 모두 사용 가능 )</h2><p>다음의 쿼리로 테이블별 인덱스 정보를 확인할 수 있습니다 .  인덱스 크기확인은  레코드 건수를 확인후  따로 계산하거나   function 이 들어간    메모리 테이블 인덱스 크기 구하는 쿼리를 사용해야 합니다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>set linesize 2048;
+set colsize 30;
+
+ SELECT
+        c.user_name
+        , decode(f.table_type, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) object_type
+        , table_name object_name
+        , e.index_name
+        , rpad(case2(e.index_type=1, &#39;b-tree&#39;, &#39;r-tree&#39;),10,&#39; &#39;) index_type
+        , &#39;16 bytes * rowcount&#39; &#39;ALLOC&#39;
+ FROM      v$memtbl_info a
+        ,  v$index b
+        , system_.sys_users_ c
+        , system_.sys_indices_ e
+        , system_.sys_tables_ f
+ WHERE
+       a.table_oid = f.table_oid
+   and b.index_id = e.index_id
+   and e.user_id = c.user_id
+   and f.user_id = e.user_id
+   and f.tbs_id = a.tablespace_id
+   and f.table_oid = b.table_oid
+   and c.user_name &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       OBJECT_TYPE  OBJECT_NAME                     INDEX_NAME                      INDEX_TYPE  ALLOC
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             TABLE  T1                              IDX1_T2                         b-tree      16 bytes * rowcount
+SYS                             TABLE  T1                              IDX1_T1                         b-tree      16 bytes * rowcount
+2 rows selected.</pre>
+</div></div><p> </p><h2 id="id-메모리테이블및인덱스사용량-메모리테이블인덱스당사용량구하는쿼리(HDB5.x이상부터사용가능)">메모리 테이블 인덱스당 사용량 구하는 쿼리 ( HDB 5.x  이상부터 사용가능)</h2><p> </p><p>다음의 쿼리를 사용하여 메모리테이블의  인덱스당 사용량을 구할 수 있습니다.    쿼리를 사용하기 전에 해당 테이블을 레코드 건수를 구할 수 있는  DB function 을 생성해야 합니다. </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>1. 테이블의 레코드 건수를 count 할 수 있는 function 을 생성합니다.
+CREATE FUNCTION GETCOUNT(u_name varchar(40), t_name varchar(40))
+ RETURN INTEGER
+ AS
+    RECORDCOUNT integer;
+BEGIN
+       EXECUTE IMMEDIATE &#39;SELECT count(*)  FROM &#39; || u_name||&#39;.&#39;||t_name INTO RECORDCOUNT ;
+RETURN RECORDCOUNT;
+
+END;
+
+/
+
+
+2. function 을 이용하여  인덱스당 사용량을 조회합니다.
+set linesize 2048;
+set colsize 30;
+SELECT
+        c.user_name
+        , decode(f.table_type, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) object_type
+        , table_name object_name
+        , e.index_name
+        , rpad(case2(e.index_type=1, &#39;b-tree&#39;, &#39;r-tree&#39;),10,&#39; &#39;) index_type
+        , ROUND( 16 * GETCOUNT(c.user_name, f.table_name) / 1024/1024, 2)  &#39;ALLOC(M)&#39;
+ FROM      v$memtbl_info a
+        ,  v$index b
+        , system_.sys_users_ c
+        , system_.sys_indices_ e
+        , system_.sys_tables_ f
+ WHERE
+       a.table_oid = f.table_oid
+   and b.index_id = e.index_id
+   and e.user_id = c.user_id
+   and f.user_id = e.user_id
+   and f.tbs_id = a.tablespace_id
+   and f.table_oid = b.table_oid
+   and c.user_name &lt;&gt; &#39;SYSTEM_&#39; ; </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       OBJECT_TYPE  OBJECT_NAME                     INDEX_NAME                      INDEX_TYPE     ALLOC(M)
+-----------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             TABLE  T1                              IDX1_T2                         b-tree         0.76
+SYS                             TABLE  T1                              IDX1_T1                         b-tree         0.76
+SYS                             TABLE  T2                              IDX2                            b-tree         0.31
+3 rows selected.</pre>
+</div></div><p> </p><h2 id="id-메모리테이블및인덱스사용량-메모리테이블당총인덱스사용량구하는쿼리(HDB5.x이상부터사용가능)">메모리 테이블당 총인덱스 사용량 구하는 쿼리 (  HDB 5.x 이상부터 사용가능 )</h2><p>메모리 테이블이 사용하는 테이블당 총 인덱스 사용량을  조회합니다.  쿼리를 사용하기 전에 해당 테이블을 레코드 건수를 구할 수 있는 DB function 을 생성해야 합니다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>1. 테이블의 레코드 건수를 count 할 수 있는 function 을 생성합니다.
+CREATE FUNCTION GETCOUNT(u_name varchar(40), t_name varchar(40))
+ RETURN INTEGER
+ AS
+    RECORDCOUNT integer;
+BEGIN
+       EXECUTE IMMEDIATE &#39;SELECT count(*)  FROM &#39; || u_name||&#39;.&#39;||t_name INTO RECORDCOUNT ;
+RETURN RECORDCOUNT;
+
+END;
+
+/
+
+
+2. function을 사용하여  테이블당 총 인덱스 사용량 크기를 조회합니다.
+select
+          user_name
+        , table_name
+        , count(index_name) AS &#39;INDEX_COUNT&#39;
+        , round( SUM(alloc) /1024/1024, 2 ) as &#39;Alloc(M)&#39;
+from (
+         SELECT
+                  c.user_name
+                , f.table_name
+                , e.index_name
+                , 16 * GETCOUNT(c.user_name, f.table_name) AS alloc
+         FROM      v$memtbl_info a
+                ,  v$index b
+                , system_.sys_users_ c
+                , system_.sys_indices_ e
+                , system_.sys_tables_ f
+         WHERE
+               a.table_oid = f.table_oid
+           and b.index_id = e.index_id
+           and e.user_id = c.user_id
+           and f.user_id = e.user_id
+           and f.tbs_id = a.tablespace_id
+           and f.table_oid = b.table_oid
+           and c.user_name &lt;&gt; &#39;SYSTEM_&#39;
+     )
+ group by user_name, table_name;           </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       TABLE_NAME                      INDEX_COUNT          Alloc(M)
+------------------------------------------------------------------------------------------------------
+SYS                             T1                              2                    1.53
+SYS                             T2                              1                    0.31
+2 rows selected.
+iSQL&gt;</pre>
+</div></div><p> </p><h2 id="id-메모리테이블및인덱스사용량-메모리테이블인덱스당크기조회쿼리(6.x용)">메모리테이블 인덱스당 크기 조회 쿼리(  6.x 용 )</h2><p>다음의 쿼리로 좀더 정확한 메모리테이블의  인덱스당 사용량을  조회할 수 있습니다.   6.1.1  이상 버전에서 사용할 수 있습니다.    </p><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>SELECT U.USER_NAME, T.TABLE_NAME TABLE_NAME
+     , B.INDEX_NAME
+     , LPAD(I.IS_PARTITIONED, 14) INDEX_PARTITIONED
+     , ROUND(((USED_NODE_COUNT+ PREPARE_NODE_COUNT) / 15 * 32768)/1024/1024, 1) AS &#39;SIZE(MB)&#39;
+  FROM V$MEM_BTREE_HEADER B
+     , SYSTEM_.SYS_INDICES_ I
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND B.INDEX_ID = I.INDEX_ID
+   AND I.TABLE_ID = T.TABLE_ID
+   AND B.INDEX_TBS_ID &lt;&gt; 0
+   AND U.USER_ID = T.USER_ID
+ ORDER BY TABLE_NAME, B.INDEX_ID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME             TABLE_NAME            INDEX_NAME            INDEX_PARTITIONED     SIZE(MB)    
+----------------------------------------------------------------------------------------------------------
+SYS                   EMPLOYEES             __SYS_IDX_ID_143                   F        0           
+SYS                   EMPLOYEES             EMP_IDX1                           F        0           
+SYS                   FOO                   __SYS_IDX_ID_171                   F        0           
+SYS                   GOODS                 __SYS_IDX_ID_145                   F        0           
+SYS                   GOODS                 __SYS_IDX_ID_146                   F        0           
+SYS                   MEM_T                 M_IDX01                            F        36.5        
+SYS                   M_PART_SALES          M_IDX_PREFIX                       T        0           
+SYS                   M_PART_SALES          IDX_PART_1                         T        8.7         
+SYS                   M_PART_SALES          IDX_PART_2                         T        0.7         
+SYS                   M_PART_SALES          IDX_PART_3                         T        0.7         </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

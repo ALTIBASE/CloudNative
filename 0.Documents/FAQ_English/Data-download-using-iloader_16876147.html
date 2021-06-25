@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Data download using iloader</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="04.-Backup-and-Recovery_16876100.html">04. Backup and Recovery</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Using-aexport-and-iloader_16876103.html">Using aexport and iloader</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Data download using iloader
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146272 {padding: 0px;}
+div.rbtoc1624409146272 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146272 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146272'>
+<ul class='toc-indentation'>
+<li><a href='#Datadownloadusingiloader-Preparationforiloader'>Preparation for iloader</a></li>
+<li><a href='#Datadownloadusingiloader-Performingbackup'>Performing backup</a>
+<ul class='toc-indentation'>
+<li><a href='#Datadownloadusingiloader-Downloaddataforalltablesinthedatabase'>Download data for all tables in the database</a></li>
+<li><a href='#Datadownloadusingiloader-Downloadingdataofatablebelongingtoaspecificuser'>Downloading data of a table belonging to a specific user</a></li>
+<li><a href='#Datadownloadusingiloader-Downloadingdataforaspecifictable'>Downloading data for a specific table</a></li>
+<li><a href='#Datadownloadusingiloader-Checkthedatadownloadresult'>Check the data download result</a>
+<ul class='toc-indentation'>
+<li><a href='#Datadownloadusingiloader-Checktherun_il_out.shexecutionlog'>Check the run_il_out.sh execution log</a></li>
+<li><a href='#Datadownloadusingiloader-Checklogbytable'>Check log by table</a></li>
+<li><a href='#Datadownloadusingiloader-Datadownloadfile'>Data download file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Datadownloadusingiloader-Preparationforiloader">Preparation for iloader</h1><hr /><p>Before executing the iloader, be sure to check the following environment variables before proceeding.</p><p>ALTIBASE_NLS_USE is required to prevent the breakdown of Korean data, and ILO_DATEFORM should be set to prevent duplication when a date type column has a unique value.</p><ul><li>ALTIBASE_NLS_USE</li><li>ILO_DATEFORM</li></ul><p>In the session of executing the iloader, it is applied by setting it with the export command as shown below or adding it to the user environment configuration file (.bash_profile or .profile) and logging out and logging in.</p><p><strong>How to set environment variables</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to set environment variables</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ export ALTIBASE_NLS_USE= Database server character set
+$ export ILO_DATEFORM=&#39;YYYY/MM/DD HH:MI:SS.SSSSSS&#39;</pre>
+</div></div><p><strong>How to set environment variables</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ echo $ALTIBASE_NLS_USE
+$ echo $ILO_DATEFORM</pre>
+</div></div><p> </p><p>The ALTIBASE HDB server character set can be checked with the following sentence: NLS_CHARACTERSET is the ALTIBASE server's character set and NLS_USE is the client's character set. Hangul data is not broken only when these two are set identically.</p>Error rendering macro 'code': Invalid value specified for parameter 'firstline'<pre>iSQL&gt; set linesize 1024;
+iSQL&gt; set colsize 20;
+iSQL&gt; select NLS_USE, NLS_CHARACTERSET from v$nls_parameters;
+NLS_USE               NLS_CHARACTERSET
+-----------------------------------------------
+MS949                 MS949
+1 row selected.</pre><p> </p><h1 id="Datadownloadusingiloader-Performingbackup">Performing backup</h1><hr /><p>Use run_il_out.sh to backup table data.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls --l run_il_out.sh
+rw-rw-rw 1 eheejung eheejung 633 Nov 1 11:00 run_il_out.sh</pre>
+</div></div><h2 id="Datadownloadusingiloader-Downloaddataforalltablesinthedatabase">Download data for all tables in the database</h2><p>run_il_out.sh must be a file created after entering UserID as sys when executing aexport.<br />Run run_il_out.sh.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ sh run_il_out.sh | tee download.out                   # If done in the foreground, closing the terminal window will terminate the execution.
+or
+$ nohup sh run_il_out.sh &amp;                              # If you do it in the background, closing the terminal window does not terminate the execution.
+$ mv nohup.out download.out                             # You can connect again and check the progress with the download.out file.</pre>
+</div></div><h2 id="Datadownloadusingiloader-Downloadingdataofatablebelongingtoaspecificuser">Downloading data of a table belonging to a specific user</h2><p>In order to back up only tables owned by a specific user, use run_il_out.sh that aexport-ed to that user.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport
+-----------------------------------------------------------------
+     Altibase Export Script Utility.
+     Release Version 6.3.1.2.7
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write Server Name (default:localhost) :
+Write UserID : altitest
+Write Password :
+...Omitted...
+
+$ cat run_il_out.sh
+iloader -s localhost -u ALTITEST -p ALTITEST formout -f ALTITEST_ORDERS.fmt -T ORDERS
+
+iloader -s localhost -u ALTITEST -p ALTITEST out -f ALTITEST_ORDERS.fmt -d ALTITEST_ORDERS.dat -log ALTITEST_ORDERS.log</pre>
+</div></div><p>If aexport is executed by sys, it can extract only the user from run_il_out.sh and execute it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) When the user name is altitest</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep &quot;\-f ALTITEST_&quot; run_il_out.sh &gt; altitest_il_out.sh    # Extract only the iloader command corresponding to the altitest user from run_il_out.sh and saves it in another file.
+
+$ sh altitest_il_out.sh | tee download.out                   # If done in the foreground, closing the terminal window will terminate the execution.
+or
+$ nohup sh altitest_il_out.sh &amp;                              # If you do it in the background, closing the terminal window does not terminate the execution.
+$ mv nohup.out download.out                                  # It can connect again and check the progress with the download.out file.</pre>
+</div></div><h2 id="Datadownloadusingiloader-Downloadingdataforaspecifictable">Downloading data for a specific table</h2><p>In order to download only specific tables, extract only the tables you want from run_il_out.sh and back them up.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) Extracting the SYS user's ORDERS tables</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep &#39;SYS_ORDERS.fmt&#39; run_il_out.sh
+iloader -s localhost -u SYS -p MANAGER formout -f SYS_ORDERS.fmt -T ORDERS
+iloader -s localhost -u SYS -p MANAGER out -f SYS_ORDERS.fmt -d SYS_ORDERS.dat -log SYS_ORDERS.log</pre>
+</div></div><p>Execute iloader formout and iloader out commands in sequence.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) Backup of the SYS user's ORDERS table</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[heejung.lee@63127 /data/heejung.lee/work/631_aexport]$iloader -s localhost -u SYS -p MANAGER formout -f SYS_ORDERS.fmt -T ORDERS            # Create iloader form file
+-----------------------------------------------------------------
+     Altibase Data Load/Download utility.
+     Release Version 6.3.1.2.7
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION : TCP
+[heejung.lee@63127 /data/heejung.lee/work/631_aexport]$
+[heejung.lee@63127 /data/heejung.lee/work/631_aexport]$ls -l SYS_ORDERS.fmt                                                                   # Check whether iloader form file is created
+-rw-rw-rw- 1 heejung.lee heejung.lee 210 2014-11-19 15:28 SYS_ORDERS.fmt
+[heejung.lee@63127 /data/heejung.lee/work/631_aexport]$
+[heejung.lee@63127 /data/heejung.lee/work/631_aexport]$iloader -s localhost -u SYS -p MANAGER out -f SYS_ORDERS.fmt -d SYS_ORDERS.dat -log SYS_ORDERS.log        # Perform data download
+-----------------------------------------------------------------
+     Altibase Data Load/Download utility.
+     Release Version 6.3.1.2.7
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION : TCP
+DATE FORMAT : YYYY/MM/DD HH:MI:SS:SSSSSS
+DATA_NLS_USE: MS949
+
+     Total 30 record download(ORDERS)
+
+     DOWNLOAD : 2.3150 msec</pre>
+</div></div><div><strong><br /></strong></div><div>If there are many tables or a lot of data, monitor download.out to see if it is shutting down.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Data download performance log monitoring</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ tail -f download.d.out</pre>
+</div></div><p> </p><h2 id="Datadownloadusingiloader-Checkthedatadownloadresult">Check the data download result</h2><h3 id="Datadownloadusingiloader-Checktherun_il_out.shexecutionlog">Check the run_il_out.sh execution log</h3><p>The run_il_out.sh run log is the file specified in the tee command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ sh run_il_out.sh | tee download.out</pre>
+</div></div><p> </p>Check whether an error has occurred in the specified file as follows.<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ grep –i err- download.out
+[ERR-311F4 : Invalid column name                  # If something starts with ERR- like this, it means that an error has occurred.
+                                                  # Actions are required according to the situation, so if it is difficult to take action directly after checking the error, contact us.</pre>
+</div></div><h3 id="Datadownloadusingiloader-Checklogbytable"><br />Check log by table</h3><p>When run_il_out.sh is executed, log files in the form of DBUSER_TABLENAME.log are created. (Eg, ALTITEST_ORDERS.log in the altitest user's orders table)<br />In these files, check for errors with the command below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cat run_il_out.sh | grep fmt | wc -l                                            # Check the number of tables in the database
+106
+
+$ ls -l *.fmt | wc -l                                                             # Check the number of tables to be backed up by the number of *.fmt files.
+106
+
+$ cat *.log | grep &#39;Error Row Count&#39; |  awk -F: &#39;{print $2}&#39; | wc -l              # If the number of Error Row Count occurrences is different from the number of .fmt files, it means that an error occurred in a specific table by the number of differences.
+106                                                                               # Open the run_il_out.sh execution log (download.out) and search by table name to check.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> $ cat *.log | grep &#39;Error Row Count&#39; |  awk -F: &#39;{print $2}&#39; | sort -u            # If the result is only 0, there is no download failure in DBUSER_TABLENAME.log.
+0                                                                                 # If there is a non-zero result, the user need to look for that table and find the cause with the .log and .bad files.</pre>
+</div></div><p> </p><h3 id="Datadownloadusingiloader-Datadownloadfile">Data download file</h3><p>The backup file created by running run_il_out.sh is created in USERNAME_TABLENAME.dat format.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l *.dat
+-rw-rw-rw- 1 heejung.lee heejung.lee 12457 2014-11-19 15:03 ALTITEST_ORDERS.dat
+
+$ ls -l *.dat | wc -l                                                             # Tthe backup result can be checked once again by comparing the number of backup files with the number of tables.
+
+$ ls -l ALTITEST_ORDERS*                                                          # .Dat, .fmt, .log files are created for each table.
+-rw-rw-rw- 1 heejung.lee heejung.lee   0 2014-11-19 15:03 ALTITEST_ORDERS.dat
+-rw-rw-rw- 1 heejung.lee heejung.lee 210 2014-11-19 15:03 ALTITEST_ORDERS.fmt
+-rw-rw-rw- 1 heejung.lee heejung.lee 169 2014-11-19 15:03 ALTITEST_ORDERS.log</pre>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

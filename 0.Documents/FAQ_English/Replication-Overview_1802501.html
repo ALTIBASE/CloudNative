@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Replication Overview</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Replication_2555989.html">ALTIBASE HDB Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Replication Overview
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 06, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409154933 {padding: 0px;}
+div.rbtoc1624409154933 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409154933 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409154933'>
+<ul class='toc-indentation'>
+<li><a href='#ReplicationOverview-Background'>Background</a></li>
+<li><a href='#ReplicationOverview-BasicFlowofReplication.'>Basic Flow of Replication.</a>
+<ul class='toc-indentation'>
+<li><a href='#ReplicationOverview-Terminology'>Terminology</a></li>
+<li><a href='#ReplicationOverview-DescriptionofReplicationsteps'>Description of Replication steps</a></li>
+<li><a href='#ReplicationOverview-WhatisXLog?'>What is XLog?</a></li>
+<li><a href='#ReplicationOverview-TypesofReplication'>Types of Replication</a></li>
+<li><a href='#ReplicationOverview-HowtocreateReplication?'>How to create Replication?</a></li>
+</ul>
+</li>
+<li><a href='#ReplicationOverview-Summary'>Summary</a></li>
+</ul>
+</div>
+
+<h1><a name="ReplicationOverview-Background"></a>Background</h1>
+
+
+<p>ALTIBASE HDB’s network-based replication architecture, while providing very speedy performance, imposes very little overhead on computing resources since it only transforms transaction logs into logical logs and sends them to remote servers for processing.</p>
+
+<h1><a name="ReplicationOverview-BasicFlowofReplication."></a>Basic Flow of Replication.</h1>
+
+
+<map id="gliffy-map-1769526-1571" name="gliffy-map-1769526-1571"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 872px;" usemap="#gliffy-map-1769526-1571" src="attachments/1802501/1769529.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h2><a name="ReplicationOverview-Terminology"></a>Terminology</h2>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Technical term </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SN </p></td>
+<td class="confluenceTd"><p> Sequence Number of a transaction log (a unique number assigned to a transaction log) <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> XSN </p></td>
+<td class="confluenceTd"><p> Xlog Sequence Number (a unique number assigned to an Xlog) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> xLog </p></td>
+<td class="confluenceTd"><p> Compact packet made by the sender to replay the same transaction in a remote server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Sender </p></td>
+<td class="confluenceTd"><p> Thread that sends an information of a transaction from a local server to a remote server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Receiver </p></td>
+<td class="confluenceTd"><p> Thread that receives xLog from the sender and applies it to the remote server. </p></td>
+</tr>
+</tbody></table>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> Query Processor (QP) </p></td>
+<td class="confluenceTd"><p> the internal module that deals with SQL execution. (not a thread) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Storage Manager (SM) </p></td>
+<td class="confluenceTd"><p> the internal module that reads record or writes transaction logs. (not a thread) </p></td>
+</tr>
+</tbody></table>
+
+                    </div>
+    </div>
+
+
+<h2><a name="ReplicationOverview-DescriptionofReplicationsteps"></a>Description of Replication steps</h2>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Flow </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1,2 </p></td>
+<td class="confluenceTd"><p> QP prepares SQL to execute. <a href="http://aid.altibase.com/display/arch/How+a+query+is+executed+in+ALTIBASE+HDB" class="external-link" rel="nofollow">(Click here if you want to know more about how a SQL is executed in HDB.)</a> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> SM writes a log of the transaction. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 4 </p></td>
+<td class="confluenceTd"><p> Sender reads the log and converts it to xLog </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 5 </p></td>
+<td class="confluenceTd"><p> Sender sends xLog to a receiver. If it is successful, sender's work is done.(Asynchronous Mode) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 6 </p></td>
+<td class="confluenceTd"><p> Receiver tries to apply XLog to the remote server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 7 </p></td>
+<td class="confluenceTd"><p> Receiver sends ACK to the sender after it applies xLog. </p></td>
+</tr>
+</tbody></table>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p> Receiver directly applies Xlog to SM since XLog is already verified by QP of the local server. This method enables the best performance among all Replication techniques.</p>
+                    </div>
+    </div>
+
+
+<h2><a name="ReplicationOverview-WhatisXLog?"></a>What is XLog?</h2>
+
+<p>Replication Manager has two threads, Sender and Receiver.<br/>
+When the sender sees a new log, it immediately creates an XLog and sends it to the Receiver.<br/>
+XLog contains the information about how to replay the same transaction in the remote server.</p>
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Types of XLog </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INSERT </p></td>
+<td class="confluenceTd"><p> Target Table id + Primary key values + data values </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UPDATE </p></td>
+<td class="confluenceTd"><p> Target Table id + Primary key values + Values Before updated + Values After updated </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DELETE </p></td>
+<td class="confluenceTd"><p> Target Table id + Primary key values </p></td>
+</tr>
+</tbody></table>
+
+<p>INSERT transaction normally needs all information about the target table and the value of all columns.<br/>
+DELETE transaction needs the information about the target table and the primary key of the record to be deleted.<br/>
+UPDATE transaction needs the information about the target table, the previous value and the after value of the column. The previous value is necessary for the UPDATE transaction since the value at the remote server can be different from the value in the local server.(We will explain why the previous value in XLog exists in detail later.)</p>
+
+<h2><a name="ReplicationOverview-TypesofReplication"></a>Types of Replication</h2>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Mode </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Asynchronous (LAZY) </p></td>
+<td class="confluenceTd"><p> Asynchronous mode does not check whether XLog is successfully applied to the remote server or not. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Synchronous (EAGER) </p></td>
+<td class="confluenceTd"><p> Synchronous mode always checks whether XLog is applied to the remote server without the conflict or not. </p></td>
+</tr>
+</tbody></table>
+
+
+
+<map id="gliffy-map-1769569-9061" name="gliffy-map-1769569-9061"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 881px;" usemap="#gliffy-map-1769569-9061" src="attachments/1802501/1769570.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>In Asynchronous mode, a local transaction is completed with steps (1 + 2 + 3) - red box in above diagram. Replication transaction is completed with steps (4 + 5) - blue box in above diagram.<br/>
+Steps (4 + 5) have no effect to the local transaction. In other words, the local transaction and the replication transaction do not interfere each other.<br/>
+This means that the local transaction can be completed even if the sender could not send Xlog to the remote server.<br/>
+However, the local transaction in Synchronous mode is completed with all the steps ( 1 + 2 + 3 + 4 + 5 + 6 + 7).<br/>
+The performance of Asynchronous mode is normally faster than Synchronous mode.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>After the Sender receives ACK from the receiver, the Sender tries to update "XSN" column of the meta table. In this way, the sender can determine which position of Xlog it has to send after ALTIBASE HDB is restarted.<br/>
+After the Receiver completes applying the XLog to ALTIBASE HDB, it updates "Apply XSN" column of the meta table. This way, the Receiver remembers up to which position it has to apply Xlog before ALTIBASE HDB stops.<br/>
+When the system is recovered from the failure condition, the Sender automatically sends Xlog from position it marked according to the column of the meta table indicates.</p>
+                    </div>
+    </div>
+
+
+<h2><a name="ReplicationOverview-HowtocreateReplication?"></a>How to create Replication?</h2>
+
+<p>Replication can be initiated in few simple steps.<br/>
+Step1. configure altibase.properties in $ALTIBASE_HOME/conf/altibase.properties.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">REPLICATION_PORT_NO = 30300 (example)
+</pre>
+</div></div>
+<p>Step2. Create the replication object and start it.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE REPLICATION rep1 WITH &#39;192.168.1.30&#39;, 30300
+FROM SYS.TABLE_1 TO SYS.TABLE_1,
+FROM SYS.TABLE_2 TO SYS.TABLE 2,
+...
+;
+iSQL&gt; ALTER REPLICATION rep1 START;
+iSQL&gt; ALTER REPLICATION rep1 STOP;
+iSQL&gt; DROP REPLICATION rep1;
+</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>You have to configure the property and specify the replication object in all nodes in the replication environment.</p>
+                    </div>
+    </div>
+
+<p>Please refer to <a href="http://atc.altibase.com/sub09/551b/html/Replication/index.html" class="external-link" rel="nofollow">Replication User's Manual</a> for detailed information.</p>
+
+
+
+
+
+
+
+
+
+<h1><a name="ReplicationOverview-Summary"></a>Summary</h1>
+
+<p>ALTIBASE HDB’s log-based replication architecture, while providing very speedy performance, imposes very little overhead on computing resources since it only transforms transaction logs into logical logs and sends them to remote servers for processing.</p>
+
+<p>ALTIBASE HDB replication provides users with a choice of two commonly used modes of replication: Asynchronous(Lazy) mode and Synchronous mode (Eager). Lazy mode focuses on high performance while Eager mode focuses on data integrity and consistency.</p>
+
+<p>In Asynchronous mode, a local transaction is completed without waiting for the remote server to successfully commit the same transaction. In Synchronous mode, however, the local transaction is completed concurrently with the remote server &#8211; only if both local and remote servers confirm the successful committed operation. While asynchronous mode provides higher performance, allows for geographically distributed nodes, and multiple servers in the topology; there are cases where some records may become out-of-sync. When using asynchronous mode, some records can be different for a period of time due to network latency or failure, or maintenance windows during which replication may be stopped by an administrator. The window during which the records are out-of-sync may lead to replication conflicts</p>
+
+
+<p>Do you want to learn more about <a href="http://aid.altibase.com/x/JYEb" class="external-link" rel="nofollow">replication conflicts</a> ?</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769534">replication_basic1_test1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769535.png">replication_basic1_test1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769536">replication_basic1_test1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769537.png">replication_basic1_test1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769538">replication_basic1_test1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769539.png">replication_basic1_test1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769526">replication_basic1_test1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769529.png">replication_basic1_test1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769571">replication_basic1_test_1_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769572.png">replication_basic1_test_1_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769573">replication_basic1_test_1_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769574.png">replication_basic1_test_1_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769569">replication_basic1_test_1_1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802501/1769570.png">replication_basic1_test_1_1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

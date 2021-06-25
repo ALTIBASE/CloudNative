@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to resolve when LOCK TIMEOUT occurs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to resolve when LOCK TIMEOUT occurs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 11, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span style="color: rgb(0,0,0);"> </span><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145241 {padding: 0px;}
+div.rbtoc1624409145241 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145241 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145241'>
+<ul class='toc-indentation'>
+<li><a href='#HowtoresolvewhenLOCKTIMEOUToccurs-Overview'>Overview</a></li>
+<li><a href='#HowtoresolvewhenLOCKTIMEOUToccurs-Version'>Version</a></li>
+<li><a href='#HowtoresolvewhenLOCKTIMEOUToccurs-Causes'>Causes</a></li>
+<li><a href='#HowtoresolvewhenLOCKTIMEOUToccurs-Solution'>Solution</a></li>
+<li><a href='#HowtoresolvewhenLOCKTIMEOUToccurs-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="HowtoresolvewhenLOCKTIMEOUToccurs-Overview">Overview</h1><hr /><p>During SQL execution, the following errors sometimes prevent the desired operation:</p><p><span style="color: black;">The transaction exceeds lock timeout specified by user</span></p><p><span style="color: black;">$ altierr -w &quot;lock timeout&quot;<br />0x11075 ( 69749) smERR_ABORT_smcExceedLockTimeWait The transaction exceeds lock timeout specified by user.<br /># *Cause: The transaction failed to lock the object.<br /># *Action: Please abort the transaction.</span></p><p> </p><h1 id="HowtoresolvewhenLOCKTIMEOUToccurs-Version">Version</h1><hr /><p>ALTIBASE HDB version 4 or later</p><p> </p><h1 id="HowtoresolvewhenLOCKTIMEOUToccurs-Causes">Causes</h1><hr /><p>During SQL execution, there are times when the following error occurs and the desired operation cannot be performed.</p><p>As shown in the above error code, it is an error that the object-table, view, stored procedure, etc. cannot be locked.</p><p>All sessions accessing the table hold the LOCK on the table and access it. In other words, if someone is executing DML such as SELECT/INSERT/UPDATE on the table or DDL such as ALTER TABLE, if DROP TABLE is executed, the previous operation will wait to commit/rollback.</p><p>In this case, make sure there are no users and wait for the previous operation to commit, or the session can be forced to be disconnected. The session can be forcibly terminated by using the alter database statement as shown in the example below.</p><p> </p><h1 id="HowtoresolvewhenLOCKTIMEOUToccurs-Solution">Solution</h1><hr /><p><strong>* Check the lock information</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select T.table_name, X.lock_desc  from system_.sys_tables_ T, v$lock X  where T.table_oid = X.table_oid  and T.table_name = &#39;T1&#39;; //Check the T1 table LOCK information</pre>
+</div></div><p><strong>* To forcefully close the session</strong></p><p>1. Find the SESSION ID</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select &#39;alter database mydb session close &#39;||ses_id||&#39;; &#39;
+  from (select T.table_name,
+               SES.id ses_id,
+               X.lock_desc,
+               X.lock_cnt,
+               x.TRANS_ID,
+               SES.client_pid pid,
+               SES.COMM_NAME,
+               STM.query qry
+          from v$session SES,
+               v$statement STM,
+               v$lock X,
+               system_.sys_tables_ T
+         where SES.id = STM.session_id
+           and STM.tx_id = X.trans_id
+           and X.table_oid= T.table_oid
+-- and T.table_name like &#39;TEST1%&#39; -- Please specify the table.
+               )
+ group by ses_id ;
+ 
+&#39;alter database mydb session close &#39;||SES_  
+----------------------------------------------
+alter database mydb session close 159; 
+alter database mydb session close 160; 
+alter database mydb session close 161; 
+alter database mydb session close 162; 
+4 rows selected.</pre>
+</div></div><p>2. Close the session</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> $ isql -sysdba -u sys -p manager 
+ iSQL(sysdba)&gt;
+ alter database mydb session close 159; 
+ alter database mydb session close 160; 
+ alter database mydb session close 161; 
+ alter database mydb session close 162; -- Copy/paste the above SQL result and execute it.</pre>
+</div></div><p> </p><h1 id="HowtoresolvewhenLOCKTIMEOUToccurs-Reference">Reference</h1><hr /><p>Terminating a session with the alter database command does not affect other parts of the session.</p><p>However, if the service system incorrectly identifies the session id and terminates the session, it may be a problem.</p><p>As a reference for operation, if the system is in service, even if the connected session is disconnected, if another application connects to access the table, a lock may be added, so it is necessary to consider this part as well.</p><p>If possible, it is advisable to disable the application while operating.</p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

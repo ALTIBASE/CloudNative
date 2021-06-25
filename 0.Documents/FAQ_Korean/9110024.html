@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ODBC 함수, SQLFreeStmt</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520896.html">07. 개발 및 API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ODBC_6521524.html">ODBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ODBC 함수, SQLFreeStmt
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Yohan Choi</span>, last modified on Dec 15, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053158 {padding: 0px;}
+div.rbtoc1624409053158 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053158 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053158'>
+<ul class='toc-indentation'>
+<li><a href='#ODBC함수,SQLFreeStmt-개요'>개요 </a></li>
+<li><a href='#ODBC함수,SQLFreeStmt-적용버전'>적용버전   </a></li>
+</ul>
+</div></strong></p><p><span style="color: rgb(0,0,0);"> </span></p><h1 id="ODBC함수,SQLFreeStmt-개요"><strong style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;">개요</strong><span style="color: rgb(0,0,0);"> </span></h1><hr /><p><span style="line-height: 1.42857;"><span style="color: rgb(0,0,0);">ODBC 함수, SQLFreeStmt의 사용방법에 대한 설명입니다.</span> </span></p><p><span style="color: rgb(0,0,0);"> </span></p><h1 id="ODBC함수,SQLFreeStmt-적용버전"><strong>적용버전</strong>   </h1><hr /><ul><li>ALTIBASE HDB 6.3.1 을 기준으로 작성 되었습니다.</li><li>추가사항 또는 업데이트가 필요한 경우 <a class="external-link" href="http://support.altibase.com/kr/" rel="nofollow">http://support.altibase.com/kr/</a> 또는 이 페이지에 댓글로 요청 글 남겨주세요.<br /><br /><br /></li></ul><p><strong style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;"><span>SQLFreeStmt 옵션</span></strong><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">다음과 같은 4가지 옵션의 내용을 기술하고 있습니다. </span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_CLOSE</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">stmt와 관련된 커서를 닫고 모든 보류중인</span><span style="color: rgb(0,0,0);"> 결과들을 폐기한다. 애플리케이션은 같은 또는 다른</span><span style="color: rgb(0,0,0);"> 변수들을 사용해 다시 SELECT 문을 수행함으로서 나중에 이</span><span style="color: rgb(0,0,0);"> 커서를 다시 열 수 있다. 만약 어떠한 커서도 열려 있지</span><span style="color: rgb(0,0,0);"> 않으면, 이 옵션 애플리케이션에 대해 아무런 영향을</span><span style="color: rgb(0,0,0);"> 주지 않는다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_DROP</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">입력 명령문 핸들과 연관된 자원이 해제되고 </span><span style="color: rgb(0,0,0);">핸들이 무효화된다. 열린 커서가 있는 경우 닫히고 모든</span><span style="color: rgb(0,0,0);"> 미결인 결과가 삭제된다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_UNBIND</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">이 명령문 핸들에서 이전의 SQLBindCol() </span><span style="color: rgb(0,0,0);">호출에 의해 바인드된 모든 열이 해제된다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL_RESET_PARAMS</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">이 명령문 핸들에서 이전의 </span><span style="color: rgb(0,0,0);">SQLBindParameter() 호출에 의해 설정된 모든 매개변수가</span><span style="color: rgb(0,0,0);"> 해제된다. 애플리케이션 변수 또는 파일 참조와 명령문</span><span style="color: rgb(0,0,0);"> 핸들의 SQL문 매개변수 마커 사이의 연관이 깨진다.</span></td></tr></tbody></table></div><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(0,0,0);">이 중 주로 사용되는 것이 SQL_CLOSE, SQL_DROP입니다. </span></p><ol><li><span style="color: rgb(0,0,0);">SQLFreeStmt(stmt, SQL_DROP): </span><br /><span style="color: rgb(0,0,0);">prepared 된 stmt(statement handle)에 대한 자원을 완전히 해제한다는 의미가 됩니다.</span><br /><span style="color: rgb(0,0,0);">즉 해당 stmt를 재사용하지 않을 때만 호출합니다.</span><br /><span style="color: rgb(0,0,0);"><br /></span></li><li><span style="color: rgb(0,0,0);">SQLFreeStmt(stmt, SQL_CLOSE): </span><br /><span style="color: rgb(0,0,0);">검색된 데이타를 모두 Fetch 하지 않았을 경우, </span><span style="color: rgb(0,0,0);">SQLFreeStmt(SQL_CLOSE) 없이 SQLExecute를 다시 실행하면 오류가 발생합니다.</span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">SQLFreeStmt(stmt, SQL_CLOSE)를 사용하면, SQLAllocStmt()를 하지 않고 기존 stmt를 </span>재사용할수 있습니다.</span></li></ol><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

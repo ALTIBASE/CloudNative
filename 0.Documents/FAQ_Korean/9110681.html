@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 이중화 모니터링 쿼리</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520884.html">03. 이중화</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 이중화 모니터링 쿼리
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409052524 {padding: 0px;}
+div.rbtoc1624409052524 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409052524 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409052524'>
+<ul class='toc-indentation'>
+<li><a href='#id-이중화모니터링쿼리-이중화전체현황'>이중화 전체 현황</a></li>
+<li><a href='#id-이중화모니터링쿼리-이중화sender정보'>이중화 sender 정보</a></li>
+<li><a href='#id-이중화모니터링쿼리-이중화receiver정보'>이중화 receiver 정보</a></li>
+<li><a href='#id-이중화모니터링쿼리-이중화gap'>이중화 gap</a></li>
+</ul>
+</div></p><p> </p><h1 id="id-이중화모니터링쿼리-이중화전체현황"><strong>이중화 전체 현황</strong></h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT a.replication_name rep_name
+     , d.host_ip || decode(d.host_ip, b.peer_ip, &#39; (*)&#39;, NULL) peer_ip
+     , nvl(to_char(e.rep_gap), &#39;-&#39;) as rep_gap
+     , a.xsn restart_xsn
+     , decode(b.peer_port, NULL, &#39;OFF&#39;, &#39;ON&#39;) as sender
+     , decode(c.peer_port, NULL, &#39;OFF&#39;, &#39;ON&#39;) as receiver 
+  FROM system_.sys_repl_hosts_ d 
+     , system_.sys_replications_ a
+       left outer join v$repsender b on a.replication_name = b.rep_name
+       left outer join v$repreceiver c on a.replication_name = c.rep_name
+       left outer join
+       (select rep_name, max(rep_gap) rep_gap from v$repgap group by rep_name) e
+       on a.replication_name = e.rep_name
+ WHERE a.replication_name = d.replication_name
+ ORDER BY rep_name;
+REP_NAME              PEER_IP               REP_GAP               RESTART_XSN          SENDER  RECEIVER  
+----------------------------------------------------------------------------------------------------------------
+REP                   192.168.1.149 (*)     0                     9668                 ON   ON</pre>
+</div></div><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">컬럼 이름</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">restart_xsn</td><td class="confluenceTd">이중화 대상인 원격서버가 반영한 SN, 이중화 재 시작 시 재전송 기점을 의미</td></tr><tr><td class="confluenceTd">sender</td><td class="confluenceTd">sender의 작동 유무</td></tr><tr><td class="confluenceTd">receiver</td><td class="confluenceTd">receiver의 작동 유무</td></tr></tbody></table></div><p>이중화의 이름, ip, SENDER, RECEIVER의 상태를 확인할 수 있습니다.</p><p> </p><h1 id="id-이중화모니터링쿼리-이중화sender정보"><strong>이중화 sender 정보</strong></h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT trim(REP_NAME) as REP_NAME
+     , decode(START_FLAG, 0, &#39;Normal&#39;,
+                          1, &#39;Quick&#39;,
+                          2, &#39;Sync&#39;,
+                          3, &#39;Sync Only&#39;) as START_FLAG
+     , decode(net_error_flag, 0, &#39;OK&#39;, &#39;Error&#39;) as NET_ERROR_FLAG
+     , decode(STATUS, 0, &#39;Stop&#39;, 1, &#39;Run&#39;, 2, &#39;Retry&#39;) as STATUS
+     , peer_ip
+     , peer_port
+     , XSN
+  FROM V$REPSENDER;
+REP_NAME              START_FLAG  NET_ERROR_FLAG  STATUS  PEER_IP               PEER_PORT   XSN                  
+-------------------------------------------------------------------------------------------------------------------------
+REP                   Normal      OK              Run     192.168.1.149         30300       9675</pre>
+</div></div><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">컬럼 이름</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">rep_name</td><td class="confluenceTd">이중화 객체의 이름</td></tr><tr><td class="confluenceTd">peer_ip</td><td class="confluenceTd">이중화 대상인 원격서버의 ip 주소</td></tr><tr><td class="confluenceTd">peer_port</td><td class="confluenceTd">이중화 대상인 원격서버의 포트번호</td></tr><tr><td class="confluenceTd">Status</td><td class="confluenceTd">sender의 현재 상태로 1 이어야 정상이다. / STOP(0), RUN(1), RETRY(2)</td></tr><tr><td class="confluenceTd">repl_mode</td><td class="confluenceTd">sender의 현재 이중화 모드 / lazy, eager</td></tr><tr><td class="confluenceTd">NET_ERROR_FLAG</td><td class="confluenceTd">network 에러 여부로 0이어야 정상이다. / OK(0), ERROR(1)</td></tr><tr><td class="confluenceTd">XSN</td><td class="confluenceTd">sender가 마지막으로 송신한 SN(Serial Number/리두로그일련번호)으로 v$repgap의 REP_SN과 동일</td></tr></tbody></table></div><p>이중화 SENDER의 원격서버의 IP, PORT, network 에러 여부, 상태 등을 확인할 수 있습니다.</p><p> </p><h1 id="id-이중화모니터링쿼리-이중화receiver정보"><strong>이중화 receiver 정보</strong></h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT trim(REP_NAME)
+     , trim(MY_IP)
+     , trim(PEER_IP)
+     , MY_PORT
+     , PEER_PORT
+     , apply_xsn
+  FROM X$REPRECEIVER;
+TRIM(REP_NAME)        TRIM(MY_IP)           TRIM(PEER_IP)         MY_PORT     PEER_PORT   APPLY_XSN            
+----------------------------------------------------------------------------------------------------------------------
+REP                   192.168.1.145         192.168.1.149         30300       26722       13461585</pre>
+</div></div><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">컬럼 이름</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">peer_ip</td><td class="confluenceTd">이중화 주체인 원격서버의 ip 주소</td></tr><tr><td class="confluenceTd">peer_port</td><td class="confluenceTd">이중화 주체인 원격서버의 포트번호</td></tr><tr><td class="confluenceTd">apply_xsn</td><td class="confluenceTd">receiver가 현재 반영중인 원격서버의 SN</td></tr></tbody></table></div><p>이중화 RECEIVER의 원격서버의 IP, PORT 등을 확인할 수 있습니다.</p><p> </p><h1 id="id-이중화모니터링쿼리-이중화gap"><strong>이중화 gap<br /></strong></h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+select rep_name
+     , rep_gap
+  from v$repgap;
+REP_NAME              REP_GAP              
+----------------------------------------------
+REP                   0 </pre>
+</div></div><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">컬럼 이름</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">rep_name</td><td class="confluenceTd">이중화 이름</td></tr><tr><td class="confluenceTd">rep_gap</td><td class="confluenceTd">rep_last_sn과 rep_sn의 간격으로 비동기화 정도를 나타낸다. (즉, rep_last_sn - rep_sn)</td></tr></tbody></table></div><p>이중화 gap이 많이 늘어났을 경우 확인 해야할 사항이 있습니다.</p><ol><li>Network 상태 확인(작업, 장애, 방화벽에 의해 IP 또는 PORT가 막혀 있을 경우 등)</li><li>원격 장비 상태 확인(하드웨어 장애, 원격DB의 shutdown 등)</li><li>BULK성 DML 작업 여부 확인</li></ol><p>위의 경우 이중화 gap이 증가할 수 있으므로 확인이 필요 합니다.</p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. ADO.NET Development Guide</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Window-ADO.NET-Development-Guide_14647565.html">Altibase Window ADO.NET Development Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. ADO.NET Development Guide
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Here is an example of each class when connecting to ALTIBASE in the ADO.NET environment. The code used is described based on Visual C#, which is widely used in the ADO.NET environment.</p><h1 class="0cm" id="id-2.ADO.NETDevelopmentGuide-AltibaseConnection">AltibaseConnection</h1><div>AltibaseConnection is used as follows. The following example is a simple example that tests the connection with Altibase DB.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>using System.Collections.Generic;</p><p>using System.Linq;</p><p>using System.Text;</p><p><strong>using Altibase.Data.AltibaseClient;</strong></p><p>namespace ConsoleApplication1</p><p>{</p><p>    class Program</p><p>    {</p><p>        static voidMain(string[] args)</p><p>        {</p><p><strong>            String connStr = &quot;DSN=192.168.1.35;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300&quot;;</strong></p><p><strong>            AltibaseConnection cn = new AltibaseConnection(connStr);</strong></p><p>            try</p><p>            {</p><p>                <strong>cn.Open();</strong></p><p>                Console.WriteLine(&quot;connected\n&quot;);</p><p>            }</p><p>            catch (AltibaseException e)</p><p>            {</p><p>                Console.WriteLine(e.Message);</p><p>            }</p><p>            Console.ReadLine();</p><p>        }</p><p>    }</p><p>}</p>
+</div></div><p><br />Items used as access information are as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Connection information configuration items</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>DSN</p></td><td class="confluenceTd"><p>Physical IP address where ALTIBASE DB server is located</p></td></tr><tr><td class="confluenceTd"><p>UID</p></td><td class="confluenceTd">DB account name<p> </p></td></tr><tr><td class="confluenceTd"><p>PWD</p></td><td class="confluenceTd"><p>DB account password</p></td></tr><tr><td class="confluenceTd"><p>PORT</p></td><td class="confluenceTd"><p>ALTIBASE Listen Port number</p></td></tr><tr><td class="confluenceTd"><p>NLS_USE</p></td><td class="confluenceTd"><p>Character set for multilingual processing (charset used when creating DB)</p></td></tr></tbody></table></div><p> </p><h1 id="id-2.ADO.NETDevelopmentGuide-Gettingdate/timeusingAltibaseDataReader,AltibaseCommand">Getting date/time using AltibaseDataReader, AltibaseCommand</h1><p>This is an example of getting the date/time with Command and DataReader objects.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>AltibaseCommand cm;</strong></p><p><strong>AltibaseDataReader dr;</strong></p><p> </p><p>try</p><p>{</p><p>  ................</p><p>................</p><p>    cn.Open();</p><p>     Console.WriteLine(&quot;connected\n&quot;);</p><p> </p><p>     <strong>cm = new AltibaseCommand();</strong></p><p><strong>     cm.Connection = cn;</strong></p><p><strong>     cm.CommandText = &quot;Select to_char(sysdate, 'yyyy-mm-dd hh:mi:ss') from dual&quot;;</strong></p><p><strong>     dr = cm.ExecuteReader();</strong></p><p><strong> </strong></p><p><strong>     while (dr.Read())</strong></p><p><strong>     {</strong></p><p><strong>         Console.WriteLine(dr.GetString(0));</strong></p><p><strong>     }</strong></p><p>}</p><p>catch (AltibaseException e)</p><p>{</p><p>     Console.WriteLine(e.Message);</p><p>}</p>
+</div></div><h1 id="id-2.ADO.NETDevelopmentGuide-INSERTwithAltibaseDataAdaptor"><br />INSERT with AltibaseDataAdaptor</h1><p>An example of an INSERT with the AltibaseDataAdaptor is described.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>AltibaseConnection cn = new AltibaseConnection(connStr);</p><p><strong>AltibaseDataAdapter da = new AltibaseDataAdapter();</strong></p><p> try</p><p>{</p><p>  .................</p><p>    cn.Open();</p><p>     Console.WriteLine(&quot;정상적으로 연결됨\n&quot;);</p><p>      <strong>da.InsertCommand = new AltibaseCommand(&quot;INSERT INTO T1 VALUES (?, ?)&quot;, cn);</strong></p><p>      DataTable t1 = new DataTable();</p><p>      DataRow r1 = null;</p><p>      t1.Columns.Add(new DataColumn(&quot;C1&quot;, typeof(string)));</p><p>      t1.Columns.Add(new DataColumn(&quot;C2&quot;, typeof(int)));</p><p><strong> da.InsertCommand.Parameters.Add(da.InsertCommand.CreateParameter());</strong></p><p><strong>      da.InsertCommand.Parameters[0].SourceColumn = &quot;C1&quot;;</strong></p><p> </p><p>      <strong>da.InsertCommand.Parameters.Add(da.InsertCommand.CreateParameter());</strong></p><p><strong>      da.InsertCommand.Parameters[1].SourceColumn = &quot;C2&quot;;</strong></p><p> </p><p>      r1 = t1.NewRow();</p><p>      r1.ItemArray = new Object[] {&quot;hong gi dong&quot;, 23};</p><p>      t1.Rows.Add(r1);</p><p>        <strong>da.Update(t1);</strong></p><p>}</p>
+</div></div><p><br /><br /></p><div><h1 id="id-2.ADO.NETDevelopmentGuide-AltibaseTransaction">AltibaseTransaction </h1><div>An example of AltibaseTranaction is as follows.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>AltibaseCommand cm = new AltibaseCommand();</p><p><strong>AltibaseTransaction tx = null;</strong></p><p>           </p><p>try</p><p>{</p><p>      cn.Open();</p><p>      <strong>tx = cn.BeginTransaction();</strong></p><p>      cm.Connection = cn;</p><p>      cm.CommandText = &quot;insert into t1 values ('viliad', 30)&quot;;</p><p>      cm.ExecuteNonQuery();</p><p>      <strong>tx.Commit();</strong></p><p>}</p><p>catch (AltibaseException e2)</p><p>{</p><p>      <strong>tx.Rollback();</strong></p><p>      Console.WriteLine(e2.Message);</p><p>}</p>
+</div></div></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

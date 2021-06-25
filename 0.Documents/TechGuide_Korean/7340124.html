@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 연동 오류</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340101.html">Altibase WEBLOGIC 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 연동 오류
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified by <span class='editor'> Consulting Division</span> on Dec 01, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409838149 {padding: 0px;}
+div.rbtoc1624409838149 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409838149 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409838149'>
+<ul class='toc-indentation'>
+<li><a href='#id-연동오류-Cannotloaddriver'>Cannot load driver</a></li>
+<li><a href='#id-연동오류-CannotmakeadatabaseconnectiontothegivenURL/InvalidAltibaseURL(Nosuitabledriver)'>Can not make a database connection to the given URL / Invalid Altibase URL (No suitable driver)</a></li>
+<li><a href='#id-연동오류-Couldnotcreatepoolconnection'>Could not create pool connection</a></li>
+<li><a href='#id-연동오류-Clientunabletoestablishconnection/Communicationlinkfailure'>Client unable to establish connection / Communication link failure</a></li>
+<li><a href='#id-연동오류-Hang현상'>Hang 현상</a></li>
+</ul>
+</div>
+<hr />
+<p>ALTIBASE와 WebLogic 연동 시 발생할 수 있는 일반적인 오류에 대해서 설명한다.</p>
+
+<h2 id="id-연동오류-Cannotloaddriver"><strong>Cannot load driver</strong></h2>
+
+<p>JDBC 드라이버 설정이 정상적으로 완료되지 않은 상태에서 접속을 시도할 경우 발생한다.</p>
+
+<p><a href="file:///C:/Users/TJKIM/Downloads/ALTIBASE_WebLogic_%EC%97%B0%EB%8F%99_%EA%B0%80%EC%9D%B4%EB%93%9C_12c%20(2).doc#_WebLogic에서_사용할_JDBC" class="external-link" rel="nofollow">WebLogic에서 사용할 JDBC 드라이버를 설정하는 방법</a> 을 참조하도록 한다.</p>
+
+<h2 id="id-연동오류-CannotmakeadatabaseconnectiontothegivenURL/InvalidAltibaseURL(Nosuitabledriver)"><strong>Can not make a database connection to the given URL / Invalid Altibase URL (No suitable driver)</strong></h2>
+
+<p>아래와 같이 접속 URL에 오류가 있을 경우 오류가 발생한다.</p>
+
+<p>   잘못된 형식, 오타</p>
+
+<p>   jdbc 항목을 “Altibase”가 아닌 다른 이름으로 설정한 경우 (이 경우는 버전에 따라 No suitable driver 가 발생하기도 한다.)</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> jdbc:<strong>otherDBMS</strong>://127.0.0.1:20300/mydb </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-연동오류-Couldnotcreatepoolconnection"><strong>Could not create pool connection</strong></h2>
+
+<p>JDBC 데이터 소스 생성 시 커넥션 풀 설정에 오류가 있을 때 발생한다. 다양한 경우가 있으나 대표적인 경우는 아래와 같다.</p>
+
+<p>   접속 대상이 ALTIBASE 4인 경우는 속성(property)에 “user=sys” 형식으로 접속할 사용자를 입력해야 한다.</p>
+
+<h2 id="id-연동오류-Clientunabletoestablishconnection/Communicationlinkfailure"><strong>Client unable to establish connection / Communication link failure</strong></h2>
+
+<p>아래의 경우, Client unable to establish connection 오류가 발생한다. (버전에 따라 Communication link failure 가 발생하기도 한다.)</p>
+
+<p>   ALTIBASE 서버가 구동되어 있지 않는 경우</p>
+
+<p>   접속 URL에서 ALTIBASE 서버의 ip 주소 또는 포트번호를 잘못 설정하여 접속이 불가능한 경우</p>
+
+<p>아래는 연동할 ALTIBASE 서버의 ip 주소가 192.168.1.81 이고 포트번호가 20300인데 다른 값으로 잘못 지정한 경우의 예이다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> jdbc:Altibase://192.168.1.<strong>80</strong>:<strong>20800</strong>/mydb </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-연동오류-Hang현상"><strong>Hang 현상</strong></h2>
+
+<p>ALTIBASE JDBC 드라이버와 ALTIBASE 서버의 CM 프로토콜 버전이 다른 상태에서 접속을 시도할 경우 WebLogic 버전에 따라 행(hang)과 같은 현상이 발생할 수도 있다.</p>
+
+<p>이런 현상이 발생하게 되면 대부분 WebLogic 서버 인스턴스를 재 구동해야만 하므로 사전에 주의가 필요하다.</p>
+
+<p>관련된 내용은 <a href="file:///C:/Users/TJKIM/Downloads/ALTIBASE_WebLogic_%EC%97%B0%EB%8F%99_%EA%B0%80%EC%9D%B4%EB%93%9C_12c%20(2).doc#_ALTIBASE_JDBC_드라이버" class="external-link" rel="nofollow">ALTIBASE JDBC 드라이버 버전을 확인하는 방법</a> 을 참조하도록 한다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

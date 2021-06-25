@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 작업(Job)객체 생성 및 실행 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 작업(Job)객체 생성 및 실행 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> richard.nahm	</span> on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051712 {padding: 0px;}
+div.rbtoc1624409051712 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051712 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051712'>
+<ul class='toc-indentation'>
+<li><a href='#id-작업(Job)객체생성및실행방법-개요'>개요</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-버전'>버전</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-사용방법'>사용 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-작업(Job)객체생성및실행방법-작업스케줄러활성화(알티베이스서버프로퍼티설정)'>작업 스케줄러 활성화(알티베이스 서버 프로퍼티 설정)</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-프로시저생성'>프로시저 생성</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-작업(Job)객체생성'>작업(Job) 객체 생성</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-작업(Job)객체활성화'>작업(Job) 객체 활성화</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-작업(Job)객체및수행결과확인'>작업(Job) 객체 및 수행 결과 확인</a></li>
+</ul>
+</li>
+<li><a href='#id-작업(Job)객체생성및실행방법-관련프로퍼티'>관련 프로퍼티</a>
+<ul class='toc-indentation'>
+<li><a href='#id-작업(Job)객체생성및실행방법-JOB_SCHEDULER_ENABLE'>JOB_SCHEDULER_ENABLE</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-JOB_THREAD_COUNT'>JOB_THREAD_COUNT</a></li>
+<li><a href='#id-작업(Job)객체생성및실행방법-JOB_THREAD_QUEUE_SIZE'>JOB_THREAD_QUEUE_SIZE</a></li>
+</ul>
+</li>
+<li><a href='#id-작업(Job)객체생성및실행방법-참고'>참고</a></li>
+</ul>
+</div></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="id-작업(Job)객체생성및실행방법-개요"><strong>개요</strong></h1><hr /><p>이 문서에서는 작업 개체를 만들고 실행하는 방법과 이를 모니터링하는 방법에 대해 설명한다.</p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="id-작업(Job)객체생성및실행방법-버전"><strong style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;">버전</strong></h1><hr /><p>Altibase 6.3.1 이상<br /> </p><p> </p><p> </p><h1 id="id-작업(Job)객체생성및실행방법-사용방법"><strong style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;">사용 방법</strong></h1><hr /><p>작업(Job) 객체 생성 및 정상적인 동작을 위해서 아래 순서대로 진행해야 한다.</p><ol><li>작업 스케줄러 기능 활성화</li><li>작업(Job) 객체에 등록할 프로시저 생성</li><li>작업(Job) 객체 생성</li><li>작업(Job) 객체 활성화 (Altibase 6.5.1 이상에서만 수행함. Altibase 6.3.1은 해당없음)</li><li>작업(Job) 객체 및 수행 결과 확인</li></ol><p> </p><h3 id="id-작업(Job)객체생성및실행방법-작업스케줄러활성화(알티베이스서버프로퍼티설정)"><strong>작업 스케줄러 활성화(알티베이스 서버 프로퍼티 설정)</strong></h3><hr /><p>작업(Job) 객체를 처음 사용한다면 아래 두 개의 알티베이스 서버 프로퍼티를 변경하여 작업 스케줄러 기능을 활성화해야 한다.<br />작업 스케줄러는 작업(Job)객체에 등록된 설정에 따라 프로시저를 수행시키는 기능을 한다.</p><ul><li>JOB_SCHEDULER_ENABLE : 작업 스케줄러 활성화 설정</li><li>JOB_THREAD_COUNT         : 작업(Job) 객체 수행을 위한 쓰레드 수 </li></ul><p>위 두 프로퍼티가 모두 1로 설정되어 있어야 작업 스케줄러를 사용할 수 있다. 기본값이 0이기 때문에 작업 스케줄러를 처음 사용한다면 반드시 확인해야 한다.</p><p>JOB_SCHEDULER_ENABLE 프로퍼티는 알티베이스 서버가 구동된 상태에서도 변경할 수 있지만 JOB_THREAD_COUNT 프로퍼티의 값을 변경하기 위해서는 Altibase 서버를 재구동해야 한다.</p><p>따라서 작업 스케줄러를 처음 사용할 경우 아래 절차에 따라 프로퍼티를 변경한다.</p><p> </p><ol><li><p>Altibase 서버 종료</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div></li><li><p>altibase.properties 파일에서 JOB_SCHEDULER_ENABLE 와 JOB_THREAD_COUNT 프로퍼티를 찾아서 값을 1로 변경 후 저장</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Unix/Linux 의 경우 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties</pre>
+</div></div></li><li><p>알티베이스 서버 시작</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div></li><li><p>프로퍼티 설정 값 확인</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME IN (&#39;JOB_SCHEDULER_ENABLE&#39;, &#39;JOB_THREAD_COUNT&#39;);</pre>
+</div></div></li></ol><h3 id="id-작업(Job)객체생성및실행방법-프로시저생성"><strong>프로시저 생성</strong></h3><hr /><p>작업(Job) 객체에 등록할 프로시저를 생성하고 프로시저가 정상적으로 수행하는지 확인한다.<br />프로시저 정상 수행 여부를 확인하는 이유는 작업 스케줄러에 의해 Job객체가 설정대로 동작하지 않을 경우 프로시저 문제 가능성을 배제하기 위해서이다.</p><p><br /> </p><h3 id="id-작업(Job)객체생성및실행방법-작업(Job)객체생성"><strong>작업(Job) 객체 생성</strong></h3><hr /><p>JOB 객체를 생성한다.</p><p>JOB 객체에는 실행할 저장 프로시저와 실행 시각, 실행 주기 등을 설정할 수 있다. JOB 객체 생성 구문은 <span style="color: rgb(0,0,0);">SQL Reference </span>매뉴얼을 참고한다. (매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a>)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE JOB job1
+EXEC proc1
+START sysdate
+END sysdate + 3
+INTERVAL 1 HOUR;</pre>
+</div></div><p> </p><p> </p><h3 id="id-작업(Job)객체생성및실행방법-작업(Job)객체활성화"><strong>작업(Job) 객체 활성화</strong></h3><hr /><p>이 작업은 Altibase 6.5.1에서 특정 JOB을 활성화/비활성화시키는 기능이 추가되면서 추가된 절차이다.<br />Altibase 6.3.1 에서는 JOB객체 생성 시 바로 '활성화' 상태가 되지만 Altibase 6.5.1 부터는 CREATE JOB 구문에서 ENABLE 옵션을 사용하지 않으면 기본적으로 '비활성화' 상태이다.<br />따라서 Altibase 6.5.1부터는 Job객체 생성 후 Job이 동작하도록 하려면 활성화 상태로 변경해야 한다.</p><p>변경 방법은 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 6.5.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER JOB job_name SET ENABLE; </pre>
+</div></div><p><br />Altibase 6.5.1 부터는 JOB객체 생성 시 바로 '활성화' 상태로 설정할 수도 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE JOB job1
+EXEC proc1
+START sysdate
+END sysdate + 3
+INTERVAL 1 HOUR
+ENABLE;                 </pre>
+</div></div><p> </p><p> </p><h3 id="id-작업(Job)객체생성및실행방법-작업(Job)객체및수행결과확인">작업(Job) 객체 및 수행 결과 확인</h3><hr /><p>아래 쿼리로 Job 객체 정보와 Job의 수행 결과를 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- JOB_NAME  : 작업(Job) 객체 이름
+-- PROC_NAME : 작업(Job) 객체에 등록한 프로시저 이름
+-- INTERVAL, INTERVAL_TYPE : 수행 주기
+-- STATE : 작업(Job) 객체 수행 여부 확인. ING 면 작업(Job) 객체에 등록된 프로시저가 수행되고 있음을 알 수 있음. 
+-- EXEC_COUNT : 작업(Job) 객체 생성 후 실행된 횟수
+-- ERROR_CODE : 작업(Job) 객체에 등록한 프로시저 수행이 실패한 경우 에러 코드
+-- START_TIME, END_TIME : 작업(Job) 객체가 처음 수행된 시각과 종료 시각
+-- LAST_EXEC_TIME : 작업(Job) 객체가 수행된 마지막 시각
+SELECT JOB_NAME
+     , DECODE(IS_ENABLE, &#39;T&#39;, &#39;ENABLE&#39;, &#39;F&#39;, &#39;DISABLE&#39;) IS_ENABLE                  -- Altibase 6.3.1 에서는 삭제 후 사용 
+     , EXEC_QUERY PROC_NAME
+     , INTERVAL
+     , RPAD(DECODE(INTERVAL_TYPE, &#39;YY&#39;, &#39;YEARLY&#39;, &#39;MM&#39;, &#39;MONTHLY&#39;, &#39;DD&#39;, &#39;DAILY&#39;, &#39;HH&#39;, &#39;HOURLY&#39;, &#39;MI&#39;, &#39;MINUTELY&#39;), 13) INTERVAL_TYPE
+     , RPAD(DECODE(STATE, 0, &#39;-&#39;, 1, &#39;ING&#39;), 5) STATE
+     , RPAD(EXEC_COUNT, 10) EXEC_COUNT
+     , RPAD(ERROR_CODE, 10) ERROR_CODE
+     , TO_CHAR(SYSDATE, &#39;YYYY-MM-DD HH:MI:SS&#39;) SYSDATE
+     , TO_CHAR(START_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) START_TIME
+     , TO_CHAR(END_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) END_TIME 
+     , TO_CHAR(LAST_EXEC_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_EXEC_TIME
+  FROM SYSTEM_.SYS_JOBS_;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">JOB_NAME              IS_ENABLE  PROC_NAME             INTERVAL    INTERVAL_TYPE         STATE       EXEC_COUNT            ERROR_CODE            SYSDATE               START_TIME            END_TIME              LAST_EXEC_TIME        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+JOB2                  DISABLE  PROC                  1           MINUTELY              -           0                                           2016-08-30 14:15:06   2016-08-30 10:08:22   2016-09-02 10:08:22                         
+JOB1                  ENABLE   PROC                  1           MINUTELY              -           43                                          2016-08-30 14:15:06   2016-08-30 10:11:00                         2016-08-30 14:15:00   
+2 rows selected.</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">에러 코드에 해당하는 에러 메시지 확인 방법</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>altierr 유틸리티를 이용하여 에러 코드에 해당하는 에러 메시지를 확인할 수 있다.</p><p><br />$ altierr 0x31129</p><p>0x31129 ( 201001) qpERR_ABORT_QSV_NOT_EXIST_PROC_SQLTEXT <span style="color: rgb(51,102,255);">Procedure or function not found</span> : &lt;0%s&gt;.<br /># *Cause: <span style="color: rgb(51,102,255);">The specified procedure or function name was not found in the database.</span><br /># *Action: Verify that the procedure or function exists.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><p> </p><h1 id="id-작업(Job)객체생성및실행방법-관련프로퍼티"><strong>관련 프로퍼티</strong></h1><hr /><h2 id="id-작업(Job)객체생성및실행방법-JOB_SCHEDULER_ENABLE"><strong>JOB_SCHEDULER_ENABLE</strong></h2><hr /><h5 id="id-작업(Job)객체생성및실행방법-프로퍼티설명"><strong>프로퍼티 설명</strong></h5><ul><li>작업 스케줄러 기능을 활성화 또는 비활성화하기 위한 프로퍼티이다.</li><li>기본값은 0 으로 작업 스케줄러의 동작을 중지한다.<br /><br /></li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값변경방법">설정값 변경 방법</h5><ul><li><p>ALTER SYSTEM 으로 변경할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET JOB_SCHEDULER_ENABLE = 1;           -- 잡 스케줄러 기능 활성화
+
+또는 
+ALTER SYSTEM SET JOB_SCHEDULER_ENABLE = 0;           -- 잡 스케줄러 기능 비활성화</pre>
+</div></div></li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값확인방법"><strong>설정값 확인 방법</strong></h5><ul><li><p>아래 쿼리로 JOB_SCHEDULER_ENABLE 설정값을 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_SCHEDULER_ENABLE&#39;;</pre>
+</div></div></li></ul><p> </p><p><strong><br /></strong></p><h2 id="id-작업(Job)객체생성및실행방법-JOB_THREAD_COUNT"><strong>JOB_THREAD_COUNT</strong></h2><hr /><h5 id="id-작업(Job)객체생성및실행방법-프로퍼티설명.1"><strong>프로퍼티 설명</strong></h5><ul><li>작업(Job)을 처리하기 위한 쓰레드 수를 설정하는 프로퍼티이다.</li><li>기본값은 0으로 Altibase 서버 구동 시 작업 스케줄러 수행을 위한 쓰레드가 구동되지 않는다.</li><li>JOB_THREAD_COUNT 를 0 이 아닌 값으로 설정하면 JobScheduler 쓰레드와 JOB_THREAD_COUNT 수만큼 JobThread 쓰레드가 구동된다.</li><li>작업(Job)은 서비스 쓰레드에 의해 수행되지 않고 JobThread 라 불리우는 쓰레드에 의해 처리된다. 그래서 작업 스케줄러에 의해 작업(Job)이 수행되게 하려면 이 프로퍼티를 반드시 설정해야 한다.</li><li>이 프로퍼티 값을 변경하려면 Altibase 서버 재구동 작업이 필요하다.</li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값변경방법.1">설정값 변경 방법</h5><ul><li>Altibase 서버 중지</li><li>$ALTIBASE_HOME/conf/altibase.properties 에서 JOB_THREAD_COUNT 를 찾아 값 변경 후 저장</li><li>Altibase 서버 구동 <br /><br /></li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값확인방법.1"><strong>설정값 확인 방법</strong></h5><ul><li><p>아래 쿼리로 JOB_THREAD_COUNT 설정값을 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_THREAD_COUNT&#39;;</pre>
+</div></div></li></ul><h2 id="id-작업(Job)객체생성및실행방법-JOB_THREAD_QUEUE_SIZE"><a name="9007807" style="text-align: left;" rel="nofollow"></a><strong>JOB_THREAD_QUEUE_SIZE</strong></h2><hr /><h5 id="id-작업(Job)객체생성및실행방법-프로퍼티설명.2"><strong>프로퍼티 설명</strong></h5><ul><li>여러 개의 작업(Job) 객체가 동시에 수행될 때 이를 처리하기 위한 큐의 갯수를 설정하는 프로퍼티이다.<br /><p><span style="color: rgb(0,0,0);">예를 들어 작업 스케줄러에 의해 4개의 작업(Job)객체가 <span style="color: rgb(0,0,0);">같은 시각에 수행될 경우, JOB_THREAD_COUNT, JOB_THREAD_QUEUE_SIZE 수에 따라 아래와 같은 순서대로 처리된다.<br /></span></span><br style="text-align: left;" /><span style="color: rgb(0,0,0);">  - <span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">JOB_THREAD_COUNT</span></span> = 4, JOB_THREAD_QUEUE_SIZE = 1 : 동시에 4개가 수행될 수 있음</span><br style="text-align: left;" /><span style="color: rgb(0,0,0);">  - <span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">JOB_THREAD_COUNT</span></span> =</span> 2, JOB_THREAD_QUEUE_SIZE = 2 : 동시에 2개가 수행되고 나머지 2개는 이어서 수행됨</span><br style="text-align: left;" /><span style="color: rgb(0,0,0);">  - <span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">JOB_THREAD_COUNT</span></span> =</span> 1 ,JOB_THREAD_QUEUE_SIZE = 4 : 동시에 1개가 수행되고 나머지 3개는 이어서 수행됨</span><br /><span style="color: rgb(0,0,0);"><br /></span></p></li><li>기본값 및 최소값이 64 로 충분히 크게 설정되어 있어서 사용자가 임의로 설정할 필요는 없다.</li><li>Read-Only 속성으로 이 프로퍼티 값을 변경하려면 알티베이스 서버를 중지해야 한다.</li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값변경방법.2">설정값 변경 방법</h5><ul><li>Altibase 서버 중지</li><li>$ALTIBASE_HOME/conf/altibase.properties 에서 <span style="color: rgb(0,0,0);">JOB_THREAD_QUEUE_SIZE</span> 변경 후 저장</li><li>Altibase 서버 구동 <br /><br /></li></ul><h5 id="id-작업(Job)객체생성및실행방법-설정값확인방법.2"><strong>설정값 확인 방법</strong></h5><ul><li><p>아래 쿼리로 <span style="color: rgb(0,0,0);">JOB_THREAD_QUEUE_SIZE</span> 설정값을 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;JOB_THREAD_QUEUE_SIZE&#39;;</pre>
+</div></div></li></ul><p> </p><p> </p><h1 id="id-작업(Job)객체생성및실행방법-참고"><strong>참고</strong></h1><hr /><p>다음은 작업 스케줄러 관련 설명을 볼 수 있는 매뉴얼들이다.</p><ul><li><span style="color: rgb(0,0,0);">Administrator's Manual   &gt; 5. 데이터베이스 객체 및 권한 &gt; 작업(Job)</span></li><li><span style="color: rgb(0,0,0);">SQL Reference              &gt; 3. 데이터 정의어 &gt; <img class="confluence-embedded-image confluence-external-resource" height="1" width="2" src="http://support.altibase.com/manual/kr/631b/html/SQL%20Reference/wwhelp/wwhimpl/common/images/spc2w1h.gif" data-image-src="http://support.altibase.com/manual/kr/631b/html/SQL%20Reference/wwhelp/wwhimpl/common/images/spc2w1h.gif">ALTER JOB / <br /></span></li><li><span style="color: rgb(0,0,0);">SQL Reference              &gt; 3. 데이터 정의어 &gt; CREATE JOB</span></li><li><span style="color: rgb(0,0,0);">SQL Reference              &gt; 3. 데이터 정의어 &gt; DROP JOB </span></li><li><span style="color: rgb(0,0,0);">General Reference        &gt; 2. ALTIBASE HDB 프로퍼티 &gt; 기타 프로퍼티</span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">General Reference        &gt; 3. 데이터 딕셔너리<span> &gt; SYS_JOBS_</span><br /></span></span></li></ul><ul style="list-style-type: square;"><li><span style="color: rgb(0,0,0);">매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></span><br /><span style="color: rgb(0,0,0);"><br /></span></li></ul><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><span style="color: rgb(49,85,133);"><span style="color: rgb(49,85,133);"><br style="color: rgb(0,0,0);" /></span></span></span></span></p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

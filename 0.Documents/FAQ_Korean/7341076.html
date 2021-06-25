@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 동시 접속 세션 수(MAX_CLIENT) 증가 시 고려사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 동시 접속 세션 수(MAX_CLIENT) 증가 시 고려사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Apr 01, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051585 {padding: 0px;}
+div.rbtoc1624409051585 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051585 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051585'>
+<ul class='toc-indentation'>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-개요'>개요</a></li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-버전'>버전</a></li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-변경절차'>변경 절차</a></li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-고려사항'>고려 사항</a>
+<ul class='toc-indentation'>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-MAX_CLIENT프로퍼티'>MAX_CLIENT 프로퍼티</a></li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-TRANSACTION_TABLE_SIZE'>TRANSACTION_TABLE_SIZE</a></li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-OS사용자리소스openfiles변경'>OS 사용자 리소스 open files 변경</a></li>
+</ul>
+</li>
+<li><a href='#id-동시접속세션수(MAX_CLIENT)증가시고려사항-참고'>참고</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><h1 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-개요"><strong>개요</strong></h1><hr /><p> </p><p>ALTIBASE HDB 서버에 동시 접속할 수 있는 최대 세션 수 변경 방법에 대해 안내합니다.<br /> 동시 접속 세션 수는 알티베이스 서버 프로퍼티 MAX_CLIENT 로 제한할 수 있는데, 이 프로퍼티를 변경해야 할 때 함께 고려해야 할 사항들이 있습니다.</p><p> </p><p> </p><p> </p><h1 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 모든 버전</p><p> </p><p> </p><p> </p><h1 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-변경절차"><strong>변경 절차</strong></h1><hr /><ol><li>서비스 downtime 확보</li><li>ALTIBASE HDB 서버 shutdown</li><li>알티베이스 서버 프로퍼티 변경. (아래 '고려 사항' 참고)</li><li>OS 사용자 리소스 확인 및 필요 시 변경 (아래 '고려 사항' 참고)</li><li>ALTIBASE HDB 서버 startup</li></ol><p> </p><p> </p><p> </p><h1 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-고려사항"><strong>고려 사항</strong></h1><hr /><h2 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-MAX_CLIENT프로퍼티">MAX_CLIENT 프로퍼티</h2><hr /><p>ALTIBASE HDB 서버에 동시에 접속할 수 있는 최대 세션 수를 설정합니다.<br /> 기본값은 1000 으로 필요 시 그 이상 변경할 수 있습니다. 이 프로퍼티는 운용 중에 변경할 수 없으므로 변경이 필요할 경우  ALTIBASE HDB 서버를 재구동 해야합니다.</p><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-현재설정확인방법">현재 설정 확인 방법</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;MAX_CLIENT&#39;;
+</pre>
+</div></div><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-설정변경방법">설정 변경 방법</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ALTIBASE_HOME/conf/altibase.properties 파일에서 MAX_CLIENT 값 변경
+</pre>
+</div></div><p> </p><p> </p><h2 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-TRANSACTION_TABLE_SIZE">TRANSACTION_TABLE_SIZE</h2><hr /><p>이 프로퍼티는 ALTIBASE HDB 서버에서 동시에 수행할 수 있는 트랜잭션의 최대 수를 설정합니다. 동시 접속 세션 수가 증가하면 동시에 수행하는 트랜잭션 수도 증가할 수 있기 때문에 함께 변경할 것을 권고하고 있습니다.<br /> 이 프로퍼티는 운용 중에 변경할 수 없으므로 변경이 필요한 경우  ALTIBASE HDB 서버를 재구동 해야합니다.<br /> 트랜잭션은 유저가 수행한 트랜잭션 뿐 아니라 시스템 트랜잭션, 이중화 트랜잭션도 포함하기 때문에 MAX_CLIENT 보다 크게 설정해야 합니다.</p><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-현재설정확인방법.1">현재 설정 확인 방법</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TRANSACTION_TABLE_SIZE&#39;;</pre>
+</div></div><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-설정변경방법.1">설정 변경 방법</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ALTIBASE_HOME/conf/altibase.properties 파일에서 TRANSACTION_TABLE_SIZE 값 변경</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>TRANSACTION_TABLE_SIZE 프로퍼티 설정 값은 <span style="color: rgb(0,0,0);">현재 값 보다 큰 2^n 으로 설정할 수 있으며</span> 큰 값에서 작은 값으로 변경이 불가 합니다.</p>
+                    </div>
+    </div>
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>ALTIBASE HDB 서버 버전에 따라 변경 방법이 상이하므로 반드이 이 페이지(<a href="http://aid.altibase.com/x/GQVw" class="external-link" rel="nofollow">TRANSACTION_TABLE_SIZE 변경 시 고려사항</a>)를 참고하여 진행하시기 바랍니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><h2 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-OS사용자리소스openfiles변경">OS 사용자 리소스 open files 변경</h2><hr /><p>open files 는 프로세스에서 열 수 있는 파일의 수로 프로세스가 접근하는 파일 뿐만 아니라 통신 소켓까지 포함합니다.<br /> 예를 들어, 이 값이 10으로 제한된 사용자 환경에서 ALTIBASE HDB 서버를 운영할 경우 동시에 접속 가능한 세션은 10개가 됩니다. (실제로 ALTIBASE HDB 서버가 사용하는 파일까지 고려하면 접속 가능한 세션이 없을 수도 있습니다.)<br /> 해당 운영 체제에서 허용하는 최대 값(가능하다면 unlimited)으로 설정할 것을 권고합니다.</p><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-설정값확인">설정 값 확인</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ulimit -Sn      # soft limit
+2000
+
+$ ulimit -Hn      # hard limit
+unlimited
+</pre>
+</div></div><p>soft limit 는 OS 사용자에게 설정된 값이고 hard limit 은 root  유저에서 설정한 값입니다. soft limit 은 hard limit 보다 클 수 없습니다.<br /> hard limit 보다 큰 값으로 설정해야 할 경우 root 유저의 설정도 변경해야 합니다.</p><p> </p><p> </p><h5 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-변경방법">변경 방법</h5><h6 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-사용자환경설정변경방법">사용자 환경 설정 변경 방법</h6><p>환경 설정 파일(.bash_profile 또는 .profile) 에 아래 명령어를 추가합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Linux/HP-UX/AIX/SunOS 공통</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ id                                                          # ALTIBASE HDB 서버를 구동하는 OS 사용자로 로그인
+uid=509(altibase) gid=512(altibase) groups=512(altibase)
+
+$ vi \~/.bash_profile                                         # 환경 설정 파일에 설정 명령어 추가( 쉘에 따라 환경 설정 파일은 다를 수 있음.)
+
+ulimit \-n unlimited
+
+$ . ~/.bash_profile                                           # 사용자 환경 설정 적용(로그아웃 후
+
+$ ulimit -Sn                                                  # 적용 값 확인
+unlimited
+</pre>
+</div></div><h6 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-root사용자가변경하는방법">root 사용자가 변경하는 방법</h6><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Linux</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">/etc/security/limits.conf 파일에서 사용자의 nofiles 값 변경
+
+설정 예) altibase 사용자의 open file 수를 65535 로 변경할 때
+altibase soft nofile 65535
+altibase hard nofile 65535
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>HP-UX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">kctune maxfiles=unlimited</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AIX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">/etc/security/limits 에서 nofiles 변경</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SunOS</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">set rlim_fd_max=unlimited</pre>
+</div></div><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="id-동시접속세션수(MAX_CLIENT)증가시고려사항-참고"><strong>참고</strong></h1><hr /><ul><li>ALTIBASE HDB 서버 프로퍼티 관련 설명은 <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a> 에서 General Reference 메뉴얼을 참고하세요. </li><li>MAX_CLIENT 및 관련 설정들은 최대값을 지정한 것이기 때문에 더 크게 변경했다고 해서 DB 성능이나 시스템 자원에 영향을 주지는 않습니다.</li><li>설정 변경으로 동시 접속 세션 및 동시에 수행하는 트랜잭션이 증가할 경우 시스템 자원이 증가할 수 있습니다만, 운용 환경에 따라 달라지는 부분이라 어느 정도 영향을 미치는지는 답변하기가 어렵습니다.</li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

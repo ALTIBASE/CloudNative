@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Notes/Considerations when increasing the number of concurrent connection sessions (MAX_CLIENT)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Notes/Considerations when increasing the number of concurrent connection sessions (MAX_CLIENT)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145441 {padding: 0px;}
+div.rbtoc1624409145441 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145441 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145441'>
+<ul class='toc-indentation'>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Overview'>Overview</a></li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Version'>Version</a></li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-ChangingProcedure'>Changing Procedure</a></li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Considerations'>Considerations</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-MAX_CLIENTproperty'>MAX_CLIENT property</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtocheckthecurrentsettings'>How to check the current settings</a></li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochangethesettings'>How to change the settings</a></li>
+</ul>
+</li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-TRANSACTION_TABLE_SIZE'>TRANSACTION_TABLE_SIZE</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtocheckthecurrentsettings.1'>How to check the current settings</a></li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochangethesettings.1'>How to change the settings</a></li>
+</ul>
+</li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-ChangingOSuserresourceopenfiles'>Changing OS user resource open files</a>
+<ul class='toc-indentation'>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Checkthesettingvalue'>Check the setting value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Overview">Overview</h1><hr /><p>This document explains how to change the maximum number of sessions that can be connected to the ALTIBASE HDB server at the same time.</p><p>The number of concurrent sessions can be limited by the Altibase server property MAX_CLIENT, and there are some things to consider when changing this property.</p><p> </p><h1 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Version">Version</h1><hr /><p>All the ALTIBASE HDB versions</p><h1 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-ChangingProcedure">Changing Procedure</h1><hr /><ol><li>Secure service downtime</li><li>Shutdown ALTIBASE HDB server</li><li>Change ALTIBASE server properties (refer to 'Considerations' below)</li><li>Check OS user resources and change them if necessary (refer to' Considerations' below)</li><li>Startup ALTIBASE HDB server</li></ol><p> </p><h1 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Considerations">Considerations</h1><hr /><h2 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-MAX_CLIENTproperty">MAX_CLIENT property</h2><hr /><p>Set the maximum number of sessions that can be connected to the ALTIBASE HDB server at the same time.</p><p>The default value is 1000, which can be changed more if necessary. Since this property cannot be changed during operation, the ALTIBASE HDB server must be restarted if changes are required.</p><h4 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtocheckthecurrentsettings">How to check the current settings</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;MAX_CLIENT&#39;;</pre>
+</div></div><h4 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochangethesettings">How to change the settings</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Change the MAX_CLIENT value in the $ALTIBASE_HOME/conf/altibase.properties file</pre>
+</div></div><h2 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-TRANSACTION_TABLE_SIZE"><span style="color: rgb(0,0,0);">TRANSACTION_TABLE_SIZE</span></h2><hr /><p>This property sets the maximum number of transactions that can be performed concurrently on the ALTIBASE HDB server. As the number of concurrently connected sessions increases, the number of concurrent transactions may increase. Therefore, it is recommended to change them together.</p><p>Since this property cannot be changed during operation, the ALTIBASE HDB server must be restarted if it needs to be changed.</p><p>Transactions should be set to be larger than MAX_CLIENT because not only transactions performed by users, but also system transactions and replication transactions.</p><h4 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtocheckthecurrentsettings.1"><span style="color: rgb(0,0,0);">How to check the current settings</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TRANSACTION_TABLE_SIZE&#39;; </pre>
+</div></div><h4 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochangethesettings.1">How to change the settings</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">Change the TRANSACTION_TABLE_SIZE value in the $ALTIBASE_HOME/conf/altibase.properties file</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>The TRANSACTION_TABLE_SIZE property setting value can be set to 2^n, which is larger than the current value, and cannot be changed from a large value to a small value.</p>
+                    </div>
+    </div>
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Since the change method differs depending on the ALTIBASE HDB server version, be sure to refer to this page (Considerations when changing TRANSACTION_TABLE_SIZE) to proceed.</p>
+                    </div>
+    </div>
+<h2 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-ChangingOSuserresourceopenfiles">Changing OS user resource open files</h2><hr /><p>open files are the number of files that can be opened by a process, including not only files accessed by the process, but also communication sockets.</p><p>For example, if the ALTIBASE HDB server is operated in a user environment where this value is limited to 10, 10 sessions can be connected at the same time. (In fact, considering the files used by the ALTIBASE HDB server, there may not be an accessible session.)</p><p>It is recommended to set it to the maximum value allowed by the operating system (if possible, unlimited).</p><h4 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Checkthesettingvalue">Check the setting value</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ ulimit -Sn      # soft limit
+2000
+
+$ ulimit -Hn      # hard limit
+unlimited</pre>
+</div></div><p>The soft limit is the value set by the OS user, and the hard limit is the value set by the root user. The soft limit cannot be greater than the hard limit.</p><p>If the user needs to set it to a value greater than the hard limit, the user also needs to change the setting of the root user.</p><h5 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochange">How to change</h5><h6 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtochangeuserpreferences">How to change user preferences</h6><p>Add the following command to the environment configuration file (.bash_profile or .profile).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ id                                                          # Log in as the OS user running the ALTIBASE HDB server
+uid=509(altibase) gid=512(altibase) groups=512(altibase)
+
+$ vi \~/.bash_profile                                         # Add configuration command to environment configuration file (Environment configuration file may be different depending on the shell.)
+
+ulimit \-n unlimited
+
+$ . ~/.bash_profile                                           # Apply user preferences (after logout)
+
+$ ulimit -Sn                                                  # Check the applied value
+unlimited</pre>
+</div></div><h6 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Howtherootuserchanges">How the root user changes</h6><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Change the user&#39;s nofiles value in /etc/security/limits.conf file
+
+Setting example) When changing the number of open files of altibase user to 65535
+altibase soft nofile 65535
+altibase hard nofile 65535</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>HP-UX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">kctune maxfiles=unlimited</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AIX</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">Change nofiles in /etc/security/limits</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SunOS</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">set rlim_fd_max=unlimited</pre>
+</div></div><p> </p><h1 id="Notes/Considerationswhenincreasingthenumberofconcurrentconnectionsessions(MAX_CLIENT)-Reference">Reference</h1><hr /><ul><li>For information on ALTIBASE HDB server properties, refer to the General Reference manual at <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a>.</li><li>MAX_CLIENT and related settings are the maximum values, so large changes do no affect DB performance or system resources.</li><li>System resources may increase if the number of concurrent connection sessions and concurrent transactions increases due to configuration changes. However, it is difficult to answer how much impact it will have as it depends on the operating environment.</li></ul><p> </p><div><span style="color: rgb(0,0,0);font-size: 20.0px;"><br /></span></div><div><span style="color: rgb(0,0,0);font-weight: bold;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Altibase HDB package installer</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Installation-Guide_14647632.html">Altibase Installation Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Altibase HDB package installer
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="id-1.AltibaseHDBpackageinstaller-/*&lt;![CDATA[*/div.rbtoc1624409363214{padding:0px;}div.rbtoc1624409363214ul{list-style:disc;margin-left:0px;}div.rbtoc1624409363214li{margin-left:0px;padding-left:0px;}/*]]&gt;*/Overview#id-1.AltibaseHDBpackageinstaller-Overvie"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409363214 {padding: 0px;}
+div.rbtoc1624409363214 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409363214 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409363214'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-Overview'>Overview</a></li>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-AltibaseHomeDirectory'>Altibase Home Directory</a></li>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-APatchDirectory'>APatch Directory</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-patchinfofile'>patchinfo file</a></li>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-pkg_patch_x_x_x_x.txtfile'>pkg_patch_x_x_x_x.txt file</a></li>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-altibase_base_install.logfile'>altibase_base_install.log file</a></li>
+<li><a href='#id-1.AltibaseHDBpackageinstaller-Backupdirectory'>Backup directory</a></li>
+</ul>
+</li>
+</ul>
+</div></h2><hr /><h2 id="id-1.AltibaseHDBpackageinstaller-Overview">Overview</h2><p><span style="color: rgb(51,51,51);">The Altibase Package Installer is a Java-based installer. The user can easily install Altibase products such as database server, client libraries, and tools using the Altibase package installer.</span></p><h2 id="id-1.AltibaseHDBpackageinstaller-AltibaseHomeDirectory"><strong>Altibase Home Directory</strong></h2><p>When installing using the Altibase Package Installer, a home directory and an APatch directory are created.</p><p>The Altibase home directory is the default directory where Altibase software is installed.</p><p>The default home directory is as follows.</p><ul><li><p>When installing the ALTIBASE HDB server product: </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <pre>$HOME/altibase-HDB-server-&lt;version&gt;</pre>
+                    </div>
+    </div>
+</li><li><p>When installing the ALTIBASE HDB client product:</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <pre>$HOME/altibase-HDB-client-&lt;version&gt;</pre>
+                    </div>
+    </div>
+</li></ul><h2 id="id-1.AltibaseHDBpackageinstaller-APatchDirectory"><strong>APatch Directory</strong></h2><p>The name of the Altibase Package Installer directory is APatch, which is located in the Altibase home directory. </p><p>This directory contains files containing information installed product and a patched version. The files are as follows.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>patchinfo file</p><p>pkg_patch_&lt;version&gt;.txt file</p><p>altibase_base_install.log file</p><p>Backup directory</p>
+                    </div>
+    </div>
+<h3 id="id-1.AltibaseHDBpackageinstaller-patchinfofile"><strong>patchinfo file</strong></h3><p>This file contains the following information:</p><ul><li>Information on the base release version and patch version of the currently installed Altibase product</li><li>Information on the environment in the product such as operating system, operating system patch, C/C++ compiler and Java compiler are built</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">PRODUCT_SIGNATURE=server-7.1.0-64-release
+PATCH_VERSION=0_0_0_0
+=======  OS INFO  =======
+Linux rhel6-x64 2.6.32-71.el6.x86_64 #1 SMP Wed Sep 1 01:33:01 EDT 2010 x86_64 x86_64 x86_64 GNU/Linux
+=======  PATCH INFO  =======
+2.6.32-71.el6.x86_64
+=======  COMPILER INFO  =======
+gcc version 4.6.3 (GCC)
+glibc 2.12
+=======  JAVA INFO  =======
+java version &quot;1.5.0_22&quot;
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_22-b03)
+Java HotSpot(TM) 64-Bit Server VM (build 1.5.0_22-b03, mixed mode)</pre>
+</div></div><h3 class="ALTIBASE4" id="id-1.AltibaseHDBpackageinstaller-pkg_patch_x_x_x_x.txtfile"><strong>pkg_patch_x_x_x_x.txt file</strong></h3><p>This file is automatically created with the name pkg_patch_&lt;installed version number&gt;.txt each time a product is patched. This file contains the revision number of the source code modified to make the patch.</p><ul><li><p>The following example shows the information of the APatch director after installing the base release 7.1.0.0.0.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls
+pkg_patch_0_0_0_0.txt</pre>
+</div></div></li><li><p>The following example shows the information of the APatch directory after installing patch 7.1.0.0.10.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ls
+pkg_patch_0_0_0_0.txt  pkg_patch_0_0_0_10.txt
+
+$cat pkg_patch_0_0_0_10.txt
+Repository: /altidev4/tags/altibase_7_1_0_0_10_tag/
+Revision: xxxxx
+Last Changed Rev: xxxxx</pre>
+</div></div></li></ul><h3 class="ALTIBASE4" id="id-1.AltibaseHDBpackageinstaller-altibase_base_install.logfile">altibase_base_install.log file</h3><p>All the actions during the most recent installation are recorded in this file.</p><h3 class="ALTIBASE4" id="id-1.AltibaseHDBpackageinstaller-Backupdirectory">Backup directory</h3><p>When installing the patch, the Altibase Package Installer creates a backup of the file to which the patch is applied and saves it in the $ALTIBASE_HOME/APatch directory. In this directory, separate backup directories created for each patch are located. These backup files will be used later to roll back the patch.</p><p>In addition, executable files used when uninstalling or rolling back a patch are installed in the $ALTIBASE_HOME/APatch directory when installing the product or applying a patch.</p><p>* Note 1: On the HP platform, automatic backup and rollback are not supported when patching the installer. The user must manually back up data and log files.</p><p>* Note 2: Only files installed through the package installer are backed up to this backup directory, and files created after product installation, such as data files and log files, are not backed up.</p><p>The following shows the information of the APatch directory after installing the base release 7.1.0.0.0.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p class="ALTIBASE">altibase_base_install.log  patchinfo</p><p class="ALTIBASE">pkg_patch_0_0_0_0.txt                     uninstall-base</p><p class="A-">   uninstall-base: Executable file to uninstall base release 7.1.0.0.0.</p>
+                    </div>
+    </div>
+<div><p> </p><p>The following shows the information of APatch directory after applying patch 7.1.0.0.10.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p class="ALTIBASE">ltibase_base_install.log   pkg_patch_0_0_0_10.txt</p><p class="ALTIBASE">uninstall-p0_0_0_10           patchinfo</p><p class="ALTIBASE">rollback-p0_0_0_10/           pkg_patch_0_0_0_0.txt</p><p class="ALTIBASE">uninstall-base</p><p class="A-CxSpFirst">   uninstall-base: Executable file to uninstall base release 7.1.0.0.0</p><p class="A-CxSpMiddle">   rollback-p0_0_0_10: Directory where backups of files with patch 7.1.0.0.10 applied are located</p><p class="A-CxSpMiddle">   uninstall-p0_0_0_10: Executable to remove patch 7.1.0.0.10 and revert to the previous version of the patch installation. Files for reverting to the previous version are stored in the rollback-p0_0_0_10 directory.</p>
+                    </div>
+    </div>
+</div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

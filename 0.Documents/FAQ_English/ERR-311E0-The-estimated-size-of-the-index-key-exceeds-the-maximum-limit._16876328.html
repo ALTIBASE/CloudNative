@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-311E0 The estimated size of the index key exceeds the maximum limit.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-311E0 The estimated size of the index key exceeds the maximum limit.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147943 {padding: 0px;}
+div.rbtoc1624409147943 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147943 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147943'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Version'>Version</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Cause'>Cause</a></li>
+<li><a href='#ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Solution'>Solution</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Version">Version</h1><hr /><p>Version 6.1.1 or earlier.</p><p>No error occurs in version 6.3.1 or later.</p><p> </p><h1 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Symptom">Symptom</h1><hr /><p>The following error occurs when using join or Order by / Group by on a disk table.</p><p>[ERR-311E0: The estimated size of the index key exceeds the maximum limit.]</p><p> </p><h1 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Cause">Cause</h1><hr /><p>The description of the error can be checked using the altierr utility as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ altierr 0x311E0</span><br /><span> 0x311E0 ( 201184) qpERR_ABORT_QDX_MAXIMUM_KEY_SIZE_EXCEED The estimated size of the index key exceeds the maximum limit.</span><br /><span> # *Cause:</span><br /><span> # - The estimated size of the index key exceeds the maximum limit.</span><br /><span> # *Action:</span><br /><span> # - Please reduce the number of key columns.</span></p>
+</div></div><p>When performing joins or order by / group by on a <strong>disk table</strong>, Altibase uses Temp Tablespace internally.</p><p>Temp Tablespace is a Disk Tablespace and has a fixed page size of 8K. When using Temp Tablespace, the above error may occur if there is a need to create more than 8K records.</p><p>For reference, if the size of the disk tablespace exceeds 1Page(8K), the data length is approximately 3000Bytes or more.</p><p> </p><p># Example</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T1( I1 CHAR(6000) ) TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; insert into t1 values(1);
+1 row inserted.
+iSQL&gt; insert into t1 values(2);
+1 row inserted.
+iSQL&gt; insert into t1 values(3);
+1 row inserted.
+iSQL&gt; SELECT * FROM T1 ORDER BY I1;
+[ERR-311E0 : The estimated size of the index key exceeds the maximum limit.]</pre>
+</div></div><p> </p><p># Example of 6.3.1 version</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; CREATE TABLE T1( I1 CHAR(6000) ) TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; insert into t1 values(1);
+1 row inserted.
+iSQL&gt; insert into t1 values(2);
+1 row inserted.
+iSQL&gt; insert into t1 values(3);
+1 row inserted.
+iSQL&gt; SELECT * FROM T1 ORDER BY I1;
+I1
+--------------
+1
+2
+3
+3 rows selected.</pre>
+</div></div><p> </p><h1 id="ERR-311E0Theestimatedsizeoftheindexkeyexceedsthemaximumlimit.-Solution">Solution</h1><hr /><p>1. The TEMP_TBS_MEMORY hint can be used to avoid the 1 Page (8K) size limitation of the disk temp tablespace.</p><p>In addition, this hint is effective in improving query performance because the memory area is used instead the disk as the temp area.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; SELECT  /*+ TEMP_TBS_MEMORY */ * FROM T1 ORDER BY I1;
+I1
+--------------
+1
+2
+3
+3 rows selected.</pre>
+</div></div><p>2. Upgrade to version 6.3.1 or higher.</p><p>In version 6.3.1 or later, this error does not occur in the same situation.</p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

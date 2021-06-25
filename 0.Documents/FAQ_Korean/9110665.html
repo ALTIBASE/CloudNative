@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : IPC 통신을 위한 알티베이스 서버 설정</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : IPC 통신을 위한 알티베이스 서버 설정
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> heejung lee</span> on Feb 11, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051163 {padding: 0px;}
+div.rbtoc1624409051163 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051163 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051163'>
+<ul class='toc-indentation'>
+<li><a href='#IPC통신을위한알티베이스서버설정-개요'>개요</a></li>
+<li><a href='#IPC통신을위한알티베이스서버설정-버전'>버전</a></li>
+<li><a href='#IPC통신을위한알티베이스서버설정-ALTIBASEHDB서버설정'>ALTIBASE HDB 서버 설정</a></li>
+<li><a href='#IPC통신을위한알티베이스서버설정-OS설정'>OS 설정</a></li>
+<li><a href='#IPC통신을위한알티베이스서버설정-응용프로그램의통신방법'>응용 프로그램의 통신 방법</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><h1 id="IPC통신을위한알티베이스서버설정-개요"><strong>개요</strong></h1><hr /><p><a name="9005123" rel="nofollow"></a>ALTIBASE HDB 에서 제공하는 데이터베이스 서버와 클라이언트 간 통신 방법은 아래 4가지가 있습니다. 이 중 IPC 통신을 위해 필요한  ALTIBASE HDB 및 OS 설정에 대해 설명합니다. </p><ul><li><p>TCP/IP</p></li><li><p>Unix Domain 소켓</p></li><li><p>공유 메모리를 이용한 IPC</p></li><li><p>SSL/TLS  (ALTIBASE HDB 6.5.1 부터 지원)</p></li></ul><p>각 통신 방법에 대한 설명은 Administrator's Manual 에서 '12. 서버/클라이언트 통신' 부분을 참고하시기 바랍니다.</p><p>매뉴얼 다운로드 페이지 : <a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></p><p> </p><p> </p><p> </p><p> </p><h1 id="IPC통신을위한알티베이스서버설정-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 모든 버전</p><p> </p><p> </p><p> </p><p> </p><h1 id="IPC통신을위한알티베이스서버설정-ALTIBASEHDB서버설정"><strong>ALTIBASE HDB 서버 설정</strong></h1><hr /><p>기본적으로 알티베이스 서버는 IPC 접속을 허용하지 않습니다. 그래서 IPC 커넥션 타입으로 알티베이스 서버에 접속하기 위해 알티베이스 서버 프로퍼티를 변경해줘야 합니다. </p><p>관련 프로퍼티들은 알티베이스 서버 운용 상태에서 변경할 수 없습니다. 따라서 프로퍼티 값을 변경하기 위해서 알티베이스 서버는 재구동이 필요합니다. </p><h3 id="IPC통신을위한알티베이스서버설정-IPC_PORT_NO">IPC_PORT_NO</h3><p>Windows 시스템에서 알티베이스 서버를 운용할 때 필요한 프로퍼티입니다.<br />Unix 및 Linux 에서는 IPC 연결을 위해 파일 형태의 '유닉스 도매인 소켓'을 사용하지만 Windows 에서는 이를 지원하지 않기 때문에 IPC 연결을 위해 TCP 포트가 필요합니다. <br />Windows 에서 IPC 연결은 TCP 연결을 통해 공유 메모리, 세마포어, 뮤텍스를 사용하여 통신합니다.</p><p> </p><h3 id="IPC통신을위한알티베이스서버설정-IPC_CHANNEL_COUNT">IPC_CHANNEL_COUNT</h3><p><a name="9006139" rel="nofollow"></a>알티베이스 서버에 접속할 수 있는 최대 IPC 세션 수를 설정하는 프로퍼티입니다. 기본값이 0 으로 알티베이스 서버는 IPC 접속을 허용하지 않도록 설정되어 있습니다. </p><p> </p><h3 id="IPC통신을위한알티베이스서버설정-IPC_FILEPATH">IPC_FILEPATH</h3><p>IPC는 파일 형태의 '유닉스 도메인 소켓'을 통해 ALTIBASE HDB 서버와 통신합니다.<br />'유닉스 도메인 소켓' 파일이 존재하지 않거나 경로가 올바르지 않게 설정되어 있는 경우 연결이 실패합니다.</p><p>이 경로는<strong> ALTIBASE HDB 서버 5.5.1.4.2 버전부터 </strong><span>IPC_FILEPATH</span><strong> </strong><span>프로퍼티를 통해 사용자가 임의로 변경할 수 있으며 </span>설정값은 성능 뷰에서 확인할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;IPC_FILEPATH&#39;;</pre>
+</div></div><p> </p><div class="syntaxhighlighter nogutter  java"><p><strong>ALTIBASE HDB 서버 5.5.1.4.2 이전 버전</strong>은 기본 경로를 변경할 수 없으며 확인 방법을 따로 제공하지 않습니다.</p><ul><li>ALTIBASE HDB 서버 4.3.9 버전의 기본 설정 <br />유닉스 도메인 소켓 파일 생성 위치와 이름은 $ALTIBASE_HOME/trc/alti-ipc 입니다. <br /><br /></li><li>ALTIBASE HDB 서버 4.3.9 이후부터 5.5.1.4.2 이전 버전 기본 설정<br />유닉스 도메인 소켓 파일 생성 위치와 이름은 $ALTIBASE_HOME/trc/cm-ipc 입니다. <br /><br /><br /></li></ul></div><h3 id="IPC통신을위한알티베이스서버설정-프로퍼티변경방법"><strong>프로퍼티 변경 방법</strong></h3><ol><li><p>altibase.properties 파일 변경<br />$ALTIBASE_HOME/conf/altibase.properties 파일에서 위에서 설명한 프로퍼티 중에서 필요한 값을 변경하고 altibase.properites 파일을 저장합니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties</pre>
+</div></div></li><li><p>ALTIBASE HDB 재구동<br />변경한 프로퍼티 값을 알티베이스 서버에 반영하기 위해 알티베이스 서버를 재구동합니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server restart</pre>
+</div></div></li><li><p>프로퍼티 확인 방법<br />값이 제대로 반영되었는 지 확인합니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ is
+iSQL&gt; SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME IN (&#39;IPC_FILEPATH&#39;, &#39;IPC_CHANNEL_COUNT&#39;, &#39;IPC_FILEPATH&#39;);</pre>
+</div></div></li><li><p>IPC 접속 테스트<br />IPC 타입으로 iSQL 접속 테스트 해 봅니다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ export ISQL_CONNECTION=IPC                                                # iSQL 접속 타입을 설정하는 환경변수를 변경합니다. 
+$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 5.5.1.4.6
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = IPC, SERVER = localhost, PORT_NO = 20300                  # ISQL_CONNECTION = IPC 으로 나오고 iSQL 프롬프트가 떠야 IPC 접속 성공
+iSQL&gt;     </pre>
+</div></div></li></ol><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="IPC통신을위한알티베이스서버설정-OS설정"><strong>OS 설정</strong></h1><hr /><p><span style="color: rgb(0,0,0);">IPC 통신에는 공유메모리와 세마포어라는 자원이 사용됩니다. 따라서 IPC 타입을 사용하려면 이와 관련된 커널 파라미터를 설정해야 합니다. </span></p><p><span style="color: rgb(0,0,0);">OS 에 따라 아래 문서를 참고하세요. AIX 와 WIndows 는 권고 설정이 없습니다. </span></p><ul><li><span style="color: rgb(0,0,0);">Linux : <a href="http://support.altibase.com/fileDownload.do?gubun=wp&amp;no=60" class="external-link" rel="nofollow">[기술문서] ALTIBASE 운영을 위한 Linux 설정가이드</a></span></li><li><span style="color: rgb(0,0,0);">SunOS : <a href="http://support.altibase.com/fileDownload.do?gubun=wp&amp;no=23" class="external-link" rel="nofollow">[기술문서] ALTIBASE 운영을 위한 HPUX 설정가이드</a></span></li><li><span style="color: rgb(0,0,0);">HP-UX : <a href="http://support.altibase.com/fileDownload.do?gubun=wp&amp;no=22" class="external-link" rel="nofollow">[기술문서] ALTIBASE 운영을 위한 Solaris 설정가이드</a></span><br /><br /></li></ul><p> </p><p> </p><p> </p><p> </p><h1 id="IPC통신을위한알티베이스서버설정-응용프로그램의통신방법"><strong>응용 프로그램의 통신 방법</strong></h1><hr /><p>응용 프로그램에서의 연결 속성 설정 방법은 각 매뉴얼을 참고하시기 바랍니다. </p><ul><li>CLI/ODBC : CLI User's Manual 에서 2. ALTIBASE HDB CLI 함수 -&gt; SQLDriverConnect 함수 설명 참고<span style="color: rgb(0,0,0);"> </span></li><li>APRE (C/C++ Precompiler) : Precompiler User's Manual 에서 6. 내장 SQL문 -&gt; 연결 관련 SQL문 -&gt; CONNECT</li><li>JDBC :  JDBC User's Manual 에서 1. JDBC 시작하기 -&gt; 연결 정보</li></ul><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

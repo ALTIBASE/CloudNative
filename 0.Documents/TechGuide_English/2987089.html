@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Data Types &amp; Host Variables</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Data Types &amp; Host Variables
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Dec 28, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347998 {padding: 0px;}
+div.rbtoc1624409347998 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347998 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347998'>
+<ul class='toc-indentation'>
+<li><a href='#DataTypes&amp;HostVariables-APREcompileoptions'>APRE compile options</a></li>
+<li><a href='#DataTypes&amp;HostVariables-DataTypes'>Data Types</a></li>
+<li><a href='#DataTypes&amp;HostVariables-INDICATOR'>INDICATOR</a></li>
+<li><a href='#DataTypes&amp;HostVariables-CURSORVariable'>CURSOR Variable</a></li>
+<li><a href='#DataTypes&amp;HostVariables-CONTEXTVariable'>CONTEXT Variable</a></li>
+<li><a href='#DataTypes&amp;HostVariables-HOSTStructure'>HOST Structure</a></li>
+<li><a href='#DataTypes&amp;HostVariables-POINTERtype'>POINTER type</a></li>
+<li><a href='#DataTypes&amp;HostVariables-CONVBUFSZ'>CONVBUFSZ</a></li>
+</ul>
+</div>
+
+<h2 id="DataTypes&amp;HostVariables-APREcompileoptions">APRE compile options</h2>
+
+<p>APRE has three parse-options. (refer to this document).</p>
+
+<p>If you want to declare host-variables without &quot;EXEC SQL BEGIN DECLARE&quot; and &quot;EXEC SQL END DECLARE&quot; clauses,</p>
+
+<p>You have to use option like &quot;-parse full&quot;.</p>
+
+
+<h2 id="DataTypes&amp;HostVariables-DataTypes">Data Types</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Internal Type in DB </p></th>
+<th class="confluenceTh"><p> C Type in your source-code </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NUMERIC-Types </p></td>
+<td class="confluenceTd"><p> short, int, long, double, float </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> VARCHAR </p></td>
+<td class="confluenceTd"><p> char, char[n] varchar[n] </p></td>
+<td class="confluenceTd"><p> Single character or n-byte character array varchar is &quot;struct { int len; char arr[n] ;} &quot; </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHAR </p></td>
+<td class="confluenceTd"><p> char, char[n] </p></td>
+<td class="confluenceTd"><p> N-byte character array </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NUMBER(p,s) </p></td>
+<td class="confluenceTd"><p> short int long float double </p></td>
+<td class="confluenceTd"><p> Small integer integer large integer floating point number double-precision floating point number </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> char[n] SQL_DATE_STRUCTSQL_TIME_STRUCTSQL_TIMESTAMP_STRUCT </p></td>
+<td class="confluenceTd"><p> N-byte character array year, month, day : small integer hour, minute, second : small integer year, month, day, hour, minute, second : small integer and fraction : integer </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BINARY </p></td>
+<td class="confluenceTd"><p> APRE_CLOBAPRE_BLOBAPRE_BINARYAPRE_BYTESAPRE_NIBBLE </p></td>
+<td class="confluenceTd"><p> N-byte charater array. Definition in APRE is as follows. typedef char APRE_CLOB; typedef char APRE_BLOB; typedef char APRE_BINARY; typedef char APRE_BYTES; typedef char APRE_NIBBLE; </p></td>
+</tr>
+</tbody></table></div>
+
+<ul>
+	<li>APRE doesn't support a &quot;ROWID&quot; type.</li>
+	<li>APRE doesn't support &quot;LONG&quot; and &quot;RAW&quot; type.</li>
+	<li>For example, Even though you can use a char-type host-variable for integer-column, We don't recommend a conversion between char-type and numeric-type.</li>
+</ul>
+
+
+<h2 id="DataTypes&amp;HostVariables-INDICATOR">INDICATOR</h2>
+
+<p>You can use every host-varaible with optional indicator-varaible defined as 4-byte integer.</p>
+
+<p>Indicator-variable indicates that a return-value from DB is NULL. </p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">char name[20];
+int name_ind;
+...
+EXEC SQL SELECT name INTO :name INDICATOR :name_ind FROM employees ...
+// or
+EXEC SQL SELECT name INTO :name :name_ind FROM employees ...
+\\
+* If indicator-value is &quot;-1&quot; as output, it means that NULL was returned.
+* If indicator-value is &quot;-1&quot; as input, DBMS will assign a NULL to the column, ignoring the value of host-variable.</pre>
+</div></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="DataTypes&amp;HostVariables-CURSORVariable">CURSOR Variable</h2>
+
+<p>APRE doesn't support a cursor-variable like &quot;SQL_CURSOR&quot;.</p>
+
+<h2 id="DataTypes&amp;HostVariables-CONTEXTVariable">CONTEXT Variable</h2>
+
+<p>APRE doesn't support a context-variable like &quot;ALLOCATE&quot;, &quot;CONTEXT&quot;.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="DataTypes&amp;HostVariables-HOSTStructure">HOST Structure</h2>
+
+<p>You can use a structure host-variable as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">typedef struct
+{
+char emp_name[21];
+int emp_age;
+} emp_record;
+...
+emp_record new_emp;
+ 
+sprintf(new_emp.emp_name, &quot;ckh0618&quot;);
+new_emp.emp_age = 35;
+ 
+ 
+ 
+EXEC SQL INSERT INTO employee (ename, age) VALUES (:new_emp);
+// or
+EXEC SQL SELECT ename, age INTO :new_emp FROM employee;</pre>
+</div></div>
+
+<p>APRE supports host-structure and arrays...</p>
+
+<p><br class="atl-forced-newline" /></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">typedef struct
+{
+char emp_name[30][21];
+int emp_age[30];
+} emp_record;
+...</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+
+<p>You can not use a structure type in structure like ORACLE.</p>
+<ul>
+	<li>APRE supports &quot;For&quot; clauses.int rows_to_insert;<br />
+rows_to_insert = 2;<br />
+EXEC SQL FOR :rows_to_insert INSERT INTO employee VALUES (:array_variable);</li>
+</ul>
+
+
+<p>You can use Indicator structure and arrays as follows.
+<br class="atl-forced-newline" /></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">typedef struct
+{
+char emp_name[21];
+int emp_age;
+} emp_record;
+
+
+typedef struct
+{
+int name_ind;
+int age_ind;
+} emp_ind;
+
+
+emp_record new_rec;
+emp_ind new_ind;
+
+
+EXEC SQL SELECT name, age INTO :new_rec INDICATOR :emp_ind FROM employee;</pre>
+</div></div>
+
+<p>Indicator structure arrays sample-code.
+<br class="atl-forced-newline" /></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">typedef struct
+{
+char emp_name[30][21];
+int emp_age[30];
+} emp_record;
+
+
+typedef struct
+{
+int name_ind[30];
+int age_ind[30];
+} emp_ind;
+
+
+emp_record new_rec;
+emp_ind new_ind;
+
+
+EXEC SQL SELECT name, age INTO :new_rec INDICATOR :emp_ind FROM employee;</pre>
+</div></div>
+
+<h2 id="DataTypes&amp;HostVariables-POINTERtype">POINTER type</h2>
+
+<p>You can use a pointer type.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">....
+char *ptr;
+
+ptr = (char*)malloc(100);
+...
+EXEC SQL SELECT name INTO :ptr FROM employee...</pre>
+</div></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<p>Also, You can use it as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">typedef struct
+{
+char emp_name[30][21];
+int emp_age[30];
+} emp_record;
+
+emp_record *rec;
+
+
+rec = (emp_record*)malloc(sizeof(emp_record));
+...
+EXEC SQL SELECT name, age INTO :rec FROM employee ...
+...
+printf (&quot;name = %s, age = %d\n&quot;,
+rec-&gt;name, rec-&gt;age);</pre>
+</div></div>
+
+<h2 id="DataTypes&amp;HostVariables-CONVBUFSZ">CONVBUFSZ</h2>
+
+<p>It is not supported-feature.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

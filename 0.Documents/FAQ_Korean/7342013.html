@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ALTIBASE HDB 5.5.1, 6.1.1, 6.3.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7342005.html">디스크 테이블스페이스 사용량</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ALTIBASE HDB 5.5.1, 6.1.1, 6.3.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> richard.nahm	</span> on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053948 {padding: 0px;}
+div.rbtoc1624409053948 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053948 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053948'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-개요'>개요</a></li>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-관련버그'>관련 버그</a>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-BUG-39985V$DISK_UNDO_USAGE계산오류수정'>BUG-39985 V$DISK_UNDO_USAGE 계산 오류 수정</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-개요"><strong>개요</strong></h1><hr /><ul><li>ALTIBASE HDB 5.5.1 에서 V$DISK_UNDO_USAGE 가 추가되었습니다.</li><li>이 성능 뷰를 통해 언두 테이블스페이스의 사용량을 확인할 수 있습니다.</li></ul><p> </p><p> </p><p> </p><p><strong style="color: rgb(0,0,0);font-size: 24.0px;">디스크 테이블스페이스 사용량 조회 쿼리</strong></p><hr /><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>디스크 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT DECODE(TYPE, 3, &#39;SYSTEM TABLESPACE&#39;, 4, &#39;USER DATA TABLESPACE&#39;, 5, &#39;SYSTEM TABLESPACE&#39;, 6, &#39;USER TEMP TABLESPACE&#39;, 7, &#39;SYSTEM TABLESPACE&#39;) TBS_TYPE
+     , NAME TBS_NAME                                                                                                                                    -- TBS_NAME : 테이블스페이스 이름
+     , TO_CHAR((D.MAX * PAGE_SIZE / 1024 /1024), &#39;999,999,999&#39;) &#39;MAX(M)&#39;                                                                                -- MAX(M)   : 테이블스페이스 최대 크기
+     , TO_CHAR((TOTAL_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;                                                                      -- TOTAL(M) : 현재까지 할당 받은 페이지의 합계.
+     , DECODE(TYPE, 7, TO_CHAR((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;)) &#39;ALLOC(M)&#39;                                                 -- ALLOC(M) : 현재까지 할당 받은 페이지 중 &#39;빈 페이지&#39;를 제외한 &#39;사용 중인 페이지&#39;만의 합계.
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;), 
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;),
+                    7, TO_CHAR(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , LPAD(&#39;-&#39;, 12))&#39;USED(M)&#39;                                                                                                          -- USED(M)  : 사용 중인 페이지 중에서 데이터가 적재된 크기
+     , DECODE(TYPE, 7, TO_CHAR((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, &#39;99.99&#39;),
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;),
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT/D.MAX) * 100, &#39;99.99&#39;)) &#39;USAGE(%)&#39;                                                                 -- USAGE(%) : 사용량(MAX 대비 USED)
+     , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE                             -- STATE    : 테이블스페이스 상태
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                         FROM X$SEGMENT
+                                        GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE
+          FROM V$PROPERTY
+         WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID ;
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_TYPE              TBS_NAME                        MAX(M)           TOTAL(M)         ALLOC(M)         USED(M)                   USAGE(%)         STATE           AUTOEXTEND  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYSTEM TABLESPACE     SYS_TBS_DISK_DATA                      2,048              952              952              952               46.46           ONLINE          ON   
+SYSTEM TABLESPACE     SYS_TBS_DISK_UNDO                      2,048              704                8                8                 .39           ONLINE          ON   
+SYSTEM TABLESPACE     SYS_TBS_DISK_TEMP                      2,048              100                1                -                 .02           ONLINE          ON   
+USER DATA TABLESPACE  PART_DATA                              1,024            1,024              177              176               17.19           ONLINE          OFF  
+USER DATA TABLESPACE  PART_DATA_DEF                          1,024            1,024               12               11                1.07           ONLINE          OFF  
+USER DATA TABLESPACE  PART_IDX                               3,072            3,072              416              415               13.49           ONLINE          OFF  
+6 rows selected.
+</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-관련버그"><strong>관련 버그</strong></h1><hr /><h3 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-BUG-39985V$DISK_UNDO_USAGE계산오류수정">BUG-39985 V$DISK_UNDO_USAGE 계산 오류 수정</h3><p>V$DISK_UNDO_USAGE 의 REUSABLE_EXT_CNT 컬럼은 언두 테이블스페이스 내의 재사용 가능한 크기를 의미합니다.<br /> 언두 테이블스페이스 풀 현상이 발생하였는데 REUSABLE_EXT_CNT 컬럼에서는 재사용 가능한 공간이 있다고 보여주는 오류가 있어서 개선되었습니다.<br /> 아래 버전부터 이 버그가 반영되어 있습니다.</p><ul><li>ALTIBASE HDB 6.1.1.4.9</li><li>ALTIBASE HDB 6.3.1 은 아직 반영된 tag 가 안나왔음..</li></ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7342013/8618045.txt">ALTIBASE_HDB_5.5.1_6.x.x_disk_tablespace_usage.txt</a> (text/plain)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

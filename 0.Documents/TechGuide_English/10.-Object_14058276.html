@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 10. Object</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 10. Object
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 16, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check objec</span><span>t</span><span> informa</span><span>t</span><span>ion is as follows.</span></p><h3 class="md-end-block md-heading md-focus" id="id-10.Object-MemoryTableUsage"><span class="md-plain md-expand">Memory Table Usage</span></h3><p><span class="md-plain md-expand"><span>T</span><span>his queries </span><span>t</span><span>he usage of memory </span><span>t</span><span>ables.</span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT MT.USER_NAME
+     , MT.TABLE_NAME
+     , MT.PARTITION_NAME
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/(MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;    
+  FROM (SELECT U.USER_NAME
+             , T.TABLE_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, P.PARTITION_OID) TABLE_OID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, RPAD(&#39;-&#39;, 14), &#39;T&#39;, P.PARTITION_NAME) PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TBS_ID, &#39;T&#39;, P.TBS_ID) TBS_ID
+          FROM SYSTEM_.SYS_USERS_ U
+             , SYSTEM_.SYS_TABLES_ T LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ P ON T.TABLE_ID = P.TABLE_ID
+         WHERE 1=1
+           AND U.USER_ID &lt;&gt; 1
+           AND U.USER_ID = T.USER_ID
+           AND T.TBS_ID IN (SELECT ID FROM V$TABLESPACES WHERE TYPE IN (1, 2, 8))
+       ) MT
+     , V$MEMTBL_INFO MU
+     , V$TABLESPACES TBS
+ WHERE 1=1
+   AND MT.TABLE_OID = MU.TABLE_OID
+   AND TBS.ID = MT.TBS_ID
+ ORDER BY 1, 2, 3
+   ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USER_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Table owner</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TABLE_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Table name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITION_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the partitioned table if you created the partitioned table on the table. Memory partition tables are supported starting from 6.5.1.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TBS_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Tablespace name specified when creating the table</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages allocated to the memory table</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total of 'pages loaded with actual data' among the pages allocated by the memory table. For example, if the user executes a full DELETE on a memory table with an ALLOC size of 100M, ALLOC will not change to 100M, but USED will be close to zero. The user can reduce ALLOC by executing TRUNCATE.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is expressed as a percentage of the 'page loaded with actual data' among pages allocated to the memory table. (Ie USED / ALLOC)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Queue"><span class="md-plain md-expand">Queue</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">This queries the usage of the queue table.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain md-expand">For column description, refer to Memory table and usage column description.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME
+     , D.NAME TABLESPACE_NAME
+     , C.TABLE_OID
+     , TO_CHAR((C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((C.FIXED_USED_MEM+C.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((C.FIXED_USED_MEM+C.VAR_USED_MEM)/(C.FIXED_ALLOC_MEM+C.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_TABLES_ B
+     , V$MEMTBL_INFO C
+     , V$TABLESPACES D
+ WHERE 1=1
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.TABLE_TYPE = &#39;Q&#39;
+   AND A.USER_ID = B.USER_ID
+   AND B.TABLE_OID = C.TABLE_OID
+   AND B.TBS_ID = D.ID ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-MemoryTablewithLowEfficiency"><span class="md-plain md-expand">Memory Table with Low Efficiency</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">This queries a memory table which actual usage is lower than the all allocated pages.</span></p><p class="md-end-block md-p"><span class="md-plain">This outputs the memory table with the total size of pages allocated from the memory table of 1G or more and USAGE of 50% or less.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT MT.USER_NAME
+     , MT.TABLE_NAME
+     , MT.PARTITION_NAME
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM)/1024/1024, &#39;999,999,999.9&#39;) &#39;ALLOC(M)&#39;
+     , TO_CHAR((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/1024/1024,   &#39;999,999,999.9&#39;) &#39;USED(M)&#39;
+     , TO_CHAR(((MU.FIXED_USED_MEM+MU.VAR_USED_MEM)/(MU.FIXED_ALLOC_MEM+MU.VAR_ALLOC_MEM))*100, &#39;999.9&#39;) &#39;USAGE(%)&#39;    
+  FROM (SELECT U.USER_NAME
+             , T.TABLE_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, P.PARTITION_OID) TABLE_OID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, RPAD(&#39;-&#39;, 14), &#39;T&#39;, P.PARTITION_NAME) PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TBS_ID, &#39;T&#39;, P.TBS_ID) TBS_ID
+          FROM SYSTEM_.SYS_USERS_ U
+             , SYSTEM_.SYS_TABLES_ T LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ P ON T.TABLE_ID = P.TABLE_ID
+         WHERE 1=1
+           AND U.USER_ID &lt;&gt; 1
+           AND U.USER_ID = T.USER_ID
+           AND T.TBS_ID IN (SELECT ID FROM V$TABLESPACES WHERE TYPE IN (1, 2, 8))
+       ) MT
+     , V$MEMTBL_INFO MU
+     , V$TABLESPACES TBS
+ WHERE 1=1
+   AND MT.TABLE_OID = MU.TABLE_OID
+   AND TBS.ID = MT.TBS_ID
+   AND ROUND((FIXED_ALLOC_MEM+VAR_ALLOC_MEM)/1024/1024, 2) &gt;= 1024                                -- 1G or more pages allocated to the memory table
+   AND ROUND((FIXED_USED_MEM+VAR_USED_MEM)/(FIXED_ALLOC_MEM+VAR_ALLOC_MEM+0.01)*100, 2) &lt;= 50     -- USAGE가 50% 이하  
+ ORDER BY 1, 2, 3
+   ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.1"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total number of pages allocated to the memory table</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total of 'pages loaded with actual data' among the pages allocated by the memory table. For example, if the user executes a full DELETE on a memory table with an ALLOC size of 100M, ALLOC will not change to 100M, but USED will be close to zero. The user can reduce ALLOC by executing TRUNCATE.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USAGE(%)</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">This is expressed as a percentage of the 'page loaded with actual data' among pages allocated to the memory table. (Ie USED / ALLOC)</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-MemoryIndex,QueueIndexUsage"><span class="md-plain md-expand">Memory Index, Queue Index Usage</span></h3><p class="md-end-block md-p"><span class="md-plain">This queries the index usage of the memory table and queue tables.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Since the query is different for each version, the user should use the query for the version.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT U.USER_NAME, T.TABLE_NAME TABLE_NAME
+     , B.INDEX_NAME
+     , LPAD(I.IS_PARTITIONED, 14) INDEX_PARTITIONED
+     , ROUND(((USED_NODE_COUNT + PREPARE_NODE_COUNT) / 15 * 32768)/1024/1024, 1) AS &#39;SIZE(MB)&#39;
+  FROM V$MEM_BTREE_HEADER B
+     , SYSTEM_.SYS_INDICES_ I
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND B.INDEX_ID = I.INDEX_ID
+   AND I.TABLE_ID = T.TABLE_ID
+   AND B.INDEX_TBS_ID &lt;&gt; 0
+   AND U.USER_ID = T.USER_ID
+ ORDER BY TABLE_NAME, B.INDEX_ID
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.2"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">INDEX_PARTITIONED</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether the index is a partition index.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">F: Non-partition index</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">T: Partition index (Memory</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">partition index is supported in Altibase 6.5.1 or later.)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SIZE(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The user can find the index size by the number of nodes attached to the index. One page is used for every 15 index nodes, and the page size is 32 KB. There is a difference in the number of slots available for each node according to the Altibase server version. For this reason, even if the data is the same, the index size may differ depending on the version.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-DiskTable"><span class="md-plain md-expand">Disk Table</span></h3><p><span>T</span><span>his is Disk </span><span>t</span><span>able usage informa</span><span>t</span><span>ion. Since </span><span>t</span><span>he query is differen</span><span>t</span><span> for each version, </span><span>t</span><span>he user should use </span><span>t</span><span>he query for </span><span>t</span><span>he version.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME
+     , TBL.TABLE_NAME TABLE_NAME
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, TBL.PARTITION_NAME, &#39;F&#39;, &#39;-&#39;) PARTITIONED_TABLE
+     , TBS.NAME TBS_NAME
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999,999&#39;) &#39;MAX(KB)&#39;
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024, &#39;999,999,999,999&#39;) &#39;ALLOC(KB)&#39;
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024, &#39;999,999,999,999&#39;) &#39;USED(KB)&#39;
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TBS_ID, &#39;T&#39;, PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+         WHERE TBL.TABLE_TYPE = &#39;T&#39;
+       ) TBL
+     , (SELECT S.TABLE_OID, SUM(S.TOTAL_EXTENT_COUNT) TOTAL_EXTENT_COUNT, SUM(S.TOTAL_USED_SIZE) TOTAL_USED_SIZE
+          FROM X$SEGMENT S
+         WHERE S.SEGMENT_TYPE IN (6, 7) /* 6 : Table, 7 : LOB Data (6.1.1 or later), 5 : Index */
+         GROUP BY S.TABLE_OID) SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, TABLE_NAME, PARTITIONED_TABLE
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.3"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TABLE_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Table name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITIONED_TABLE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">When a partition table is created in a table, the name of the partition table is displayed. '-' For non-partitioned tables</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TBS_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Shows the tablespace specified when creating the table. If a tablespace is specified for a partitioned table, the tablespace name specified in the partitioned table is displayed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of the tablespace to which the table belongs</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total size of the table allocated</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Refers to the size of the table allocated data that contains data.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">When DELETE the data, the space DELETE can be reused, but in the case of a disk table, unlike a memory table, USED does not decrease even if DELETE is performed.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">To check the actual USED except for the space that can be reused as DELETE, AGING must be performed. Ex) ALTER TABLE table_name AGING;</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">ALTER TABLE ~ AGING; Because it holds the X lock on the table during execution, other requests for the table will be in a waiting state, so be careful when performing it. ALLOC and USED always have the same value unless AGING is performed.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-DiskIndexUsage"><span class="md-plain md-expand">Disk Index Usage</span></h3><p><span>T</span><span>his is disk index usage informa</span><span>t</span><span>ion. Since </span><span>t</span><span>he query is differen</span><span>t</span><span> for each version, </span><span>t</span><span>he user should use </span><span>t</span><span>he query for </span><span>t</span><span>he version.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME                                                                                        
+     , I_LIST.TABLE_NAME                                                                                            
+     , DECODE(I_LIST.PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.PARTITION_NAME) PARTITIONED_NAME               
+     , I_LIST.INDEX_NAME INDEX_NAME                                                                                 
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, &#39;-&#39;, I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX  
+     , TBS.NAME TBS_NAME                                                                                            
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;MAX(MB)&#39;                                               
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024/1024, &#39;999,999,999&#39;) &#39;ALLOC(MB)&#39;    
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;USED(MB)&#39;                                                                          
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, I.TABLE_ID, &#39;T&#39;, PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, &#39;F&#39;, I.TBS_ID, &#39;T&#39;, PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID ) I_LIST
+     , X$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.4"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TABLE_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Table name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITIONED_TABLE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">When a partitioned table is created on a table, the name of the partition table is displayed. '-' For non-partitioned tables</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">INDEX_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Index name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITIONED_INDEX</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">When a partitioned index is created on an index, the partitioned index name is displayed. '-' For non-partitioned indexes</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TBS_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The tablespace specified when creating the index. If a tablespace is specified in a partitioned index, the tablespace name specified in the partitioned index is displayed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of the tablespace to which the index belongs</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The total size allocated to the index</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USED(MB)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The size of the index allocated space that contains data.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">If DELETE is performed on the data, the space DELETE can be reused, but the USED of the index does not decrease even when DELETE is performed.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">To check the actual USED except for the space that can be reused as DELETE, AGING must be performed. Ex) ALTER INDEX index_name AGING;</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">ALTER INDEX ~ AGING; During execution, because the X lock is held on the table, other requests for the table will be in a waiting state, so be careful when performing it. ALLOC and USED always have the same value unless AGING is performed.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-PartitionTableInformation"><span class="md-plain md-expand">Partition Table Information</span></h3><p><span>T</span><span>his query shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he par</span><span>t</span><span>i</span><span>t</span><span>ion </span><span>t</span><span>able, such as </span><span>t</span><span>he par</span><span>t</span><span>i</span><span>t</span><span>ion </span><span>t</span><span>able par</span><span>t</span><span>i</span><span>t</span><span>ioning me</span><span>t</span><span>hod and par</span><span>t</span><span>i</span><span>t</span><span>ioning cri</span><span>t</span><span>eria.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT U.USER_NAME
+     , T.TABLE_NAME
+     , P.PARTITION_NAME
+     , DECODE(PM.PARTITION_METHOD, 0, RPAD(&#39;RANGE&#39;, 16), 1, RPAD(&#39;HASH&#39;, 16), 2, RPAD(&#39;LIST&#39;, 16)) PARTITION_METHOD
+     , RPAD(P.PARTITION_ORDER, 15) PARTITION_ORDER
+     , RPAD(PM.ROW_MOVEMENT, 12) ROW_MOVEMENT
+     , P.PARTITION_MIN_VALUE
+     , P.PARTITION_MAX_VALUE
+     , RPAD(P.PARTITION_ACCESS, 6) &#39;ACCESS&#39;                             -- Altibase version 6.5.1 or earlier is used after deletion
+     , TO_CHAR(P.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED                -- Altibase version 6.5.1 or earlier is used after deletion
+     , TO_CHAR(P.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME    -- Altibase version 6.5.1 or earlier is used after deletion   
+  FROM SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_TABLE_PARTITIONS_ P
+     , SYSTEM_.SYS_PART_TABLES_ PM
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = P.TABLE_ID
+   AND PM.TABLE_ID = T.TABLE_ID ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.5"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITIONED_METHOD</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Shows how to partition the partition table.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITION_ORDER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">For hash partitions, this shows the order of the partitions.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ROW_MOVEMENT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Shows whether it is allowed to automatically move the record to another partition when the partitioned table record is updated and the column value corresponding to the partition key is changed to a value belonging to another partition.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">T is allowed to move and F is not allowed. This option is set when creating a partition table.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITION_MIN_VALUE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">For range partitions, the minimum reference value of the partition table is displayed as a string.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">For a list partition, PARTITION_MIN_VALUE and PARTITION_MAX_VALUE are the same.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">In the case of a hash partition, both PARTITION_MIN_VALUE and PARTITION_MAX_VALUE are null.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARTITION_MAX_VALUE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">In the case of range partition, the maximum reference value of the partition table is displayed as a string.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">For a list partition, PARTITION_MIN_VALUE and PARTITION_MAX_VALUE are the same.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">In the case of a hash partition, both PARTITION_MIN_VALUE and PARTITION_MAX_VALUE are null.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ACCESS</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Shows the access mode for data in the partition table. This column is available in Altibase 6.5.1 and later.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">R: Data read-only mode</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">W: Data read/write mode (basic mode)</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">A: Data read/add mode</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CREATED</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is the time when the partition table was created. This column is available in Altibase 6.5.1 and later.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LAST_DDL_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">This is the last time DDL was executed on the partition table. This column is available in Altibase 6.5.1 and later.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Sequence"><span class="md-plain md-expand">Sequence</span></h3><p><span>T</span><span>his query shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> sequence objec</span><span>t</span><span>s.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT USER_NAME
+     , TABLE_NAME SEQ_NAME
+     , MIN_SEQ MIN
+     , CURRENT_SEQ
+     , MAX_SEQ MAX
+     , INCREMENT_SEQ INCREMENT
+     , IS_CYCLE
+     , CACHE_SIZE CACHE
+  FROM V$SEQ A
+     , SYSTEM_.SYS_USERS_ B
+     , SYSTEM_.SYS_TABLES_ C
+ WHERE 1=1
+   AND A.SEQ_OID = C.TABLE_OID
+   AND B.USER_ID = C.USER_ID
+   AND B.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Synonym"><span class="md-plain md-expand">Synonym </span></h3><p><span>T</span><span>his query shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> synonyms.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NVL(U.USER_NAME, &#39;PUBLIC&#39;) SYNONYM_OWNER
+     , S.SYNONYM_NAME
+     , S.OBJECT_OWNER_NAME OBJECT_OWNER
+     , S.OBJECT_NAME
+     , TO_CHAR(S.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+  FROM SYSTEM_.SYS_SYNONYMS_ S
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U ON S.SYNONYM_OWNER_ID = U.USER_ID
+ WHERE 1=1
+   --AND U.USER_ID &lt;&gt; 0       -- If the user wants to exclude PUBLIC synonym, remove comments and use them.
+ ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.6"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SYNONYM_OWNER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The database user who created the synonym.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">When this value is 'PUBLIC', it means synonym created by default so that anyone can use it when creating a database.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">OBJECT_OWNER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The owner of the synonym target object</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">OBJECT_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the synonym target object</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LAST_DDL_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The last name DDL was executed on synonym</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-PSM"><span class="md-plain md-expand">PSM</span></h3><p><span>T</span><span>his query shows execu</span><span>t</span><span>ion informa</span><span>t</span><span>ion for s</span><span>t</span><span>ored procedures and func</span><span>t</span><span>ions.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , PROC_NAME PSM_NAME
+     , DECODE(OBJECT_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;, 3, &#39;TYPESET&#39;) PSM_TYPE
+     , DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME   
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PROCEDURES_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+ ORDER BY 1, 2, 3;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.7"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATUS</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">Compile status. INVALID requires compilation</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-PSMCreationStatement"><span class="md-plain md-expand">PSM Creation Statement</span></h3><p><span>When </span><span>t</span><span>he PSM name is en</span><span>t</span><span>ered in </span><span>t</span><span>he PROC_NAME condi</span><span>t</span><span>ion, </span><span>t</span><span>he PSM crea</span><span>t</span><span>ion s</span><span>t</span><span>a</span><span>t</span><span>emen</span><span>t</span><span> is displayed.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT PARSE
+  FROM SYSTEM_.SYS_PROC_PARSE_
+ WHERE PROC_OID = (SELECT PROC_OID
+          FROM SYSTEM_.SYS_PROCEDURES_
+         WHERE PROC_NAME = &#39;psm_name&#39;)   -- Enter the PSM name that want to be searched
+ ORDER BY SEQ_NO ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-View"><span class="md-plain md-expand">View</span></h3><p><span>T</span><span>his query shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he VIEW objec</span><span>t</span><span>.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME VIEW_NAME
+     , DECODE(C.STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED                 
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME     
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_TABLES_ B
+     , SYSTEM_.SYS_VIEWS_ C
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND B.TABLE_ID = C.VIEW_ID
+   AND B.TABLE_TYPE = &#39;V&#39; ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-ViewCreatingStatement"><span class="md-plain md-expand">View Creating Statement</span></h3><p>When a view name is entered in the TABLE_NAME condition, the VIEW creation statement is displayed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT PARSE
+  FROM SYSTEM_.SYS_VIEW_PARSE_
+ WHERE VIEW_ID = (SELECT TABLE_ID
+          FROM SYSTEM_.SYS_TABLES_
+         WHERE TABLE_NAME = &#39;view_name&#39;)    -- Enter the name of the view you want to view.
+ ORDER BY SEQ_NO ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Package">Package</h3><p><span>T</span><span>his shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he package.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , PACKAGE_NAME
+     , DECODE(PACKAGE_TYPE, 6, &#39;PACKAGE_SPEC&#39;, 7, &#39;PACKAGE_BODY&#39;) PACKAGE_TYPE
+     , DECODE(STATUS, 0, &#39;VALID&#39;, &#39;INVALID&#39;) STATUS
+     , TO_CHAR(B.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) CREATED
+     , TO_CHAR(B.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_DDL_TIME
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PACKAGES_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.8"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PACKAGE_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Package type. Whether it is a PACKAGE Specification or <span>PACKAGE </span>Body.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATUS</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">Compile status. INVALID requires compilation.</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-PACKAGESubprogram"><span class="md-plain md-expand">PACKAGE Subprogram</span></h3><p><span>T</span><span>his shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> subprograms (s</span><span>t</span><span>ored procedures and s</span><span>t</span><span>ore func</span><span>t</span><span>ions) included in </span><span>t</span><span>he package.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT USER_NAME
+     , OBJECT_NAME
+     , PACKAGE_NAME
+     , DECODE(SUB_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;) SUB_TYPE
+     , PARA_NAME
+     , PARA_ORDER
+     , DECODE(INOUT_TYPE, 0, &#39;IN&#39;, 1, &#39;OUT&#39;, 2, &#39;IN OUT&#39;) INOUT_TYPE
+     , DATA_TYPE
+     , SIZE
+     , DEFAULT_VAL
+  FROM SYSTEM_.SYS_USERS_ A
+     , SYSTEM_.SYS_PACKAGE_PARAS_ B
+ WHERE 1=1
+   AND A.USER_ID = B.USER_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.9"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SUB_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Compile status. If 1, compile is required.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARA_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Subprogram parameter name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PARA_ORDER</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Subprogram parameter sequence. Has 1 in the first case.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">INOUT_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Parameter input/output</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">DATA_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Parameter data type</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SIZE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The size of a parameter type</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">DEFAULT_VAL</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">The default value of a parameter</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-PACKAGECreatingStatement"><span class="md-plain md-expand">PACKAGE Creating Statement</span></h3><p><span>When </span><span>t</span><span>he package name is en</span><span>t</span><span>ered in </span><span>t</span><span>he PACKAGE_NAME condi</span><span>t</span><span>ion, </span><span>t</span><span>he PACKAGE crea</span><span>t</span><span>ion s</span><span>t</span><span>a</span><span>t</span><span>emen</span><span>t</span><span> </span><span>is displayed. </span><span>T</span><span>his is available in Al</span><span>t</span><span>ibase 6.3.1 and la</span><span>t</span><span>er.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT PARSE
+     , DECODE(PACKAGE_TYPE, 6, &#39;PACKAGE_SPEC&#39;, 7, &#39;PACKAGE_BODY&#39;) PACKAGE_TYPE
+  FROM SYSTEM_.SYS_PACKAGE_PARSE_
+ WHERE PACKAGE_OID IN (SELECT PACKAGE_OID
+                         FROM SYSTEM_.SYS_PACKAGES_
+                        WHERE PACKAGE_NAME = &#39;package_name&#39;)   -- Enter the name of the package that wanted to be viewed.
+ ORDER BY SEQ_NO ;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Trigger"><span class="md-plain md-expand">Trigger</span></h3><p><span>T</span><span>his shows </span><span>t</span><span>rigger crea</span><span>t</span><span>ion informa</span><span>t</span><span>ion.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT TR.USER_NAME
+     , T.TABLE_NAME
+     , TR.TRIGGER_NAME
+     , RPAD(DECODE(TR.IS_ENABLE, 0, &#39;NO&#39;,
+                                 1, &#39;YES&#39;), 9) IS_ENABLE
+     , RPAD(DECODE(TR.EVENT_TIME, 1, &#39;BEFORE&#39;,
+                             2, &#39;AFTER&#39;,
+                             3, &#39;INSTEAD OF&#39;), 10) EVENT_TIME
+     , RPAD(DECODE(TR.EVENT_TYPE, 1, &#39;INSERT&#39;,
+                             2, &#39;DELETE&#39;,
+                             4, &#39;UPDATE&#39;), 10) EVENT_TYPE
+     , DECODE(TR.GRANULARITY, 1, &#39;FOR EACH ROW&#39;,
+                              2, &#39;FOR EACH STATEMENT&#39;) GRANULARITY
+  FROM SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_TRIGGERS_ TR
+ WHERE 1=1
+   AND TR.TABLE_ID = T.TABLE_ID;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.10"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span md-focus"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TABLE_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Table name where the trigger is defined</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">IS_ENABLE</span></span></td><td class="confluenceTd">Whether TRIGGER works.</td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EVENT_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Time to trigger</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EVENT_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Type of event that triggers</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">GRANULARITY</span></span></td><td class="confluenceTd"><span class="td-span md-focus"><span class="md-plain md-expand">Unit that triggers</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-Job"><span class="md-plain md-expand">Job</span></h3><p><span>T</span><span>his shows informa</span><span>t</span><span>ion abou</span><span>t</span><span> </span><span>t</span><span>he j</span><span>ob</span><span> </span><span>ob</span><span>jec</span><span>t</span><span>.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT JOB_NAME
+     , EXEC_QUERY PROC_NAME
+     , INTERVAL
+     , LPAD(DECODE(INTERVAL_TYPE, &#39;YY&#39;, &#39;YEARLY&#39;,
+                                  &#39;MM&#39;, &#39;MONTHLY&#39;,
+                                  &#39;DD&#39;, &#39;DAILY&#39;,
+                                  &#39;HH&#39;, &#39;HOURLY&#39;,
+                                  &#39;MI&#39;, &#39;MINUTELY&#39;), 13) INTERVAL_TYPE
+     , LPAD(DECODE(STATE, 0, &#39;-&#39;, 1, &#39;ING&#39;), 5) STATE
+     , LPAD(EXEC_COUNT, 10) EXEC_COUNT
+     , LPAD(ERROR_CODE, 10) ERROR_CODE
+     , TO_CHAR(START_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) START_TIME
+     , TO_CHAR(LAST_EXEC_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) LAST_EXEC_TIME
+     , TO_CHAR(END_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) END_TIME
+     , DECODE(IS_ENABLE, &#39;T&#39;, &#39;YES&#39;, &#39;F&#39;, &#39;NO&#39;) IN_ENABLE     -- Used in Altibase 6.3.1 after deletion.
+  FROM SYSTEM_.SYS_JOBS_;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-10.Object-MainColumnDescription.11"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">JOB_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the JOB object</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PROC_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the procedure registered in JOB</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">NTERVAL, INTERVAL_TYPE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Performance cycle</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">JOB progress status. If ING, it means that the procedure is currently being executed by the task scheduler.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">EXEC_COUNT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of JOB executions</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ERROR_CODE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The result of the last JOB execution</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">START_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time when JOB first started executing</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LAST_EXEC_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time at which the JOB was last executed means the time that was most recently executed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">END_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time at which the last JOB was executed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">IN_ENABLE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether is the JOB execution is possible by the job scheduler</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-DatabaseUser"><span class="md-plain md-expand">Database User</span></h3><p><span>T</span><span>his is a s</span><span>t</span><span>a</span><span>t</span><span>emen</span><span>t</span><span> </span><span>t</span><span>o search da</span><span>t</span><span>abase user informa</span><span>t</span><span>ion.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT USER_ID,
+       USER_NAME,
+       TBS.NAME &#39;DEFAULT_TBS&#39;,
+       CREATED
+  FROM SYSTEM_.SYS_USERS_ U,
+       V$TABLESPACES TBS
+ WHERE U.DEFAULT_TBS_ID = TBS.ID;</pre>
+</div></div><h3 class="md-end-block md-heading md-focus" id="id-10.Object-TablespaceList"><span class="md-plain md-expand">Tablespace List</span></h3><p><span>T</span><span>his is a s</span><span>t</span><span>a</span><span>t</span><span>emen</span><span>t</span><span> </span><span>t</span><span>o search </span><span>t</span><span>he </span><span>t</span><span>ablespace lis</span><span>t</span><span>.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT ID &#39;TBS_ID&#39;
+    ,  NAME &#39;TBS_NAME&#39;
+    ,  DECODE(TYPE, 0, &#39;SYSTEM_TBS&#39;, 1, &#39;SYSTEM_TBS&#39;, 2, &#39;USER_MEM_TBS&#39;, 3, &#39;SYSTEM_TBS&#39;, 4, &#39;USER_DISK_TBS&#39;, 5, &#39;SYSTEM_TBS&#39;, 6, &#39;USER_DISK_TEMP&#39;, 7, &#39;SYSTEM_UNDO&#39;, 8, &#39;USER_VOL_TBS&#39;) &#39;TBS_TYPE&#39;
+ FROM V$TABLESPACES;</pre>
+</div></div><p> </p><p> </p><p> </p><p> </p></div><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

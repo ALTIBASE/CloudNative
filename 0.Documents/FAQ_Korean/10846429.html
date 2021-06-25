@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-11184 (  70020) Insufficient free space in work area</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-11184 (  70020) Insufficient free space in work area
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Nov 29, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055623 {padding: 0px;}
+div.rbtoc1624409055623 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055623 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055623'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-개요'>개요</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-버전'>버전</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-현상'>현상</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-원인'>원인</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-조치'>조치</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값확인방법'>Work Area 설정값 확인 방법</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값변경방법'>Work Area 설정값 변경 방법</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값변경시주의사항'>Work Area 설정값 변경 시 주의사항</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-개요"><strong>개요</strong></h1><hr /><p>질의문 수행 시 발생하는 ERR-11184 (  70020) Insufficient free space in work area 에러의 발생 원인과 조치 방법에 관해 설명한다.<strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-버전"><strong>버전</strong></h1><hr /><p>Altibase 서버 6.3.1 이상<strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-현상"><strong>현상</strong></h1><hr /><p>질의문에 디스크 테이블이 사용되고 SORT 또는 HASH 연산 처리가 필요한 질의문을 수행할 때 발생할 수 있다.</p><p> </p><p> </p><p> </p><p><strong><br /></strong></p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-원인"><strong>원인</strong></h1><hr /><p>Work Area라는 메모리 공간이 부족하여 발생하는 에러이다.</p><p>Work Area는 디스크 테이블 데이터에 대해 SORT/HASH 연산 수행 시 보다 나은 성능을 위해 Altibase 서버 구동 시 OS로부터 예약해놓은 일정 크기의 메모리 공간을 의미한다.</p><p> </p><p>질의문 수행 시 SORT 또는 HASH 연산이 필요할 경우 정해진 크기만큼 Work Area에서 할당받아 사용한다. SORT 연산이 필요한 경우 Work Area에서 SORT_AREA_SIZE 만큼 할당받아 사용하고 HASH 연산이 필요한 경우 Work Area에서 HASH_AREA_SIZE 만큼 할당받아 사용한다.</p><p>SORT/HASH 연산이 필요한 트랜잭션이 동시에 여러 개 수행될 수 있다. 이 때 SORT_AREA_SIZE 또는 HASH_AREA_SIZE를 Work Area로부터 할당받으려는데 Work Area에서 할당해 줄 여유 메모리가 없는 경우 이 에러가 발생한다.</p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-조치"><strong>조치</strong></h1><hr /><p>Work Area가 부족하여 발생한 것이므로 Work Area 크기를 현재값보다 크게 증가시켜야 한다.</p><p>Work Area는 Altibase 서버 프로퍼티 TOTAL_WA_SIZE 로 그 크기를 설정할 수 있다.</p><p> </p><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값확인방법"><strong>Work Area 설정값 확인 방법</strong></h3><ul><li><p>아래 문장으로 현재 설정값을 확인한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TOTAL_WA_SIZE&#39;;</pre>
+</div></div></li></ul><p> </p><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값변경방법"><strong>Work Area 설정값 변경 방법</strong></h3><ul><li><p>ALTER SYSTEM 구문으로 변경한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TOTAL_WA_SIZE = value ; -- value는 바이트 단위이다.</pre>
+</div></div></li><li><p>ALTER SYSTEM 으로 변경한 값이 Altibase 서버 재구동 후에도 반영되도록 Altibase 서버 설정 파일도 변경한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; cd $ALTIBASE_HOME/conf
+shell&gt; vi altibase.properties        # altibase.properties 파일에서 TOTAL_WA_SIZE 프로퍼티를 찾아서 변경. 
+TOTAL_WA_SIZE                        = 134217728 # default = 134217728   </pre>
+</div></div></li></ul><p> </p><p><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(0,0,0);"> </span><strong><span style="color: rgb(0,0,0);"> <br /></span></strong></p><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-WorkArea설정값변경시주의사항"><strong>Work Area 설정값 변경 시 주의사항</strong></h3><ul><li><span style="color: rgb(0,0,0);">TOTAL_WA_SIZE</span>를 현재 설정값보다 크게 변경하면 V$MEMSTAT<span style="color: rgb(0,0,0);">의 </span><span style="color: rgb(0,0,0);">크기가 증가하고 Altibase 서버 프로세스 메모리 사용량, VSZ도 증가한다. </span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Altibase 7 이상의 경우 V$MEMSTAT<span style="color: rgb(0,0,0);">의 <span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Temp_Memory 영역이 증가하고</span></span></span></span></span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Altibase 6.3.1, 6.5.1 의 경우 <span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">V$MEMSTAT<span style="color: rgb(0,0,0);">의</span></span></span> Storage_Disk_Buffer 영역이 증가한다. <br /></span></span></li><li>디스크 SORT/HASH 연산이 필요한 질의문 수행 중(Work Area를 사용하는 트랜잭션 수행)에 ALTER SYSTEM SET TOTAL_WA_SIZE 문장을 수행할 경우 이 문장은 먼저 수행한 트랜잭션이 종료할 때까지 대기한다.</li><li>ALTER SYSTEM SET TOTAL_WA_SIZE = ... 구문 수행 중에 디스크 SORT/HASH 연산이 필요한 질의문이 수행될 경우 해당 트랜잭션은 ALTER SYSTEM 문장이 끝날 때까지 대기한다.</li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

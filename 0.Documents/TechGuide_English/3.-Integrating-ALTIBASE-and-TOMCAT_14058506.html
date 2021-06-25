@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Integrating ALTIBASE and TOMCAT</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Integrating ALTIBASE and TOMCAT
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409359994 {padding: 0px;}
+div.rbtoc1624409359994 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409359994 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409359994'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.IntegratingALTIBASEandTOMCAT-JNDIDataSourceIntegration'>JNDI DataSource Integration</a></li>
+<li><a href='#id-3.IntegratingALTIBASEandTOMCAT-IntegrationwithgeneralJDBCmethod'>Integration with general JDBC method</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes how to integrate ALTIBASE and TOMCAT.</p><p>There are two methods to integrate: using DBCP (regular JDBC) or using ALTIBASE ConnecitonPool.</p><h2 id="id-3.IntegratingALTIBASEandTOMCAT-JNDIDataSourceIntegration"><strong>JNDI DataSource Integration</strong></h2><p>To configure JNDI DataSource, write the following in $CATALINA_HOME/conf/context.xml.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$CATALINA_HOME/conf/context.xml
+&lt; context&gt;
+&lt;Resource name=&quot;jdbc/Altibase&quot; auth=&quot;Container&quot;
+type=&quot;javax.sql.DataSource&quot;
+driverClassName=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;
+url=&quot;jdbc:Altibase://127.0.0.1:20300/mydb&quot;
+username=&quot;sys&quot; password=&quot;manager&quot;
+maxActive=&quot;3&quot; maxIdle=&quot;2&quot; initialSize=&quot;1&quot;
+defaultAutoCommit=&quot;false&quot;
+removeAbandoned=&quot;true&quot; logAbandoned=&quot;true&quot;
+removeAbandonedTimeout=&quot;60&quot;
+validationQuery=&quot;select 1 from dual&quot;/&gt;
+&lt;/context&gt;</pre>
+</div></div><p>It can be used on the web by adding the following contents to the web application home/WEB-INF/web.xml.</p><p>Web application home/WEB-INF/web.xml</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;resource-ref&gt;
+&lt;description&gt;DB Connection&lt;/description&gt;
+&lt;res-ref-name&gt;jdbc/Altibase&lt;/res-ref-name&gt;
+&lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+&lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;
+ 
+&lt;Resouce&gt;</pre>
+</div></div><p>The properties defined in the tag are as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>driverClassName</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Altibase JDBC driver class Name</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>url</p></td><td class="confluenceTd">The connection string information for connecting with ALTIBASe. Enters jdbc:Altibase://IP:port_no/db_name&quot;<p> </p></td></tr><tr><td class="confluenceTd"><p>Username</p></td><td class="confluenceTd">The database account<p> </p></td></tr><tr><td class="confluenceTd"><p>Password</p></td><td class="confluenceTd"><p>The database password</p></td></tr><tr><td class="confluenceTd"><p>maxActive</p></td><td class="confluenceTd">The maximum number of connections, 0 is unlimited. The default is 8.<p> </p></td></tr><tr><td class="confluenceTd"><p>initialSize</p></td><td class="confluenceTd">The initial size of connections. The default is 0.<p> </p></td></tr><tr><td class="confluenceTd"><p>maxIdle</p></td><td class="confluenceTd">The maximum number of connections that wait in the pool. The default is 8.<p> </p></td></tr><tr><td class="confluenceTd"><p>minIdle</p></td><td class="confluenceTd">The minimum number of connections that wait in the pool. The default is 0.<p> </p></td></tr><tr><td class="confluenceTd"><p>maxWait</p></td><td class="confluenceTd"><p>The maximum connection attempt time (unit: millisec) -1 waits indefinitely. The default: infinite waiting.</p></td></tr><tr><td class="confluenceTd"><p>validationQuery</p></td><td class="confluenceTd"><p>The SQL statement used to check the validation of connection</p><p>Must be specified as a select statement that returns at least one row</p><p>Ex) select 1 from dual</p></td></tr><tr><td class="confluenceTd"><p>defaultAutoCommit</p></td><td class="confluenceTd"><p>Sets autocommit mode. The default: true.</p></td></tr><tr><td class="confluenceTd"><p>defaultTransactionIsolation</p></td><td class="confluenceTd"><p>Sets Transaction Isolation level.</p><p>The values of REPEATABLE_READ, SERIALIZABLE, and the default can be set, and the default follows the default value of the DB server.</p><p>The isolation level of ALTIBASE is READ COMMITED by default.</p></td></tr><tr><td class="confluenceTd"><p>removeAbandoned</p></td><td class="confluenceTd"><p>Determines the removal function for the abandoned connection. The default is false.</p><p>When the connection is removed, the number of connections exceeds the value set for maxActive and is requested for connection.</p><p>The connection can be assigned when maxActive is not reached, abandoned connection removal does not occur.</p><p> </p></td></tr><tr><td class="confluenceTd"><p>removeAbandonedTimeout</p></td><td class="confluenceTd">Sets the time for removal of abandoned timeout. The default is 300.<p> </p></td></tr><tr><td class="confluenceTd"><p>logAbandoned</p></td><td class="confluenceTd"><p>Determines whether to abandon stack information in the log when removing abandoned connections. The default is false.</p></td></tr></tbody></table></div><p>In the program, the connection obtained with JNDI Datasource as follows.</p><p>In this case, java:/comp/env is a prefix used when looking up JNDI.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Context envContext  = (Context)new InitialContext().lookup(&quot;java:/comp/env&quot;);
+DataSource ds = (DataSource)envContext.lookup(&quot;jdbc/Altibase&quot;);
+Connection conn = ds.getConnection();</pre>
+</div></div><p>Or</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Context initCtx = new InitialContext();                                    
+DataSource ds =  (DataSource)initCtx.lookup(&quot;java:comp/env/jdbc/Altibase&quot;);
+Connection conn = ds.getConnection();</pre>
+</div></div><p>The following is a jsp example program that integrates with ALTIBASE using the JNDI Datasource set above.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;java.sql.*, javax.naming.*, javax.sql.*&quot;%&gt;
+&lt;%
+Context initCtx = new InitialContext();
+DataSource ds =  (DataSource)initCtx.lookup(&quot;java:comp/env/jdbc/Altibase&quot;);
+Connection conn = ds.getConnection();
+Statement stmt = conn.createStatement();
+String query = &quot;select to_char(sysdate,&#39;yyyy/mm/dd hh24:mi:ss&#39;) from dual&quot;;
+ResultSet rs = stmt.executeQuery(query);
+if(rs.next()) {
+     out.println(rs.getString(1));
+}
+rs.close();
+stmt.close();
+conn.close();
+%&gt;</pre>
+</div></div><h2 id="id-3.IntegratingALTIBASEandTOMCAT-IntegrationwithgeneralJDBCmethod"><strong>Integration with general JDBC method</strong></h2><ol><li>Load the JDBC driver.</li><li>Get the Connection object.</li><li>Get the Statement object.</li><li>Execute the SQL statement and place it in the ResultSet.</li><li>Close all related objects after the operation is completed.</li></ol><p>The following is a jsp example program that integrates with ALTIBASe using the general JDBC method.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@page import=&quot;java.sql.ResultSet&quot;%&gt;
+&lt;%@page import=&quot;java.sql.Statement&quot;%&gt;
+&lt;%@page import=&quot;java.sql.DriverManager&quot;%&gt;
+&lt;%@page import=&quot;java.sql.Connection&quot;%&gt;
+&lt;%@page import=&quot;java.util.Properties&quot;%&gt;
+&lt;%
+Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);
+Properties prop = new Properties();
+prop.put(&quot;user&quot;, &quot;sys&quot;);
+prop.put(&quot;password&quot;, &quot;manager&quot;);
+String url = &quot;jdbc:Altibase://192.168.56.110:20300/mydb&quot;;
+String sql = &quot;SELECT TO_CHAR(SYSDATE,&#39;YYYY-MM-DD HH24:MI:SS&#39;) FROM DUAL&quot;;
+ 
+Connection conn = null;
+Statement stmt= null;
+ResultSet rs = null;
+try {
+conn = DriverManager.getConnection(url, prop);
+stmt = conn.createStatement();
+rs = stmt.executeQuery(sql);
+while(rs.next()) {
+        out.println(rs.getString(1));
+}
+}catch(Exception se) {
+out.println(se.getMessage());
+} finally {
+    rs.close();
+    stmt.close();
+    conn.close();
+}
+%&gt;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

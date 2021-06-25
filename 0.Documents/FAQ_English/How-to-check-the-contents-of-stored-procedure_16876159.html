@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to check the contents of stored procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="06.-Stored-Procedure_16876155.html">06. Stored Procedure</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to check the contents of stored procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146403 {padding: 0px;}
+div.rbtoc1624409146403 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146403 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146403'>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthecontentsofstoredprocedure-Overview'>Overview</a></li>
+<li><a href='#Howtocheckthecontentsofstoredprocedure-Version'>Version</a></li>
+<li><a href='#Howtocheckthecontentsofstoredprocedure-Howtocheck'>How to check</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthecontentsofstoredprocedure-Usingmetatable'>Using meta table</a></li>
+<li><a href='#Howtocheckthecontentsofstoredprocedure-Usingtheaexportutility'>Using the aexport utility</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Howtocheckthecontentsofstoredprocedure-Overview">Overview</h1><hr /><p>This document describes how to check the contents of the stored procedure.</p><p> </p><h1 id="Howtocheckthecontentsofstoredprocedure-Version">Version</h1><hr /><p>All the versions of ALTIBASE HDB</p><p> </p><h1 id="Howtocheckthecontentsofstoredprocedure-Howtocheck">How to check</h1><hr /><p>There are two ways to check the contents of the stored procedure.</p><ul><li>Use meta table</li><li>Use aexport utility</li></ul><p> </p><h2 id="Howtocheckthecontentsofstoredprocedure-Usingmetatable">Using meta table</h2><hr /><p>After creating a user-defined procedure using the meta tables SYSTEM_.SYS_PROCEDURES_, SYSTEM_.SYS_PROC_PARSE_, use this to check the contents of the stored procedure.</p><h3 id="Howtocheckthecontentsofstoredprocedure-Howtocreateacustomprocedure">How to create a custom procedure</h3><ul><li><p><strong>Stored Procedure for User-Defined Function Output</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Output stored procedure and user-defined function names to the screen.
+-- EXEC showProcedures;
+CREATE OR REPLACE PROCEDURE showProcedures
+AS
+ CURSOR C1 IS
+    SELECT U.USER_NAME, PROC.PROC_NAME,
+           DECODE(PROC.OBJECT_TYPE, 0, &#39;PROCEDURE&#39;, 1, &#39;FUNCTION&#39;)
+      FROM SYSTEM_.SYS_PROCEDURES_ PROC, SYSTEM_.SYS_USERS_ U
+     WHERE PROC.USER_ID = U.USER_ID;
+    V1 CHAR(40);
+    V2 CHAR(40);
+    V3 CHAR(20);
+BEGIN
+    SYSTEM_.PRINTLN(&#39;----------------------------------------------------------------------------------------------------&#39;);
+    SYSTEM_.PRINT(&#39; USER_NAME                               PROC_NAME&#39;);
+    SYSTEM_.PRINTLN(&#39;                               PROCEDURE/FUNCTION&#39;);
+    SYSTEM_.PRINTLN(&#39;----------------------------------------------------------------------------------------------------&#39;);
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO V1, V2, V3;
+        EXIT WHEN C1%NOTFOUND;
+        SYSTEM_.PRINT(&#39; &#39;);
+        SYSTEM_.PRINT(V1);
+        SYSTEM_.PRINT(V2);
+        SYSTEM_.PRINTLN(V3);
+    END LOOP;
+    SYSTEM_.PRINTLN(&#39;----------------------------------------------------------------------------------------------------&#39;);
+    CLOSE C1;
+END;
+/</pre>
+</div></div></li><li><p><strong>Stored procedure to check the contents of the stored procedure</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> -- Output the contents of the specified stored procedure on the screen. 
+-- EXEC showProcBody(&#39;USER_NAME&#39;, &#39;PROCEDURE_NAME&#39;);
+CREATE OR REPLACE PROCEDURE showProcBody(p1 IN VARCHAR(40), p2 IN VARCHAR(40)) 
+AS
+CURSOR C1 IS
+    SELECT SYSTEM_.SYS_PROC_PARSE_.PARSE
+      FROM SYSTEM_.SYS_PROC_PARSE_
+     WHERE SYSTEM_.SYS_PROC_PARSE_.PROC_OID = (SELECT P.PROC_OID
+              FROM SYSTEM_.SYS_PROCEDURES_ P,
+                   SYSTEM_.SYS_USERS_ U
+             WHERE U.USER_ID = P.USER_ID
+               AND P.PROC_NAME = p2
+               AND U.USER_NAME = p1)
+     ORDER BY SYSTEM_.SYS_PROC_PARSE_.SEQ_NO;
+V1 VARCHAR(4000);
+BEGIN
+    OPEN C1;
+    SYSTEM_.PRINTLN(&#39;---------------------------------&#39;);
+    SYSTEM_.PRINT(P1);
+    SYSTEM_.PRINTLN(&#39; PROCEDURE&#39;);
+    SYSTEM_.PRINTLN(&#39;---------------------------------&#39;);
+    SYSTEM_.PRINTLN(&#39;&#39;);
+    LOOP
+      FETCH C1 INTO V1;
+      EXIT WHEN C1%NOTFOUND;
+      SYSTEM_.PRINTLN(V1);
+    END LOOP;
+    CLOSE C1;
+SYSTEM_.PRINTLN(&#39;&#39;);
+SYSTEM_.PRINTLN(&#39;---------------------------------&#39;);
+END;
+/</pre>
+</div></div></li></ul><h3 id="Howtocheckthecontentsofstoredprocedure-HowtoExecuteuser-definedstoredprocedure">How to Execute user-defined stored procedure</h3><ul><li><p><strong>Check the list of stored procedures and user-defined functions</strong></p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; exec showProcedures;</pre>
+</div></div></li><li><p><strong>Check the contents of the stored procedure</strong></p><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>iSQL&gt; exec showProcBody('</span><em><span style="color: rgb(51,102,255);">USER_NAME</span></em><span>', '</span><span style="color: rgb(51,102,255);"><em>PROC_NAME</em></span><span>');</span></p>
+</div></div></li></ul><h2 id="Howtocheckthecontentsofstoredprocedure-Usingtheaexportutility">Using the aexport utility</h2><hr /><p>aexport is a utility that saves database object creation statements to a file. After performing aexport, the contents of the stored procedure can be checked in the created file.</p><h3 id="Howtocheckthecontentsofstoredprocedure-Executeaexport-allobjects">Execute aexport - all objects</h3><ul><li><p>The creation statement of all stored procedures can be checked in ALL_CRT_PROC.sql among the files created after executing aexport.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport
+-----------------------------------------------------------------
+     Altibase Export Script Utility.
+     Release Version 4.3.9.223
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write Server Name (default:127.0.0.1) :                    # Enter the Altibase server IP
+Write UserID : sys                                                         # Enter sys
+Write Password :                                                          # Enter Altibase server IP sys user password
+##### TBS #####
+##### User #####
+** input user USER1&#39;s password (default - same with USER_NAME):     # 사용자 패스워드 입력. 
+** input user EHEE&#39;s password (default - same with USER_NAME): 
+** input user ALTITEST&#39;s password (default - same with USER_NAME): 
+##### Synonym #####
+##### Table #####
+** ALTITEST.ORDERS
+** SYS.DEMO_EX2
+** SYS.DEPARTMENT
+** SYS.EMPLOYEE
+** SYS.T1
+** USER1.T1
+
+##### QUEUE #####
+##### Sequence #####
+##### Procedure &amp; Function #####
+##### View #####
+##### Replication #####
+##### TRIGGER #####
+-------------------------------------------------------
+  ##### Follow script files are Generated. #####
+  1. run_il_out.sh   : [ iloader formout, data-out script ]
+  2. run_is.sh       : [ isql table-schema script ]
+  3. run_il_in.sh    : [ iloader data-in script ]
+  4. run_is_index.sh : [ isql table-index script ]
+  5. run_is_fk.sh    : [ isql table-foreign key script ]
+  6. run_is_repl.sh    : [ isql replication script ]
+-------------------------------------------------------</pre>
+</div></div></li></ul><h3 id="Howtocheckthecontentsofstoredprocedure-Executeaexportforeachuser">Execute aexport for each user</h3><ul><li>If the user executes aexport after entering the database user name in the -u option of aexport and the password of the user in the -p option, only the object schema owned by the user is extracted.</li><li>For the stored procedure information, refer to the ALL_CRT_PROC.sql file.</li><li><p>How to execute</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport -u user_name -p user_password -s Altibase_Server_IP
+ 
+Or, 
+ 
+$ aexport 
+Write Server Name (default:127.0.0.1) :     # Enter the Altibase server IP          
+Write UserID :            # Enter the object owner or sys user. Whatever is typed, the result is the same.
+Write Password :       # Password of the user entered above</pre>
+</div></div></li></ul><h3 id="Howtocheckthecontentsofstoredprocedure-Executeaexportforeachobject">Execute aexport for each object</h3><ul><li>The object option allows extracting only specific object schemas. <strong>This option is available as of ALTIBASE HDB version 5.5.1 or later.</strong></li><li>For stored procedures, values can be given in the format -object user name.procedure name.</li><li>As a result, a file with a name in the form of user name_procedure name_CRT.sql is created.</li><li><p>How to execute</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ aexport -s Altibase_Server_IP  -u user_name -p user_password -object user_name.procedure_name
+ 
+또는 
+ 
+$ aexport -object user_name.procedure_name
+Write Server Name (default:127.0.0.1) :       # Enter the Altibase server IP       
+Write UserID :            # Enter the object owner or sys user. Whatever is typed, the result is the same. 
+Write Password :       # Password of the user entered above</pre>
+</div></div></li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

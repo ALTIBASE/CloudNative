@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 6. Errors when integrating TOMCAT</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 6. Errors when integrating TOMCAT
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409360074 {padding: 0px;}
+div.rbtoc1624409360074 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409360074 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409360074'>
+<ul class='toc-indentation'>
+<li><a href='#id-6.ErrorswhenintegratingTOMCAT-Nosuitabledriver'>No suitable driver</a></li>
+<li><a href='#id-6.ErrorswhenintegratingTOMCAT-Communicationlinkfailure'>Communication link failure</a></li>
+<li><a href='#id-6.ErrorswhenintegratingTOMCAT-Others'>Others</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes the contents of errors when integrating ALTIBASE and TOMCAT.</p><h2 id="id-6.ErrorswhenintegratingTOMCAT-Nosuitabledriver"><strong>No suitable driver</strong></h2><div>java.sql.SQLException: No suitable driver error occurs when the part corresponding to the Altibase of connection URL information is incorrectly entered.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">url=&quot;jdbc:mysql://127.0.0.1:20300/mydb&quot;
+An error occurs because the jdbc:Altibase part is incorrectly set as the jdbc:mysql part.</pre>
+</div></div><h2 id="id-6.ErrorswhenintegratingTOMCAT-Communicationlinkfailure"><strong>Communication link failure</strong></h2><div>java.sql.SQLException: Communication link failure error occurs in the following situations:</div><div><p>1. When the ALTIBASE DB server is not running</p><p>2. When the ALTIBASE JDBC driver file is different from the version of the ALTIBASE DB server.</p><p>Ex) The version of the ALTIBASE DB server is 5.3.1, but when using the 5.1.1 version of the ALTIBASE JDBC driver file</p><p>3. When the connection URL information is set incorrectly</p><p>3-1. When the IP is set incorrectly</p><p>3-2. When the PORT_NO is set incorrectly</p><p>Ex) When the IP address of the ALTIBASE DB server is 10.10.10.10 and PORT_NO is 20300, but the IP address is set to 10.10.10.1 or PORT_NO is set to 20301.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">url=&quot;jdbc:Altibase://10.10.10.1:20301/mydb&quot;</pre>
+</div></div><h2 id="id-6.ErrorswhenintegratingTOMCAT-Others"><strong>Others</strong></h2><p>Occasionally, when a DataSource is specified in the context.xml file of a web application, it may be possible to encounter a client unable to establish a connection error or an error that the driver class is null even though the connection URL part is correct. In this case, delete the web application name.xml file in the $CATALINA_HOME/conf/catalina directory. Occasionally, even though the context.xml file of a web application has been changed, an error occurs because the file is not reloading.</p></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

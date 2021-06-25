@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Variable declaration and assignment</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Comparing-PL-SQL-and-ALTIBASE-Stored-Procedures_2988069.html">Comparing PL SQL and ALTIBASE Stored Procedures</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Variable declaration and assignment
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 16, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346817 {padding: 0px;}
+div.rbtoc1624409346817 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346817 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346817'>
+<ul class='toc-indentation'>
+<li><a href='#Variabledeclarationandassignment-Overview'>Overview</a></li>
+<li><a href='#Variabledeclarationandassignment-Restriction'>Restriction</a></li>
+<li><a href='#Variabledeclarationandassignment-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Variabledeclarationandassignment-Overview">Overview</h2>
+
+<p>In this chapter, declaration of variable and constant will be described.</p>
+
+<p>In addition, initial assignment of value will be mentioned.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h2 id="Variabledeclarationandassignment-Restriction">Restriction</h2>
+
+<ul>
+	<li>Not Null constraint is not allowed to use in a value declaration clause. </li>
+</ul>
+
+
+<h2 id="Variabledeclarationandassignment-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1(b1 integer) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+  b2 CHAR(14) <span style="color: rgb(255,0,0);"><strong>not null</strong></span> := '20120715000000'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+   FOR I IN 1 .. B1 LOOP <br class="atl-forced-newline" />
+   INSERT INTO T1 VALUES(I, b2); <br class="atl-forced-newline" />
+   END LOOP; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1(b1 integer) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+b2 CHAR(14) := '20120715000000'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+FOR I IN 1 .. B1 LOOP <br class="atl-forced-newline" />
+INSERT INTO T1 VALUES(I, b2); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Not Null constraint is not allowable in an initialization <br class="atl-forced-newline" />
+clause in the ALTIBASE HDB. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+credit <span style="color: rgb(255,0,0);"><strong>PLS_INTEGER</strong></span> <span style="color: rgb(255,0,0);"><strong>RANGE 1000..25000</strong></span>; <br class="atl-forced-newline" />
+debit credit%TYPE; <br class="atl-forced-newline" />
+v_name VARCHAR2(20); <br class="atl-forced-newline" />
+name VARCHAR2(20) NOT NULL := 'JoHn SmItH'; <br class="atl-forced-newline" />
+-- If we increase the length of NAME, the other variables become longer also <br class="atl-forced-newline" />
+upper_name name%TYPE := UPPER(name); <br class="atl-forced-newline" />
+lower_name name%TYPE := LOWER(name); <br class="atl-forced-newline" />
+init_name name%TYPE := INITCAP(name); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- display inherited default values <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>DBMS_OUTPUT.PUT_LINE</strong></span>('name: ' || name || ' upper_name: ' || upper_name <br class="atl-forced-newline" />
+|| ' lower_name: ' || lower_name || ' init_name: ' || init_name); <br class="atl-forced-newline" />
+-- lower_name := 'jonathan henry smithson'; invalid, character string is too long <br class="atl-forced-newline" />
+-- lower_name := NULL; invalid, NOT NULL CONSTRAINT <br class="atl-forced-newline" />
+-- debit := 50000; invalid, value out of range <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1  <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+credit INTEGER; <br class="atl-forced-newline" />
+debit credit%TYPE; <br class="atl-forced-newline" />
+v_name VARCHAR2(20); <br class="atl-forced-newline" />
+name VARCHAR2(20) := 'JoHn SmItH'; <br class="atl-forced-newline" />
+-- If we increase the length of NAME, the other variables become longer also <br class="atl-forced-newline" />
+upper_name name%TYPE := UPPER(name); <br class="atl-forced-newline" />
+lower_name name%TYPE := LOWER(name); <br class="atl-forced-newline" />
+init_name name%TYPE := INITCAP(name); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- display inherited default values <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>SYSTEM_.PRINTLN</strong></span>('name: ' || name || ' upper_name: ' || upper_name <br class="atl-forced-newline" />
+|| ' lower_name: ' || lower_name || ' init_name: ' || init_name); <br class="atl-forced-newline" />
+-- lower_name := 'jonathan henry smithson'; invalid, character string is too long <br class="atl-forced-newline" />
+-- lower_name := NULL; invalid, NOT NULL CONSTRAINT <br class="atl-forced-newline" />
+-- debit := 50000; invalid, value out of range <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> PL/SQL Datatypes <br class="atl-forced-newline" />
+range </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v1 INTEGER; <br class="atl-forced-newline" />
+r1 t1%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+INSERT INTO t1 VALUES (3,3,3); <br class="atl-forced-newline" />
+&lt;&lt;s&gt;&gt; <br class="atl-forced-newline" />
+DECLARE <br class="atl-forced-newline" />
+v1 proc1.r1.i1%TYPE; <br class="atl-forced-newline" />
+r1 t1%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT i1,i2,i3 <br class="atl-forced-newline" />
+INTO s.r1.i1, s.r1.i2, s.r1.i3 <br class="atl-forced-newline" />
+FROM t1 <br class="atl-forced-newline" />
+WHERE i1 = 1; <br class="atl-forced-newline" />
+INSERT INTO t1 VALUES(s.r1.i1, s.r1.i2, s.r1.i3); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v1 INTEGER; <br class="atl-forced-newline" />
+r1 t1%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+INSERT INTO t1 VALUES (3,3,3); <br class="atl-forced-newline" />
+&lt;&lt;s&gt;&gt; <br class="atl-forced-newline" />
+DECLARE <br class="atl-forced-newline" />
+v1 proc1.r1.i1%TYPE; <br class="atl-forced-newline" />
+r1 t1%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT i1,i2,i3 <br class="atl-forced-newline" />
+INTO s.r1.i1, s.r1.i2, s.r1.i3 <br class="atl-forced-newline" />
+FROM t1 <br class="atl-forced-newline" />
+WHERE i1 = 1; <br class="atl-forced-newline" />
+INSERT INTO t1 VALUES(s.r1.i1, s.r1.i2, s.r1.i3); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

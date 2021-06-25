@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : APRE 기본 사용방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698385.html">Altibase Precompiler 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : APRE 기본 사용방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409852835 {padding: 0px;}
+div.rbtoc1624409852835 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409852835 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409852835'>
+<ul class='toc-indentation'>
+<li><a href='#APRE기본사용방법-APRE*C/C++의기본사용법'>APRE*C/C++의 기본 사용법</a></li>
+<li><a href='#APRE기본사용방법-기본적인Makefile'>기본적인 Makefile</a></li>
+<li><a href='#APRE기본사용방법-호스트변수'>호스트변수</a></li>
+<li><a href='#APRE기본사용방법-Sqlca구조체'>Sqlca 구조체</a></li>
+<li><a href='#APRE기본사용방법-Connect/Disconnect'>Connect/Disconnect </a></li>
+<li><a href='#APRE기본사용방법-Commit/Rollback'>Commit/Rollback </a></li>
+<li><a href='#APRE기본사용방법-DML수행의예'>DML 수행의 예</a></li>
+<li><a href='#APRE기본사용방법-Cursor'>Cursor</a></li>
+<li><a href='#APRE기본사용방법-FAC(FetchAcrossCommit)오류'>FAC(Fetch Across Commit)  오류</a></li>
+<li><a href='#APRE기본사용방법-Dynamicsql'>Dynamic sql </a></li>
+<li><a href='#APRE기본사용방법-CallFunction'>Call Function</a></li>
+<li><a href='#APRE기본사용방법-WHENEVER구문'>WHENEVER 구문</a></li>
+<li><a href='#APRE기본사용방법-현재의연결상태확인및SessionFailover기능'>현재의 연결 상태 확인 및 Session Failover 기능</a></li>
+</ul>
+</div></p><p> </p><hr /><p class="0cm">여기서는 개발 예제 소스를 통해 상세한 설명을 언급한다. 타 DBMS을 변환할 경우 본 소스를 기반으로 참고하여 변환하도록 한다. </p><p class="0cm"> </p><h1 class="0cm" id="APRE기본사용방법-APRE*C/C++의기본사용법">APRE*C/C++의 기본 사용법</h1><p>ALTIBASE Precompiler는 APRE*C/C++라고 호칭하며 실행파일은 &quot;apre&quot;이다. 사용자는 &quot;*.sc&quot; 를 확장자로 하는 소스로 개발해야 한다. 사용법은 다음과 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">apre -mt -t cpp connect1.sc
+-----------------------------------------------------------------
+     Altibase C/C++ Precompiler. 
+     Release Version 6.3.1.5.6
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Shell&gt; ls connect1.cpp</pre>
+</div></div><p>정상적으로 컴파일이 되면 sample.cpp 라는 파일이 해당 디렉토리에 생성이 되며 아무 오류 없이 프롬프트 상으로 돌아온다.  apre와 관련된 자세한 옵션은 『<span style="color: rgb(0,0,0);">Altibase APRE(SES)C makefile</span>』문서를 참고하도록 한다.</p><p>만일, C++이 C컴파일러로 “*.c” 파일이 필요한 경우에는 “-t cpp” 가 아닌 “-t c” 로 Precompile을 수행하면 된다.</p><p> </p><h1 id="APRE기본사용방법-기본적인Makefile">기본적인 Makefile</h1><p>ALTIBASE 개발을 위한 기본 헤더파일 및 라이브러리는 다음에 위치한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">분류</th><th class="confluenceTh">위치</th></tr><tr><td class="confluenceTd"><p>헤더파일</p></td><td class="confluenceTd"><p>$ALTIBASE_HOME/include</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>라이브러리</p></td><td colspan="1" class="confluenceTd"><p>$ALTIBASE_HOME/lib</p></td></tr></tbody></table></div><p>라이브러리에서 추가할 부분은 &quot;<strong>-lapre –lodbccli&quot;</strong> 이다. 이를 참고로  connect1.sc 를 컴파일하는 간단한 Makefile은 다음과 같이 작성할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">%.cpp : %.sc
+        apre -unsafe_null -t cpp $&lt;
+connect1: connect1.cpp
+        g++ -Wl,-relax -L. -O3 -L${ALTIBASE_HOME}/lib -I${ALTIBASE_HOME}/include -o connect1 connect1.o -lapre -lodbccli -ldl -lpthread -lcrypt -lrt</pre>
+</div></div><p>컴파일을 위해서는 ALTIBASE의 라이브러리 외에 시스템 라이브러리를 필요로 한다. 각 플랫폼 별로 필요한 시스템 라이브러리의 목록 및 makefile의 예제는 $ALTIBASE_HOME/install/<a href="http://altibase_env.mk" class="external-link" rel="nofollow">altibase_env.mk</a> 파일 내에 &quot;LIBS&quot; 태그에 정의된 목록을 사용하면 된다.</p><p>한가지 더 고려할 부분은 사용자가 C++컴파일러 아닌 C컴파일러를 사용할 경우에는 ALTIBASE의 라이브러리가 C++로 제공되기 때문에 이를 호환하기 위한 C++ 시스템 라이브러리를 반드시 링크해야 한다. 자세한 사항은 『<span style="color: rgb(0,0,0);">Altibase APRE(SES)C makefile</span>』 문서를 참고하도록 한다</p><p> </p><h1 id="APRE기본사용방법-호스트변수">호스트변수</h1><p>소스상에서 SQL문을 사용하여 코딩 할 경우 DBMS에 데이터에 대한 입출력 제어를 위해 사용하는 변수들을 모두 호스트 변수라고 지칭한다. ALTIBASE 버전 5.3.3 이전에서는 모든 호스트 변수는 반드시 “EXEC SQL BEGIN DECLARE SECTION” 과 “EXEC SQL END DECLARE SECTION” 절 내에 선언된 것들만 사용할 수 있었다.</p><p>하지만 새롭게 나온 5.3.3 이후 버전부터는 apre 옵션의 통해서  일반 변수까지 호스트 변수로 인식하는 것이 가능하다. (<strong>apre –parse full</strong> 옵션)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Ex) char H_TODAY [20];
+
+EXEC SQL SELECT TO_CHAR(SYSDATE, ‘yyyy-mm-dd’) INTO :H_TODAY  FROM DUAL;</pre>
+</div></div><p><s>호스트 변수의 사용에 있어 제약 사항이 있는데 포인터와 관련된 사항이다. 자세한 내용은 『APRE*C/C++ New Features &amp; 업그레이드 가이드』문서를 참고하도록 한다.</s></p><p> 개발을 하는 과정에서 SELECT문의 Target절에 호스트 변수를 써야 할 경우가 발생할 수 있다. ALTIBASE 버전 5 이후부터는 CAST라는 연산자를 통해 다음과 같은 형태로 지원된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+  char  H_var1 [10];
+  char  H_var2 [10];
+  int   H_INT;
+  int   H_Out;
+EXEC SQL END DECLARE SECTION;
+
+EXEC SQL SELECT CAST (:H_var1 AS CHAR(10)) INTO :H_Var2 FROM DUAL;
+
+……
+
+EXEC SQL SELECT CAST (:H_INT AS INTEGER) + Column1 INTO :H_Out FROM T1;</pre>
+</div></div><p> </p><h1 id="APRE기본사용방법-Sqlca구조체">Sqlca 구조체</h1><p>ALTIBASE는 sqlca구조체를 통해 에러를 리턴 한다. 사용자는 다음의 사항을 통해 에러 코드 및 에러 메시지를 확인할 수 있다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>구조체</strong></p></th><th colspan="2" class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td rowspan="4" class="confluenceTd"><p>sqlca.sqlcode</p></td><td class="confluenceTd"><p>SQL_ERROR (-1)</p></td><td class="confluenceTd"><p>에러가 발생한 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS (0)</p></td><td class="confluenceTd"><p>정상 처리된 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS_WITH_INFO (1)</p></td><td class="confluenceTd"><p>처리는 되었으나 사용자의 확인이 필요한 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_NO_DATA</p></td><td class="confluenceTd"><p>대상 데이터가 없는 경우</p></td></tr><tr><td class="confluenceTd"><p>sqlca.sqlerrm.sqlerrmc</p></td><td colspan="2" class="confluenceTd"><p>에러 메시지가 담겨 있다.</p></td></tr><tr><td class="confluenceTd"><p>sqlca.sqlerrd[2]</p></td><td colspan="2" class="confluenceTd"><p>변경DML에 의한 경우는 처리된 레코드의 건수를 가지고 있으며 select문에 의한 경우는 호스트 변수가 배열인 경우 현재 fetch한 레코드가 담긴 변수의 배열 개수(누적이 아님)만을 가지고 있다.</p></td></tr><tr><td class="confluenceTd"><p>SQLCODE</p></td><td colspan="2" class="confluenceTd"><p>ALTIBASE에 정의된 에러 코드를 담고 있다.</p></td></tr><tr><td class="confluenceTd"><p>SQLSTATE</p></td><td colspan="2" class="confluenceTd"><p>CLI 표준 에러 코드를 담고 있다. (ex) 08S01</p></td></tr></tbody></table></div><p>위 코드 값들은 이미 Precompile단계에서 소스에 정의되기 때문에 개발자가 별도로 재정의하거나 헤더에 포함할 필요는 없다.</p><p> </p><h1 id="APRE기본사용방법-Connect/Disconnect"><a name="_Toc260733861" rel="nofollow"></a><span>Connect/Disconnect</span><span> </span></h1><p><span>ALTIBASE는 별도의 Listener와 같은 설정이 없으며 DBMS내부 쓰레드에 직접 접속하는 형태로 구현되어 있다. 따라서, 접속할 대상 서버의 IP 및 PORT번호를 직접 입력하는 형태로 접속한다. 다음은 ALTIBASE에 접속하기 위한 기본 예제 코드이다.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">  // 호스트 변수의 선언 개시
+  EXEC SQL BEGIN  DECLARE SECTION;       
+  char   usr[20];
+  char   pwd[20];
+  char   opt[200];
+  // 호스트 변수의 선언 종료
+  EXEC SQL END  DECLARE SECTION;         
+
+   
+  main()
+  {
+  // DB 사용자 계정의 고유ID
+  sprintf (usr, “sys”);   
+
+  // DB 사용자 계정의 패스워드 
+  sprintf (pwd, “manager”);                 
+  
+  // 해당 서버IP 및 접속 Port
+  sprintf (opt, “DSN=127.0.0.1; PORT_NO=20300;CONNTYPE=1”); 
+
+  // 연결 시도
+  EXEC SQL CONNECT :usr IDENTIFIED BY  :pwd USING :opt; 
+  if (sqlca.sqlcode != 0)
+  {
+          Printf(“ConnectError:: %d %s\n”, SQLCODE,  sqlca.sqlerrm.sqlerrmc);
+  }
+
+}</pre>
+</div></div><h2 id="APRE기본사용방법-Connectiontype"><strong>Connection type</strong></h2><p><span style="color: rgb(51,51,51);"><span style="color: rgb(51,51,51);"> </span></span>연결 방식의 종류는 CONNTYPE 속성의  설정값으로  TCP/IP,  unix Domain,  IPC 방식  3가지 중에 한가지를 선택할  수 있다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>CONNTYPE</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>CONNTYPE=1</p></td><td class="confluenceTd"><p>프로그램과 DBMS간의 통신은 TCP/IP방식으로 수행한다.</p></td></tr><tr><td class="confluenceTd"><p>CONNTYPE=2</p></td><td class="confluenceTd"><p>프로그램과 DBMS간의 통신은 unix Domain 방식으로 수행한다.</p></td></tr><tr><td class="confluenceTd"><p>CONNTYPE=3</p></td><td class="confluenceTd"><p>프로그램과 DBMS간의 통신은 IPC 방식으로 수행한다.</p></td></tr></tbody></table></div><p>CONNTYPE=2, 3 방식은 모두 프로그램이 DBMS서버와 같은 장비 내에 위치해야지만 사용할 수 있다. 2가지 방식 모두 하드웨어 레벨까지 통신비용이 발생하지 않기 때문에 TCP/IP에 비해 빠른 성능을 내고자 할 경우 권장한다. IPC접속 방식을 선택할 경우에는  ALTIBASE_HOME/conf/altibase.properties 파일 내의 IPC_CHANNEL_COUNT를 1 이상의 값으로 조정해야 한다. 이 설정은 DB를 재 구동해야 사용 가능하며 사전에 IPC와 관련된 커널 설정값을 충분히 조정해야 한다. </p><h2 id="APRE기본사용방법-ConnectionName"><strong><span style="color: rgb(0,0,0);">Connection Name</span></strong></h2><p>연결 시점에 명시적인 이름을 주는 것이 가능한데 다음과 같이 수행한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL AT CONN1 CONNECT ~~
+
+EXEC SQL AT :ConnName CONNECT ~~</pre>
+</div></div><p>명시적인 이름 또는 호스트 변수로 저장하여 처리가 가능하다.</p><h2 id="APRE기본사용방법-Connectionclose"><strong>Connection close</strong></h2><p>연결의 해제 방법은 아래와 같으며 비정상적인 연결 종료가 발생하면 재 연결을 시도하기 전에는 반드시  &quot;EXEC SQL FREE&quot;를 수행하도록 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL DISCONNECT;
+
+EXEC SQL AT CONN1 DISCONNECT;
+
+EXEC SQL AT :ConnName DISCONNECT;</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>ALTIBASE의 DISCONNECT에 주의점은 NonAuto-Commit mode로 동작하였다 하더라도 사용자가 DISCONNECT 직전에 정상 처리된 변경 트랜잭션은 Commit되는 점을 주의해야 한다. (반영하지 않고자 할 경우 명시적으로 Rollback을 수행한 후 Disconnect해야 한다.)</p>
+                    </div>
+    </div>
+<p> </p><h1 id="APRE기본사용방법-Commit/Rollback"><a name="_Toc260733862" rel="nofollow"></a><strong>Commit/Rollback </strong></h1><p>Commit/Rollback의 수행은 다음과 같이 할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL COMMIT;
+
+EXEC SQL ROLLBACK;
+
+EXEC SQL AT CONN1 COMMIT;
+
+EXEC SQL AT :ConnName COMMIT;</pre>
+</div></div><p> </p><h1 id="APRE기본사용방법-DML수행의예"><strong>DML 수행의 예</strong></h1><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+ char    H_today [20 + 1];
+EXEC SQL END DECLARE SECTION;
+
+main()
+{
+// DB 접속 (위의 예제를 참고한다.)
+
+   …생략...
+
+
+  memset (H_today,  0x00, sizeof(H_today));
+
+// 오늘 날짜를 DB로부터 읽어 온다.
+EXEC SQL SELECT TO_CHAR  (sysdate, ‘yyyy-mm-dd’) INTO :H_today FROM Dual;
+
+
+// 테이블을 생성한다.
+EXEC SQL CREATE TABLE TEST ( C1 CHAR(20));
+
+// 읽어 온 날짜를 테스트 테이블에 입력한다.
+EXEC SQL INSERT INTO TEST (C1) VALUES (:H_today);
+
+EXEC SQL INSERT INTO TEST VALUES (:H_today);
+// 테이블에서 날짜를 삭제한다.
+
+EXEC SQL DELETE FROM T1 WHERE C1 like ‘2010%’;
+
+EXEC SQL DELETE T1 WHERE C1 = ‘2010’;
+
+
+}</pre>
+</div></div><p>ALTIBASE의 경우는 SELECT절의 INTO 절은 생략할 수 없다. 이외의 트랜잭션 상의 DML은 일반적인 SQL 사용법을 그대로 이용하면 된다.</p><p> </p><h1 id="APRE기본사용방법-Cursor"><strong>Cursor</strong></h1><p>일반적인 cursor는 다음과 같이 사용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+int  H_Condition;
+int O_C1;
+int O_C2;
+EXEC SQL END DECLARE SECTION;
+
+main()
+{
+    // DB접속
+
+    // Cursor 선언
+   EXEC SQL DECLARE CURSOR1 CURSOR FOR   SELECT C1, C2 FROM TEST1  WHERE C1 &gt;= :H_Condition;
+
+   // Cursor 열기
+   EXEC SQL OPEN CURSOR1;
+
+   While (1)
+   {
+       // Cursor 결과 읽기
+       EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+       if (sqlca.sqlcode == SQL_NO_DATA) 
+          break;
+       else if (sqlca.sqlcode != SQL_SUCCESS) 
+       {
+           printf(“FetchError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+           break;
+       }
+   }
+   // cursor 닫기
+   EXEC SQL CLOSE CURSOR1;
+}</pre>
+</div></div><p><strong style="color: rgb(0,0,0);font-size: 24.0px;"><br /></strong></p><h1 id="APRE기본사용방법-FAC(FetchAcrossCommit)오류"><span style="color: rgb(255,0,0);"><strong style="color: rgb(0,0,0);font-size: 24.0px;">FAC(Fetch Across Commit)  오류</strong></span></h1><p><span style="color: rgb(255,0,0);">Non-autocommit 환경에서  커서를 Open후 레코드 단위로 Fetch 하면서 Fetch 도중에 Commit/Rollback 하는 것은 ANSI 표준에서 권장하지 않는다. Altibase 는 ANSI 표준을 준수하여 기본적으로 FAC 시 오류가 발생한다.  그러나 Altibase 버전 6.3.1 이상 버전부터는  Cursor Open시의 옵션을 통해서  FAC 를 수행할 수 있는 기능을 지원한다.</span></p><h2 id="APRE기본사용방법-오류가발생하는코드의예"><span style="color: rgb(255,0,0);"><strong>오류가 발생하는 코드의 예</strong></span></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">while (1)
+{
+    EXEC SQL FETCH CURSOR1 INTO :O_C1,   :O_C2;
+    if (sqlca.sqlcode != 0) 
+    { 
+        printf(“FetchError::%d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        break;
+    }
+
+
+    EXEC SQL UPDATE SET CHANGE_V = :O_C2 WHERE C1 = :O_C1;
+    if (sqlca.sqlcode != SQL_SUCCESS) 
+       EXEC SQL ROLLBACK;
+    else
+       EXEC SQL COMMIT;
+}</pre>
+</div></div><p>위 코드에서 fetch 이후 시점에 에러 체크를 하도록 하고 수행 중에 다음과 같은 오류가 발생할 수 있다. (ALTIBASE 5.3기준)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">shell&gt;./SampleTest
+FetchError: 100, Not found data  </pre>
+</div></div><p>이 시점에 실제 레코드 건수는 더 존재하지만 commit되는 시점에 이전에 열은 cursor1이 내부적으로 종료되면서 더 이상 fetch할 결과셋이 없어졌기 때문에 이러한 에러가 발생한다. (이 에러는 실제 데이터가 없는 경우와 동일하기 때문에 판단하기에 다소 애매할 수 있으나 기대한 건수 이하에서 이와 같은 오류가 발생할 경우 이러한 상황을 고려해 볼 수 있다.)</p><p>따라서, cursor를 사용하여 fetch하는 과정에서 별도의 변경 트랜잭션을 발생시켜야 하는 경우는 해당 세션을 auto-commit mode로 수행하거나 또는 별도의 연결 객체를 만들어 해당 세션을 통해 처리하도록 해야 한다.</p><h2 id="APRE기본사용방법-FAC에러메세지"><strong>FAC 에러 메세지</strong></h2><p>Altibase 버전에 따라서 FAC 에러 메세지는  약간씩 다르게 출력된다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">버전</th><th class="confluenceTh">에러코드</th><th class="confluenceTh">에러메세지</th><th colspan="1" class="confluenceTh">참고 페이지</th></tr><tr><td class="confluenceTd"> Altibase 4.3.9</td><td class="confluenceTd">ERR-4103C</td><td class="confluenceTd"> Request of fetching data to an unprepared SQL statement.</td><td colspan="1" class="confluenceTd"><a href="http://aid.altibase.com/x/6YKZ" rel="nofollow" class="external-link">http://aid.altibase.com/x/6YKZ</a></td></tr><tr><td class="confluenceTd">Altibase 5.3.3 ~ 6.1.1 </td><td class="confluenceTd">100 </td><td class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">Altibase 6.3.1 이상 </td><td class="confluenceTd">ERR-410D2 </td><td class="confluenceTd"> Request of fetching data to an unprepared SQL statement.</td><td colspan="1" class="confluenceTd"><a href="http://aid.altibase.com/x/9oKZ" rel="nofollow" style="text-decoration: underline;" class="external-link">http://aid.altibase.com/x/9oKZ</a></td></tr></tbody></table></div><h2 id="APRE기본사용방법-별도의연결을만들어FAC를수행하는예"><strong>별도의 연결을 만들어  FAC를 수행하는 예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">main()
+{
+    // DB연결
+
+    // 별도의 변경 트랜잭션을 위한 연결 생성
+    EXEC SQL AT CONN1 CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+
+    // cursor 코드 생략.
+    while (1)
+    {
+        EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+        // 변경 시점에 위에서 생성한 연결 명을 명시한다.
+        EXEC SQL AT CONN1 UPDATE t1 set change_v = :O_C2 where C1 = :O_C1;
+  
+       // commit / rollback에서도 위에서 생성한 연결 명을 명시한다.
+       If (sqlca.sqlcode != SQL_SUCCESS) 
+           EXEC SQL AT CONN1 ROLLBACK;
+        Else
+           EXEC SQL AT CONN1 COMMIT;
+    }
+}</pre>
+</div></div><p>별도의 연결을 사용할 경우에는 사용자가 고려할 사항은 전체 수행 흐름이 하나의 트랜잭션으로 묶여야 하는 경우 별도의 연결 객체를 사용할 경우 수행 도중 오류로 인해 일부는 commit되고 일부는 처리되지 못하는 상황이 발생할 수 있다. 만일, 하나의 트랜잭션 안에 All or Nothing 형태로 처리되어야 한다면 반드시 fetch-loop 밖에서 commit/rollback 구문을 사용하도록 해야 한다.</p><h2 id="APRE기본사용방법-Cursor선언시&quot;WITHHOLD&quot;구문사용"><strong><span style="color: rgb(0,0,0);">Cursor 선언시 &quot;WITH HOLD&quot; 구문 사용</span></strong></h2><p><span style="color: rgb(0,0,0);"> </span>Altibase 버전 6.3.1 이후 부터는 &quot;WITH HOLD&quot; 구문으로  선언한 Cursor를 Open 한 경우에는  Commit/Rollback 수행후  트랜잭션 완료 후에도 커서가 닫히지 않는다. 세션이 non-autocommit 모드일 경우에만 유효하다.  자세한 설명은  『ALTIBASE CLI User's Manaul』 과   『ALTIBASE Precompiler Manaul』  을 참고하기 바란다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">main()
+{
+     .....
+     EXEC SQL AUTOCOMMIT OFF;
+     ......
+     EXEC SQL DECLARE CURSOR1 CURSOR WITH HOLD FOR      // Cursor 선언시 시 With hold 옵션을 사용한다.
+                                 SELECT * FROM  DEPARTMENT;
+     ......
+    while(1)
+    {
+        EXEC SQL FETCH CURSOR1 INTO :O_C1,  :O_C2;
+        ......
+        EXEC SQL UPDATE t1 set change_v = :O_C2 where C1 = :O_C1;
+        // Commit/Rollback 을 수행하여도 FAC  오류가 발생하지 않는다.
+       If (sqlca.sqlcode != SQL_SUCCESS) 
+           EXEC SQL ROLLBACK;
+       Else
+           EXEC SQL COMMIT;
+        ......
+    }
+   ...
+}</pre>
+</div></div><p> </p><h1 id="APRE기본사용방법-Dynamicsql"><strong><span style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;">Dynamic sql</span><span style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;"> </span></strong></h1><p><span style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;"> </span>변경 트랜잭션의 경우와 조회 트랜잭션 2가지의 예로 설명한다.</p><h2 id="APRE기본사용방법-변경트랜잭션예"><strong>변경 트랜잭션예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+char  sql_text [1024];
+int    H_var1;
+int    H_var2;
+EXEC SQL END DECLARE SECTION;
+
+
+main()
+{
+    // DB연결 
+    sprintf (sql_text,  “insert into test_table values (?, ?)”);
+
+    EXEC SQL PREPARE STMT1 FROM :sql_text;
+    if (sqlca.sqlcode != SQL_SUCCESS)
+    {
+        printf(“PrepareError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    }   
+
+    for ( i=0; i&lt;1000; i++)
+    {
+        EXEC SQL EXECUTE STMT1 USING :H_var1, :H_var2; 
+       if (sqlca.sqlcode != SQL_SUCCESS)
+       {
+            printf(“PrepareError:: %d, %s\n”, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+            exit(-1);
+        }
+    }
+
+}</pre>
+</div></div><h2 id="APRE기본사용방법-조회트랜잭션예"><strong>조회 트랜잭션예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+char  sql_text [1024];
+int    H_var1;
+int    H_var2;
+EXEC SQL END DECLARE SECTION;
+
+main()
+{
+    // DB연결 
+
+    sprintf (sql_text,  “select * from test_table where c1 &gt;= ?”);
+    EXEC SQL PREPARE STMT1 FROM :sql_text;
+    if (sqlca.sqlcode != SQL_SUCCESS)
+    {
+        printf(“PrepareError:: %d, %s\n”,SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    }   
+
+    EXEC SQL DECLARE CURSOR1 CURSOR FOR STMT1;
+
+    EXEC SQL OPEN CURSOR1 USING :H_var1;
+
+    // 이하 코드는 cursor fetch와 동일하다.</pre>
+</div></div><p>테이블 명이 명시적이지 않거나 칼럼, 조회 조건 등이 바뀌어야 하는 경우 별도의 char*형의 변수에 SQL문을 만들고 해당 SQL문을 dynamic하게 사용하는 방법이다.</p><p>ALTIBASE 5.1부터는 내부적으로 Plan-Cache라는 영역에 모든 세션들이 수행하는 실행계획을 공유하고 있다. 하지만, Dynamic SQL과 같이 매번 질의문이 달라지면 Plan-Cache에 이미 생성된 실행계획을 사용하지 않고 다시 Prepare/Execute형태로 동작하기 때문에 질의 성능이 Static SQL문 비해서는 느릴 수 밖에 없다.</p><h1 id="APRE기본사용방법-CallFunction"><strong>Call Function</strong></h1><p>사용자가 생성한 또는 DBMS 내장 함수를 호출하는 방법의 예를 설명한다.</p><h2 id="APRE기본사용방법-DBMS내장함수호출예"><strong>DBMS 내장함수 호출예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL BEGIN DECLARE SECTION;
+ char H_day [20];
+EXEC SQL END DECLARE SECTION;
+
+main()
+{
+    // 날짜를 가져오는 함수의 사용 예
+    EXEC SQL SELECT TO_CHAR(SYSDATE,‘yyyy-mm-dd hh:mi:ss’) INTO :H_day from dual;
+}</pre>
+</div></div><h2 id="APRE기본사용방법-사용자함수호출예"><strong>사용자함수 호출예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// 입력된 2개의 값을 더하여 리턴 하는 함수
+Create or replace function user_func (a integer, b integer)
+Return integer
+As
+Begin
+    Return a + b;
+End;
+/
+
+---- 호출하는 소스 ----
+main()
+{
+    // 사용자가 생성한 함수의 사용 예
+    EXEC SQL SELECT user_func (1, 2) INTO :H_value from dual;
+}</pre>
+</div></div><p>항상 from dual이어야 할 필요는 없으며 사용자가 필요에 의해 임의의 테이블을 지정하여도 상관없다. (함수에서 사용자가 주의할 것은 리턴 절에 char/varchar가 오는 경우 반드시 리턴 되는 길이를 명시해야 한다. 명시하지 않을 경우 1byte만 리턴 되기 때문에 대부분 함수에서 다음과 같은 Exception이 발생하게 된다. “<strong>Invalid length of the data type”</strong>)</p><p><strong style="color: rgb(0,0,0);font-size: 24.0px;"><span><br /></span></strong></p><p><strong style="color: rgb(0,0,0);font-size: 24.0px;"><span>Call Procedure</span></strong></p><p>프로시져는 함수와 달리 별도의 호출 방식을 통해 수행한다. 함수도 이와 동일한 방법으로도 사용할 수 있음으로 참고하도록 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// 함수의 경우
+EXEC SQL EXECUTE
+BEGIN
+      :H_var := user_func (:in_param1,  :in_param2);
+END;
+END-EXEC;
+
+// 프로시져의 경우는 리턴 절이 없다.
+EXEC SQL EXECUTE
+BEGIN  
+       user_proc (:in_param1 in, :in_param2 out);
+END;
+END-EXEC;</pre>
+</div></div><p> </p><h1 id="APRE기본사용방법-WHENEVER구문"><span style="color: rgb(0,0,0);">WHENEVER 구문</span></h1><p>ALTIBASE의 WHENEVER구문에서는 do/goto/continue/stop 등의 구문을 제공한다. 이 구문은 내장SQL문을 수행하기 전에 선언해야 한다.  Whenever 구문의 조건문에는 다음과 같은 형태가 가능하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>조건</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>SQLERROR</p></td><td class="confluenceTd"><p>sqlca.sqlcode 가 SQL_ERROR인 경우</p></td></tr><tr><td class="confluenceTd"><p>NOT FOUND</p></td><td class="confluenceTd"><p>sqlca.sqlcode 가 SQL_NO_DATA인 경우</p></td></tr></tbody></table></div><p> </p><p>처리에 대한 부분은 다음과 같이 가능하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>처리</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>DO [사용자 함수]</p></td><td class="confluenceTd"><p>사용자가 정의한 함수를 실행한다.</p></td></tr><tr><td class="confluenceTd"><p>CONTINUE</p></td><td class="confluenceTd"><p>에러를 무시하고 계속 진행한다.</p></td></tr><tr><td class="confluenceTd"><p>DO BREAK</p></td><td class="confluenceTd"><p>반복문을 빠져 나간다. 반복문 내에서만 유효하다.</p></td></tr><tr><td class="confluenceTd"><p>DO CONTINUE</p></td><td class="confluenceTd"><p>반복문 내의 처음 위치로 이동한다. 이 구문은 반복문 내에서만 유효하다.</p></td></tr><tr><td class="confluenceTd"><p>GOTO [Label]</p></td><td class="confluenceTd"><p>사용자가 지정한 곳으로 GOTO 수행한다.</p></td></tr><tr><td class="confluenceTd"><p>STOP</p></td><td class="confluenceTd"><p>연결을 해제하고 프로그램을 종료한다.</p></td></tr></tbody></table></div><p>사용의 예는 다음과 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL WHENEVER SQLERROR DO user_function();
+EXEC SQL WHENEVER SQLERROR STOP;
+EXEC SQL WHENEVER SQLERROR GOTO ERROR_ROUTINE;
+EXEC SQL WHENVER SQLERROR CONTINUE;</pre>
+</div></div><p> </p><h1 id="APRE기본사용방법-현재의연결상태확인및SessionFailover기능">현재의 연결 상태 확인 및 Session Failover 기능</h1><p>ALTIBASE에서는 능동적으로 연결 객체에 대해 상태를 리턴 해주는 방법은 없으며 다만, 개발자가 질의를 수행한 이후 SQLSTATE의 상태를 체크하여 다음의 방법으로 연결이 종료되었음을 감지해 낼 수 있다.</p><p>다음과 같은 예제 소스를 공통 함수에 넣는 방법도 가능한 방법 중에 하나이다</p><h2 id="APRE기본사용방법-사용자코드에의한SessionFailover예"><strong>사용자코드에 의한 Session Failover 예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">if ( memcmp (SQLSTATE, “08001”, 5) == 0 ||  memcmp (SQLSTATE, “08S01”, 5) == 0  || memcmp (SQLSTATE, “08003”, 5) == 0 )
+{
+    // 연결이 해제된 상태임 DISCONNECT 호출이 아닌 FREE를 실행
+    EXEC SQL FREE;        
+
+    EXEC SQL CONNECT ~~ // 상대편 서버
+}</pre>
+</div></div><p>ALTIBASE 5.3.3 이상 버전부터는  CTF (Connection Time Failover)/STF(Service Time Failover)라고 부르는 개념의 Session FailOver 기능을 제공한다.  CTF는 프로그램이 최초에 연결을 시도하는 시점에 FailOver를 의미하며 STF는 연결된 이후에 질의를 수행하는 과정에 발생하는 연결에 대한 FailOver를 의미한다.</p><p>이 기능은 트랜잭션의 FailOver는 지원하지 않기 때문에 사용자는 Session FailOver이후의 비즈니스 로직을 재처리 하는 것을 반드시 고려해야 한다. 사용 예는 다음과 같다.</p><h2 id="APRE기본사용방법-AltibaseFailover기능을사용한예"><strong>Altibase Failover 기능을 사용한 예</strong></h2><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Sprintf (opt, &quot;DSN=127.0.0.1;&quot;
+              &quot;AlternateServers=(128.0.0.1:20300,128.0.0.2:20301);&quot;
+              &quot;ConnectionRetryCount=3;&quot;
+              &quot;ConnectionRetryDelay=10;&quot;
+              &quot;SessionFailOver=on;LoadBalance=off&quot;) ;
+
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+.................
+
+EXEC SQL INSERT INTO   T1 VALUES (:H_var1);
+if (sqlca.sqlcode != SQL_SUCCESS)
+{
+   // 이 에러가 나오면 이미 FailOver가 정상적으로 수행 되었다는 의미이다.!!
+   if (SQLCODE == EMBEDED_ALTIBASE_FAILOVER_SUCCESS)
+   {
+       printf(“FailOver Success\n”);
+       goto Retry_business_logic;
+   }
+}</pre>
+</div></div><p> </p><p>연결 String의 각 입력 항목의 의미는 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>항목</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>AlternateServers</p></td><td class="confluenceTd"><p>FailOver를 할 대상 서버를 차례대로 IP:PORT 형태로 콤마(,)를 기준으로 나열한다.</p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryCount</p></td><td class="confluenceTd"><p>하나의 대상 서버에 대한 연결 시도 횟수를 의미한다.</p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryDelay</p></td><td class="confluenceTd"><p>이 간격(초)만큼 Sleep후 연결을 재시도한다.</p></td></tr><tr><td class="confluenceTd"><p>SessionFailOver</p></td><td class="confluenceTd"><p>SessionFailOver 기능을 Service Time시에 사용할지 결정한다. 즉, SQL오류 발생시 자동으로 연결을 AlternateServers 목록에 있는 서버로 맺을 지 여부를 지정한다. (on/off)</p></td></tr><tr><td class="confluenceTd"><p>LoadBalance</p></td><td class="confluenceTd"><p>on으로 할 경우 최초 접속 시에 DSN에 명시된 서버와 AlternateServers 목록 중에 랜덤 하게 선택하며 off로 하게 되면 DSN을 먼저 선택하고 이후 AlternateServers 목록에 기술된 순서대로 접속을 시도하게 된다.</p></td></tr></tbody></table></div><p> </p><p>만일, Cursor Open시점에 에러가 발생하여 재 처리해야 할 경우에는 반드시 재처리 전에 해당 Cursor를 Close release까지 수행한 이후 재처리를 해야 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC  SQL CLOSE RELEASE CURSOR1;</pre>
+</div></div><p>CTF/STF와 관련된 부분은 『ALTIBASE UL FailOver 가이드』문서를 참고하도록 한다.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

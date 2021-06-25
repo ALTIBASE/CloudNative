@@ -1,0 +1,40 @@
+
+
+SET LINESIZE 1024
+SET COLSIZE 30
+SELECT  NAME TBS_NAME                                         -- 디스크 테이블스페이스 이름
+      , TO_CHAR(ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2)) 'MAX(M)'                             -- 테이블스페이스 최대 크기
+      , ROUND(TOTAL_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) 'TOTAL(M)'                        -- 현재까지 할당 받은 페이지의 합계
+      , DECODE(TYPE, 7, ROUND((SELECT (SUM(total_page_count) * PAGE_SIZE)/1024/1024
+                                 FROM V$undo_seg)+
+                              (SELECT (SUM(ALLOC_PAGE_COUNT) * PAGE_SIZE)/1024/1024
+                                 FROM v$tss_seg), 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2)) 'ALLOC(M)'   -- 현재까지 할당받은 페이지 중 '빈 페이지'를 제외한 '사용 중인 페이지'만의 합계
+      , DECODE(TYPE, 7, ROUND( ( (SELECT SUM(total_page_count) FROM V$undo_seg) +
+                                 (SELECT SUM(ALLOC_PAGE_COUNT) FROM v$tss_seg ) ) / D.MAX  * 100, 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT / D.MAX * 100, 2))             'USAGE(%)'   -- MAX대비 ALLOC 사용률
+       , DECODE(STATE, 1, 'OFFLINE', 2, 'ONLINE', 5, 'OFFLINE BACKUP', 6, 'ONLINE BACKUP', 128, 'DROPPED', 'DISCARDED') STATE
+       , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+       ,(SELECT  SPACEID
+              , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+              , DECODE(MAX(AUTOEXTEND), 1, 'ON', 'OFF') 'AUTOEXTEND'
+           FROM V$DATAFILES
+           GROUP BY SPACEID) D
+ WHERE T.ID = D.SPACEID
+;
+
+
+
+
+
+
+
+-- 출력 예
+
+TBS_NAME                        MAX(M)                          TOTAL(M)    ALLOC(M)    USAGE(%)    STATE           AUTOEXTEND  
+----------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_DATA               2048                            100         0.25        0.01        ONLINE          ON   
+SYS_TBS_DISK_UNDO               2048                            100         2           0.1         ONLINE          ON   
+SYS_TBS_DISK_TEMP               2048                            100         0.25        0.01        ONLINE          ON   
+3 rows selected.

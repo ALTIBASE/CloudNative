@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Notes on using floating point data type (double, float)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Notes on using floating point data type (double, float)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145486 {padding: 0px;}
+div.rbtoc1624409145486 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145486 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145486'>
+<ul class='toc-indentation'>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-Noteswhenusingdoubleorfloatdatatypes'>Notes when using double or float data types</a></li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-Version'>Version</a></li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-Exampleoftruncateddoublenumericvalue'>Example of truncated double numeric value</a>
+<ul class='toc-indentation'>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-PhenomenonthatthevalueistruncatediniSQL'>Phenomenon that the value is truncated in iSQL</a></li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-WhendataisexportedfromiLoader'>When data is exported from iLoader</a></li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-Whenitcomestoadoubletypehostvariablefromaprogram,itisnormallyretrieved.'>When it comes to a double type host variable from a program, it is normally retrieved.</a></li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-SamephenomenoninOraclesqlplus'>Same phenomenon in Oracle sqlplus</a></li>
+</ul>
+</li>
+<li><a href='#Notesonusingfloatingpointdatatype(double,float)-Solution'>Solution</a></li>
+</ul>
+</div></p><h1 id="Notesonusingfloatingpointdatatype(double,float)-Noteswhenusingdoubleorfloatdatatypes">Notes when using double or float data types</h1><hr /><p>Altibase's double data type is the same as the C language's double data type. While the double data type can represent a wider range of numbers than the fixed-point method, the value may be inaccurate because it is expressed as an approximate value, and meaningless values after the decimal point may be too long.</p><p>In addition, when double/float type values are retrieved with iSQL or exported to iloader, the value after the decimal point may not be truncated.</p><p>Therefore, in order to accurately retrieve or store values below the decimal point, a fixed-point number type such as numeric must be used.</p><h1 id="Notesonusingfloatingpointdatatype(double,float)-Version">Version</h1><hr /><p>This is the same for all Altibase versions.</p><h1 id="Notesonusingfloatingpointdatatype(double,float)-Exampleoftruncateddoublenumericvalue">Example of truncated double numeric value</h1><h3 id="Notesonusingfloatingpointdatatype(double,float)-PhenomenonthatthevalueistruncatediniSQL">Phenomenon that the value is truncated in iSQL</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt; create table t1 ( c1 <span style="color: rgb(255,0,0);">double</span> );<br />Create success.</p><p>iSQL&gt; desc t1;<br />[ TABLESPACE : SYS_TBS_MEM_DATA ]<br />[ ATTRIBUTE ]                                                         <br />------------------------------------------------------------------------------<br />NAME                                     TYPE                        IS NULL <br />------------------------------------------------------------------------------<br />C1                                       <span style="color: rgb(255,0,0);">DOUBLE         </span> FIXED      </p><p>iSQL&gt;  insert into t1 values ( <span style="color: rgb(255,0,0);">double'100.00000000000001421085471520200372'</span>);                                    <span style="color: rgb(255,0,0);">&lt;-- Enter the number with the long decimal point of the double type in the double column.</span><br />1 row inserted.</p><p>iSQL&gt; select c1, to_char(c1) from t1;<br />C1                     TO_CHAR(C1)                                                       <br />--------------------------------------------------------------------------------------------<br />100                    <span style="color: rgb(255,0,0);">100</span>                                                                                                                                      <span style="color: rgb(255,0,0);">&lt;--- Retrieve because the value below the decimal point is truncated</span></p><p>iSQL&gt;</p><p><br />iSQL&gt; select * from t1 where <span style="color: rgb(255,0,0);">c1 = 100.00000000000001421085471520200372</span>;                                      <span style="color: rgb(255,0,0);">&lt;-- The retrieve condition value may not be retrieved because it is truncated.</span><br />C1                     <br />-------------------------<br />No rows selected.</p><p>iSQL&gt; select c1, to_char(c1) from t1 where c1 =<span style="color: rgb(255,0,0);"> double'100.00000000000001421085471520200372'</span>; <span style="color: rgb(255,0,0);"> &lt;-- By casting the retrieve condition value, the desired value can be found.</span><br />C1                     TO_CHAR(C1)                                                       <br />--------------------------------------------------------------------------------------------<br />100                    100                                                                                                                                   <span style="color: rgb(255,0,0);">&lt;---  However, the value that is retrieved and output is truncated and expressed.</span><br />1 row selected.</p>
+</div></div><h3 id="Notesonusingfloatingpointdatatype(double,float)-WhendataisexportedfromiLoader">When data is exported from iLoader</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ iloader -s localhost -u SYS -p MANAGER out -f SYS_T1.fmt -d SYS_T1.dat -log SYS_T1.log</span><br /><span>$ cat SYS_T1.dat</span><br /><span>100                     </span><span style="color: rgb(255,0,0);">&lt;--- The value truncated to the decimal point is exported.</span></p>
+</div></div><h3 id="Notesonusingfloatingpointdatatype(double,float)-Whenitcomestoadoubletypehostvariablefromaprogram,itisnormallyretrieved.">When it comes to a double type host variable from a program, it is normally retrieved.</h3><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>/* select.c */<br />...................<br />...................<br />    EXEC SQL BEGIN DECLARE SECTION;<br />    double c1;         // double host variable for select output<br />    double ins_c1;     // double host variable for insert<br />    EXEC SQL END DECLARE SECTION;</p><p>    ins_c1 = 100.00000000000001421085471520200372;</p><p>    EXEC SQL INSERT INTO T1 values ( :ins_c1 );<br />    if (sqlca.sqlcode != SQL_SUCCESS)<br />    {<br />        printf(&quot;Error : [%d] %s\n\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);</p><p>    }</p><p>    EXEC SQL SELECT C1 INTO :c1 FROM T1 limit1;<br />    /* check sqlca.sqlcode */<br />    if (sqlca.sqlcode == SQL_SUCCESS)<br />    {<br />        printf(&quot;c1 = %.32f \n&quot;, c1);<br />    }<br />.................<br />.................<br />shell&gt; ./select   ( Execute the program)<br />&lt;SELECT&gt;<br />c1 = <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372</span>   <span style="color: rgb(255,0,0);">&lt;-- Normal value is output.</span></p>
+</div></div><h3 id="Notesonusingfloatingpointdatatype(double,float)-SamephenomenoninOraclesqlplus">Same phenomenon in Oracle sqlplus</h3><p>As a result of checking, there is a phenomenon that the same value is truncated in the Oracle sqlplus.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; create table t1 ( c1 binary_double );</p><p>Table created.</p><p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; insert into t1 values ( 100.00000000000001421085471520200372 );</p><p>1 row created.</p><p><a href="mailto:SCOTT@orcl" class="external-link" rel="nofollow">SCOTT@orcl</a>&gt; select c1, to_char(c1) from t1;</p><p>        C1 TO_CHAR(C1)<br />---------- ----------------------------------------<br />  1.0E+002 1.0000000000000001E+002</p>
+</div></div><h1 id="Notesonusingfloatingpointdatatype(double,float)-Solution">Solution</h1><hr /><p>In order to accurately retrieve or store values below the decimal point, a fixed-point number type such as numeric(scale, precision) must be used.</p><p>The following is an example of executing a value in iSQL when using numeric type.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt;  create table t2 ( c1 numeric(35, 32 ) );<br />Create success.<br />iSQL&gt; desc t2;<br />[ TABLESPACE : SYS_TBS_MEM_DATA ]<br />[ ATTRIBUTE ]                                                         <br />------------------------------------------------------------------------------<br />NAME                                     TYPE                        IS NULL <br />------------------------------------------------------------------------------<br />C1                                       NUMERIC(35, 32) FIXED      </p><p> </p><p>iSQL&gt; insert into t2 values ( 100.00000000000001421085471520200372 );<br />iSQL&gt; insert into t2 values ( 123.00000000000001421085471520200372 );<br />iSQL&gt; insert into t2 values ( 100.12345 );</p><p><br />iSQL&gt; select c1, to_char(c1) from t2;     <span style="color: rgb(255,0,0);">&lt;-- In iSQL, to express the value after the decimal point as it is, convert it to char type using the to_char function.</span><br />C1          TO_CHAR(C1)                                                       <br />---------------------------------------------------------------------------------<br />100         <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372 </span>                             <br />123         <span style="color: rgb(255,0,0);">123.00000000000001421085471520200372                             </span> <br />100.12345   100.12345    </p><p> </p><p>iSQL&gt; select c1, to_char(c1) from t2 where c1 = <span style="color: rgb(255,0,0);">100.00000000000001421085471520200372</span>;      <span style="color: rgb(255,0,0);">&lt;--  When retrieving by condition value, it can be used without the need for a separate cast.</span><br />C1          TO_CHAR(C1)                                                       <br />---------------------------------------------------------------------------------<br />100         100.00000000000001421085471520200372                              <br />1 row selected.</p>
+</div></div><p> </p><div><span style="color: rgb(0,0,0);font-size: 16.0px;font-weight: bold;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

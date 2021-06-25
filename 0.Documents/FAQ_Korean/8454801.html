@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : php 사용중인데 한글이 깨집니다.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520896.html">07. 개발 및 API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="PHP_6521526.html">PHP</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : php 사용중인데 한글이 깨집니다.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Jan 29, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053217 {padding: 0px;}
+div.rbtoc1624409053217 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053217 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053217'>
+<ul class='toc-indentation'>
+<li><a href='#php사용중인데한글이깨집니다.-현상'>현상</a></li>
+<li><a href='#php사용중인데한글이깨집니다.-PHP실행구조'>PHP 실행구조</a></li>
+<li><a href='#php사용중인데한글이깨집니다.-주요원인'>주요 원인</a>
+<ul class='toc-indentation'>
+<li><a href='#php사용중인데한글이깨집니다.-ODBC설정에서NLS_USE설정'>ODBC 설정에서  NLS_USE 설정</a></li>
+<li><a href='#php사용중인데한글이깨집니다.-터미널창에서한글지원코드설정'>터미널창에서  한글 지원 코드 설정</a></li>
+<li><a href='#php사용중인데한글이깨집니다.-PHP설정에서변수에설정되는최대길이설정'>PHP 설정에서 변수에 설정되는 최대 길이 설정</a></li>
+</ul>
+</li>
+</ul>
+</div> </p><h1 id="php사용중인데한글이깨집니다.-현상">현상</h1><hr /><p> PHP를 사용하는 web 페이지에서 한글 조회시 한글이 깨지는 경우는 있습니다. </p><p>자주 발생하는 한글 깨짐 현상의 원인과 해결 방법에 대해서  알아봅니다.</p><h1 id="php사용중인데한글이깨집니다.-PHP실행구조">PHP 실행구조</h1><hr /><p>odbc driver manager 인  unixODBC  ( <a href="http://www.unixodbc.org/" class="external-link" rel="nofollow">http://www.unixodbc.org/</a> )  와  ALTIBASE 가 제공하는 odbc driver를 사용하여   php 페이지에서  ODBC API를 통해  ALTIBASE HDB DB에  접근할 수 있습니다.</p><p>ALTIBASE 와 PHP 를 연동하는 방법에 대한 설명은 『<a href="http://aid.altibase.com/pages/viewpage.action?pageId=7341274" class="external-link" rel="nofollow"> </a><a href="http://aid.altibase.com/x/lQVw" class="external-link" rel="nofollow">ALTIBASE PHP 연동가이드</a><a href="http://aid.altibase.com/x/lQVw" class="external-link" rel="nofollow">』 </a><a href="http://aid.altibase.com/pages/viewpage.action?pageId=7341274" rel="nofollow" class="external-link">를  참고하시기 바랍니다.</a></p><p><img class="confluence-embedded-image" src="attachments/8454801/8618067.png" data-image-src="attachments/8454801/8618067.png"></p><h1 id="php사용중인데한글이깨집니다.-주요원인">주요 원인</h1><hr /><p>한글이 깨지는 현상은  web 서버 설정,  php 설정,  unixODBC 설정등  다양한 부분에서의 설정 문제로 발생할 수 있으므로 먼저 unixODBC에서  한글을 포함하는 DB 결과가  정상적으로  출력되는 것을  먼저 확인해야 합니다. </p><p>unixODBC에서 제공하는 $UNIXODBC_HOME/bin/isql  유틸리티를 사용하여  DB에 쿼리를 실행해서  한글을 포함한 쿼리 결과가 정상적으로 출력되는 지  확인 후  다음으로 php 설정을 확인합니다.</p><p>이 후 마지막 단계로  web 서버 설정이나 web page 설정을 확인해서 한글 관련한 character set 설정에 문제가 없는지 확인합니다.</p><p> </p><h2 id="php사용중인데한글이깨집니다.-ODBC설정에서NLS_USE설정">ODBC 설정에서  NLS_USE 설정</h2><p>unixODBC 설정인 odbc.ini  에  DB 에 connection 에 사용되는  client character set 을 지정하는  NLS_USE  설정이 있습니다.  이 설정값과  DB의 character set 설정이 맞지않는 경우  한글 출력에 문제가 있을 수 있습니다.</p><p>이 프라퍼티는   DB의 character set 과  동일한 값으로 설정해야 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>odbc.ini 파일</b></div><div class="panelContent">
+<p>odbc.ini파일에 설정된 내용</p><p>[Altiodbc]</p><p>    Driver = /home/omegaman/altibase_home/lib/libaltibase_odbc-64bit-ul64.so</p><p>    Description = altibase odbc</p><p>    User = SYS</p><p>    Password = MANAGER</p><p>    ServerType = altibase</p><p>    Server = 127.0.0.1</p><p>    User = SYS</p><p>    Port = 21038</p><p>    <span style="color: rgb(255,0,0);"><strong>NLS_USE = MS949</strong></span></p><p>    Database = mydb</p><p>    FetchBufferSize = 64</p><p>    ReadOnly = no</p><p>    TraceFile = /tmp/odbc.log</p><p>    Trace = 1</p>
+</div></div><p> </p><h2 id="php사용중인데한글이깨집니다.-터미널창에서한글지원코드설정">터미널창에서  한글 지원 코드 설정</h2><p>DB에서 정상적으로 데이타를 가져왔음에도  이를 출력하는 터미널 창에서  한글 문자셋 출력을 지원하지 못할 경우 한글이 제대로 출력되지 못할 수 있습니다.</p><p>DB character set 이  UTF8 로  설정되어 있는 경우  window command 창에서도   유니코드를 보여줄 수 있도록   코드 페이지(chcp 명령)가   설정되어야 하며 그렇지 않을 경우 한글이 정상적으로 출력되지 않습니다.</p><p> </p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>window 에서 문자코드 변경예</b></div><div class="panelContent">
+<p> C:\Users\omegaman&gt;isql -s 192.168.1.35 -port 20416</p><p>iSQL&gt; set vertical on;</p><p>iSQL&gt; select nls_use, nls_characterset from v$nls_parameters;</p><p>NLS_USE                            : US7ASCII</p><p>NLS_CHARACTERSET      : <span style="color: rgb(255,0,0);">UTF8  </span></p><p>iSQL&gt; exit;</p><p>C:\Users\Altibase&gt;<span style="color: rgb(255,0,0);">chcp 65001   <span style="color: rgb(0,0,0);">&lt;-- DB의 문자셋이 unicode인 UTF8 이므로  콘솔 문자도  <span style="color: rgb(255,0,0);">유니코드(65001)</span> 로 설정되어야 합니다.</span></span></p><p>Active code page: 65001</p>
+</div></div><p> </p><p>일반적으로 많이 사용하는 터미널  접속 프로그램 인  Secure CRT 와 같은 프로그램도  UTF8 인 한글 문자를 출력할 경우  session 설정중에 unicode   관련 설정이 맞게 설정되어 있어야 한글이 정상 출력됩니다.</p><p> </p><p><img class="confluence-embedded-image" width="500" src="attachments/8454801/8618066.png" data-image-src="attachments/8454801/8618066.png"></p><h2 id="php사용중인데한글이깨집니다.-PHP설정에서변수에설정되는최대길이설정">PHP 설정에서 변수에 설정되는 최대 길이 설정</h2><p>php 프로그램을 하는 경우 데이터가 큰 varchar 또는 clob 데이터가 깨지거나 같은 데이터가 반복적으로 나오는 경우가 있습니다.  만약 <strong>특정부분 부터 데이터 출력에 문제가 있다면</strong> odbc 설정 부분을 살펴봐야 합니다. </p><p>증상이 위와 같은 경우 php.ini에서 odbc.defaultlrl 값을 데이터가 모두 포함될 수 있도록 변경하여 줍니다. </p><p>예를들어, 컬럼이 varchar(65536)일 경우 기본 설정 값 odbc.defaultlrl = 4096에 의해 데이터가 잘 못 출력 될 수 있습니다.</p><p><strong>odbc.defaultlrl = 65536으로 변경</strong>하게 되면 64KByte까지는 정상적으로 데이터가 출력됨을 확인 할 수 있습니다.</p><p> 일반적으로 php.ini는 /etc 밑에 있으나, 이는 설정에 따라 달라 질 수 있습니다.</p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454801/8618066.png">secureCRT문자설정.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454801/8618067.png">php호출순서.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

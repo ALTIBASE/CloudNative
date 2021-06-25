@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Database object backup using aexport</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="04.-Backup-and-Recovery_16876100.html">04. Backup and Recovery</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Using-aexport-and-iloader_16876103.html">Using aexport and iloader</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Database object backup using aexport
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Databaseobjectbackupusingaexport-Preparationbeforeexecutingaexport">Preparation before executing aexport</h1><hr /><p>Change the values of the following settings in the aexport.properties file.</p><ul><li>ILOADER_FILED_TERM</li><li>ILOADER_ROW_TERM</li></ul><p>ILOADER_FIELD_TERM stands for field separator, and ILOADER_ROW_TERM stands for record separator.</p><p>If the aexport.properties file has never been changed, these settings are commented out and the defaults are set as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Default value of separator</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep TERM aexport.properties
+#ILOADER_FIELD_TERM = ^
+#ILOADER_ROW_TERM = %n</pre>
+</div></div><p>If it is set as the default as above, it's a bit complicated, but change it as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Change separator property setting value</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep TERM aexport.properties
+ILOADER_FIELD_TERM = ^Cc__Cc^
+ILOADER_ROW_TERM = ^Rr__Rr^%n</pre>
+</div></div><p>The location of the aexport.properties file is $ALTIBASE_HOME/conf. If this file does not exist, copy and use the aexport.properties.sample file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ ls -l aexport.properties*
+-rw-r-r- 1 heejung.lee heejung.lee 915 2014-07-21 15:32 aexport.properties.sample
+
+$ cp -p aexport.properties.sample aexport.properties</pre>
+</div></div><p>When aexport is executed, the following scripts are created.</p><ul><li>Database object creation script</li><li>Data download/upload script using iloader</li></ul><p>The data download/upload script using iloader contains iloader commands. iloader can use several options, and the value used for the option depends on the above setting.</p><p>The above setting means field separator and row separator, respectively, and the default values are simply set. If this setting value is included in the character data type column, data may not be uploaded normally when uploading data.</p><p>Therefore, it is recommended to set this setting value rather complicated.</p><h2 id="Databaseobjectbackupusingaexport-Executingaexport">Executing aexport</h2><p>Execute aexport after changing aexport.properties.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ aexport
+-----------------------------------------------------------------
+     Altibase Export Script Utility.
+     Release Version 6.3.1.2.7
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+Write Server Name (default:localhost) :          # Press enter when running locally, and enter IP when connecting to a remotely installed Altibase server.
+Write UserID :                                   # Enter sys to back up all objects in the database, and enter corresponding USER to back up objects of a specific user.
+Write Password :                                 # Enter USER&#39;s password
+
+##### TBS #####
+
+##### USER  #####
+** input user ALTITEST&#39;s password(default - same with USER_NAME):            # If sys is entered for UserID, passwords of all users created in the database must be entered.
+** input user USER1&#39;s password(default - same with USER_NAME): USER1         # Even if the user enters the password randomly, a backup script is created, but if the password does not match during the actual iloader backup, iloader will fail. Also, be aware that you are creating the create user ~identified by ~ syntax with the password entered here.
+** input user USER2&#39;s password(default - same with USER_NAME): USER2
+
+##### SYNONYM #####
+
+##### DIRECTORY #####
+
+##### TABLE #####
+** &quot;ALTITEST&quot;.&quot;ORDERS&quot;
+
+** &quot;SYS&quot;.&quot;CUSTOMERS&quot;
+
+** &quot;SYS&quot;.&quot;DATE_T&quot;
+
+** &quot;SYS&quot;.&quot;DEMO_EX1&quot;
+
+** &quot;SYS&quot;.&quot;DEPARTMENTS&quot;
+
+** &quot;SYS&quot;.&quot;DISK_T&quot;
+
+** &quot;SYS&quot;.&quot;DISK_T2&quot;
+
+** &quot;SYS&quot;.&quot;EMPLOYEES&quot;
+
+** &quot;SYS&quot;.&quot;GOODS&quot;
+
+** &quot;SYS&quot;.&quot;MEM_T&quot;
+
+** &quot;SYS&quot;.&quot;ORDERS&quot;
+
+** &quot;SYS&quot;.&quot;PLAN_TEST&quot;
+
+** &quot;SYS&quot;.&quot;T&quot;
+
+** &quot;SYS&quot;.&quot;TEST_EMP_TBL&quot;
+
+** &quot;SYS&quot;.&quot;T_BINARY&quot;
+
+** &quot;SYS&quot;.&quot;T_BLOB&quot;
+
+** &quot;SYS&quot;.&quot;T_BYTES&quot;
+
+** &quot;SYS&quot;.&quot;T_CLOB&quot;
+
+** &quot;SYS&quot;.&quot;T_NIBBLE&quot;
+
+** &quot;SYS&quot;.&quot;VOL_T&quot;
+
+** &quot;USER1&quot;.&quot;T&quot;
+
+
+##### QUEUE #####
+
+##### SEQUENCE #####
+
+##### DATABASE LINK #####
+
+##### VIEW #####
+
+##### MATERIALIZED VIEW #####
+
+##### STORED PROCEDURE #####
+
+##### STORED PACKAGE #####
+
+##### TRIGGER #####
+
+##### LIBRARY #####
+
+##### REPLICATION #####
+
+##### JOB #####
+-------------------------------------------------------
+  ##### The following script files were generated. #####
+  1. run_il_out.sh            : [ iloader formout, data-out script ]
+  2. run_is.sh                : [ isql table-schema script ]
+  3. run_il_in.sh             : [ iloader data-in script ]
+  4. run_is_refresh_mview.sh  : [ isql materialized view refresh script ]
+  5. run_is_index.sh          : [ isql table-index script ]
+  6. run_is_fk.sh             : [ isql table-foreign key script ]
+  7. run_is_repl.sh           : [ isql replication script ]
+  8. run_is_job.sh            : [ isql job script ]
+-------------------------------------------------------</pre>
+</div></div><p>When aexport is executed, .sh (.bat for Windows system) files and .sql files are created as follows. The .sql files contain the syntax for creating database objects and are scripts that execute .sh files to .sql files at once.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">-------------------------------------------------------
+  ##### The following script files were generated. #####
+  1. run_il_out.sh            : [ iloader formout, data-out script ]
+  2. run_is.sh                : [ isql table-schema script ]
+  3. run_il_in.sh             : [ iloader data-in script ]
+  4. run_is_refresh_mview.sh  : [ isql materialized view refresh script ]
+  5. run_is_index.sh          : [ isql table-index script ]
+  6. run_is_fk.sh             : [ isql table-foreign key script ]
+  7. run_is_repl.sh           : [ isql replication script ]
+  8. run_is_job.sh            : [ isql job script ]
+-------------------------------------------------------</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

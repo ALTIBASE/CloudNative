@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-31283 Unable to create a primary key or a unique key constraint in the local non-prefixed index</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-31283 Unable to create a primary key or a unique key constraint in the local non-prefixed index
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409151080 {padding: 0px;}
+div.rbtoc1624409151080 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409151080 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409151080'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Version'>Version</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Explanation'>Explanation</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Cause'>Cause</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Action'>Action</a></li>
+<li><a href='#ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Version">Version</h2>
+
+<p>6.1.1 or below</p>
+
+<h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Explanation">Explanation</h2>
+
+<p>Unable to create a non-prefixed index on a partitioned table using the primary key or unique key.</p>
+
+<p>This error message is output when a user tries to create a primary key or a unique key constraint in the local non-prefixed index.</p>
+
+
+
+<h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility: </p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x31283</p>
+
+<p>0x31283 ( 201347) qpERR_ABORT_QDX_NOT_ALLOWED_PRIMARY_AND_UNIQUE_KEY_OF_NONE_PREFIXED_INDEX Unable to create a primary key or a unique key constraint in the local non-prefixed index.</p>
+
+<p># - The user tried to create a primary key or a unique key constraint in the local prefixed index.</p>
+
+<p># *Action:</p>
+
+<p># - Please do not create a primary key or a unique key constraint in the local non-prefixed index.</p>
+</div></div>
+<p>The global index is not supported for ALTIBASE HDB 6.1.1 or below.</p>
+
+
+<p>Therefore, all partitioned indexes are local indexes and local non-prefixed indexes cannot be created for the primary key or unique index.</p>
+
+<p>This is because even if a column value ​​within a particular partition is unique, its uniqueness within a table cannot be guaranteed.</p>
+
+<p>(The entire partition must be scanned to check the unique property of a table but a local index only needs to check the unique property within a certain partition.)</p>
+
+
+<h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Action">Action</h2>
+
+<p>1. The prefixed index needs to be created with a primary key or unique index. In other words, the partition key column and the index column should be the same for a primary key or unique index.</p>
+
+<p>2. You can create a non-unique index if you want to create an index with a column that is not the same as the partition key column.</p>
+
+<p>3. It is possible to create a primary key or unique index with a global index if you upgrade to ALTIBASE HDB 6.3.1 or above.</p>
+
+<p># Examples</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+iSQL&gt; CREATE TABLE REALSET_CONTENTS
+2 (
+3 CT_ID VARCHAR (32) NOT NULL,
+4 CT_TYPE VARCHAR (2) NOT NULL,
+5 CT_PATH VARCHAR (256) NOT NULL,
+6 CT_URL VARCHAR (256) NOT NULL,
+7 REG_DATE DATE NOT NULL,
+8 FILE_NAME VARCHAR (256) NOT NULL,
+9 STATUS VARCHAR (4) NOT NULL
+10 )
+11 PARTITION BY RANGE (REG_DATE)
+12 (
+13 PARTITION P_1 VALUES LESS THAN (to_date(&#39;2013-05-01&#39;, &#39;YYYY-MM-DD&#39;)),
+14 PARTITION P_2 VALUES LESS THAN (to_date(&#39;2013-09-01&#39;, &#39;YYYY-MM-DD&#39;)),
+15 PARTITION P_DEF VALUES DEFAULT
+16 )
+17 TABLESPACE SYS_TBS_DISK_DATA;
+Create success.
+iSQL&gt; alter table REALSET_CONTENTS add primary key(CT_ID,REG_DATE);</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#">ERR-31283 : Unable to create a primary key or a unique key constraint in the local non-prefixed index.</a></p>
+                    </div>
+    </div>
+
+<p>1. The following example changes the primary key column order and creates a local prefixed index for the primary key. </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; alter table REALSET_CONTENTS add primary key(REG_DATE,CT_ID);
+Alter success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_142                         BTREE    UNIQUE        REG_DATE ASC,
+                                                                CT_ID ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+REG_DATE, CT_ID</pre>
+</div></div>
+<p>2. The following example creates a non-unique index (instead of a local non-prefixed index) for the primary key.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; create index REALSET_CONTENTS_IDX1 on REALSET_CONTENTS(CT_ID,REG_DATE) local;
+Create success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+REALSET_CONTENTS_IDX1                    BTREE                  CT_ID ASC,
+                                                                REG_DATE ASC
+REALSET_CONTENTS has no primary key</pre>
+</div></div>
+<p>3. The following example upgrades to version 6.3.1 and then creates a global index for the primary key. </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;  alter table REALSET_CONTENTS add primary key(CT_ID,REG_DATE);
+Alter success.
+iSQL&gt; desc REALSET_CONTENTS
+[ TABLESPACE : SYS_TBS_DISK_DATA ]
+[ ATTRIBUTE ]
+------------------------------------------------------------------------------
+NAME                                     TYPE                        IS NULL
+------------------------------------------------------------------------------
+CT_ID                                    VARCHAR(32)                 NOT NULL
+CT_TYPE                                  VARCHAR(2)                  NOT NULL
+CT_PATH                                  VARCHAR(256)                NOT NULL
+CT_URL                                   VARCHAR(256)                NOT NULL
+REG_DATE                                 DATE                        NOT NULL
+FILE_NAME                                VARCHAR(256)                NOT NULL
+STATUS                                   VARCHAR(4)                  NOT NULL
+[ INDEX ]
+------------------------------------------------------------------------------
+NAME                                     TYPE     IS UNIQUE     COLUMN
+------------------------------------------------------------------------------
+__SYS_IDX_ID_922                         BTREE    UNIQUE        CT_ID ASC,
+                                                                REG_DATE ASC
+[ PRIMARY KEY ]
+------------------------------------------------------------------------------
+CT_ID, REG_DATE</pre>
+</div></div>
+
+<h2 id="ERR-31283Unabletocreateaprimarykeyorauniquekeyconstraintinthelocalnon-prefixedindex-Reference">Reference</h2>
+
+<p># Index types for partitioned tables</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Classification 1 </p></th>
+<th class="confluenceTh"><p> Classification 2 </p></th>
+<th class="confluenceTh"><p> Classification 3 </p></th>
+<th class="confluenceTh"><p> Index Type </p></th>
+<th class="confluenceTh"><p> Supported by Altibase </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Partitioned Index </p></td>
+<td class="confluenceTd"><p> index part key = table part key </p></td>
+<td class="confluenceTd"><p> index part key = index key </p></td>
+<td class="confluenceTd"><p> (Partitioned) Local prefixed Index </p></td>
+<td class="confluenceTd"><p> Yes </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> index part key != index key  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> (Partitioned) Local nonprefixed Index </p></td>
+<td class="confluenceTd"><p> Yes <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> index part key != table part key  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> index part key = index key </p></td>
+<td class="confluenceTd"><p> (Partitioned) Global prefixed Index  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> No </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> index part key != index key  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> (Partitioned) Global nonprefixed Index </p></td>
+<td class="confluenceTd"><p> No <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Non-partitioned Index </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Non-partitioned global index </p></td>
+<td class="confluenceTd"><p> Supported for 6.3.1 and above </p></td>
+</tr>
+</tbody></table></div>
+
+<p>The difference between a prefixed index and a non-prefixed index is uniqueness.</p>
+
+<p>A non-prefixed index cannot be created for the primary key or unique index because even if it is unique within the partition, it cannot be guaranteed to be unique within the entire table. </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

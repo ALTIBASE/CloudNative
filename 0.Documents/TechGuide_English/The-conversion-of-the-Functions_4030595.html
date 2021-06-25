@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : The conversion of the Functions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OCI-Application-conversion_2988051.html">OCI Application conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : The conversion of the Functions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 15, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348582 {padding: 0px;}
+div.rbtoc1624409348582 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348582 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348582'>
+<ul class='toc-indentation'>
+<li><a href='#TheconversionoftheFunctions-Overview'>Overview</a></li>
+<li><a href='#TheconversionoftheFunctions-TableofFunctionsupported'>Table of Function supported</a></li>
+<li><a href='#TheconversionoftheFunctions-Connect,Authorize,andInitializeFunctions'>Connect, Authorize, and Initialize Functions</a></li>
+<li><a href='#TheconversionoftheFunctions-StatementFunction'>Statement Function</a></li>
+<li><a href='#TheconversionoftheFunctions-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="TheconversionoftheFunctions-Overview">Overview</h2>
+
+<p> This page is a description about the comparison between functionalities Oracle CLI and Altibase CLI provides.</p>
+
+<h2 id="TheconversionoftheFunctions-TableofFunctionsupported">Table of Function supported</h2>
+
+<p> Altibase CLI is very similar to the ODBC(Open Database Connectivity).</p>
+
+
+<h2 id="TheconversionoftheFunctions-Connect,Authorize,andInitializeFunctions">Connect, Authorize, and Initialize Functions</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIConnectionPoolCreate() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Initializes the connection pool. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIConnectionPoolDestroy() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Destroys the connection pool. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIEnvCreate() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Creates and initializes an OCI environment. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIEnvNlsCreate() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Allows you to set character <br class="atl-forced-newline" />
+set id and national character set id at environment <br class="atl-forced-newline" />
+creation time. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIEnvInit() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Initialize an environment handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIInitialize() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Initialize OCI process environment. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCILogon() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Simplified single-session logon. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCILogon2() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> This function is used to create a logon session in <br class="atl-forced-newline" />
+various modes. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerAttach() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Attach to a server; initialize server context handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerDetach() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> Detach from a server; uninitialize server context <br class="atl-forced-newline" />
+handle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionBegin() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionEnd() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionGet() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionPoolCreate() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionPoolDestroy() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionRelease() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITerminate() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="TheconversionoftheFunctions-StatementFunction">Statement Function</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtExecute() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtFetch() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtFetch2() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtGetPieceInfo() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtPrepare() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtPrepare2() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtRelease() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtSetPieceInfo() </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="TheconversionoftheFunctions-Example">Example</h2>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to change the jdbc.trc file creation location</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JDBC_16876171.html">JDBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to change the jdbc.trc file creation location
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146540 {padding: 0px;}
+div.rbtoc1624409146540 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146540 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146540'>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethejdbc.trcfilecreationlocation-Creationtimeandusage'>Creation time and usage</a></li>
+<li><a href='#Howtochangethejdbc.trcfilecreationlocation-Version'>Version</a></li>
+<li><a href='#Howtochangethejdbc.trcfilecreationlocation-Creationlocation'>Creation location</a></li>
+<li><a href='#Howtochangethejdbc.trcfilecreationlocation-Howtochangethecreationpath'>How to change the creation path</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtochangethejdbc.trcfilecreationlocation-Creationtimeandusage">Creation time and usage</h1><hr /><p>The jdbc.trc file is a log file created for JDBC-related traces, and is automatically generated when the JDBC driver is initialized.</p><p>If fail-over is specified in the connection URL, it is also used for event trace when fail-over occurs.</p><p>If fail-over is not specified in the connection url, or fail-over does not occur, it is 0 byte to the default value.</p><p>File size varies slightly from platform to platform.</p><p>When one Java program is executed at the same time, as many as the number of executions are created,</p><p>jdbc.trc<br />jdbc.trc.lck<br />jdbc.trc.1<br />jdbc.trc.1.lck<br />jdbc.trc.2<br />jdbc.trc.2.lck</p><p>When connecting each connection object separately in a single Java program, the jdbc.trc file is shared and used.</p><p> </p><h1 id="Howtochangethejdbc.trcfilecreationlocation-Version">Version</h1><hr /><p>The jdbc.trc file is created for JDBC-related traces from ALTIBASE HDB version 5.5.1 or later.</p><h1 id="Howtochangethejdbc.trcfilecreationlocation-Creationlocation"><br />Creation location</h1><hr /><p>If the ALTIBASE_HOME environment variable is set in the client environment, it is created in <strong>$ALTIBASE_HOME/trc</strong>,<br />If the ALTIBASE_HOME environment variable is not set, it is created in the location <strong>where the Java program is executed.</strong></p><p>Sometimes, if the user does not have write permission in the directory where the jdbc.trc file is created, the following error may occur in the application due to file creation failure.</p><p><span style="color: rgb(0,0,0);"><a href="http://java.io" class="external-link" rel="nofollow">java.io</a>.IOException: Couldn't get lock for /opt/altibase-HDB-server-6.1.1/trc/jdbc.trc</span></p><div><span style="color: rgb(0,0,0);"><br /></span></div><div>If the above error occurs, give permission to the directory or set the ALTIBASE_HOME environment variable to an appropriate location.</div><h1 id="Howtochangethejdbc.trcfilecreationlocation-Howtochangethecreationpath">How to change the creation path</h1><hr /><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">ALTIBASE HDB Version </th><th class="confluenceTh">How to change the jdbc.trc log creation location</th></tr><tr><td class="confluenceTd"> version 6.1.1.1.3 or earlier</td><td class="confluenceTd">Not available</td></tr><tr><td class="confluenceTd"> version 6.1.1.1.4   ~  6.1.1.1.7</td><td class="confluenceTd"><p>Can be set as an option when running java</p><p>java -D<strong><span style="color: rgb(255,0,0);">ALTIBASE_JDBC_TRCLOG_DISABLE=true</span> </strong></p></td></tr><tr><td class="confluenceTd"> version 6.1.1.1.8 or later</td><td class="confluenceTd"><p>Set option when running java</p><p>java -D<strong><span style="color: rgb(255,0,0);">ALTIBASE_JDBC_TRCLOG_DISABLE=true</span></strong></p><p>Or</p><p>Set as an environment variable of the java execution user</p><p>export  <span style="color: rgb(255,0,0);"><strong>ALTIBASE_JDBC_TRCLOG_DISABLE=true </strong></span></p></td></tr></tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

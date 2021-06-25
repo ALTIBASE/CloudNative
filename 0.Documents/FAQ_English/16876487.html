@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : The entire database exists in memory. Is there any problem with the safety of the data?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="13.-General_16876479.html">13. General</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : The entire database exists in memory. Is there any problem with the safety of the data?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149058 {padding: 0px;}
+div.rbtoc1624409149058 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149058 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149058'>
+<ul class='toc-indentation'>
+<li><a href='#Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Overview'>Overview</a></li>
+<li><a href='#Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Version'>Version</a></li>
+<li><a href='#Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Howtosecure'>How to secure</a></li>
+<li><a href='#Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Disabilitymanagementoperationplan'>Disability management operation plan</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Overview">Overview</h1><hr /><p>This document describes a technique to guarantee the data stability of the volatile main memory.</p><p> </p><h1 id="Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Version">Version</h1><hr /><ul><li>This document is written based on Altibase HDB version 6.3.1. </li><li>For additional information or updates, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or in the comment section on this page.</li></ul><p> </p><p> </p><h1 id="Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Howtosecure">How to secure</h1><hr /><ol><li>WAL protocol method<br />WAL (Write Ahead Logging) logging method is used when transaction processing is used to provide database persistence and to secure stability for committed transactions. When the number of log files exceeds a certain number or a fixed period, the changed data page in the memory is displayed. The recovery time is minimized through checkpoints that are written to the disk.<br />* WAL: The procedure for saving logs to disk first and then saving DB pages. The last transaction information is stored on the disk, so it can be recovered through the transaction log in case of abnormal termination.</li><li>Backup and recovery support<br />Backup creates a logical/physical copy of the database in case of an abnormal situation in the DBMS. Such a copy of the database can be created online during the DB operation, and in a recovery situation, the database can be normalized by performing complete or incomplete recovery by using the backed up database copy.</li></ol><p> </p><h1 id="Theentiredatabaseexistsinmemory.Isthereanyproblemwiththesafetyofthedata?-Disabilitymanagementoperationplan">Disability management operation plan</h1><hr /><div class="table-wrap"><table class="confluenceTable"><colgroup><col /><col /><col /></colgroup><tbody><tr><th colspan="2" class="confluenceTh"><p style="text-align: center;">Type</p></th><th class="confluenceTh"><p style="text-align: center;">Description</p></th></tr><tr><th rowspan="2" class="confluenceTh"><p>Transaction</p><p>Failure</p></th><td class="confluenceTd"><p>Cause</p></td><td class="confluenceTd"><div class="O0">• Occur due to interruption of a transaction by internal or external factors</div></td></tr><tr><td class="confluenceTd"><p>Solution</p></td><td class="confluenceTd"><div class="O0">• Maintain database consistency by automatically recovering data with normal transaction rollback.</div></td></tr><tr><th rowspan="2" class="confluenceTh"><p>System</p><p>Failure</p></th><td class="confluenceTd"><p>Cause</p></td><td class="confluenceTd"><div class="O0">• Occur due to faults in the operating system or failures such as power outages</div></td></tr><tr><td class="confluenceTd"><p>Solution</p></td><td class="confluenceTd"><div class="O0"><span>•</span> Automatic recovery to the state until the point of system failure with the backup data file and Active Log when the system is restarted (Restart Recovery)</div></td></tr><tr><th rowspan="2" class="confluenceTh"><p>Disk</p><p>Failure</p></th><td class="confluenceTd"><p>Cause</p></td><td class="confluenceTd"><div class="O0">• Occur due to corruption of the backup data file due to an error in the disk where the backup data file is stored</div></td></tr><tr><td class="confluenceTd"><p>Solution</p></td><td class="confluenceTd"><div class="O0">• If there is a previous data backup file, it can be restored to the latest database with this file.</div><div class="O0">• However, if the log disk is damaged or the archive log is deleted, recovery to the most recent state is impossible.</div></td></tr></tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

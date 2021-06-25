@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : AIX xlc 용 Makefile</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698493.html">Altibase APRE(SES) *C/C++  Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : AIX xlc 용 Makefile
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>앞서 &quot;기초적인 Makefile의 작성방법&quot; 을 통해서   기본적인 APRE library를 추가하는 방법을 알아 보았다.  이번 장에서는 AIX  xlc 컴파일러를 사용하는 환경에서 Makefile에 추가적으로 기술해 주어야 하는 Library 와  컴파일옵션에 대해서 설명한다.</p><h1 id="AIXxlc용Makefile-AIX환경에서APRE컴파일을위한Library와컴파일옵션">AIX 환경에서 APRE 컴파일을 위한 Library 와 컴파일 옵션</h1><h2 id="AIXxlc용Makefile-Makefile에추가해주어야하는Library"><span style="color: rgb(0,0,0);">Makefile 에 추가해 주어야 하는 Library </span></h2><p>앞서 이미 설명한 바와 같이 아래와 같이 기본적인 APRE library인 &quot;-lapre -lodbccli&quot; 가 Makefile 에 기술되어 있어야 한다. </p><p>기본적인 Library 만 추가한 상태에서 컴파일을 할 경우  APRE library 에서 참조하는 시스템 Library들이 있어 참조 오류가 발생한다.   따라서  APRE에서 사용하는  시스템 library들을  Makefile 에  아래와 같이 명시해 주어야 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Library 종류</th><th class="confluenceTh">Makefile 추가 Library이름</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">Thread library</td><td class="confluenceTd"><strong>-lpthreads</strong></td><td class="confluenceTd">POSIX  thread 함수를 위한 thread Library</td></tr><tr><td colspan="1" class="confluenceTd">Math 관련 library</td><td colspan="1" class="confluenceTd"><strong>-lm</strong></td><td colspan="1" class="confluenceTd">math 함수 사용을 위한 Library</td></tr><tr><td colspan="1" class="confluenceTd">C++ library</td><td colspan="1" class="confluenceTd"><strong>-lC</strong></td><td colspan="1" class="confluenceTd">5.3.3 이하버전에서 C 컴파일러를 사용하여 컴파일할 경우 추가</td></tr></tbody></table></div><h2 id="AIXxlc용Makefile-컴파일옵션"><span style="color: rgb(0,0,0);">컴파일 옵션</span></h2><p><span style="color: rgb(0,0,0);">성능 향상과 컴파일 bit  타입 지정을 위한 아래의 옵션 지정이 필요하다.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">옵션명</th><th class="confluenceTh">옵션표시</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">최대 Memory segment 크기 지정 옵션</td><td class="confluenceTd">-bmaxdata</td><td class="confluenceTd">32bit 프로그램 컴파일시 최대 사용가능 메모리 segment 크기 지정( default 256M )</td></tr><tr><td rowspan="2" class="confluenceTd"><span style="color: rgb(34,34,34);">32bit/64bit 컴파일 모드 지정</span><br /><br /><br /><span> </span></td><td class="confluenceTd">-q32</td><td class="confluenceTd"><p>32bit 프로그램 컴파일시</p></td></tr><tr><td class="confluenceTd"><span>-q64 </span></td><td class="confluenceTd">64bit 프로그램 컴파일시</td></tr><tr><td class="confluenceTd">컴파일러 최적화 모드</td><td colspan="1" class="confluenceTd">-O2</td><td colspan="1" class="confluenceTd">컴파일러 최적화 Level 2 단계 사용</td></tr><tr><td colspan="1" class="confluenceTd">인라인함수 사용여부</td><td colspan="1" class="confluenceTd">-qinline</td><td colspan="1" class="confluenceTd">성능 향상을 위해 함수 call 대신 inline 함수 사용 설정</td></tr><tr><td colspan="1" class="confluenceTd">runtime linking 옵션</td><td colspan="1" class="confluenceTd">-brtl</td><td colspan="1" class="confluenceTd">runtime linking 위한 옵션, shared library 를 사용할 경우 설정</td></tr><tr><td colspan="1" class="confluenceTd">symbol export 옵션</td><td colspan="1" class="confluenceTd"><pre>-bexpall</pre></td><td colspan="1" class="confluenceTd">shared library 생성시 global symbol 을 export하기 위한 설정</td></tr></tbody></table></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                             $ALTIBASE_HOME/install/altibase_env.mk 파일과 $ALTIBASE_HOME/sample/APRE/Makefile 참고하면 APRE 컴파일시에 최적화된 컴파일 및 링크 옵션들을 참조할 수 있다.
+                    </div>
+    </div>
+<p> </p><h1 id="AIXxlc용Makefile-간단한Makefile예">간단한  Makefile 예</h1><p><span style="color: rgb(0,0,0);">이제 AIX  xlc 환경에서 APRE를 컴파일할 수 있는 가장 간단한 형태의 Makefile 이 아래와 같이 완성되었다.   이외에도  프로그램에서 참조하는 library 가  추가적으로 있다면 해당 Library 를  Makefile 에 추가적으로 기술해 주어야 한다.   </span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>$(ALTIBASE_HOME)/include</strong><br />ALTI_LIBRARY=<strong>$(ALTIBASE_HOME)/lib</strong><br />LIBS=<strong>-lapre -lodbccli -lpthreads -lm</strong><br />LFLAGS=<strong>-O2 -qinline -q64 #64bit 컴파일모드</strong></p><p>connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><strong style="color: rgb(0,0,0);"><a href="http://connect1.sc" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">$(ALTIBASE_HOME)/bin/apre -t c </span></a><a href="http://connect1.sc" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">connect1.sc</span></a></strong></p><p>connect1:connect1.c</p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p><p> </p>
+</div></div><p> </p><h1 id="AIXxlc용Makefile-32비트컴파일을위한Makefile예">32비트 컴파일을 위한  Makefile 예</h1><p>32bit 컴파일을 위한 Makefile 예는 아래와 같다.   컴파일 옵션으로 &quot;<span>-<strong>q32</strong></span>&quot;를 명시하고  Header 파일 과 Library를 참조하는 경로에   32bit 용 APRE Library가 설치되어 있는 경로를 지정해야 한다. 또한 APRE Precompiler도  32bit 용 APRE 가 실행되도록 경로를 명시한다.</p><div><p>&quot;-bmaxdata:0x80000000 &quot; 와 같이  프로그램에서  사용할 메모리 세그먼트를 크기를 필요하면  늘려준다.  &quot;-bmaxdata:0x80000000&quot;  로 할 경우 최대 2G까지 사용 가능하다.</p></div><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=<strong>/alticlient32/include</strong><br />ALTI_LIBRARY=<strong>/alticlient32/lib</strong><br />LIBS=-lapre -lodbccli -lpthreads -lm<br />LFLAGS= -O2 -qinline <strong>-q32 -bmaxdata:0x80000000</strong> <strong>-L. #32bit 컴파일모드, 최대메모리 segment 크기 설정</strong></p><p>connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc" class="external-link" rel="nofollow"><strong> /alticlient32/bin/apre</strong> -t c </a><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><p> </p><h1 id="AIXxlc용Makefile-APRESharedLibrary(libapre_sl.so)를사용하는Makefile예">APRE Shared Library(libapre_sl.so) 를  사용하는 Makefile 예</h1><p>$ALTIBASE_HOME/lib 에는 static library인  <strong>libapre.a</strong> 외에도   shared library 형태로 제공하는  <span style="color: rgb(0,0,0);"><strong><a href="http://libapre_sl.so" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">libapre_sl.so</span></a> 와</strong> </span><strong><span style="color: rgb(0,0,0);">l<a href="http://ibodbccli_sl.so" class="external-link" rel="nofollow"><span style="color: rgb(0,0,0);">ibodbccli_sl.so</span></a>  </span></strong><span style="color: rgb(0,0,0);">가 있다.  shared library 를 사용하면  static library 를 사용할 때와 비교하여 아래의 장점이 있다.</span></p><ul><li><span style="color: rgb(0,0,0);">  실행파일의 크기를 줄일 수 있다.</span></li><li><span style="color: rgb(0,0,0);"> library 를 메모리에 적재한 후 공유할 수 있어  프로그램의 메모리 사용량을 줄일 수 있다.</span></li><li><span style="color: rgb(0,0,0);">사용 library 가 변경될 경우 library 만 교체하면 되고  실행파일을 재 컴파일 필요가 없다.</span></li></ul><p>아래는 AIX 에서 xlc 컴파일러를 사용하여 shared library를 이용하는 Makefile의 예는 다음과 같다.    runtime linking 을 사용하기 위해서  링크옵션으로 &quot;<strong>-brtl</strong>&quot; 을 추가하고    Library 로  APRE shared library를  추가하였다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=$(ALTIBASE_HOME)/include<br />ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS=<strong>-lapre_sl -lodbccli_sl</strong> -lc -lpthreads -lm<br />LFLAGS=-O2<strong> -brtl -</strong>qinline -q64 #64bit 컴파일모드<br />connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc" class="external-link" rel="nofollow"> $(ALTIBASE_HOME)/bin/apre -t c </a><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc $(LFLAGS) -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><p> </p><h1 id="AIXxlc용Makefile-APRE소스를이용한SharedLibrarybuild를위한Makefile예">APRE 소스를 이용한 Shared Library build를 위한 Makefile 예</h1><p>필요에 따라서는 APRE 를 통해서  DB를 조회하는 함수로  구성된  shared library 를 만들고 이를  프로그램에서 호출해서 사용해야 하는 경우가 있다. 아래의 예는  APRE 로  shared library를 만들기 위한  Makefile 의 예이다.</p><p>먼저 library를 만들이 위한 C source를 아래와 같이 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>connect1.sc</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* connect1.sc */
+int contest_db();
+int contest_db()
+{
+    /* declare host variables */
+    EXEC SQL BEGIN DECLARE SECTION;
+    char usr[10];
+    char pwd[10];
+    char conn_opt1[100];
+    char conn_opt2[100];
+    char conn_opt3[100];
+    EXEC SQL END DECLARE SECTION;
+    .................
+    EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt3;
+    ....
+}
+
+</pre>
+</div></div><p>connect1.sc 를 이용하여  프로그래에서 호출해서 사용할 libconn_sl.so 를 만들기 위한 Makefile 은 아래와 같다.   </p><h3 id="AIXxlc용Makefile-Sharedlibrarybuild용Makefile예">Shared library build용 Makefile 예</h3><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Shared library 용 Makefile</b></div><div class="panelContent">
+<p> ALTI_INCLUDE=$(ALTIBASE_HOME)/include</p><p>ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS= -lc -lpthreads -lm # <strong>-lapre_sl -lodbccli_sl 은 실행파일 빌드시에 link 해 주어야 한다.</strong><br />LFLAGS=-O2 -lc -q64 #64bit 컴파일모드</p><p>SHLLIB=<strong><a href="http://libconn_sl.so" class="external-link" rel="nofollow">libconn_sl.so</a></strong><br />OBJS=connect1.o</p><p>all: $(SHLLIB)</p><p>$(SHLLIB):$(OBJS)</p><p style="margin-left: 30.0px;">xlc_r<strong> -G -</strong>o $(SHLLIB) $(OBJS) <strong>-b64 -bexpall</strong> -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>connect1.o:connect1.c</p><p style="margin-left: 30.0px;">xlc_r $(LFLAGS) -c connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY) $(LIBS)</p><p>connect1.c:<a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;">$(ALTIBASE_HOME)/bin/apre -t c <a href="http://connect1.sc" class="external-link" rel="nofollow">connect1.sc</a></p><p>clean:</p><p style="margin-left: 30.0px;">rm *.o</p>
+</div></div><p> </p><h3 id="AIXxlc용Makefile-APRE함수로만들어진SharedLibrary를호출하여사용하는프로그램을컴파일하는Makefile의예">APRE함수로 만들어진  Shared Library를 호출하여 사용하는 프로그램을 컴파일하는 Makefile 의 예</h3><p>먼저  APRE shared library를 위한  Header 파일로 &quot;alticonn.h&quot; 를 만든다.   </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>alticonn.h</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* alticonn.h */
+ int contest_db();</pre>
+</div></div><p>사용자 프로그램은   <a href="http://libconn_sl.so" class="external-link" rel="nofollow">libconn_sl.so</a> 에  등록된  contest_db() 를  호출하여 사용하게 된다.   사용자 프로그램의 소스는  아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>test.c</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> /* test.c */
+#include &quot;alticonn.h&quot;
+extern int contest_db();
+int main()
+{
+  contest_db();
+}</pre>
+</div></div><h3 id="AIXxlc용Makefile-실행프로그램Build를위한Makefile예">실행프로그램 Build를 위한 Makefile 예 </h3><p>libconn_sl.so 에 등록된  contest_db() 함수를 호출하여 사용하는 사용자 프로그램을 컴파일하기 위한 Makefile 은  아래와 같다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTI_INCLUDE=$(ALTIBASE_HOME)/include</p><p>ALTI_LIBRARY=$(ALTIBASE_HOME)/lib<br />LIBS=<strong>-lapre_sl -lodbccli_sl</strong> -lc -lpthreads -lm<br />LFLAGS=-O2<strong> -brtl -qinline -q64</strong> #64bit 컴파일모드</p><p>INC_ALL=-I. -I$(ALTI_INCLUDE)<br />LIB_ALL=-L. -L$(ALTI_LIBRARY)</p><p>all:test</p><p>test:</p><p style="margin-left: 30.0px;">xlc_r $(LFLAGS) -o test test.c $(INC_ALL) $(LIB_ALL)<strong> -lconn_sl</strong> $(LIBS)</p><p>clean:</p><p style="margin-left: 30.0px;">rm *.c *.o</p>
+</div></div><p> </p><h2 id="AIXxlc용Makefile-sharedlibrarybuild시주의사항">shared library build 시 주의사항</h2>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>AIX에서는 shared library를 두개 이상 만들어서 사용할 때 shared library build 시에는 -lapre_sl 과 -lodbccl_sl 을 추가하지 말아야 한다.</p><p>AIX의 shared library 에서는 apre_sl, odbccli_sl library 상의 global 변수들을 각각 다른 변수로 인식을 하여 shared library 끼리 공유가 되지 않는다. 그러므로 shared library 를 만들 때는 APRE library (apre_sl, odbccli_sl) 들을 링크하지 말고 실행 바이너리를 만들 때 APRE library를 링크 하도록 한다.</p><p>예들 들어, connection 관련 shared library 는 con.so 로 select 관련 shared library는 sel.so 두고 binary 를 build하고 실행할 경우 sel.so에서는 con.so 에 있는 connection 관련 객체 정보를 참조하지 못해서 error가 발생하게 된다. 이러한 문제를 방지하기 위해서는 실행 바이너리를 만들 때에만 apre_sl 과 odbccli_sl 을 링크로 추가해 주어야만 한다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698503/11665711.png">Makefile flow.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698503/11665712">Makefile flow</a> (application/gliffy+json)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:58</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. Fail-Over Configuration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. Fail-Over Configuration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409360024 {padding: 0px;}
+div.rbtoc1624409360024 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409360024 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409360024'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.Fail-OverConfiguration-FailOverConfiguration'>FailOver Configuration</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes how to integrate with TOMCAT using the FailOver function provided by ALTIBASE.</p><h2 id="id-4.Fail-OverConfiguration-FailOverConfiguration"><strong>FailOver Configuration</strong></h2><div>TOMCAT does provide a FailOver function. However, because the FailOver function is provided starting from ALTIBASE 5.3.3, FailOver can be implemented by using the ALTIBASE FailOver function.</div><div>How to use is as follows.</div><div><p>1. When specifying a JNDI DatSource in the context.xml file, specify the FailOver related properties in the Connection URL part.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;context&gt;
+&lt;Resource name=&quot;jdbc/Altibase&quot; auth=&quot;Container&quot; type=&quot;javax.sql.DataSource&quot;
+driverClassName=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;
+maxActive=&quot;100&quot; maxIdle=&quot;-1&quot; maxWait=&quot;-1&quot;
+username=&quot;sys&quot; password=&quot;manager&quot;
+url=&quot;jdbc:Altibase://192.168.6.224:21129/mydb?
+AlternateServers=(192.168.1.35:21129)&amp;amp;
+ConnectionRetryCount=3&amp;amp;
+ConnectionRetryDelay=3&amp;amp;
+SessionFailOver=on&amp;amp;
+LoadBalance=off&quot;
+validationQuery=&quot;SELECT 1 FROM DUAL&quot; testOnBorrow=&quot;true&quot;
+removeAbandoned=&quot;true&quot; removeAbandonedTimeout=&quot;60&quot;
+logAbandoned=&quot;true&quot; /&gt;
+&lt;/context&gt;</pre>
+</div></div><ul><li>Refer to the FailOver/server.xml file</li></ul><p>FailOver related properties are as follows. For more detailed information, please refer to the Replication Manual.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>AlternateServer</p></td><td class="confluenceTd">Indicates the alternate servers to be connected when a failure occurs (IP Address1:Port1, IP Address2:Port2,...).<p> </p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryCount</p></td><td class="confluenceTd">The number of tries of connection attempts when an alternative server connection fails.<p> </p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryDelay</p></td><td class="confluenceTd"><p>Time to wait before attempting to connect when the alternative server connection fails (in seconds)</p></td></tr><tr><td class="confluenceTd"><p>LoadBalance</p></td><td class="confluenceTd"><p>When set to on, random selection is made including default server and alternate servers when the first connection is attempted. If set to off, it connects to the default server when it tries to connect for the first time, and if it fails, it connects to the server described by AlternateServer.</p></td></tr><tr><td class="confluenceTd"><p>SessionFailOver</p></td><td class="confluenceTd"><p>Indicates whether to perform STF (Service Time Fail-Over)</p><p>on : STF, off : CTF<br class="atl-forced-newline" />The CTF (Connection Time Fail-Over) recognizes a failure at the time of DBMS connection and connects to the DBMS of another available node instead of the DBMS where the failure occurred and proceeds with the service.<br class="atl-forced-newline" />STF (Service Time Fail-Over) means that a failure occurs during service by successfully connecting to the DBMS, accessing the DBMS of another available node to restore the properties of the session, and then performing the task logic of the user application again. That is, it is the case that it is necessary to perform the operation performed in the DBMS where the failure occurred once again.</p></td></tr></tbody></table></div><p>For the implementation method of CTF and STF, please refer to the FailOver technical document.</p><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

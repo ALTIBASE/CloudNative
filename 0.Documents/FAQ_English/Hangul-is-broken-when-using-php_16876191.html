@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Hangul is broken when using php</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="PHP_16876189.html">PHP</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Hangul is broken when using php
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146828 {padding: 0px;}
+div.rbtoc1624409146828 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146828 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146828'>
+<ul class='toc-indentation'>
+<li><a href='#Hangulisbrokenwhenusingphp-Situation'>Situation</a></li>
+<li><a href='#Hangulisbrokenwhenusingphp-PHPexecutionstructure'>PHP execution structure</a></li>
+<li><a href='#Hangulisbrokenwhenusingphp-MainCause'>Main Cause</a></li>
+<li><a href='#Hangulisbrokenwhenusingphp-SettingNLS_USEinODBCsettings'>Setting NLS_USE in ODBC settings</a>
+<ul class='toc-indentation'>
+<li><a href='#Hangulisbrokenwhenusingphp-Koreanlanguagesupportcodesettinginterminalwindow'>Korean language support code setting in terminal window</a></li>
+</ul>
+</li>
+<li><a href='#Hangulisbrokenwhenusingphp-SettingthemaximumlengthsetforavariableinPHPconfig'>Setting the maximum length set for a variable in PHP config</a></li>
+</ul>
+</div></p><h1 id="Hangulisbrokenwhenusingphp-Situation">Situation</h1><hr /><p>When searching Korean on a web page using PHP, Korean characters may be broken.</p><p>This document describes the causes and solutions for this situation.</p><p> </p><h1 id="Hangulisbrokenwhenusingphp-PHPexecutionstructure">PHP execution structure</h1><hr /><p>The ALTIBASE HDB DB can be accessed with  ODBC API from PHP page using the odbc driver manager unixODBC (<a href="http://www.unixodbc.org/" class="external-link" rel="nofollow">http://www.unixodbc.org/</a>) and odbc driver provided by ALTIBASE.</p><p>For information on how to connect ALTIBASE and PHP, refer to 『Integration Guide for Altibase』.</p><p><img class="confluence-embedded-image" src="attachments/16876191/17039375.png" data-image-src="attachments/16876191/17039375.png"></p><h1 id="Hangulisbrokenwhenusingphp-MainCause">Main Cause</h1><hr /><p>Hangul is broken can be caused by configuration problems in various parts such as web server configuration, PHP configuration, unixODBC configuration, etc. First, you must first check that the DB result including Hangul is displayed normally in unixODBC.</p><p>Use the $UNIXODBC_HOME/bin/isql utility provided by unixODBC to execute a query on the DB and check if the query results including Korean characters are displayed normally, and then check the PHP setting.</p><p>After that, the last step is to check the web server setting or web page setting to make sure there is no problem with the character set setting related to Korean.</p><p> </p><h1 id="Hangulisbrokenwhenusingphp-SettingNLS_USEinODBCsettings">Setting NLS_USE in ODBC settings</h1><hr /><p>In odbc.ini, the unixODBC setting, there is an NLS_USE setting that specifies the client character set used for connection to the DB. If this setting value and the character set setting of the DB does not match, there may be a problem with the Korean language output.</p><p>This property must be set to the same value as the DB character set.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Contents set in the odbc.ini file</p><p>[Altiodbc]</p><p>    Driver = /home/omegaman/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></p><p>    Description = altibase odbc</p><p>    User = SYS</p><p>    Password = MANAGER</p><p>    ServerType = altibase</p><p>    Server = 127.0.0.1</p><p>    User = SYS</p><p>    Port = 21038</p><p>    <span style="color: rgb(255,0,0);"><strong>NLS_USE = MS949</strong></span></p><p>    Database = mydb</p><p>    FetchBufferSize = 64</p><p>    ReadOnly = no</p><p>    TraceFile = /tmp/odbc.log</p><p>    Trace = 1</p>
+</div></div><p> </p><h2 id="Hangulisbrokenwhenusingphp-Koreanlanguagesupportcodesettinginterminalwindow">Korean language support code setting in terminal window</h2><hr /><p>Even though data is normally imported from the DB, if the terminal window that outputs it does not support the output of the Korean character set, the Korean language may not be displayed properly.</p><p>If the DB character set is set to UTF8, the code page (chcp command) must be set so that Unicode can be displayed in the window command window. Otherwise, Korean characters will not be displayed normally.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p> C:\Users\omegaman&gt;isql -s 192.168.1.35 -port 20416</p><p>iSQL&gt; set vertical on;</p><p>iSQL&gt; select nls_use, nls_characterset from v$nls_parameters;</p><p>NLS_USE                            : US7ASCII</p><p>NLS_CHARACTERSET      : <span style="color: rgb(255,0,0);">UTF8  </span></p><p>iSQL&gt; exit;</p><p>C:\Users\Altibase&gt;<span style="color: rgb(255,0,0);">chcp 65001   <span style="color: rgb(0,0,0);">&lt;-- The console character must be set to <span style="color: rgb(255,0,0);">Unicode (65001)</span> as the character set of the DB is UTF8, which is unicode.</span></span></p><p>Active code page: 65001</p>
+</div></div><p> </p><p>When a program such as Secure CRT, a commonly used terminal access program, also outputs UTF8 Korean characters, the Korean should be properly set during the session set to display Korean characters.</p><p> </p><p><img class="confluence-embedded-image" width="500" src="attachments/16876191/17039376.png" data-image-src="attachments/16876191/17039376.png"></p><p> </p><h1 id="Hangulisbrokenwhenusingphp-SettingthemaximumlengthsetforavariableinPHPconfig">Setting the maximum length set for a variable in PHP config</h1><hr /><p>If the php program is running, varchar or clob data with large data may be broken or the same data may appear repeatedly. If <strong>there is a problem with data output from a specific part</strong>, the user should look at the odbc configuration part.</p><p>If it happens as above, change the odbc.defaultlrl value in php.ini so that all data can be included.</p><p>For example, if the column is varchar(65536), data may be output incorrectly by default odbc.defaultlrl = 4096.</p><p>If if it changed to <strong>odbc.defaultlrl = 65536</strong>, it can be confirmed that data normally output up to 64KByte.</p><p>Generally, php.ini is under /etc, but this may vary depending on the configuration.</p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876191/17039375.png">php호출순서.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876191/17039376.png">secureCRT문자설정.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

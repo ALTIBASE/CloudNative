@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11030 (  69680) The data file cannot be extended because the requested size is bigger than the maximum size (FID:&lt;0%d&gt;).</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11030 (  69680) The data file cannot be extended because the requested size is bigger than the maximum size (FID:&lt;0%d&gt;).
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 29, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148294 {padding: 0px;}
+div.rbtoc1624409148294 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148294 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148294'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Overview'>Overview</a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Version'>Version</a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Solution'>Solution</a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Reference'>Reference</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Overview">Overview</h1><hr /><p>When changing the size of the disk tablespace data file, you may encounter the following error message.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 200M; 
+[ERR-11030 : The data file cannot be extended because the requested size is bigger than the maximum size (FID:0).]</pre>
+</div></div><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Version">Version</h1><hr /><p>ALTIBASE HDB 4</p><p> </p><p>Cause</p><hr /><p>The above error message occurs when the size of the data file with the AUTOEXTEND OFF attribute is changed larger than maxsize.</p><p>The autoextend attribute and set the size of the data file can be checked with the following statement (on if autoextend is 1, off if 0).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select name, AUTOEXTEND , INITSIZE, MAXSIZE from v$datafiles;  
+NAME                                     AUTOEXTEND  INITSIZE             MAXSIZE
+ ---------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/temp001.dbf      1           12800                262144 /home/altibase_home/dbs/user.dbf         </pre>
+</div></div><p>Data files with autoextend on automatically increase their size up to maxsize, so there is a difference between the initial setting size (INITSIZE) and the maximum size (MAXSIZE).<br />However, the maximum size (MAXSIZE) of a data file with autoextend off is set equal to the initial setting size (INITSIZE).<br />Because of this, if you try to change the size larger than the maximum size (MAXSIZE), the above error may occur.</p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Solution">Solution</h1><hr /><p>After changing the AUTOEXTEND property of the data file to ON, you must proceed with the data file size change operation.<br />Follow the steps below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">1) Change AUTOEXTEND property
+iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; autoextend on; Alter success.
+2) Change data file size
+iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 100M; Alter success. </pre>
+</div></div><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-Reference">Reference</h1><hr /><p>In fact, data files with the autoextend off attribute only make sense for the initial set size (initsize).<br />When the autoextend off clause is included in the CREATE TABLESPACE statement or the ALTER TABLESPACE statement, the nextsize and maxsize clauses cannot be used together in addition to the size clause.</p><p>When used together, an SQL statement error occurs as shown below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create tablespace user_disk_tbs2 datafile &#39;user2.dbf&#39; size 1M autoextend off next 1M; 
+[ERR-31001 : SQL syntax error 
+line 1: parse error create tablespace USER_DISK_TBS2 DATAFILE &#39;user2.dbf&#39; SIZE 1M autoextend off NEXT 1M        </pre>
+</div></div><p>ALTIBASE HDB 4.3.9 lacks handling of this.<br />From ALTIBASE HDB version 5, this restriction is reflected, and the maxsize of the data file with the autoextend off attribute is set to the OS file limit value.</p><p>With this change, unlike 4.3.9, maxsize is output as 0 when searching v$datafile,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select name, AUTOEXTEND , INITSIZE, currsize, MAXSIZE from v$datafiles; 
+NAME                                AUTOEXTEND  INITSIZE             CURRSIZE            MAXSIZE 
+------------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/user.dbf    0           128                  128                 0
+
+It is also possible to change the size.
+iSQL&gt; alter tablespace USER_DISK_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 8M; Alter success.
+iSQL&gt; select name, AUTOEXTEND , INITSIZE, currsize, MAXSIZE from v$datafiles; 
+NAME                                AUTOEXTEND  INITSIZE             CURRSIZE             MAXSIZE
+ -------------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/user.dbf    0           128                  2048                 0</pre>
+</div></div><p>The OS file limit can be checked with ulimit -a.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ulimit -a 
+core file size  (blocks, -c) 2097151
+data seg size           (kbytes, -d) 2097152
+file size               (blocks, -f) unlimited
+max memory size         (kbytes, -m) unlimited 
+open files                      (-n) 5030 
+pipe size            (512 bytes, -p) 16 
+stack size              (kbytes, -s) 131072 
+cpu time               (seconds, -t) unlimited 
+max user processes              (-u) 3278 
+virtual memory          (kbytes, -v) unlimited</pre>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

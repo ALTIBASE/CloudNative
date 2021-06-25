@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-7101D ( 462877) Protocol header error.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-7101D ( 462877) Protocol header error.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> JH Choi</span>, last modified by <span class='editor'> heejung lee</span> on Jan 29, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055263 {padding: 0px;}
+div.rbtoc1624409055263 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055263 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055263'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-버전'>버전</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-현상'>현상</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-원인'>원인</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-조치'>조치</a></li>
+<li><a href='#ERR-7101D(462877)Protocolheadererror.-참고'>참고</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-버전">버전</h1><hr /><p>Altibase 모든 버전</p><p> </p><h1 id="ERR-7101D(462877)Protocolheadererror.-현상">현상</h1><hr /><p>Altibase 트레이스 로그 altibase_boot.log 에 아래와 $ALTIBASE_HOME/trc/altibase_boot.log 에 다음 에러메시지가 기록됨.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">ERR-7101d(errno=0) Protocol header error.(TCP 127.0.0.1:13036)
+Protocol processing failed. Close connection...</pre>
+</div></div><p> </p><p> </p><h2 id="ERR-7101D(462877)Protocolheadererror.-원인"><strong>원인</strong></h2><hr /><p>다음과 같이 altierr 유틸리티를 이용하여 해당 에러에 대한 설명을 확인할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x7101D<br /> 0x7101D ( 462877) cmERR_ABORT_PROTOCOL_HEADER_ERROR Protocol header error.(&lt;0%s&gt;)<br /> # *Cause: Protocol header error<br /> # *Action: Please send a bug report to the vendor.</p>
+</div></div><p>이 에러는 알티베이스 서버와 호환되지 않는 버전의 클라이언트에서 서버로 접속 시도 시 서버의 altibase_boot.log에 기록되는 메시지입니다.</p><p>이력을 남기는 메시지로, 알티베이스 서버 운영에는 영향이 없습니다. </p><p> </p><p> </p><p> </p><p> </p><h2 id="ERR-7101D(462877)Protocolheadererror.-조치"><strong>조치</strong></h2><hr /><p>이 에러메시지가 계속해서 기록된다면 접속 시도하는 클라이언트를 찾아서 서버와 호환 가능한 버전의 클라이언트로 재설치하시기 바랍니다.</p><p> </p><p> </p><h2 id="ERR-7101D(462877)Protocolheadererror.-참고"><strong>참고</strong></h2><hr /><p><strong><br /></strong></p><ul><li><span style="text-decoration: underline;">알티베이스 5.3.3 미만 버전</span>에서는 서버와 클라이언트의 cm protocol version이 동일해야 클라이언트에서 서버로 접속이 가능합니다.</li><li><span style="text-decoration: underline;">알티베이스 5.3.3 이상 버전</span>부터는 서버와 클라이언트의 하위호환성을 보장하여 cm protocol version 상관없이 클라이언트에서 동일버전 또는 그 이상 버전의 서버로 접속이 가능합니다.<br /> 그러나 반대의 경우, 즉 서버보다 클라이언트의 버전이 높은 경우는 접속되지 않습니다.</li><li>여기에서 말하는 버전은 제품버전의 앞 3자리를 의미합니다.(4번째 이하 자리의 패치버전은 버전 체크시 상관 없습니다.)<br />   </li></ul><p># 서버 및 클라이언트 버전에 따른 접속 예제</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>구분</p></th><th class="confluenceTh"><p>서버 버전</p></th><th class="confluenceTh"><p>클라이언트 버전</p></th><th class="confluenceTh"><p>접속 결과</p></th><th class="confluenceTh"><p>비고</p></th></tr><tr><td class="confluenceTd"><p>서버 버전 &gt; 클라이언트 버전 <br class="atl-forced-newline" /> (5.3.3 이상 버전)</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>5.3.3</p></td><td class="confluenceTd"><p>성공</p></td><td class="confluenceTd"><p>5.3.3 이상 버전에서 하위호환성 보장</p></td></tr><tr><td class="confluenceTd"><p>서버 버전 &gt; 클라이언트 버전 <br class="atl-forced-newline" /> (5.3.3 미만 버전)</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>4.3.9</p></td><td class="confluenceTd"><p>실패</p></td><td class="confluenceTd"><p>서버, 클라이언트 모두 5.3.3 이상 버전일 때 하위호환성 보장. <br class="atl-forced-newline" /> 클라이언트가 5.3.3 미만 버전이므로 하위호환성 보장하지 않으며, 4.3.9의 경우 cm protocol version이 동일한 경우에만 접속 가능.</p></td></tr><tr><td class="confluenceTd"><p>서버 버전 &lt; 클라이언트 버전</p></td><td class="confluenceTd"><p>6.1.1</p></td><td class="confluenceTd"><p>6.3.1</p></td><td class="confluenceTd"><p>실패</p></td><td class="confluenceTd"><p>클라이언트 버전이 높은 경우는 알티베이스 버전 상관없이 접속 실패. <br class="atl-forced-newline" /> 클라이언트 버전은 서버 버전과 동일하거나 그 보다 낮아야 함.</p></td></tr></tbody></table></div><p>  </p><p># 서버 및 클라이언트 버전 확인 방법</p><ul><li><p>서버 버전 확인 방법</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ <strong><em>altibase -v</em></strong><br /> version <span style="color: rgb(255,0,0);"><strong>5.1.5.68</strong></span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22, binary db version 5.1.2, meta version 5.3.3, <span style="color: rgb(255,0,0);"><strong>cm protocol version 5.4.5</strong></span>, replication protocol version 5.2.1</p>
+</div></div></li><li><p>클라이언트 버전 확인 방법</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># 5.3.3 미만 버전<br /> $ <strong><em>sesc -v</em></strong><br /> SES C/C++ Precompiler 3 Ver <span style="color: rgb(255,0,0);"><strong>5.1.5.68</strong></span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22<br />   <br /> # 5.3.3 이상 버전<br /> $ <strong><em>apre -v</em></strong><br /> Altibase Precompiler2(APRE) Ver.1 <span style="color: rgb(255,0,0);"><strong>6.3.1.0.9</strong></span> X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.0.9-release-GCC3.4.6 (x86_64-unknown-linux-gnu) Mar 20 2014 18:19:25</p>
+</div></div></li><li><p>JDBC Driver를 이용한 버전 확인 방법</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ <strong><em>java -jar $ALTIBASE_HOME/lib/Altibase.jar</em></strong><br /> JDBC Driver Info : Altibase Ver = <span style="color: rgb(255,0,0);"><strong>6.3.1.0.9</strong></span> for JavaVM v1.4, <span style="color: rgb(255,0,0);"><strong>CMP:7.1.1</strong></span>, Mar 20 2014 17:07:25</p>
+</div></div></li><li><p>WINDOWS 환경에서 ODBC 라이브러리를 이용한 버전 확인 방법</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>알티베이스 설치 디렉토리 (예. C:\Program Files (x86)\Altibase\altibase-server-6.3.1) 아래 lib 디렉토리에서 <br /> altiodbc.dll -&gt; 속성 -&gt; 자세히 -&gt; 제품버전</p>
+</div></div><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/6521284/6848514.png" data-image-src="attachments/6521284/6848514.png"></p></li></ul><p>  </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/6521284/6848514.png">odbcdll.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : The number of logfiles grows rapidly</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : The number of logfiles grows rapidly
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> Soultion Center Team</span> on May 11, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409158860 {padding: 0px;}
+div.rbtoc1624409158860 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409158860 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409158860'>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Aboutthecontents'>About the contents</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Symptoms'>Symptoms</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Causedby'>Caused by</a>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Longrunningtransactionsexist(Transactionsthatarenotcommittedorrolledback)'>Long running transactions exist (Transactions that are not committed or rolled back)</a>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Description'>Description</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Howtofinduncommittedtransactions?'>How to find uncommitted transactions?</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-AvailableActions'>Available Actions</a></li>
+</ul>
+</li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Replicationsenderdoesnotworkproperly'>Replication sender does not work properly</a>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Description.1'>Description</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-HowtofindoutthatthereareReplicationproblems?'>How to find out that there are Replication problems?</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-AvailableActions.1'>Available Actions</a></li>
+</ul>
+</li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Checkpointthreaddoesnotworkproperly'>Checkpoint thread does not work properly</a>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Description.2'>Description</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-HowtofigureoutthatCheckpointthreaddoesnotworkproperly?'>How to figure out that Checkpoint thread does not work properly?</a></li>
+</ul>
+</li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Archivingthreaddoesnotworkproperly'>Archiving thread does not work properly</a>
+<ul class='toc-indentation'>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Description.3'>Description</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-HowtofindoutthatArchivingthreaddoesnotworkproperly?'>How to find out that Archiving thread does not work properly?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Conclusion'>Conclusion</a></li>
+<li><a href='#Thenumberoflogfilesgrowsrapidly-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h1 id="Thenumberoflogfilesgrowsrapidly-Aboutthecontents">About the contents</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> Purpose </p></td>
+<td class="confluenceTd"><p> The contents here explains why in some cases, ALTIBASE HDB does not remove the transaction log files. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Applies to </p></td>
+<td class="confluenceTd"><p> HDB versions 4.3.9 or later </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Prerequisite </p></td>
+<td class="confluenceTd"><p> Administrator's Manual </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h1 id="Thenumberoflogfilesgrowsrapidly-Symptoms">Symptoms</h1>
+
+<ul>
+	<li>The number of log files in LOG_DIR grows rapidly. (The log file location is specified in altibase.properties)</li>
+</ul>
+
+
+<h1 id="Thenumberoflogfilesgrowsrapidly-Causedby">Caused by</h1>
+
+<p>In ALTIBASE HDB, Checkpoint thread removes the unnecessary transaction log files(logfiles). However, Checkpoint thread does not remove the transaction log files under the following conditions.</p>
+
+<ol>
+	<li>Long-run transaction exists.(Transaction is not committed or rolled backed.)</li>
+	<li>Replication sender does not work properly.</li>
+	<li>Checkpoint thread does not work properly.</li>
+	<li>Archiving thread does not work properly.</li>
+</ol>
+
+
+<h2 id="Thenumberoflogfilesgrowsrapidly-Longrunningtransactionsexist(Transactionsthatarenotcommittedorrolledback)">Long running transactions exist (Transactions that are not committed or rolled back)</h2>
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-Description">Description</h3>
+
+<p>When a transaction is rolled back, ALTIBASE HDB has to read information from transaction log files in order to undo the transaction. Therefore, if there is such an unfinished transaction, ALTIBASE HDB has to keep the log files associated with that transaction.</p>
+
+
+<map id="gliffy-map-1769563-1423" name="gliffy-map-1769563-1423"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 800px;" usemap="#gliffy-map-1769563-1423" src="attachments/1802691/1769564.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>For example in the above diagram, Transaction D is not finished, and it may roll back. Therefore, ALTIBASE HDB has to keep the log files after log#6 until transaction D is finished (commit or rollback). Although transactions E and F are started and ended after log#6, ALTIBASE HDB has to save log files for transaction D. In other words, even though the transaction does not finish for a long time and many update transactions are executed during that period. In this case Checkpoint thread does not remove the log files after log#6, therefore, the disk space will be exhausted.</p>
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>You can prevent this problem by editing the timeout properties of ALTIBASE HDB. ALTIBASE HDB automatically rollbacks the transaction if it exceeds the time specified in timeout properties. Please, refer to IDLE_TIMEOUT / QUERY_TIMEOUT / FETCH_TIMEOUT / UTRANS_TIMEOUT in the Starting User's Manual.</p>
+                    </div>
+    </div>
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-Howtofinduncommittedtransactions?">How to find uncommitted transactions?</h3>
+
+<ol>
+	<li>You can find the long running uncommitted transactions in ALTIBASE HDB using by <a href="http://aid.altibase.com/display/arch/SQL+about+Statements#SQLaboutStatements-Longrunningquery%28over10seconds%29" class="external-link" rel="nofollow">this query.</a></li>
+	<li>Check the UTRANS_TIME from the result of the query.</li>
+</ol>
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-AvailableActions">Available Actions</h3>
+
+<ol>
+	<li>Terminate the session that has the long running transaction. (See also, <a href="How-to-terminate-a-session_1802689.html">How to terminate a session</a> )</li>
+	<li>You may consider setting the value of UTRANS_TIMEOUT to the smaller value.</li>
+</ol>
+
+
+
+<h2 id="Thenumberoflogfilesgrowsrapidly-Replicationsenderdoesnotworkproperly">Replication sender does not work properly</h2>
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-Description.1">Description</h3>
+
+<p>If you are using the ALTIBASE HDB's Replication functionality, malfunctioning of Replication sender thread may prevent Checkpoint thread to remove the log files.</p>
+
+<p>Replication sender thread uses the log files to synchronize data between replicated servers. Therefore, Checkpoint thread cannot remove the log files unless Replication sender finishes its work on them.</p>
+
+
+<map id="gliffy-map-1769561-8101" name="gliffy-map-1769561-8101"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 450px;" usemap="#gliffy-map-1769561-8101" src="attachments/1802691/1769562.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>In the above diagram, let's assume that Replication sender is reading logfile#3, and service threads are writing on logfile#6. In this case, the Replication sender needs not only logfile#3 but also logfile#4, logfile#5 and logfile#6 to synchronize with the receiving server. Thus, Checkpoint thread cannot remove logfile#3 and newer, but only logfile#1 and logfile#2. Checkpoint thread will remove the log files after logfile#3 once Replication sender thread applies the log files to the receiving server. (For further information of how Replication works, please refer to <a href="ALTIBASE-HDB-Replication_2555989.html">this page</a>.)</p>
+
+<p>Furthermore, Checkpoint thread cannot remove the log files if Replication sender does not work due to network failures or DBA human errors - such as shutdown of Replication by mistake.</p>
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-HowtofindoutthatthereareReplicationproblems?">How to find out that there are Replication problems?</h3>
+
+<ol>
+	<li>You have to check whether Replication sender is running or not by using <a href="http://aid.altibase.com/display/arch/SQL+about+Replications#SQLaboutReplications-ReplicationSender" class="external-link" rel="nofollow">this query</a>.</li>
+	<li>Check the Replication gap in Replication object by using <a href="http://aid.altibase.com/display/arch/SQL+about+Replications#SQLaboutReplications-Replicationgap" class="external-link" rel="nofollow">this query.</a></li>
+</ol>
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-AvailableActions.1">Available Actions</h3>
+
+<ol>
+	<li>Start the Replication sender if it is stopped.</li>
+	<li>Fix the Replication problem.</li>
+</ol>
+
+
+<h2 id="Thenumberoflogfilesgrowsrapidly-Checkpointthreaddoesnotworkproperly">Checkpoint thread does not work properly</h2>
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-Description.2">Description</h3>
+
+<p>As we mentioned earlier, Checkpoint thread removes the log files, thus if Checkpoint thread does not work properly, the log files can not be removed.</p>
+
+<ul>
+	<li>Check whether CHECK_POINT_ENABLE is set to 0<br />
+Setting the value of CHECK_POINT_ENABLE to 0 means that ALTIBASE HDB does not perform Checkpoint automatically. In this case, you have to perform the Checkpoint manually. Sometimes disabling Checkpoint is helpful. For example, if there are I/O issues on the system, disabling Checkpoint reduces I/O activity. However, you have to monitor the disk space of LOG_DIR since Checkpoint thread does not empty the space automatically.
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>You have to consider all the details before setting the value of CHECK_POINT_ENABLE to 0.</p>
+                    </div>
+    </div>
+</li>
+</ul>
+
+
+<ul>
+	<li>The duration of Checkpoint operation<br />
+Checkpoint thread figures out which log files are removable at first, and removes those files at the end of every Checkpoint operation. Thus, if the Checkpoint operation takes too much time, the log files created after the Checkpoint procedure started can not be removed before the checkpoint operation finishes. You can refer to altibase_sm.log file (location of the file is specified in altibase.properties) to analyze what slows down the procedure.</li>
+</ul>
+
+
+
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-HowtofigureoutthatCheckpointthreaddoesnotworkproperly?">How to figure out that Checkpoint thread does not work properly?</h3>
+
+<ol>
+	<li>Make sure that CHECK_POINT_ENABLE property in altibase.properties is set to 1.</li>
+	<li>Check altibase_sm.log to analyze the status of Checkpoint thread.</li>
+</ol>
+
+
+
+<h2 id="Thenumberoflogfilesgrowsrapidly-Archivingthreaddoesnotworkproperly">Archiving thread does not work properly</h2>
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-Description.3">Description</h3>
+
+<p>If Archiving thread does not work properly, archiving of the log files process will fail. (i.e. archive log partition is full). In this case, Checkpoint thread does not remove unarchived log files. Archiving thread must copy them to ARCH_DIR (the file location is specified in altibase.properties) before Checkpoint thread removes them.</p>
+
+<h3 id="Thenumberoflogfilesgrowsrapidly-HowtofindoutthatArchivingthreaddoesnotworkproperly?">How to find out that Archiving thread does not work properly?</h3>
+
+<ol>
+	<li>Check altibase_sm.log. Archiving thread related error message are added in the log when Archiving thread has a problem.</li>
+</ol>
+
+
+<h1 id="Thenumberoflogfilesgrowsrapidly-Conclusion">Conclusion</h1>
+
+<p>In order to operate ALTIBASE HDB properly, it is very important to monitor the folders containing the log files (LOG_DIR ) . Once LOG_DIR is full, all transactions are suspended and you may have to shutdown ALTIBASE HDB to fix the problem. Furthermore, it may cause the service to go offline.</p>
+
+
+<h1 id="Thenumberoflogfilesgrowsrapidly-Reference">Reference</h1>
+
+<ul>
+	<li>ALTIBASE Administrator's Manual</li>
+</ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802691/1769561">logfileCanBeDeletedReplication</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802691/1769562.png">logfileCanBeDeletedReplication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802691/1769563">logfileCanBeDeletedLongtransaction</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802691/1769564.png">logfileCanBeDeletedLongtransaction.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

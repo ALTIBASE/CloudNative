@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Performance degradation issue when upgrading AIX OS to 6.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Performance degradation issue when upgrading AIX OS to 6.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_TaeHun Kim</span>, last modified on Nov 10, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409160295 {padding: 0px;}
+div.rbtoc1624409160295 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409160295 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409160295'>
+<ul class='toc-indentation'>
+<li><a href='#PerformancedegradationissuewhenupgradingAIXOSto6.1-Symptom'>Symptom</a></li>
+<li><a href='#PerformancedegradationissuewhenupgradingAIXOSto6.1-Analysis'>Analysis</a></li>
+<li><a href='#PerformancedegradationissuewhenupgradingAIXOSto6.1-Solution'>Solution</a></li>
+</ul>
+</div>
+
+<h1 id="PerformancedegradationissuewhenupgradingAIXOSto6.1-Symptom">Symptom</h1>
+
+<p>The performance of ALTIBASE HDB is dramatically degraded after upgrading AIX OS from version 5.3 to version 6.1.</p>
+
+<h1 id="PerformancedegradationissuewhenupgradingAIXOSto6.1-Analysis">Analysis</h1>
+
+<p>1. Observed a state of Service Thread of ALTIBASE HDB by using &quot;procstack&quot; utility of AIX.</p>
+
+<p>2. Found out that built-in function - sysdate() - of ALTIBASE HDB was causing the performace degradation.</p>
+
+<p>3. sysdate() function of ALTIBASE HDB triggers a system-call to &quot;localtime_r()&quot; and it causes the performance degradation. We confirmed the difference between AIX 5.3 and 6.1 with an AIX support engineer.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+0x0000000000003428  _check_lock() + 0x8
+0x0900000000a85598  _global_lock_common(??, ??, ??) + 0x2b8
+0x0900000000011410  _rec_mutex_lock(??) + 0xd0
+0x0900000000049284  localtime_tz_r(??, ??, ??) + 0x384
+0x000000010000dbec  PDL_OS::localtime_r(const long*,tm*)() + 0xc
+0x00000001000b54dc  qtc::sysdate(qcTemplate*)() + 0xbc
+0x0000000100476b8c  qmx::executeInsertValues(qcStatement*)() + 0x90c
+0x000000010058903c  mmcStmtType::executeDML(mmcSession*,mmcSessionInfo*,mmcStmtType*,unsigned int*,long*)() + 0x19c
+0x0000000100584398  mmcStmtType::execute(unsigned int*,long*,mmcSessionInfo*)() + 0x98
+0x00000001005c00c4  mmtTaskThread::doPrepareExecute(mmcStmtType*,long long,void*,unsigned long long,void*,unsigned long long)() + 0x444
+0x00000001005c1fc4  mmtTaskThread::executeArray(unsigned int)() + 0x484
+0x00000001005c29ac  mmtTaskThread::executeProtocol()() + 0x72c
+0x000000010059ef60  mmtTaskThread::processProtocol(idBool*,idBool*)() + 0x780
+0x000000010059f678  mmtTaskThread::runShared()() + 0x198
+0x00000001005a04a0  mmtTaskThread::run()() + 0x400
+0x0000000100035924  idtBaseThread::staticRunner(void*)() + 0x44
+0x0900000000a86d50  _pthread_body(??) + 0xf0
+</pre>
+</div></div>
+
+<h1 id="PerformancedegradationissuewhenupgradingAIXOSto6.1-Solution">Solution</h1>
+
+<p>Performance bottleneck occurs depending on the setting of TimeZone in AIX 6.1. To work around this AIX issue, the default TimeZone setting has to be changed to Local TimeZone based on Posix standard.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell Prompt&gt; echo $TZ
+Asia/Seoul &lt;- Olson time zone (X)
+KORST-9 &lt;- Posix time zone (O)
+
+- Modify Time zone
+Shell Prompt&gt; smitty chtz_user
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:46</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

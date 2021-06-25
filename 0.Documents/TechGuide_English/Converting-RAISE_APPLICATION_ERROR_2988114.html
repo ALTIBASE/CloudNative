@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Converting RAISE_APPLICATION_ERROR</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Exception-Handling_2988077.html">Exception Handling</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Converting RAISE_APPLICATION_ERROR
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347332 {padding: 0px;}
+div.rbtoc1624409347332 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347332 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347332'>
+<ul class='toc-indentation'>
+<li><a href='#ConvertingRAISE_APPLICATION_ERROR-Overview'>Overview</a></li>
+<li><a href='#ConvertingRAISE_APPLICATION_ERROR-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ConvertingRAISE_APPLICATION_ERROR-Overview">Overview</h2>
+
+<p>This procedure is used to raise an exception having a user-defined error code and message.</p>
+
+<p>The use of up to 1001 user-defined error codes, specifically the error codes ranging from 990000 to 991000, is supported in ALTIBASE HDB.</p>
+
+<p>Whereas, the error number range used in ORACLE is a negative integer in the range -20000 .. -20999.
+<br class="atl-forced-newline" /></p>
+
+<p>That way, you can report errors to your application and avoid returning unhandled exceptions.</p>
+
+<p>Any specific differences between the ALTIBASE HDB and ORACLE are shown in this function.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ConvertingRAISE_APPLICATION_ERROR-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+num_tables NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>SELECT COUNT() INTO num_tables FROM user_tables;</strong></span><br class="atl-forced-newline" />
+IF num_tables &lt; 1000 THEN <br class="atl-forced-newline" />
+/* Issue your own error code (user-defined exception) with your own error message. <br class="atl-forced-newline" />
+Note that you do not need to qualify raise_application_error with <br class="atl-forced-newline" />
+DBMS_STANDARD */ <br class="atl-forced-newline" />
+raise_application_error(<span style="color: rgb(255,0,0);"><strong>-20101</strong></span>, 'Expecting at least 1000 tables'); <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+NULL; -- Do the rest of the processing (for the non-error case). <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 -- altibase <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+num_tables NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>SELECT COUNT() INTO num_tables FROM system_.sys_tables_;</strong></span> <br class="atl-forced-newline" />
+IF num_tables &lt; 1000 THEN <br class="atl-forced-newline" />
+/* Issue your own error code (user-defined exception) with your own error message. <br class="atl-forced-newline" />
+Note that you do not need to qualify raise_application_error with <br class="atl-forced-newline" />
+DBMS_STANDARD */ <br class="atl-forced-newline" />
+raise_application_error(<span style="color: rgb(255,0,0);"><strong>990000</strong></span>, 'Expecting at least 1000 tables'); <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+NULL; -- Do the rest of the processing (for the non-error case). <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> The error number range which ALTIBASE HDB and ORACLE allow is <br class="atl-forced-newline" />
+-20000 .. -20999(ORACLE) and 990000 to 991000(ALTIBASE HDB) respectively. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

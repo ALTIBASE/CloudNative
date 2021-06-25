@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Altibase Server Configuration for IPC Communication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Altibase Server Configuration for IPC Communication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 11, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144585 {padding: 0px;}
+div.rbtoc1624409144585 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144585 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144585'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerConfigurationforIPCCommunication-Overview'>Overview</a></li>
+<li><a href='#AltibaseServerConfigurationforIPCCommunication-Version'>Version</a></li>
+<li><a href='#AltibaseServerConfigurationforIPCCommunication-ALTIBASEHDBServerConfigurations'>ALTIBASE HDB Server Configurations</a></li>
+<li><a href='#AltibaseServerConfigurationforIPCCommunication-OSConfigurations'>OS Configurations</a></li>
+<li><a href='#AltibaseServerConfigurationforIPCCommunication-Howtheapplicationcommunicates'>How the application communicates</a></li>
+</ul>
+</div></p><p> </p><h1 id="AltibaseServerConfigurationforIPCCommunication-Overview">Overview</h1><hr /><p>There are four communication methods between the database server and client provided by ALTIBASE HDB. Among these, this document describes the ALTIBASE HDB and OS configurations required for IPC communication.</p><ul><li>TCP/IP</li><li>Unix Domain Socket</li><li>IPC using shared memory</li><li>SSL/TLS (supported starting from ALTIBASE HDB version 6.5.1)</li></ul><p>For a description of each communication method, please refer to the &quot;12. Server/Client Communication&quot; section from the Administrator's manual.</p><p>Manual Page: </p><ul><li><a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals</a></li><li><a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a></li></ul><h1 id="AltibaseServerConfigurationforIPCCommunication-Version">Version</h1><hr /><p>All the ALTIBASE HDB versions</p><p> </p><h1 id="AltibaseServerConfigurationforIPCCommunication-ALTIBASEHDBServerConfigurations">ALTIBASE HDB Server Configurations</h1><hr /><p>By default, the Altibase server does not allow IPC access. So, in order to connect to the Altibase server with the IPC connection type, the Altibase server properties must be changed.</p><p>Related properties cannot be changed while the Altibase server is running. Therefore, the Altibase server needs to be restarted in order to change the property value.</p><h3 id="AltibaseServerConfigurationforIPCCommunication-IPC_PORT_NO">IPC_PORT_NO</h3><p>This property is required when running an Altibase server on a Windows system.</p><p>Unix and Linux use the 'Unix domain socket' in the form of a file for IPC connection, but Windows does not support this, so a TCP port is required for IPC connection.</p><p>In Windows, IPC connections communicate using shared memory, semaphores, and mutexes over TCP connections.</p><h3 id="AltibaseServerConfigurationforIPCCommunication-IPC_CHANNEL_COUNT">IPC_CHANNEL_COUNT</h3><div>This property configures the maximum number of IPC sessions that can be connected to the Altibase server. The default value is 0, and the Altibase server is configured not to allow IPC access.</div><div><h3 id="AltibaseServerConfigurationforIPCCommunication-IPC_FILEPATH">IPC_FILEPATH</h3><div>IPC communicates with the ALTIBASE HDB server with the 'Unix domain socket' in the form of a file.</div><div>If the 'Unix domain socket' file does not exist or the path is set incorrectly, the connection will fail.</div><div>Starting from ALTIBASE HDB server version 5.5.1.4.2, the user can change this path arbitrarily with the IPC_FILEPATH property, and the setting value can be checked in the performance view.</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME = &#39;IPC_FILEPATH&#39;; </pre>
+</div></div><p>ALTIBASE HDB server versions prior to 5.5.1.4.2 cannot change the default path and do not provide a separate verification method.</p><ul><li>The default setting of ALTIBASE HDB server version 4.3.9<br />The location and name of the Unix domain socket file is $ALTIBASE_HOME/trc/alti-ipc.</li><li>The default setting of ALTIBASE HDB server version 4.3.9 or later and earlier than 5.5.1.4.2<br />The location and name of the Unix domain socket file is $ALTIBASE_HOME/trc/cm-ipc.</li></ul><h3 id="AltibaseServerConfigurationforIPCCommunication-Howtochangeproperties">How to change properties</h3><ol><li><p>Changing altibase.properties file<br />Change the required values among the properties described above in the $ALTIBASE_HOME/conf/altibase.properties file and save the altibase.properties file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties</pre>
+</div></div></li><li><p>Restarting ALTIBASE HDB<br />Restart the Altibase server to reflect the changed property values to the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ server restart</pre>
+</div></div></li><li><p>Checking properties<br />Check that the values have been properly reflected.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ is
+iSQL&gt; SELECT NAME, MEMORY_VALUE1 FROM X$PROPERTY WHERE NAME IN (&#39;IPC_FILEPATH&#39;, &#39;IPC_CHANNEL_COUNT&#39;, &#39;IPC_FILEPATH&#39;); </pre>
+</div></div></li><li><p>Testing IPC connection<br />Try to test the iSQL connection with the IPC type.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ export ISQL_CONNECTION=IPC                                                # Change the environment variable that sets the iSQL connection type.
+$ is
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 5.5.1.4.6
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = IPC, SERVER = localhost, PORT_NO = 20300                  # IPC connection is successful only when ISQL_CONNECTION = IPC appears and the iSQL prompt appears.
+iSQL&gt;     </pre>
+</div></div></li></ol><h1 id="AltibaseServerConfigurationforIPCCommunication-OSConfigurations">OS Configurations</h1><hr /><p>Shared memory and semaphore resources are used for IPC communication. Therefore, to use the IPC type, the related kernel parameters must be set.</p><p>Please refer to the documents below depending on the OS. There is no recommended configurations for AIX and Windows.</p><ul><li>Linux: <a href="https://aid.altibase.com/display/arch/Linux+Setup+Guide+for+Altibase" class="external-link" rel="nofollow">Linux Setup Guide for Altibase</a></li><li>SunOS: <a href="https://docs.altibase.com/display/arch/HPUX+Setup+Guide+for+Altibase">HPUX Setup Guide for Altibase</a></li><li>HP-UX: <a href="https://aid.altibase.com/display/arch/Solaris+Setup+Guide+for+Altibase" class="external-link" rel="nofollow">Solaris Setup Guide for Altibase</a></li></ul><h1 id="AltibaseServerConfigurationforIPCCommunication-Howtheapplicationcommunicates">How the application communicates</h1><hr /><p>Please refer to each manual for how to set the connection properties in the application program.</p><ul><li>CLI/ODBC: Refer to 2. ALTIBASE HDB CLI function -&gt; SQLDriverConnect function description in CLI User's Manual.</li><li>APRE (C/C++ Precompiler): From Precompiler User's Manual 6. Embedded SQL statement -&gt; SQL statement related to connection -&gt; CONNECT</li><li>JDBC: From the JDBC User's Manual 1. Getting Started with JDBC -&gt; Connection Information</li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

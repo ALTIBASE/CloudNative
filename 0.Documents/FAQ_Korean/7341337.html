@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : TRANSACTION_TABLE_SIZE 변경 시 고려사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : TRANSACTION_TABLE_SIZE 변경 시 고려사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Jan 29, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051453 {padding: 0px;}
+div.rbtoc1624409051453 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051453 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051453'>
+<ul class='toc-indentation'>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-개요'>개요</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-제약사항'>제약 사항</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-변경방법'>변경 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-오프라인으로변경'>오프라인으로 변경</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-관련버그'>관련 버그</a></li>
+</ul>
+</li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-변경절차'>변경 절차</a>
+<ul class='toc-indentation'>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-데이터마이그레이션이필요한경우'>데이터 마이그레이션이 필요한 경우</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-오프라인으로변경가능한경우'>오프라인으로 변경 가능한 경우</a></li>
+</ul>
+</li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-최대값'>최대값</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-TRANSACTION_TABLE_SIZE와메모리사용'>TRANSACTION_TABLE_SIZE 와 메모리 사용</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-TRANSACTION_TABLE_SIZE를초과한경우'>TRANSACTION_TABLE_SIZE 를 초과한 경우</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-성능뷰'>성능 뷰</a></li>
+<li><a href='#TRANSACTION_TABLE_SIZE변경시고려사항-에러메시지'>에러 메시지</a></li>
+</ul>
+</div></p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-개요"><strong>개요</strong></h1><hr /><p>TRANSACTION_TABLE_SIZE 는 알티베이스 서버 프로퍼티로, 데이터베이스 운용 중 동시에 수행할 수 있는 최대 트랜잭션 수를 의미합니다.</p><p>하나의 세션에서는 항상 한 개의 트랜잭션이 수행됩니다. 따라서 동시 접속 세션 수가 증가할 경우 동시에 수행되는 트랜잭션 수도 증가할 가능성이 있기 때문에 MAX_CLIENT 프로퍼티 값을 증가할 때 TRANSACTION_TABLE_SIZE 변경도 고려해야 합니다.</p><p>TRANSACTION_TABLE_SIZE 는 트랜잭션의 고유 번호(TID)를 의미하기도 합니다. 잘못된 변경으로 TID 가 꼬이게 되는 경우 서로 다른 트랜잭션이 하나의 트랜잭션으로 인식될 수 있어 변경 시 주의를 요하는 프로퍼티입니다.</p><p>또한 ALTIBASE HDB 버전에 따라 변경 방법에 차이가 있으니 관련 내용에 대해 정리합니다.</p><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-제약사항"><strong>제약 사항</strong></h1><hr /><ul><li>ALTIBASE HDB 버전에 따라 TRANSACTION_TABLE_SIZE 를 변경하기 위해서 데이터 마이그레이션이 필요한 버전이 있습니다. 아래 '변경 방법' 참고하시기 바랍니다.</li><li><span style="color: rgb(0,0,0);">현재 값 보다 큰 2^n 값으로만 변경할 수 있습니다.</span></li><li><span style="color: rgb(0,0,0);">2^n 인 1</span><span style="color: rgb(0,0,0);">6 -&gt; 32 -&gt; 64 -&gt; 128 -&gt; 256 -&gt; 512 -&gt; 1024 -&gt; 2048 -&gt; 4096 -&gt; 8192 -&gt; 16384 순으로 변경할 수 있습니다.</span></li><li><span style="color: rgb(0,0,0);">큰 값에서 작은 값으로 변경할 수 없습니다. </span></li><li>동시 수행 트랜잭션 수는 사용자 트랜잭션, 이중화 트랜잭션, 내부 트랜잭션을 모두 포함하기 때문에 MAX_CLIENT 보다 크게 설정해야 합니다.</li><li>이중화 환경인 경우 이중화 트랜잭션까지 고려하여 MAX_CLIENT 의 두 배까지 설정해야 할 수 있습니다.</li><li>이중화 환경인 경우 이중화 대상 서버 간에 TRANSACTION_TABLE_SIZE 가 모두 동일해야 합니다. TRANSACTION_TABLE_SIZE 가 다르면 이중화 sender 쓰레드가 구동되지 않습니다.</li><li><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; alter replication REP_MEM start;
+[ERR-6100D : [Sender] Failed to handshake with the peer server (Transaction Table Size mismatch [1024:4096])]</pre>
+</div></div></li></ul><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-변경방법"><strong>변경 방법</strong></h1><hr /><h3 id="TRANSACTION_TABLE_SIZE변경시고려사항-오프라인으로변경">오프라인으로 변경</h3><p>아래 명시된 버전부터는 <span style="color: rgb(51,102,255);">오프라인으로 변경할 수 있습니다. </span> (ALTIBASE HDB 4 버전은 제외)</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5.93 부터</p></th><th class="confluenceTh"><p>5.3.3.48 부터 </p></th><th class="confluenceTh"><p>5.3.5.17 부터</p></th><th class="confluenceTh"><p>5.5.1.1.0 부터</p></th></tr><tr><td class="confluenceTd"><p>오프라인으로 변경</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td><td class="confluenceTd"><p>변경 가능 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>변경 가능 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>변경 가능 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td><td class="confluenceTd"><p>변경 가능 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">데이터 마이그레이션 필요.</span></p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5.0 ~  5.1.5.92</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.47</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.16</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.0.9</p></th></tr><tr><td class="confluenceTd"><p>오프라인으로 변경</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td><td class="confluenceTd"><p>변경 불가. <br class="atl-forced-newline" /> 데이터 마이그레이션 필요.</p></td></tr></tbody></table></div><p><span style="color: rgb(255,255,255);">1</span></p><p><span style="color: rgb(255,255,255);">24</span></p><h5 id="TRANSACTION_TABLE_SIZE변경시고려사항-ALTERSYSTEM으로변경">ALTER SYSTEM 으로 변경</h5><p>ALTER SYSTEM 으로 변경 시 Alter success. 가 떨어져서 변경 가능한 것처럼 보일 수 있지만 <span style="color: rgb(255,0,0);">TRANSACTION_TABLE_SIZE 는 온라인 상태에서 변경할 수 없습니다.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5</p></th><th class="confluenceTh"><p>5.3.3.64 부터</p></th><th class="confluenceTh"><p>5.3.5.26 부터</p></th><th class="confluenceTh"><p>5.5.1.2.13 부터</p></th></tr><tr><td class="confluenceTd"><p>온라인으로 변경 <br class="atl-forced-newline" /> (alter system)</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>변경 불가 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">alter system 으로 수행가능한 것처럼 보이나</span></p></td><td class="confluenceTd"><p>변경 불가 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">alter system 으로 수행가능한 것처럼 보이나</span></p></td><td class="confluenceTd"><p>변경 불가 <br class="atl-forced-newline" /> <span style="color: rgb(255,255,255);">alter system 으로 수행가능한 것처럼 보이나</span></p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9</p></th><th class="confluenceTh"><p>5.1.5</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.63</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.25</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.2.12</p></th></tr><tr><td class="confluenceTd"><p>온라인으로 변경 <br class="atl-forced-newline" /> (alter system)</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td><td class="confluenceTd"><p>alter system 으로 수행가능한 것처럼 보이나 <br class="atl-forced-newline" /> 실제로는 변경 불가 함.</p></td></tr></tbody></table></div><p>BUG-33467 이 반영된 버전에서는 ALTER SYSTEM 으로 변경 시 [ERR-0104E : The property [TRANSACTION_TABLE_SIZE] is read-only.] 에러가 발생합니다.</p><p><span style="color: rgb(255,255,255);">1</span></p><p><span style="color: rgb(255,255,255);">2</span></p><h3 id="TRANSACTION_TABLE_SIZE변경시고려사항-관련버그">관련 버그</h3><p>BUG-33467 TRANSACTION_TABLE_SIZE 프로퍼티 속성을 readonly 로 변경합니다. ALTER SYSTEM 으로 변경할 수 없게 수정합니다.</p><p>BUG-31862 마이그레이션 없이 TRANSACTION_TABLE_SIZE 를 변경할 수 있게 개선합니다. <span style="color: rgb(255,0,0);">현재값 보다 큰 2^n 값</span>으로만 변경 가능합니다.</p><p> </p><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-변경절차"><strong>변경 절차</strong></h1><hr /><h3 id="TRANSACTION_TABLE_SIZE변경시고려사항-데이터마이그레이션이필요한경우">데이터 마이그레이션이 필요한 경우</h3><ol><li>서비스 downtime 확보</li><li>aexport, iloader 를 이용하여 데이터베이스 백업</li><li>알티베이스 서버 shutdown</li><li>altibase.properties 에서 TRANSACTION_TABLE_SIZE 변경</li><li>데이터베이스 재생성</li><li>2.에서 백업한 백업본으로 데이터 업로드</li><li>알티베이스 서버 startup</li></ol><h3 id="TRANSACTION_TABLE_SIZE변경시고려사항-오프라인으로변경가능한경우">오프라인으로 변경 가능한 경우</h3><ol><li>서비스 downtime 확보</li><li>알티베이스 서버 shutdown</li><li>altibase.properties 에서 TRANSACTION_TABLE_SIZE 변경</li><li>알티베이스 서버 startup</li></ol><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-최대값"><strong>최대값</strong></h1><hr /><p>ALTIBASE HDB 서버 버전에 따라 TRANSACTION_TABLE_SIZE 최대값이 다릅니다. 이전 버전에서는 최대값 설명에 오류가 있는 매뉴얼도 있으니 아래 표를 참고하시기 바랍니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9.222 부터      </p></th><th class="confluenceTh"><p>5.1.5.112 부터      </p></th><th class="confluenceTh"><p>5.3.3.91 부터      </p></th><th class="confluenceTh"><p>5.3.5.35 부터      </p></th><th class="confluenceTh"><p>5.5.1.5.3 부터        </p></th></tr><tr><td class="confluenceTd"><p>최대값</p></td><td class="confluenceTd"><p>16384  </p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td><td class="confluenceTd"><p>16384</p></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>ALTIBASE HDB  서버 버전</p></th><th class="confluenceTh"><p>4.3.9.0 ~ 4.3.9.221</p></th><th class="confluenceTh"><p>5.1.5.0 ~ 5.1.5.111</p></th><th class="confluenceTh"><p>5.3.3.0 ~ 5.3.3.90</p></th><th class="confluenceTh"><p>5.3.5.0 ~ 5.3.5.34</p></th><th class="confluenceTh"><p>5.5.1.0.0 ~ 5.5.1.5.2</p></th></tr><tr><td class="confluenceTd"><p>최대값</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>8192</p></td></tr></tbody></table></div><h5 id="TRANSACTION_TABLE_SIZE변경시고려사항-관련버그.1">관련 버그</h5><p>BUG-37851 TRANSACTION_TABLE_SIZE 값의 최대값을 수정해야 합니다.</p><p> </p><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-TRANSACTION_TABLE_SIZE와메모리사용"><strong>TRANSACTION_TABLE_SIZE 와 메모리 사용</strong></h1><hr /><p>ALTIBASE HDB 서버 구동 시에 TRANSACTION_TABLE_SIZE 를 위한 메모리가 미리 할당됩니다. 그래서 TRANSACTION_TABLE_SIZE 설정값에 따라 메모리 사용이 다소 증가할 수 있습니다.</p><p>다음은 TRANSACTION_TABLE_SIZE 설정 값에 따른 메모리 사용을 비교한 예입니다.</p><p>메모리 사용량은 시스템 환경에 따라 다를 수 있습니다. TRANSACTION_TABLE_SIZE 설정 값에 따른 차이만 참고하기 바랍니다. 단위는 KB 입니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p> </p></th><th class="confluenceTh"><p>1024</p></th><th class="confluenceTh"><p>2048</p></th><th class="confluenceTh"><p>4096</p></th><th class="confluenceTh"><p>8192</p></th><th class="confluenceTh"><p>16384</p></th></tr><tr><td class="confluenceTd"><p>VSZ</p></td><td class="confluenceTd"><p>1,484,952</p></td><td class="confluenceTd"><p>1,647,264</p></td><td class="confluenceTd"><p>2,019,544</p></td><td class="confluenceTd"><p>2,911,096</p></td><td class="confluenceTd"><p>5,309,148</p></td></tr><tr><td class="confluenceTd"><p>RSS</p></td><td class="confluenceTd"><p>660,900</p></td><td class="confluenceTd"><p>825,956</p></td><td class="confluenceTd"><p>1,164,640</p></td><td class="confluenceTd"><p>2,093,068</p></td><td class="confluenceTd"><p>4,465,108</p></td></tr></tbody></table></div><p>테스트 서버 환경은 아래와 같습니다.</p><ul><li>Linux</li><li>환경 변수 MALLOC_ARENA_MAX=4</li><li>ALTIBASE HDB 6.3.1.2.7</li></ul><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-TRANSACTION_TABLE_SIZE를초과한경우"><strong>TRANSACTION_TABLE_SIZE 를 초과한 경우</strong></h1><hr /><p>동시 수행 트랜잭션 수가 TRANSACTION_TABLE_SIZE 를 초과한 경우 다음과 같은 현상으로 데이터베이스가 hang 상태로 보일 수 있으며,</p><ul><li>신규 세션 접속 불가</li><li>접속되어 있는 세션에서 SQL 수행 시 응답 없음</li></ul><p>altibase_boot.log 에 아래와 같은 메시지가 나타납니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">TRANSACTION_TABLE_SIZE is full !!
+Current TRANSACTION_TABLE_SIZE is 1024
+Please check TRANSACTION_TABLE_SIZE
+</pre>
+</div></div><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-성능뷰"><strong>성능 뷰</strong></h1><hr /><p>TRANSACTION_TABLE_SIZE 설정 값과 수행 중인 트랜잭션의 수는 V$TRANSACTION_MGR 에서 확인할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- TOTAL_COUNT 는 TRANSACTION_TABLE_SIZE 설정 값을 의미하며 ACTIVE_COUNT 는 수행 중인 트랜잭션의 수를 의미합니다.
+
+iSQL&gt; SELECT TOTAL_COUNT, ACTIVE_COUNT FROM V$TRANSACTION_MGR;
+TOTAL_COUNT ACTIVE_COUNT
+----------------------------
+8192        4
+1 row selected.</pre>
+</div></div><p> </p><p> </p><h1 id="TRANSACTION_TABLE_SIZE변경시고려사항-에러메시지"><strong>에러 메시지</strong></h1><hr /><h5 id="TRANSACTION_TABLE_SIZE변경시고려사항-ERR-10166(errno=2)TRANSACTION_TABLE_SIZE[&#39;4094&#39;]isnotapoweroftwo.">ERR-10166(errno=2) TRANSACTION_TABLE_SIZE ['4094'] is not a power of two.</h5><p>TRANSACTION_TABLE_SIZE 프로퍼티의 값이 2^n 이 아닌 경우 발생하는 에러 메시지입니다.</p><p><span style="color: rgb(0,0,0);">2^n 값은 1</span><span style="color: rgb(0,0,0);">6, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384 입니다.</span></p><h5 id="TRANSACTION_TABLE_SIZE변경시고려사항-ERR-10018(errno=0)Theversionofdatafileforbackupisnotcompatiblewiththeversionofstoragemanager.BackupDB=&gt;[VersionID=4.11.1,Bit=64,Endian=BIGLogSize=10485760TransactionTableSize=1024]Server=&gt;[VersionID=4.11.1,Bit=64,Endian=BIGLo">ERR-10018(errno=0) The version of data file for backup is not compatible with the version of storage manager. Backup DB =&gt; [ Version ID = 4.11.1,  Bit = 64, Endian = BIG LogSize = 10485760  Transaction Table Size = 1024 ]  Server=&gt;[ Version ID = 4.11.1,  Bit = 64, Endian = BIG LogSize = 10485760 Transaction Table Size = 2048 ]</h5><p>데이터베이스 생성 시 설정한 TRANSACTION_TABLE_SIZE 를 변경할 수 없는 버전에서 발생하는 에러 메시지입니다.</p><p>큰 값에서 작은 값으로 변경할 때로 발생할 수 있습니다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Altibase Server Patch Procedure on Unix and Linux</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="16875918.html">01. Installation, Patch, Upgrade</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Altibase Server Patch Procedure on Unix and Linux
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144420 {padding: 0px;}
+div.rbtoc1624409144420 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144420 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144420'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-Overview'>Overview</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-Preparationbeforepatching'>Preparation before patching</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-PatchProcedure'>Patch Procedure</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-1.Checkthecurrentversion'>1. Check the current version</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-2.ShutdownAltibaseServer**2ndstepforpatch'>2. Shutdown Altibase Server ** </a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-3.Backupexistinginstallationfiles3rdstepforpatch'>3. Backup existing installation files</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-4.Uploadpatchpackageandchangepermissions'>4. Upload patch package and change permissions</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orlater(allversionssince5.5.1,6.1.1,6.3.1,and6.3.1)'>ALTIBASE HDB server version 5.5.1 or later (all versions since 5.5.1, 6.1.1, 6.3.1, and 6.3.1)</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orearlier(allversionsbelow5.3.3suchas4.3.9,5.3.3,etc.)'>ALTIBASE HDB server version 5.5.1 or earlier (all versions below 5.3.3 such as 4.3.9, 5.3.3, etc.)</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-5.Performthepatch'>5. Perform the patch</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orlater(allversionssince5.5.1,6.1.1,6.3.1,and6.3.1).1'>ALTIBASE HDB server version 5.5.1 or later (all versions since 5.5.1, 6.1.1, 6.3.1, and 6.3.1)</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orearlier(allversionsbelow5.3.3suchas4.3.9,5.3.3,etc.).1'>ALTIBASE HDB server version 5.5.1 or earlier (all versions below 5.3.3 such as 4.3.9, 5.3.3, etc.)</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-6.Checkthepatchversion'>6. Check the patch version</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-7.Copynecessaryfilesfromthebackupfile'>7. Copy necessary files from the backup file</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-8.STARTUPALTIBASEHDBServer**8thstepforpatch'>8. STARTUP ALTIBASE HDB Server **</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-Precautions'>Precautions</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-Checkmetaversionbefore/afterpatch'>Check meta version before/after patch</a></li>
+<li><a href='#AltibaseServerPatchProcedureonUnixandLinux-WhenpatchingfromALTIBASEHDB4.3.9.1~4.3.9.50to4.3.9.51~**'>When patching from ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 to 4.3.9.51 ~**</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="AltibaseServerPatchProcedureonUnixandLinux-Overview">Overview</h1><hr /><ul><li>Patching means <strong>minor version changes</strong>.<br />Altibase server version consists of 4 or 5 digits.<br />The first three digits refer to the major version and the last one or two digits refer to the minor version.<br />Changing the last three digits without changing the first three digits is called a 'patch', and changing the first three digits is called 'upgrade'.<br /><br /></li><li>This page describes the procedure for patching Altibase servers in Unix and Linux environments.</li><li>Since the Altibase server patch must be performed after the Altibase server is shut down, service downtime is required.</li><li><span style="color: rgb(255,0,0);">Therefore, the user must secure downtime before patching.</span></li></ul><h1 id="AltibaseServerPatchProcedureonUnixandLinux-Preparationbeforepatching">Preparation before patching</h1><hr /><p>Check the following before proceeding.</p><ul><li>Can Altibase server downtime be secured? (Confirmed with the client)</li><li>Does the meta version change after patching? (Confirm with Altibase engineer)</li><li>Are there any caveats if the patch version is different from the current version? (Confirm with Altibase engineer)<br />Example: In order to patch from HDB 4.3.9.44 to Altibase HDB 4.3.9.233.</li></ul><h1 id="AltibaseServerPatchProcedureonUnixandLinux-PatchProcedure">Patch Procedure</h1><hr /><h2 id="AltibaseServerPatchProcedureonUnixandLinux-1.Checkthecurrentversion"><span style="color: rgb(0,0,0);">1. Check the current version</span></h2><hr /><ul><li><p>Make a note of the version check result below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check Altibase server version</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ altibase -v</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-2.ShutdownAltibaseServer**2ndstepforpatch">2. Shutdown Altibase Server <strong><span style="color: rgb(255,0,0);">**</span><span style="color: rgb(255,0,0);"> </span><span class="confluence-anchor-link" id="AltibaseServerPatchProcedureonUnixandLinux-2ndstepforpatch"></span></strong></h2><hr /><ul><li><p>Shutdown the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to shutdown Altibase server</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div><p>After the shutdown, check the Altibase server process and service port LISTEN status. When the following two commands are executed, there should be no results to indicate a normal shutdown.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep           # To check the Altibase server process
+$ netstat -an | grep 20300                             # To check the service port</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-3.Backupexistinginstallationfiles3rdstepforpatch">3. Backup existing installation files<strong><span class="confluence-anchor-link" id="AltibaseServerPatchProcedureonUnixandLinux-3rdstepforpatch"></span></strong></h2><hr /><ul><li><p>Back up necessary directories so that problems can be recovered after patching.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of directory backup</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME
+$ cp -Rp bin bin.bak
+$ cp -Rp lib lib.bak
+$ cp -Rp msg msg.bak
+$ cp -Rp conf conf.bak
+$ cp -Rp include include.bak </pre>
+</div></div><p>If the size of the $ALTIBASE_HOME directory is not large, the user can make a full backup of the $ALTIBASE_HOME directory as shown below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cp -Rp altibase_home altibase_home.bak</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-4.Uploadpatchpackageandchangepermissions">4. Upload patch package and change permissions</h2><hr /><h3 id="AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orlater(allversionssince5.5.1,6.1.1,6.3.1,and6.3.1)">ALTIBASE HDB server version 5.5.1 or later (all versions since 5.5.1, 6.1.1, 6.3.1, and 6.3.1)</h3><ul><li>Log in as the ALTIBASE HDB server installation user.</li><li>Upload the patch package to a random path.</li><li>From ALTIBASE HDB server version 5.5.1, the Java-based installer was used, and the package name ends with .run as shown below.</li><li><p><span style="color: rgb(51,51,153);">Grant execute permission to run the package.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to change execution permission</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ chmod +x altibase-HDB-server-6.1.1.3.8-LINUX-X86-64bit-release.run</pre>
+</div></div></li></ul><h3 id="AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orearlier(allversionsbelow5.3.3suchas4.3.9,5.3.3,etc.)">ALTIBASE HDB server version 5.5.1 or earlier (all versions below 5.3.3 such as 4.3.9, 5.3.3, etc.)</h3><ul><li>Log in as the ALTIBASE HDB server installation user.</li><li>Upload the patch package under the $ALTIBASE_HOME directory.</li><li><p>ALTIBASE HDB Server versions earlier than 5.5.1 provide compressed files.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">altibase-XEON_LINUX_redhat_Enterprise_release5-64bit-5.3.3.84-release-GCC4.1.2.tgz</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-5.Performthepatch">5. Perform the patch</h2><hr /><h3 id="AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orlater(allversionssince5.5.1,6.1.1,6.3.1,and6.3.1).1">ALTIBASE HDB server version 5.5.1 or later (all versions since 5.5.1, 6.1.1, 6.3.1, and 6.3.1)</h3><ul><li><p>After executing the executable file as shown below, the subsequent operation proceeds according to the message.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ./altibase-HDB-server-6.1.1.3.8-LINUX-X86-64bit-release.run</pre>
+</div></div></li></ul><h3 id="AltibaseServerPatchProcedureonUnixandLinux-ALTIBASEHDBserverversion5.5.1orearlier(allversionsbelow5.3.3suchas4.3.9,5.3.3,etc.).1">ALTIBASE HDB server version 5.5.1 or earlier (all versions below 5.3.3 such as 4.3.9, 5.3.3, etc.)</h3><ul><li><p>Move to the $ALTIBASE_HOME directory and extract the files as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME
+$ gzip -cd altibase-XEON_LINUX_redhat_Enterprise_release5-64bit-5.3.3.84-release-GCC4.1.2.tgz | tar xvf -</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-6.Checkthepatchversion">6. Check the patch version</h2><hr /><ul><li><p>After completing the patch execution, check the version to see if the patch is applied.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check Altibase server version</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ altibase -v
+version 5.3.3.29 X86_64_WRS_LINUX_redhat_Enterprise_release5-64bit-5.3.3.29-release-GCC4.1.1 (xeon-redhat-linux-gnu) Nov 15 2010 17:36:40, binary db version 5.4.1, meta version 5.6.1, cm protocol version 5.6.2, replication protocol version 5.4.1</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-7.Copynecessaryfilesfromthebackupfile">7. Copy necessary files from the backup file</h2><hr /><ul><li>If the default password (manager) of the sys user is changed, the $ATLIBASE_HOME/bin/server, is, il scripts would have changed.</li><li><p>In this case, copy server, is, and il from the bin directory of the backup directory to $ALTIBASE_HOME/bin.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd $ALTIBASE_HOME
+$ cp -p bin.bak/server bin/
+$ cp -p bin.bak/is bin/
+$ cp -p bin.bak/il bin/
+</pre>
+</div></div></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-8.STARTUPALTIBASEHDBServer**8thstepforpatch">8. STARTUP ALTIBASE HDB Server <strong><span style="color: rgb(255,0,0);">**<span class="confluence-anchor-link" id="AltibaseServerPatchProcedureonUnixandLinux-8thstepforpatch"></span></span></strong></h2><hr /><ul><li><p>After starting the Altibase server process, check the process and service port listen status.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div><p>After shutdown, check the Altibase server process and service port LISTEN status.</p><p>When the following two commands are executed, there should be no results to indicate a normal shutdown.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep           # To check the Altibase server process
+altibase 10758 1 0 12:01 ? 00:00:14 /home/altibase/bin/altibase -p boot from admin
+
+
+$ netstat -an | grep 20300                             # To check the service port.
+tcp        0      0 0.0.0.0:20300               0.0.0.0:*                   LISTEN </pre>
+</div></div></li></ul><h1 id="AltibaseServerPatchProcedureonUnixandLinux-Precautions">Precautions</h1><hr /><h2 id="AltibaseServerPatchProcedureonUnixandLinux-Checkmetaversionbefore/afterpatch">Check meta version before/after patch</h2><hr /><ul><li><span style="color: rgb(255,0,0);">If the meta version changes, the database cannot be reverted to a lower version.</span></li><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">After patching to a higher version, there may be cases where the user inevitably needs to revert to a lower version. If the meta version is changed, this cannot be done.</span><br /></span></li><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Therefore, if the meta version changes, the user should </span></span><span style="color: rgb(0,0,0);">be <span style="color: rgb(255,0,0);">aware of this</span></span><span style="color: rgb(255,0,0);"> and proceed with the patching</span><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">, and if <span style="color: rgb(255,0,0);">necessary, take an offline full backup before the patch</span>.</span></span></li><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Offline full backup targets include <u>data files, log anchor files, log files, and configuration files.</u></span></span><br /><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"><br /></span></span></li></ul><h2 id="AltibaseServerPatchProcedureonUnixandLinux-WhenpatchingfromALTIBASEHDB4.3.9.1~4.3.9.50to4.3.9.51~**">When patching from ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 to 4.3.9.51 ~<span style="color: rgb(255,0,0);">**</span></h2><hr /><p>If the following conditions are satisfied, the replication will not work after patching.</p><ul><li><p>When patching from ALTIBASE HDB 4.3.9.1 ~ 4.3.9.50 to 4.3.9.51 ~</p></li><li>Replication environment</li></ul><p><span style="color: rgb(255,0,0);"><strong>Therefore, if the above conditions are satisfied, the user must follow the procedure below to apply the patch.</strong></span></p><ol><li>Secure the Altibase server downtime<br /><br /></li><li>Shutdown the Altibase server (Refer to step 2 of the patch procedure)<br /><br /></li><li><p>Change the service port<br />Temporarily change the service port during patching to ensure that access to Altibase is blocked.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # Changed PORT_NO in altibase.properties.</pre>
+</div></div></li><li>Startup the Altibase server (Refer to step 3 of the patch procedure)<br /><br /></li><li><p><span style="color: rgb(255,0,0);">Check the replication gap**</span><br /><span style="color: rgb(255,0,0);">Must make sure it is 0.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check replication cap</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REP_GAP FROM V$REPGAP;</pre>
+</div></div></li><li><p>Backup the replicated object creation syntax by performing aexport</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ aexport                      # The user can check the syntax for creating a replication object in the SYS_CRT_REP.sql file created after performing aexport.</pre>
+</div></div></li><li><p><span style="color: rgb(255,0,0);">Drop replication object**</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- Check the replication object name
+iSQL&gt; SELECT REPLICATION_NAME FROM SYSTEM_.SYS_REPLICATIONS_;
+
+-- Stop the replicaiton
+iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- Drop replication object
+iSQL&gt; DROP REPLICATION replication_name;</pre>
+</div></div></li><li><p>Perform the checkpoint</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM CHECKPOINT;                   -- Repeat 4 times</pre>
+</div></div></li><li>Shutdown the Altibase server (Refer to step 2 of the patch procedure)<br /><br /></li><li>Perform the patch (Refer to step 2 to step 7 of the patch procedure)<br /><br /></li><li><p><span style="color: rgb(255,0,0);">Add CHECK_LOGFILE property</span>**</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # Save after adding CHECK_LOGFILE = 0 to the last line of altibase.properties file.</pre>
+</div></div></li><li>Startup the Altibase Server (Refer to step 8 of the patch procedure)<br /><br /></li><li><p><span style="color: rgb(255,0,0);">Delete CHECK_LOGFILE property**</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # CHECK_LOGFILE added to the last line of altibase.properties file = 0 Delete and save.</pre>
+</div></div></li><li><p>Insert data after creating temporary table<br />This is to use up the log files created in the previous version and create a new log file.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>CREATE TABLE IMSI_T (C1 INTEGER, C2 INTEGER);
+
+CREATE OR REPLACE PROCEDURE IMSI_PROC AS V1 INTEGER;
+BEGIN
+FOR V1 IN 1 .. 300000 LOOP
+INSERT INTO IMSI_T VALUES (V1, V1);
+END LOOP;
+END;
+/</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT CUR_WRITE_LF_NO FROM V$LFG; - Check the result (number).
+iSQL&gt; EXEC IMSI_PROC; - Perform an insert on a temporary table.
+iSQL&gt; SELECT CUR_WRITE_LF_NO FROM V$LFG; - If it is greater than the result checked above, it is completed. If it is not different from the result checked above, re-execute the IMSI_PROC procedure.
+iSQL&gt; DROP PROCEDURE IMSI_PROC; - Drop temporary tables and procedures.
+iSQL&gt; DROP TABLE IMSI_T;</pre>
+</div></div></li><li><p>Perform the checkpoint</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM CHECKPOINT;                   -- Repeat 4 times.</pre>
+</div></div></li><li><p>Create replication object</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ is -f SYS_CRT_REP.sql                          # Execute the created SYS_CRT_REP.sql file after executing aexport.</pre>
+</div></div></li><li><p>Start replication</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">- Check the replicaiton object name
+iSQL&gt; SELECT REPLICATION_NAME FROM SYSTEM_.SYS_REPLICATIONS_;
+- Stop the replication
+iSQL&gt; ALTER REPLICATION replication_name START;</pre>
+</div></div></li><li><p>Shutdown Altibase server (Refer to step 2 of the patch procedure)<br />Change the temporarily changed service port to the original.</p><p> </p></li><li><p>Change the service port<br />Change the temporarily changed service port to the original.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cd $ALTIBASE_HOME/conf 
+$ vi altibase.properties               # Changed PORT_NO in altibase.properties.</pre>
+</div></div></li><li>Startup the Altibase server (Refer to step 8 of the patch procedure)<br /><br /></li><li>Check the service</li></ol><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

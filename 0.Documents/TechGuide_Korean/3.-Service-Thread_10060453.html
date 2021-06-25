@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 3. Service Thread</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 3. Service Thread
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Aug 01, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409833738 {padding: 0px;}
+div.rbtoc1624409833738 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409833738 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409833738'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ServiceThread-[SV01]서비스스레드상태SV01[맨위로]'>[SV01] 서비스 스레드 상태   [맨 위로]</a></li>
+<li><a href='#id-3.ServiceThread-[SV02]서비스스레드경합확인'>[SV02] 서비스 스레드 경합 확인</a></li>
+</ul>
+</div></p><p> </p><p> </p><p><strong style="color: rgb(0,0,0);font-size: 20.0px;line-height: 1.5;">Service Thread<span class="confluence-anchor-link" id="id-3.ServiceThread-SV"></span></strong></p><hr /><p>서비스 스레드와 관련된 정보를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><p> </p><h4 id="id-3.ServiceThread-[SV01]서비스스레드상태SV01[맨위로]">[SV01] 서비스 스레드 상태<span class="confluence-anchor-link" id="id-3.ServiceThread-SV01"></span>   <a href="#id-3.ServiceThread-SV">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><p>알티베이스 5 버전 이상</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT RUN_MODE
+     , STATE
+     , COUNT(*) CNT
+  FROM V$SERVICE_THREAD
+ GROUP BY RUN_MODE, STATE ;</pre>
+</div></div></li><li><p>알티베이스 4 버전</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TYPE
+     , STATE
+     , COUNT(*) CNT
+  FROM V$SERVICE_THREAD
+ GROUP BY TYPE, STATE ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><pre>RUN_MODE / TYPE</pre></td><td class="confluenceTd">서비스 스레드의 작동 모드 / SHARED, DEDICATED</td></tr><tr><td class="confluenceTd"><pre>STATE</pre></td><td class="confluenceTd"><p>서비스 스레드의 상태. 일반적으로 POLL 또는 EXECUTE 상태이다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">NONE</td><td class="confluenceTd">서비스 스레드가 초기화된 상태</td></tr><tr><td class="confluenceTd">POLL</td><td class="confluenceTd">서비스 스레드가 이벤트를 기다리고 있는 상태</td></tr><tr><td class="confluenceTd">QUEUE-WAIT</td><td class="confluenceTd">서비스 스레드가 작업 큐(Task Queue)를 대기하는 상태</td></tr><tr><td class="confluenceTd">EXECUTE</td><td class="confluenceTd">서비스 스레드가 쿼리를 수행 중인 상태</td></tr></tbody></table></div></td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-3.ServiceThread-[SV02]서비스스레드경합확인"><strong>[SV02] 서비스 스레드 경합 확인</strong></h4><ul style="list-style-type: square;"><li><p>알티베이스 4 이상에서 사용할 수 있는 쿼리이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME,
+       MISS_COUNT,
+       TRY_COUNT,
+       ROUND(MISS_COUNT/TRY_COUNT*100, 2) PER
+  FROM V$MUTEX
+ WHERE NAME = &#39;MMT_SERVICE_THREAD_MUTEX&#39;
+ ORDER BY 4 DESC ;</pre>
+</div></div></li><li><p>주요 컬럼 설명</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>MISS_COUNT</p></td><td class="confluenceTd">Statement를 처리하기 위해 서비스 스레드에 처리를 요청하였으나 Busy하여 실패한 횟수</td></tr><tr><td class="confluenceTd">TRY_COUNT</td><td class="confluenceTd">Statement를 처리하기 위해 서비스 스레드에 처리를 요청한 횟수</td></tr><tr><td class="confluenceTd">PER</td><td class="confluenceTd">miss_count/try_count*100</td></tr></tbody></table></div></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

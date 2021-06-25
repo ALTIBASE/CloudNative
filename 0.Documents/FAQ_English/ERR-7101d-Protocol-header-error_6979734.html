@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-7101d Protocol header error</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-7101d Protocol header error
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409151333 {padding: 0px;}
+div.rbtoc1624409151333 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409151333 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409151333'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-7101dProtocolheadererror-Version'>Version</a></li>
+<li><a href='#ERR-7101dProtocolheadererror-Explanation'>Explanation</a></li>
+<li><a href='#ERR-7101dProtocolheadererror-Cause'>Cause</a></li>
+<li><a href='#ERR-7101dProtocolheadererror-Action'>Action</a></li>
+<li><a href='#ERR-7101dProtocolheadererror-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-7101dProtocolheadererror-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-7101dProtocolheadererror-Explanation">Explanation</h2>
+
+<p>The client is unable to establish a connection.</p>
+
+<p>The following error message is output to $ALTIBASE_HOME/trc/altibase_boot.log.</p>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>ERR-7101d(errno=11) Protocol header error.(TCP 127.0.0.1:60264)<br />
+Protocol processing failed. Close connection...</p>
+                    </div>
+    </div>
+
+
+
+
+
+<h2 id="ERR-7101dProtocolheadererror-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility: </p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x7101D<br />
+0x7101D ( 462877) cmERR_ABORT_PROTOCOL_HEADER_ERROR Protocol header error.(&lt;0%s&gt;)</p>
+
+<p># *Cause: Protocol header error</p>
+
+<p># *Action: Please send a bug report to the vendor.</p>
+</div></div>
+<p>This error message is written to altibase_boot.log when a client of a version incompatible with the server tried to establish a connection.</p>
+
+
+<p>This error keeps a message history and does not adversely affect the Altibase server.</p>
+
+
+<h2 id="ERR-7101dProtocolheadererror-Action">Action</h2>
+
+<p>If this error persists, find the client that is attempting to connect, then reinstall it with a version compatible with the server. </p>
+
+<h2 id="ERR-7101dProtocolheadererror-Reference">Reference</h2>
+
+<p>If this error persists, find the client that is attempting to connect and reinstall it with a version compatible with the server. </p>
+
+<ul>
+	<li>For ALTIBASE HDB 5.3.1 or below, the cm protocol version of the server and client must be identical for the client to connect to the server.</li>
+	<li>For ALTIBASE HDB 5.3.3 or above, backward compatibility for the server and client is supported. The client can connect to a server of the same or newer version regardless of its cm protocol version whereas, connection fails if the client is of a newer version than the server.</li>
+	<li>In this context, the first three numbers of a product version are denoted as the version (the fourth and succeeding numbers which indicate the patch versions are irrelevant).</li>
+</ul>
+
+
+
+
+<p># How to check the server/client version</p>
+<ul>
+	<li>Server version</li>
+	<li><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altibase -v<br />
+version <span style="color: rgb(255,0,0);">5.1.5.68</span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22, binary db version 5.1.2, meta version 5.3.3, <span style="color: rgb(255,0,0);">cm protocol version 5.4.5</span>, replication protocol version 5.2.1</p>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Client version</li>
+	<li><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong><span style="text-decoration: underline;">5.3.1 or below</span></strong></p>
+
+<p>$ sesc -v<br />
+SES C/C++ Precompiler 3 Ver <span style="color: rgb(255,0,0);">5.1.5.68</span> XEON_LINUX_redhat_Enterprise_AS4-64bit-5.1.5.68-release-GCC3.4.6 (xeon-redhat-linux-gnu) Jan 5 2010 21:17:22<br />
+<strong><span style="text-decoration: underline;">5.3.3 or above</span></strong><br />
+$ apre -v<br />
+Altibase Precompiler2(APRE) Ver.1 <span style="color: rgb(255,0,0);">6.3.1.0.9</span> X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.0.9-release-GCC3.4.6 (x86_64-unknown-linux-gnu) Mar 20 2014 18:19:25</p>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Using the JDBC driver</li>
+	<li><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ java -jar $ALTIBASE_HOME/lib/Altibase.jar<br />
+JDBC Driver Info : Altibase Ver = <span style="color: rgb(255,0,0);">6.3.1.0.9</span> for JavaVM v1.4, <span style="color: rgb(255,0,0);">CMP:7.1.1</span>, Mar 20 2014 17:07:25</p>
+</div></div></li>
+	<li>Using the ODBC library on Windows</li>
+	<li><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Altibase Installation Directory (e.g., C:\Program Files (x86)\Altibase\altibase-server-6.3.1) -&gt; lib Directory<br />
+altiodbc.dll -&gt; Properties -&gt; Details -&gt; Product Version</p>
+</div></div></li>
+</ul>
+
+
+<p># Examples of server and client compatibility for different versions</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> </p></th>
+<th class="confluenceTh"><p> Server Version </p></th>
+<th class="confluenceTh"><p> Client Version </p></th>
+<th class="confluenceTh"><p> Result </p></th>
+<th class="confluenceTh"><p> Remarks </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Server Version &gt; Client Version  <br class="atl-forced-newline" />
+(5.3.3 or above) </p></td>
+<td class="confluenceTd"><p> 6.3.1 </p></td>
+<td class="confluenceTd"><p> 5.3.3 </p></td>
+<td class="confluenceTd"><p> Succeeds </p></td>
+<td class="confluenceTd"><p> Backward compatibility is supported for 5.3.3 or above. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Server Version &gt; Client Version  <br class="atl-forced-newline" />
+(5.3.1 or below)  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 6.3.1 </p></td>
+<td class="confluenceTd"><p> 4.3.9 </p></td>
+<td class="confluenceTd"><p> Fails </p></td>
+<td class="confluenceTd"><p> Backward compatibility is supported only if the version of both the server and client is 5.3.3 or above.  <br class="atl-forced-newline" />
+Since the client version is older than 5.3.3, backward compatibility is not supported. For 4.3.9, connection succeeds only if the cm protocol versions are the same. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ServerVersion &lt; Client Version  <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 6.1.1 </p></td>
+<td class="confluenceTd"><p> 6.3.1 </p></td>
+<td class="confluenceTd"><p> Fails </p></td>
+<td class="confluenceTd"><p> If the version of the client is newer than the server, connection fails regardless of the Altibase version.  <br class="atl-forced-newline" />
+The version of the client must be the same or older than the server. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

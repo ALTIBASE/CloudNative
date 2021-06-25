@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-3103F No DDL statement is allowed to be executed on a replicated table</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-3103F No DDL statement is allowed to be executed on a replicated table
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409151768 {padding: 0px;}
+div.rbtoc1624409151768 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409151768 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409151768'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Version'>Version</a></li>
+<li><a href='#ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Explanation'>Explanation</a></li>
+<li><a href='#ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Cause'>Cause</a></li>
+<li><a href='#ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Action'>Action</a></li>
+<li><a href='#ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Version">Version</h2>
+
+<p>All versions</p>
+
+
+<h2 id="ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Explanation">Explanation</h2>
+
+<p>Unable to execute DDL statement on replication tables.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Cause">Cause</h2>
+
+<p>This error is due to DDL restrictions on replication tables.</p>
+
+<h2 id="ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Action">Action</h2>
+
+<p>Set REPLICATION_ENABLE to 1.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt;ALTER SYSTEM SET REPLICATION _DDL_ENABLE = 1;</pre>
+</div></div>
+
+<h2 id="ERR-3103FNoDDLstatementisallowedtobeexecutedonareplicatedtable-Reference">Reference</h2>
+
+<p>It is not advisable to execute DDL during replication. If the user wants to apply the REPLICATION_ENABLE property, we recommend that it is done only in the development stage and for the sake of convenience. </p>
+
+<p>&lt;How to execute DDLs in older versions&gt;</p>
+
+<p>The ALTER COLUMN statement is not supported for ALTIBASE HDB 5.3.3 or below and under certain circumstances, it is impossible to execute DDL statements. For example, a DDL statement that includes a table column position change or a DDL statement that is currently unsupported by Altibase cannot be executed as it is. In such cases, the user needs to back up the data of the replication target table before executing the DDL statement and recover the data afterwards.</p>
+
+<p>In general, the user can take the following steps:</p>
+
+<p>1. Stop services.</p>
+
+<p>2. Check that the replication gap between the target nodes is 0. </p>
+
+<p>3. Stop replication between the target nodes.</p>
+
+<p>4. Remove the table from the replication table list.</p>
+
+<p>5. Back up the table data using iLoader.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; iloader formout –T table1 –f table1.fmt
+Shell&gt; iloader out –f table1.fmt –d table1.dat</pre>
+</div></div>
+<p>6. Execute the DDL statement on the table.</p>
+
+<p>7. Recover the table data using iLoader.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; iloader in –f table1.fmt –d table1.dat</pre>
+</div></div>
+<p>8. Add the table back to the replication table list.</p>
+
+<p>9. Start replication between the target nodes. </p>
+
+<p>Since data backup and recovery consume time, the user is recommended to estimate how long services will be stopped before performing the above operations. </p>
+
+<p>Further information about iLoader options is available in the <em>iLoader User's Manual</em>.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

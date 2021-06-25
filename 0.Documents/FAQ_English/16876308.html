@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : [Warning] Memory allocation failed.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : [Warning] Memory allocation failed.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147837 {padding: 0px;}
+div.rbtoc1624409147837 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147837 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147837'>
+<ul class='toc-indentation'>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Overview'>Overview</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Version'>Version</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Situation'>Situation</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Causeandsolution'>Cause and solution</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Whenmemoryusageislimitedbykernelparameters'>When memory usage is limited by kernel parameters</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-WhenrunninganAltibaseserverona32-bitOS'>When running an Altibase server on a 32-bit OS</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Insufficientphysicalmemory'>Insufficient physical memory</a></li>
+</ul>
+</li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-Overview">Overview</h1><hr /><p>This document explains '[Warning] Memory allocation failed]. This message is created when memory allocation fails due to the OS environment.</p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-Version">Version</h1><hr /><p>All the versions of ALTIBASE HDB</p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-Situation">Situation</h1><hr /><ul><li><p>In $ALTIBASE_HOME/trc/altibase_boot.log, '[Warning] Memory allocation failed' error occurs.</p></li><li><p>There may be an error such as [ERR-01051: Memory allocation failed.].</p></li><li><p>This error can also occur during transaction execution or when STARTUP/SHUTDOWN on the Altibase server.</p></li><li><p>When this error occurs, new connections may also fail.</p></li><li><p>It mainly occurs on HP-UX.</p></li></ul><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-Causeandsolution">Cause and solution</h1><hr /><h3 id="id-[Warning]Memoryallocationfailed.-Whenmemoryusageislimitedbykernelparameters">When memory usage is limited by kernel parameters</h3><p>This is the most common cause.</p><p>For HP-UX, kernel parameters can limit the amount of memory a process can use. If the memory usage of the Altibase server process exceeds the setting value of this parameter,  '[Warning] Memory allocation failed' message occurs.</p><p>The kernel parameters are as follows.</p><ul><li><p>maxdsiz (for 32bit process)</p></li><li><p>maxdsiz_64bit (for 64bit processes)</p></li></ul><p>How to check kernel parameters is as follows. The unit is in bytes and should be set large enough in consideration of the physical memory size. If necessary, ask the system engineer to make changes.</p><p>     $ /usr/sbin/kctune | grep maxdsiz</p><h3 id="id-[Warning]Memoryallocationfailed.-WhenrunninganAltibaseserverona32-bitOS">When running an Altibase server on a 32-bit OS</h3><p>In 32-bit OS, the memory size that can be used by one process is limited to 2G, so if the Altibase server is operating without taking this into account, this message may occur.</p><h3 id="id-[Warning]Memoryallocationfailed.-Insufficientphysicalmemory">Insufficient physical memory</h3><p>This message also occurs when there is not enough physical memory. Use a system resource monitoring tool such as top and glance to check the physical memory usage.</p><h1 id="id-[Warning]Memoryallocationfailed.-Reference">Reference</h1><hr /><ul><li><p>The default tablespace for ALTIBASE HDB server is SYS_TBS_MEM_DATA. So, if you do not specify a tablespace when performing CREATE TABLE, this tablespace is designated by default.<br />This tablespace is a system memory tablespace, and the data in the table uses memory. Therefore, memory usage may increase differently from the user's intention, so make sure to check this as well.</p></li><li><a href="https://docs.altibase.com/download/attachments/9109748/ALTIBASE_%EC%9A%B4%EC%98%81%EC%9D%84_%EC%9C%84%ED%95%9C_HPUX_%EC%84%A4%EC%A0%95_%EA%B0%80%EC%9D%B4%EB%93%9C.pdf?version=1&amp;modificationDate=1449022354000&amp;api=v2">ALTIBASE_&#50868;&#50689;&#51012;_&#50948;&#54620;_HPUX_&#49444;&#51221;_&#44032;&#51060;&#46300;.pdf</a> (TBA)</li></ul><p> </p><div><strong style="color: rgb(0,0,0);font-size: 24.0px;"><br /></strong></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

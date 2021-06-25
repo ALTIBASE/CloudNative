@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 4. ALTIBASE 연동</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340818.html">Altibase MyBatis 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 4. ALTIBASE 연동
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Nov 28, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409843595 {padding: 0px;}
+div.rbtoc1624409843595 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409843595 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409843595'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.ALTIBASE연동-ALTIBASEJDBCDriver얻는방법'>ALTIBASE JDBC Driver 얻는 방법</a></li>
+<li><a href='#id-4.ALTIBASE연동-JDBCDriver에설정하는방법'>JDBC Driver에 설정하는 방법</a></li>
+<li><a href='#id-4.ALTIBASE연동-Configuration파일에dataSource를설정하여ALTIBASE와연동'>Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동</a></li>
+<li><a href='#id-4.ALTIBASE연동-FailOver를이용한Connection'>FailOver를 이용한 Connection</a></li>
+<li><a href='#id-4.ALTIBASE연동-ALTIBASE5와이전버전을동시에Connection'>ALTIBASE5와 이전 버전을 동시에 Connection</a></li>
+<li><a href='#id-4.ALTIBASE연동-Procedure호출'>Procedure 호출</a></li>
+<li><a href='#id-4.ALTIBASE연동-Function호출'>Function 호출</a></li>
+</ul>
+</div>
+<hr />
+<p>MyBatis에서 ALTIBASE를 연동하는 위해서는 ALTIBASE JDBC Driver를 setting하고 Configuration 파일에 ALTIBASE 를 위한 dataSource를 지정하면 된다. 본 장에서는 ALTIBASE JDBC Driver를 얻는 방법, JDBC Driver를 설정하는 방법, Configuration에 dataSource를 설정하는 방법에 대해 설명한다. 또한, FailOver 기능을 사용하는 방법, 여러 버전의 ALTIBASE와 연동하는 방법, Stored Procedure/Function을 호출하는 방법에 대해서도 살펴본다.</p>
+
+<h2 id="id-4.ALTIBASE연동-ALTIBASEJDBCDriver얻는방법"><strong>ALTIBASE JDBC Driver 얻는 방법</strong></h2>
+
+<p>ALTIBASE에서 제공하는 JDBC driver는 Altibase.jar 파일이다. 이 파일은 ALTIBASE가 설치되어있는 서버의 $ALTIBASE_HOME/lib 디렉토리 안에 존재한다.</p>
+
+<p>ALTIBASE 5버전부터는 $ALTIBASE_HOME/lib 디렉토리에 Altibase.jar 파일과 Altibase5.jar 파일이 존재하는데, Altibase.jar는 일반 JDBC Driver 파일이고, Altibase5.jar는 ALTIBASE 5버전과 그 이하의 버전을 함께 연동하고 싶을 때 사용하는 JDBC Driver 파일이다. 따라서 하나의 ALTIBASE DB와 연동하거나, 또는 버전이 동일한 여러 대의 ALTIBASE와 연동할 경우에는 $ALTIBASE_HOME/lib/Altibase.jar 파일을 사용하면 된다.</p>
+
+<p>연동하려는 ALTIBASE DB Server와 ALTIBASE JDBC Driver가 호환 가능한지 확인을 위해 ALTIBASE JDBC Driver 버전 확인이 필요하다.<br />
+ALTIBASE JDBC Driver 버전을 확인하는 방법은 다음의 명령어를 수행하면 된다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">
+$ java –jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 6.3.1.2.6 for JavaVM v1.4, CMP:7.1.1, Oct  6 2014 13:54:56
+</pre>
+</div></div>
+
+<p>이때, ALTIBASE DB Server의 cm protocol version과 ALTIBASE JDBC Driver의 CMP가 동일하면 호환 가능하다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">
+$ altibase -v
+version 6.3.1.2.7 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.2.7-release-GCC3.4.6 
+(x86_64-unknown-linux-gnu) Oct  8 2014 09:16:24, binary db version 6.2.1, meta version 6.3.1, 
+cm protocol version 7.1.1, replication protocol version 7.4.1
+</pre>
+</div></div>
+<p>버전이 UP 되면서 JDBC 관련 버그가 fix되었을 가능성이 있으므로, 일반적으로 ALTIBASE DB Server의 버전과 같거나 이 보다 더 최신의 ALTIBASE JDBC Driver 파일을 사용하는 것을 권장한다.</p>
+
+<h2 id="id-4.ALTIBASE연동-JDBCDriver에설정하는방법"><strong>JDBC Driver에 설정하는 방법</strong></h2>
+
+<p>다운로드 받은 JDBC Driver 인 Altibase.jar 파일은 classpath에 추가하거나 웹서버의 적절한 디렉토리에 위치시킨다.<br />
+만약, Eclipse를 사용하여 개발한다면 다음과 같이 해당 프로젝트에 ALTIBASE JDBC Driver를 추가할 수 있다.<br />
+프로젝트 – Properties – Java Build Path 메뉴로 이동하여 Add External JARS 메뉴를 통해 라이브러리를 등록 한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340862/7766068.png" data-image-src="attachments/7340862/7766068.png"></p>
+
+<h2 id="id-4.ALTIBASE연동-Configuration파일에dataSource를설정하여ALTIBASE와연동"><strong>Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동</strong></h2>
+
+<p>Configuration 파일의 &lt;configuration&gt; 태그에 ALTIBASE 용 property를 지정하여 ALTIBASE와 연결하면 된다. 이 때 Configuration 파일에 직접 property 값을 입력할 수 있고, 또는 별도의 properties 파일을 작성하여 이 파일에 작성된 property값을 로딩하여 사용할 수 도 있다.<br />
+다음은 db.properties 라는 properties 파일에 ALTIBASE에 대한 property들을 정의하고, 이 property들을 읽어와 Configuration 파일에서 사용하는 예제이다.<br />
+예) altibase_mybatis_sidu의 db.properties 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+jdbc.driver=Altibase.jdbc.driver.AltibaseDriver
+jdbc.url=jdbc:Altibase://192.168.1.35:36492/mydb
+jdbc.username=sys
+jdbc.password=manager
+</pre>
+</div></div>
+
+<p>이 파일에 설정된 각각의 값의 의미는 다음과 같다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> 설명 <br class="atl-forced-newline" /> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> driver <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> ALTIBASE JDBC driver class Name <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> URL </p></td>
+<td class="confluenceTd"><p> ALTIBASE와 연결을 위한 Connection string정보 jdbc:Altibase://IP:port_no/db_name” 형태로 기입 <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> username <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 데이터베이스 계정 <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> password <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 데이터베이스 패스워드 <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>예) altibase_mybatis_sidu의 mybatis-config.xml 파일</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;configuration&gt;
+    &lt;properties resource=&quot;db.properties&quot; /&gt;
+	&lt;typeAliases&gt;
+	&lt;typeAlias type=&quot;com.altibase.sidu.model.UserVo&quot; alias=&quot;User&quot; /&gt;
+	&lt;/typeAliases&gt;
+
+	&lt;!--  DB 연결 옵션 : UNPOOLED/POOLED/JNDI --&gt;
+	&lt;!--  transanctionManager 옵션 : JDBC/MANAGED --&gt;
+	&lt;environments default=&quot;development&quot;&gt;
+		&lt;environment id=&quot;development&quot;&gt;
+	&lt;transactionManager type=&quot;JDBC&quot; /&gt;
+	&lt;dataSource type=&quot;POOLED&quot;&gt;
+		&lt;property name=&quot;driver&quot; value=&quot;${jdbc.driver}&quot; /&gt;
+		&lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot; /&gt;
+		&lt;property name=&quot;username&quot; value=&quot;${jdbc.username}&quot; /&gt;
+		&lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot; /&gt;
+		&lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+		&lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+		&lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+		&lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+	&lt;/dataSource&gt;
+	&lt;/environment&gt;
+	&lt;/environments&gt;
+	&lt;mappers&gt;
+		&lt;mapper resource=&quot;com/altibase/sidu/mapper/UserMapper.xml&quot; /&gt;
+	&lt;/mappers&gt;
+&lt;/configuration&gt;
+</pre>
+</div></div>
+
+<p>db.properties에 지정한 driver, url, username, password property들을 읽어와 dataSource의 JDBC.Driver, JDBC.ConnectionURL, JDBC.Username, JDBC.password property에 setting하고 있다.</p>
+
+<p>위의 예제 SimpleConnection 프로젝트를 실행하기 위해서는 Altibase.jar, mybatis-3.2.8.jar 파일이 필요하다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340862/7766069.png" data-image-src="attachments/7340862/7766069.png"></p>
+
+
+
+<h2 id="id-4.ALTIBASE연동-FailOver를이용한Connection"><strong>FailOver를 이용한 Connection</strong></h2>
+
+<p>ALTIBASE 5.3.3부터 FailOver를 지원하는데, FailOver 기능을 사용하기 위해서는 dataSource의 Connection url을 적어주는 부분에 FailOver 관련 속성을 넣어주면 된다.<br />
+다음은 FailOver를 이용하여 ALTIBASE에 연결하는 예제이다. db.properties 파일에 Connection url 부분을 정의하였다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+예) FailOverSample의 db.properties 파일
+driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.6.224:21129/mydb?
+AlternateServers=(192.168.1.35:21129)&amp;amp;
+ConnectionRetryCount=1&amp;amp;ConnectionRetryDelay=1&amp;amp;
+SessionFailOver=on&amp;amp;LoadBalance=off&amp;amp;Healthcheckduration=10&amp;amp; Failover_source=MESSAGE&amp;amp;
+username=sys
+password=manager
+</pre>
+</div></div>
+<p>위의 파일에 지정한 Connection url 부분에 정의할 수 있는 FailOver 관련 property는 다음과 같다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Property </p></th>
+<th class="confluenceTh"><p> 설명 </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AlternateServer </p></td>
+<td class="confluenceTd"><p> 장애 발생시 접속하게 될 가용 서버를 나타내며 (IP Address1:Port1, IP Address2:Port2,...) 형식으로 기술한다. <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ConnectionRetryCount <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 가용 서버 접속 실패 시, 접속 시도 반복 횟수 <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ConnectionRetryDelay <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> 가용 서버 접속 실패 시, 다시 접속을 시도하기 전에 대기하는 시간(초 단위) <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LoadBalance <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> on으로 설정하면 최초 접속 시도 시에 기본 서버와 가용 서버를 포함하여 랜덤으로 선택한다. off로 설정하면 최초 접속 시도 시에 기본 서버에 접속하고, 접속에 실패하면 AlternateServer로 기술한 서버에 접속한다. <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SessionFailOver <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> STF(Service Time Fail-Over)를 할 것인지 여부를 나타낸다. <br class="atl-forced-newline" />
+on : STF, off : CTF <br class="atl-forced-newline" />
+CTF(Connection Time Fail-Over)는 DBMS 접속 시점에 장애를 인식하여 다른 정상서버로 접속을 재시도하는 것을 의미한다.STF(Service Time Fail-Over)는 서비스하는 도중에 장애를 감지하여 다른 가용 노드의 DBMS에 다시 접속하여 세션의 프로퍼티를 복구한 후 사용자 응용 프로그램의 업무 로직을 다시 수행할 수 있도록 하는 것을 의미한다. (STF는 DB접속에 대해서만 Fail-Over를 수행해주는 것이며 실패한 트랜잭션에 대해서는 사용자에 의해 재처리되어야 한다) <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Healthcheckduration <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Failover가 발생한 서버가 다시 AlternativeServer <br class="atl-forced-newline" />
+목록으로 재설정 되기 위한 대기 시간을 지정한다. <br class="atl-forced-newline" />
+서버에 Connection Failover가 발생하면, 해당 서버는  AlternativeServer의  목록에서  제거된다. 그리고  삭제된 서버는 특정 시간이 지난 후에 다시 <br class="atl-forced-newline" />
+AlternativeServer 목록에 추가되는데, 그 시간을 결정하는 프로퍼티가 HealthCheckDuration이다.단위는 초(second)이다. <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Failover_source <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Failover를 수행할 때, 서버에 전달하는 Failoversource에 대한 설명을 지정한다. 이 정보는 V$SESSION 성능 뷰의 FAILOVER_SOURCE 칼럼에 저장된다. <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+<p>위의 예제 FailOverSample 프로젝트를 실행하기 위해서는 “Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동”과 마찬가지로 Altibase.jar, ibatis-2.3.4.x.jar 파일이 필요하다.</p>
+
+<h2 id="id-4.ALTIBASE연동-ALTIBASE5와이전버전을동시에Connection"><strong>ALTIBASE5와 이전 버전을 동시에 Connection</strong></h2>
+
+<p>ALTIBASE 5부터는 하나의 어플리케이션에서 ALTIBASE 6와 ALTIBASE 5 혹은 ALTIBASE 4와 동시에 연결할 수 있도록 ALTIBASE 5 버전 전용의 JDBC Driver(Altibase5.jar)를 제공한다. 이 Driver를 이용하면 ALTIBASE 6 – ALTIBASE 5, 혹은 ALTIBASE 6 – ALTIBASE 4, ALTIBASE 5.1.5 – ALTIBASE 5.3.3 간 두 버전의 ALTIBASE에 접속이 가능하다.</p>
+
+<p>기존의 Altibase.jar와 구별하기 위해 별도로 ALTIBASE 5 전용의 Altibase5.jar 가 필요하다. 또한 dataSource에 지정해주는 부분에 JDBC Driver 클래스 이름도 기존의 Altibase.jdbc.driver.AltibaseDriver 대신 ALTIBASE 5 전용의 Altibase5.jdbc.driver.AltibaseDriver를 지정해야 한다.</p>
+
+<p>MyBatis에 다른 버전의 ALTIBASE 와 연동하기 위해서는 각 버전에 해당하는 &lt;environment&gt; 태그를 작성하여 Application에서 &lt;environment&gt;의 id를 통해 DB 연결 시 각각의 설정을 읽어드리면 된다. 이 때 주의할 점은 프로그램에서 Altibase5.jdbc.driver.AltibaseDriver를 먼저 로딩한 후에 Altibase.jdbc.driver.AltibaseDriver를 로딩해야 한다는 것이다.</p>
+
+<p>다음은 Altibase.jar와 Altibase5.jar 파일을 이용하여 두 버전의 ALTIBASE의 드라이버를 로딩하는 예제이다.</p>
+
+<p>예) altibase_mybatis_MultiVersionConnection의 db.properties 파일<br />
+ALTIBASE 6 버전에 대한 설정</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+# Altibase 
+jdbc.driver=Altibase.jdbc.driver.AltibaseDriver
+jdbc.url=jdbc:Altibase://192.168.1.62:21020/mydb
+jdbc.username=test
+jdbc.password=test
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_MultiVersionConnection의 db.properties 파일<br />
+ALTIBASE 6 이전 버전에 대한 설정</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+# Altibase 5
+jdbc5.driver=Altibase5.jdbc.driver.AltibaseDriver
+jdbc5.url=jdbc:Altibase://192.168.1.147:21020/mydb
+jdbc5.username=test
+jdbc5.password=test
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_MultiVersionConnection의 mybatis-config.xml파일<br />
+ALTIBASE 6 버전에 대한 설정</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;environment id=&quot;release&quot;&gt;
+  &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+  &lt;dataSource type=&quot;POOLED&quot;&gt;
+    &lt;property name=&quot;driver&quot; value=&quot;${jdbc.driver}&quot; /&gt;
+    &lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot; /&gt;
+    &lt;property name=&quot;username&quot; value=&quot;${jdbc.username}&quot; /&gt;
+    &lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot; /&gt;
+    &lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+      &lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+      &lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+      &lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+  &lt;/dataSource&gt;
+&lt;/environment&gt;
+</pre>
+</div></div>
+
+<p>ALTIBASE 6 이전 버전에 대한 설정</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;environment id=&quot;development&quot;&gt;
+  &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+  &lt;dataSource type=&quot;POOLED&quot;&gt;
+    &lt;property name=&quot;driver&quot; value=&quot;${jdbc5.driver}&quot; /&gt;
+    &lt;property name=&quot;url&quot; value=&quot;${jdbc5.url}&quot; /&gt;
+    &lt;property name=&quot;username&quot; value=&quot;${jdbc5.username}&quot; /&gt;
+    &lt;property name=&quot;password&quot; value=&quot;${jdbc5.password}&quot; /&gt;
+    &lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+      &lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+      &lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+      &lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+  &lt;/dataSource&gt;
+&lt;/environment&gt;
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_MultiVersionConnection의 MultiVersionConnectionMain.java파일</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+…
+MultiVersionConnectionSelect multi_connection_select =
+new MultiVersionConnectionSelect();
+
+System.out.println(&quot;DB Version = &quot; +  multi_connection_select.MultiVersionConnectionDBVersionSelect(&quot;release&quot;));
+
+System.out.println(&quot;DB Version = &quot; +  multi_connection_select.MultiVersionConnectionDBVersionSelect(&quot;development&quot;));
+…
+</pre>
+</div></div>
+
+<p>altibase_mybatis_MultiVersionConnection의 MultiVersionConnectionSelect.java<br />
+(public String MultiVersionConnectionDBVersionSelect(String conn_type))</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+…
+String statement = &quot;com.altibase.multiVersionConnection.mapper.UserMapper.selectDBVersion&quot;;
+res_string = MybatisUtil.getSqlSessionFactory(conn_type).selectOne(statement);
+…
+</pre>
+</div></div>
+
+<p>위의 MultiVersionConnectionMain.java.java 예제를 보면 Altibase5.jdbc.driver.AltibaseDriver를 Altibase.jdbc.driver.AltibaseDriver보다 먼저 로딩하기 위해 ALTIBASE 5버전 driver의 &lt;environment&gt; 태그의 id인 release를 인자 값으로 설정하고 있다. 위에서도 기술하였듯이 Altibase5.jdbc.driver.AltibaseDriver 드라이버를 먼저 로딩해야 한다.</p>
+
+<p>예제에 포함된 MultiVersionConnection 프로젝트를 실행하기 위해서는 기존에 사용했던 mybatis.3.2.8.jar 파일 뿐만 아니라, Altibase.jar와 Altibase5.jar 파일이 더 필요하다. 이 파일들은 ALTIBASE가 설치된 디렉토리($ALTIBASE_HOME)의 lib 디렉토리 안에 존재하는데 ALTIBASE 5 버전의 Altibase5.jar 파일, 그 이전 버전의 Altibase.jar 파일을 사용하면 된다.</p>
+
+<ul class="alternate">
+	<li>ALTIBASE 6.3.1 jar : <span style="color: rgb(255,0,0);">Altibase.jar</span></li>
+	<li>ALTIBASE 5.x.x.jar : <span style="color: rgb(255,0,0);">Altibase5.jar</span></li>
+</ul>
+
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340862/7766070.png" data-image-src="attachments/7340862/7766070.png"></p>
+
+
+<h2 id="id-4.ALTIBASE연동-Procedure호출"><strong>Procedure 호출</strong></h2>
+
+<p>myBatis에서 DB에 생성한 Stored Procedure을 호출할 경우에는 기본적인 DML 동작과 같이 Configuration 파일에 설정해주면 되며 다음의 항목을 아래와 같은 점에 주의하여 사용 하여야 한다.</p>
+<ul class="alternate">
+	<li>기존 iBatis에서 사용하던 &lt;procedure&gt; 태그가 사라지고 statementType으로만 판단하므로 Procedure/Function 사용시에는 statementType을 필히 CALLABLE로 설정해야 함.</li>
+	<li>기존 ibatis에서 사용하던 &lt;parameterMap&gt;을 사용할 수 없다.</li>
+</ul>
+
+
+<p>다음은 Stored Procedure의 Select 하는 예제이다.</p>
+
+<p>예) altibase_mybatis_procedure의 Procedure 생성 구문</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE OR REPLACE PROCEDURE PROC_SEL_TEST(usr_no IN INTEGER, res_user OUT TEST_TYPE.TEST_CUR)
+as
+    SQL_STMT VARCHAR(200);
+BEGIN
+    SQL_STMT :=&#39;SELECT user_no as userNo,
+user_name as userName,
+user_content as userContent,
+reg_date as regDate
+FROM users
+WHERE user_no = ?&#39;;
+    OPEN res_user FOR SQL_STMT USING usr_no;
+END;
+/
+
+CREATE or replace TYPESET TEST_TYPE
+AS
+  TYPE TEST_CUR IS REF CURSOR;
+END;
+/
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_procedure의 UserMapper.xml(Mapper) 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;select id=&quot;testSelectProc&quot; statementType=&quot;CALLABLE&quot; parameterType=&quot;INTEGER&quot; resultType=&quot;User&quot;&gt;
+  { call PROC_SEL_TEST(
+    #{userNo,mode=IN,jdbcType=INTEGER,javaType=INTEGER}
+) }
+&lt;/select&gt;
+</pre>
+</div></div>
+
+<p>&lt;select&gt; 태그에 statementType의 속성을 CALLABLE로 지정하여 해당 요청이 Procedure/Function이라는 것을 명시하고 호출하는 Procedure/Function의 IN  파라미터에 대한 설정을 정의하며 resultType에 Bean 클래스를 지정함으로써 해당 procedure에 대한 결과를 Bean 클래스로 받아오게 된다.</p>
+
+<p>이 때 Bean 클래스의 컬럼과 DB서 select하는 컬럼명을 동일하게 맞춰줘야 Bean 클래스에 결과가 리턴 된다.<br />
+altibase_mybatis_procedure 예제를 실행하기 위해서는 “Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동”과 마찬가지로 Altibase.jar, mybatis.3.2.8.jar 파일이 필요하다.</p>
+
+
+<h2 id="id-4.ALTIBASE연동-Function호출"><strong>Function 호출</strong></h2>
+
+<p>myBatis에서 DB에 생성한 Function을 호출할 경우에는 기본적인 DML 동작과 같이 Configuration 파일에 설정해주면 되며 다음의 항목을 아래와 같은 점에 주의하여 사용 하여야 한다.</p>
+<ul class="alternate">
+	<li>기존 iBatis에서 사용하던 &lt;procedure&gt; 태그가 사라지고 statementType으로만 판단하므로 Procedure/Function 사용시에는 statementType을 필히 CALLABLE로 설정해야 함.</li>
+	<li>기존 ibatis에서 사용하던 &lt;parameterMap&gt;을 사용할 수 없다.</li>
+</ul>
+
+
+<p>다음은 단순한 덧셈 결과를 리턴하는 Stored Function 처리 예제이며 기본적인 것은 Stored Procedure와 동일하지만 에서 호출하는 부분이 약간 달라 따로 기술하게 되었다.</p>
+
+<p>예) altibase_mybatis_procedure의 Function 생성 구문</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE OR REPLACE FUNCTION sum_func
+(
+p_num1 IN NUMBER,
+p_num2 IN NUMBER
+)
+RETURN NUMBER
+AS
+v_num NUMBER;
+BEGIN
+  v_num := p_num1 + p_num2;
+  RETURN v_num;
+  END;
+/
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_procedure의 UserMapper.xml(Mapper) 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;select id=&quot;testSelectFunc&quot; statementType=&quot;CALLABLE&quot; parameterType=&quot;map&quot; resultType=&quot;INTEGER&quot;&gt;
+  { call #{resNum,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} :=  SUM_FUNC(
+    #{Num1,mode=IN,jdbcType=INTEGER,javaType=INTEGER},
+    #{Num2,mode=IN,jdbcType=INTEGER,javaType=INTEGER}
+     ) }
+&lt;/select&gt;
+</pre>
+</div></div>
+
+<p>기본적인 설정법은 Stored Procedure 방법과 동일 하지만 Mapper에서 Function을 호출하는 형식이 다르다.<br />
+Stored Procedure의 호출과의 차이점은 다음과 같다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: false" style="font-size:12px;">
+Procedure : call PROC_SEL_TEST(#{IN});
+Function  : call #{OUT} := SUM_FUNC(#{IN})
+</pre>
+</div></div>
+
+<p>Function을 Mapper에서 호출 시에 위와 같은 형식을 지켜야 정상적인 Function Call이 가능하다.</p>
+
+<p>altibase_mybatis_procedure 예제를 실행하기 위해서는 “Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동”과 마찬가지로 Altibase.jar, mybatis.3.2.8.jar 파일이 필요하다. </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340862/7766068.png">eclipse_jdbc_setting.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340862/7766069.png">eclipse_jdbc_setting2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340862/7766070.png">eclipse_jdbc_setting3.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

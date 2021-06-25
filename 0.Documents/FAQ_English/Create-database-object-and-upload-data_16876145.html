@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Create database object and upload data</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="04.-Backup-and-Recovery_16876100.html">04. Backup and Recovery</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Using-aexport-and-iloader_16876103.html">Using aexport and iloader</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Create database object and upload data
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Createdatabaseobjectanduploaddata-/*&lt;![CDATA[*/div.rbtoc1624409146210{padding:0px;}div.rbtoc1624409146210ul{list-style:disc;margin-left:0px;}div.rbtoc1624409146210li{margin-left:0px;padding-left:0px;}/*]]&gt;*/Databaseobjectanddatauploadprocedure#Createdatab"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146210 {padding: 0px;}
+div.rbtoc1624409146210 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146210 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146210'>
+<ul class='toc-indentation'>
+<li><a href='#Createdatabaseobjectanduploaddata-Databaseobjectanddatauploadprocedure'>Database object and data upload procedure</a></li>
+<li><a href='#Createdatabaseobjectanduploaddata-Preparationbeforeuploadingdata'>Preparation before uploading data</a></li>
+<li><a href='#Createdatabaseobjectanduploaddata-Creatingdatabaseobject'>Creating database object</a></li>
+<li><a href='#Createdatabaseobjectanduploaddata-Uploadingdata'>Uploading data</a></li>
+<li><a href='#Createdatabaseobjectanduploaddata-Checkingthedatauploadresult'>Checking the data upload result</a>
+<ul class='toc-indentation'>
+<li><a href='#Createdatabaseobjectanduploaddata-Checkingthe.shrunninglog'>Checking the .sh running log</a></li>
+<li><a href='#Createdatabaseobjectanduploaddata-Checkinglogfilesforeachtable'>Checking log files for each table</a></li>
+</ul>
+</li>
+</ul>
+</div></h1><p> </p><h1 id="Createdatabaseobjectanduploaddata-Databaseobjectanddatauploadprocedure">Database object and data upload procedure</h1><hr /><p>In order to restore all database objects and data, execute the following .sh files created when aexport is executed in order.</p><p>From 2. to 8., execute it in order.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">1. run_il_out.sh            : [faq: iloader formout, data-out script ]         # This is a script for backing up data, so it is excluded from this step.
+2. run_is.sh                : [faq: isql table-schema script ]
+3. run_il_in.sh             : [faq: iloader data-in script ]
+4. run_is_refresh_mview.sh  : [faq: isql materialized view refresh script ]
+5. run_is_index.sh          : [faq: isql table-index script ]
+6. run_is_fk.sh             : [faq: isql table-foreign key script ]
+7. run_is_repl.sh           : [faq: isql replication script ]
+8. run_is_job.sh            : [faq: isql job script ]</pre>
+</div></div><p>Each file contains isql commands that execute .sql files containing object creation statements.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cat run_is.sh
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_TBS.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_USER.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_SYN.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_DIR.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_TBL.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_SEQ.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_LIB.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_VIEW_PROC.sql
+isql -s localhost -u SYS -p MANAGER -f ALL_CRT_LINK.sql</pre>
+</div></div><h1 id="Createdatabaseobjectanduploaddata-Preparationbeforeuploadingdata">Preparation before uploading data</h1><hr /><p>Before restoring data, be sure to check the following environment variables before proceeding.</p><p>ALTIBASE_NLS_USE is required to prevent the breakdown of Korean data, and ILO_DATEFORM should be set to prevent duplication when a date type column has a unique value.</p><ul><li>ALTIBASE_NLS_USE</li><li>ILO_DATEFORM</li></ul><p>In the session of executing iloader, it is applied by setting it with the export command as shown below or adding it to the user environment configuration file (.bash_profile or .profile) and logging out and logging in.</p><p><strong>How to set environment variables</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ export ALTIBASE_NLS_USE=Database server character set
+$ export ILO_DATEFORM=&#39;YYYY/MM/DD HH:MI:SS.SSSSSS&#39;</pre>
+</div></div><p><strong>How to set environment variables</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ echo $ALTIBASE_NLS_USE
+$ echo $ILO_DATEFORM</pre>
+</div></div><p>The ALTIBASE HDB server character set can be checked with the following statement: NLS_CHARACTERSET is the ALTIBASE server's character set and NLS_USE is the client's character set. Hangul data is not broken only when these two are set identically.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the ALTIBASE server character set-Available from ALTIBASE HDB version 5</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; set linesize 1024;
+iSQL&gt; set colsize 20;
+iSQL&gt; select NLS_USE, NLS_CHARACTERSET from v$nls_parameters;
+NLS_USE               NLS_CHARACTERSET
+-----------------------------------------------
+MS949                 MS949
+1 row selected.</pre>
+</div></div><h1 id="Createdatabaseobjectanduploaddata-Creatingdatabaseobject">Creating database object</h1><hr /><p>When running the .sh file, the user should leave a log file to check for errors.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) Logging when running .sh</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ sh run_is.sh \| tee run_is.log
+
+or
+
+$ nohup sh run_is.sh &amp;
+$ mv nohup.out run_is.log</pre>
+</div></div><p> </p><h1 id="Createdatabaseobjectanduploaddata-Uploadingdata">Uploading data</h1><hr /><p>Data upload is performed using run_il_in.sh. In order to upload only a table owned by a specific user or only a specific table, the user can extract only what the user wants from run_il_in.sh as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) In case of uploading only table owned by ALTITEST user</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep &quot;\-f ALTITEST_&quot; run_il_in.sh &gt; altitest_il_in.sh    # Extract only the iloader command corresponding to the altitest user from run_il_out.sh and saves it in another file.
+
+$ sh altitest_il_in.sh | tee upload.out                    # If done in the foreground, closing the terminal window will terminate the execution.
+Or,
+$ nohup sh altitest_il_in.sh &amp;                             # If you do it in the background, closing the terminal window does not terminate the execution.
+$ mv nohup.out upload.out                                  # You can connect again and check the progress with the download.out file.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) In case of uploading the SYS user's ORDERS table</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep &#39;SYS_ORDERS.fmt&#39; run_il_in.sh
+iloader -s localhost -u SYS -p MANAGER in -f SYS_ORDERS.fmt -d SYS_ORDERS.dat -log SYS_ORDERS.log -bad SYS_ORDERS.bad</pre>
+</div></div><p>If there are many tables or a lot of data, monitor upload.out to see if it is terminated.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Data upload performance log monitoring</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ tail -f upload.out</pre>
+</div></div><p> </p><h1 id="Createdatabaseobjectanduploaddata-Checkingthedatauploadresult">Checking the data upload result</h1><hr /><h3 id="Createdatabaseobjectanduploaddata-Checkingthe.shrunninglog">Checking the .sh running log</h3><p>Whenever .sh is running, all logs are left to check whether it is normal or not through the log after running .sh.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) Checking errors</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep -i err- run_is.log</pre>
+</div></div><h3 id="Createdatabaseobjectanduploaddata-Checkinglogfilesforeachtable">Checking log files for each table</h3><p>Execute the following commands to check if there is an error when uploading data.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep -i err- upload.out                                                 # Check whether an error has occurred in the result of running the run_il_int.sh script.
+[ERR-311F4 : Invalid column name                                          # If something starts with ERR- like this, it means that an error has occurred.
+$ ls -l *.fmt|wc -l                                                       # Check the number of tables
+$ ls -l *.log|wc -l                                                       # Check the number of log files created by running run_il_in.sh
+
+$ cat *.log | grep &#39;Error Row Count&#39; |  awk -F: &#39;{print $2}&#39; | wc -l      # The number of these results should match the number of the two results above. If it is different, it means that the error has occurred as many times as the difference.
+
+$ cat *.log | grep &#39;Error Row Count&#39; |  awk -F: &#39;{print $2}&#39; | sort -u    # If this result is 0, nothing has failed when performing the upload.
+0</pre>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

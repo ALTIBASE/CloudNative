@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 3. ALTIBASE 와 TOMCAT 연동</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341030.html">Altibase TOMCAT 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 3. ALTIBASE 와 TOMCAT 연동
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409849076 {padding: 0px;}
+div.rbtoc1624409849076 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409849076 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409849076'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ALTIBASE와TOMCAT연동-JNDIDataSource연동'>JNDI DataSource 연동</a></li>
+<li><a href='#id-3.ALTIBASE와TOMCAT연동-일반JDBC방법으로연동'>일반 JDBC 방법으로 연동</a></li>
+</ul>
+</div></p><hr /><p>ALTIBASE와 TOMCAT을 연동하는 방법에 대해 기술한다. 연동하는 방법으로는 DBCP를 이용하여 연동, 일반 JDBC를 이용하여 연동, ATLIBASE의 ConnectionPool을 이용하여 연동하는 방법이 있다.</p><h2 id="id-3.ALTIBASE와TOMCAT연동-JNDIDataSource연동"><strong>JNDI DataSource 연동</strong></h2><p>JNDI DataSource를 구성하는 방법은 $CATALINA_HOME/conf/context.xml에 아래 내용을 기술한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$CATALINA_HOME/conf/context.xml
+&lt; context&gt;
+&lt;Resource name=&quot;jdbc/Altibase&quot; auth=&quot;Container&quot;
+type=&quot;javax.sql.DataSource&quot;
+driverClassName=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;
+url=&quot;jdbc:Altibase://127.0.0.1:20300/mydb&quot;
+username=&quot;sys&quot; password=&quot;manager&quot;
+maxActive=&quot;3&quot; maxIdle=&quot;2&quot; initialSize=&quot;1&quot;
+defaultAutoCommit=&quot;false&quot;
+removeAbandoned=&quot;true&quot; logAbandoned=&quot;true&quot;
+removeAbandonedTimeout=&quot;60&quot;
+validationQuery=&quot;select 1 from dual&quot;/&gt;
+&lt;/context&gt;
+
+</pre>
+</div></div><p>웹 어플리케이션 홈/WEB-INF/web.xml에 아래 내용을 추가하면 웹 에서 사용 가능하다.<br /> 웹 어플리케이션 홈/WEB-INF/web.xml</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">&lt;resource-ref&gt;
+&lt;description&gt;DB Connection&lt;/description&gt;
+&lt;res-ref-name&gt;jdbc/Altibase&lt;/res-ref-name&gt;
+&lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+&lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;
+
+&lt;Resouce&gt; 
+</pre>
+</div></div><p>태그에 정의하는 속성은 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>driverClassName</p></th><th class="confluenceTh"><p>Altibase JDBC driver class Name</p></th></tr><tr><td class="confluenceTd"><p>url</p></td><td class="confluenceTd"><p>ALTIBASE와 연결을 위한 Connection string정보 jdbc:Altibase://IP:port_no/db_name” 형태로 기입</p></td></tr><tr><td class="confluenceTd"><p>Username</p></td><td class="confluenceTd"><p>데이터베이스 계정</p></td></tr><tr><td class="confluenceTd"><p>Password</p></td><td class="confluenceTd"><p>데이터베이스 패스워드</p></td></tr><tr><td class="confluenceTd"><p>maxActive</p></td><td class="confluenceTd"><p>최대 Connection 수, 0은 무제한. default는 8</p></td></tr><tr><td class="confluenceTd"><p>initialSize</p></td><td class="confluenceTd"><p>초기 Connection 수. default는 0</p></td></tr><tr><td class="confluenceTd"><p>maxIdle</p></td><td class="confluenceTd"><p>Pool에 idle하게 유지하는 최대 연결 수. default는 8</p></td></tr><tr><td class="confluenceTd"><p>minIdle</p></td><td class="confluenceTd"><p>Pool에 idle하게 유지하는 최소 연결 수. default는 0</p></td></tr><tr><td class="confluenceTd"><p>maxWait</p></td><td class="confluenceTd"><p>최대 연결 시도 시간 (단위 : millisec) -1은 무한 대기<br class="atl-forced-newline" /> Default는 무한 대기</p></td></tr><tr><td class="confluenceTd"><p>validationQuery</p></td><td class="confluenceTd"><p>연결의 validation을 체크하기 위해 사용하는 SQL문<br class="atl-forced-newline" /> 반드시 최소한 1개이상의 row가 return되는 select문으로 지정<br class="atl-forced-newline" /> Ex) select 1 from dual</p></td></tr><tr><td class="confluenceTd"><p>defaultAutoCommit</p></td><td class="confluenceTd"><p>Autocommit 모드를 설정. default는 true</p></td></tr><tr><td class="confluenceTd"><p>defaultTransactionIsolation</p></td><td class="confluenceTd"><p>Transaction Isolation level을 설정한다.<br class="atl-forced-newline" /> NONE, REPEATABLE_READ, SERIALIZABLE<br class="atl-forced-newline" /> 의 값을 설정할 수 있고, default는 DB서버의 default 값을 따른다. ALTIBASE의 isolation level은 default 로 READ COMMITTED 이다.</p></td></tr><tr><td class="confluenceTd"><p>removeAbandoned</p></td><td class="confluenceTd"><p>버려져서 사용되지않는 Connection에 대한 제거기능을 결정하는 속성. default 는 false<br class="atl-forced-newline" /> Connection이 제거되는 시점은 Connection 개수가 maxActive설정된 값을 초과하여 Connection을 요청한 이후이다. maxActive에 도달하지 않은 시점에는 Connection을 할당받을 수 있으므로, 사용되지않는 Connection 제거가 일어나지 않는다.</p></td></tr><tr><td class="confluenceTd"><p>removeAbandonedTimeout</p></td><td class="confluenceTd"><p>버려져서 사용되지않는 connection에 대한 제거가 일어나는 시간을 설정하는 속성. default로 300초</p></td></tr><tr><td class="confluenceTd"><p>logAbandoned</p></td><td class="confluenceTd"><p>버려져서 사용되지않는 connection에 대한 제거시 로그에 stack정보를 남길지를 결정하는 속성. default로 false</p></td></tr></tbody></table></div><p>프로그램에서 다음과 같이 JNDI Datasource를 통해 Connection을 얻는다.<br /> 이때, java:/comp/env는 JNDI를 lookup할 때 사용하는 prefix이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Context envContext  = (Context)new InitialContext().lookup(&quot;java:/comp/env&quot;);
+DataSource ds = (DataSource)envContext.lookup(&quot;jdbc/Altibase&quot;);
+Connection conn = ds.getConnection();
+
+</pre>
+</div></div><p>또는</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Context initCtx = new InitialContext();                                     
+DataSource ds =  (DataSource)initCtx.lookup(&quot;java:comp/env/jdbc/Altibase&quot;);
+Connection conn = ds.getConnection();
+
+</pre>
+</div></div><p>다음은 위에 설정한 JNDI Datasource를 이용하여 ALTIBASE와 연동하는 jsp 예제 프로그램이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;java.sql.*, javax.naming.*, javax.sql.*&quot;%&gt;
+&lt;% 
+Context initCtx = new InitialContext(); 
+DataSource ds =  (DataSource)initCtx.lookup(&quot;java:comp/env/jdbc/Altibase&quot;); 
+Connection conn = ds.getConnection(); 
+Statement stmt = conn.createStatement(); 
+String query = &quot;select to_char(sysdate,&#39;yyyy/mm/dd hh24:mi:ss&#39;) from dual&quot;; 
+ResultSet rs = stmt.executeQuery(query); 
+if(rs.next()) { 
+     out.println(rs.getString(1)); 
+} 
+rs.close(); 
+stmt.close(); 
+conn.close();
+%&gt;
+
+</pre>
+</div></div><h2 id="id-3.ALTIBASE와TOMCAT연동-일반JDBC방법으로연동"><strong>일반 JDBC 방법으로 연동</strong></h2><p>1. JDBC driver 로딩한다.</p><p>2. Connection 객체 얻는다.</p><p>3. Statement를 객체를 얻는다.</p><p>4. SQL문을 실행한 후 ResultSet에 담는다.</p><p>5. 작업이 완료된 후 관련된 모든 객체를 close한다.</p><p>다음은 일반 JDBC를 이용하여 ALTIBASE와 연동하는 jsp 예제 프로그램이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@page import=&quot;java.sql.ResultSet&quot;%&gt;
+&lt;%@page import=&quot;java.sql.Statement&quot;%&gt;
+&lt;%@page import=&quot;java.sql.DriverManager&quot;%&gt;
+&lt;%@page import=&quot;java.sql.Connection&quot;%&gt;
+&lt;%@page import=&quot;java.util.Properties&quot;%&gt;
+&lt;%
+Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);
+Properties prop = new Properties();
+prop.put(&quot;user&quot;, &quot;sys&quot;);
+prop.put(&quot;password&quot;, &quot;manager&quot;);
+String url = &quot;jdbc:Altibase://192.168.56.110:20300/mydb&quot;;
+String sql = &quot;SELECT TO_CHAR(SYSDATE,&#39;YYYY-MM-DD HH24:MI:SS&#39;) FROM DUAL&quot;;
+
+Connection conn = null;
+Statement stmt= null;
+ResultSet rs = null;
+try {
+conn = DriverManager.getConnection(url, prop);
+stmt = conn.createStatement();
+rs = stmt.executeQuery(sql);
+while(rs.next()) {
+        out.println(rs.getString(1));
+}
+}catch(Exception se) {
+out.println(se.getMessage());
+} finally {
+    rs.close();
+    stmt.close();
+    conn.close();
+}
+%&gt;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Summary</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-CPU-Overload-Analysis-Guide_14647581.html">Altibase CPU Overload Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Summary
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Aug 25, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>As described in previous chapters, for each item, this chapter summarizes how the user could routinely check and find the cause of the CPU overload.</p><h1 id="id-5.Summary-5.1Step-by-stepinspectionmethod">5.1 Step-by-step inspection method</h1><p> </p><div><h2 id="id-5.Summary-5.1Datacollectionforanalysis">5.1 Data collection for analysis</h2><p>Collect data to determine whether the current CPU load is normal. After collecting information such as Altibase's hourly/daily CPU usage and transaction throughput as in the previous-described '1.1 Routine Checklist&quot; and the command provided by the OS, it is determined whether or not the CPU usage is normal due to the increase in the transaction.</p><h2 id="id-5.Summary-5.2Causeanalysis">5.2 Cause analysis</h2><h3 id="id-5.Summary-5.2.1Checkwhetheritisrelatedtotheimpactofapplicationchange">5.2.1 Check whether it is related to the impact of application change</h3><p>If there is a newly added service (application) and the operation time of the newly added service and the time of an increase in CPU load amount coincide, it is necessary to check the relevance of the newly added service.</p><p> </p><div><h3 id="id-5.Summary-5.2.2Relevancetodataincreaseandcheckwhetherthereisanychangeinthequeryplan">5.2.2 Relevance to data increase and check whether there is any change in the query plan</h3><p>It is necessary to check whether the CPU increases due to access cost due to data accumulation over time. The old version of Altibase (below 6.1.1) has the function of automatically collecting statistics according to specific conditions. If the optimizer selects and uses a plan that is less efficient than the existing query plan due to the update of statistics information, an increase in access cost can cause an increase in CPU usage.</p><p> </p></div><div><h3 id="id-5.Summary-5.2.3MismatchofDBandapplicationcharacterset">5.2.3 Mismatch of DB and application character set</h3><p>When the character set (NLS_USE) is set differently from the DB and the application, there has been a reported case that Altibase performance is downgraded and CPU usage is increased due to internal character set encoding.</p><h3 id="id-5.Summary-5.2.4Increaseofservicethread">5.2.4 Increase of service thread</h3><p>When the dedicated service thread that handles session requests is in an increased state, sys CPU usage may increase due to an increase in the 'select' poll system call function to periodically check whether a request exists.</p><h3 id="id-5.Summary-5.2.5AffectofOSenvironmentvariables">5.2.5 Affect of OS environment variables</h3><p>There may be changes in CPU usage depending on the OS environment variable setting. Altibase adopts a multi-threaded structure, so it is necessary to properly set the related settings for the OS configuration.</p><h3 id="id-5.Summary-5.2.6FrequentDBconnectionattempts">5.2.6 Frequent DB connection attempts</h3><p>The processing of accessing and releasing DB is a task that uses DB resources, and it is difficult to detect malicious queries in the structure of repetitive DB connect/disconnect. Additionally, because the statement cannot be prepared and used, it may be a factor of query performance down gradation. </p><h2 id="id-5.Summary-5.2NavigationwithOSutility"><strong>5.2 Navigation with OS utility</strong></h2><p>Altibase adopts a multi-thread structure. Therefore, it is necessary to determine whether a specific internal thread is abnormally using a lof CPU. In this case, the CPU usage and current state of each thread can be checked with the utility provided for each OS. For more detailed information, refer to the following document.</p><ul><li>&quot;Utility Guide by OS for Problem Analysis'</li></ul></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Spring Integration Guide for Altibase</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iBatis-Integration-Guide-for-Altibase_14058303.html">iBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Spring Integration Guide for Altibase
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> 정준헌</span> on Dec 24, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h3 class="md-end-block md-heading" id="id-5.SpringIntegrationGuideforAltibase-LOBDataProcessing"><span class="md-plain">LOB Data Processing</span></h3><p class="md-end-block md-p"><span class="md-plain">In order to process LOB in iBATIS, jdbcType must be specified as CLOB/BLOB in the part of setting the information about the parameter and result in the SqlMap file.</span></p><p class="md-end-block md-p"><span class="md-plain">Otherwise, incorrect data can be entered or incorrect data can be queried by the length limit. Or, an error such as invalid length may occur.</span></p><p class="md-end-block md-p"><span class="md-plain">Therefore, mapping for parameter and result must be designated as CLOB/BLOB</span></p><p class="md-end-block md-p"><span class="md-plain">The following is an example of setting parameterMap and resultMap for CLOB type data.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) LobSample's LobSample.xml (SqlMap) file</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMap namespace=&quot;LobSample&quot;&gt;
+   &lt;resultMap id=&quot;LobSampleResult&quot; class=&quot;com.altibase.lob.LobSample&quot;&gt;
+    &lt;result property=&quot;lob_id&quot; column=&quot;lob_id&quot; /&gt;
+     &lt;result property=&quot;lobcolumn&quot; column=&quot;lobcolumn&quot;
+jdbcType=&quot;CLOB&quot; javaType=&quot;java.lang.String&quot; /&gt;
+&lt;/resultMap&gt;
+   
+   &lt;parameterMap id=&quot;LobSampleParam&quot; class=&quot;com.altibase.lob.LobSample&quot;&gt;
+    &lt;parameter property=&quot;lob_id&quot; /&gt;
+    &lt;parameter property=&quot;lobcolumn&quot;
+jdbcType=&quot;CLOB&quot; javaType=&quot;java.lang.String&quot; /&gt;
+&lt;/parameterMap&gt;
+     
+&lt;select id=&quot;getLobSample&quot; parameterClass=&quot;int&quot; resultMap=&quot;LobSampleResult&quot;&gt;
+        SELECT lob_id, lobcolumn
+        FROM lobsample
+        WHERE lob_id = #value#
+&lt;/select&gt;
+     
+&lt;insert id=&quot;insertLobSample&quot; parameterMap=&quot;LobSampleParam&quot;&gt;
+        INSERT INTO lobsample (lob_id,lobcolumn)
+        VALUES (?,?)
+&lt;/insert&gt;
+         
+    …
+&lt;/sqlMap&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">In addition, the important thing to be careful when processing LOB is that in order to process LOB data in Altibase, the transaction must be managed after changing the autocommit mode to false. When setting dataSource in </span><span>&lt;</span><span class="md-plain">transactionManager&gt; of SqlMapConfig file when integrating iBATIS, setAutoCommit(false); There is no consideration when processing LOB because the autocommit mode is changed to false by calling the method. However, if iBATIS and Spring are linked together, if the user manages transactions in Spring, the user must specify TransactionManager bean to process LOB.</span></p><p class="md-end-block md-p"><span class="md-plain">In addition, in the case of declarative transaction processing in Spring, propagation must be specified as one of PROPAGATION_REQUIRED, PROPAGATION_REQUIRES_NEW, and PROPAGATION_NESTED.</span></p><p class="md-end-block md-p"><span class="md-plain">If TransactionManager is not specified or propagation is set to a value other than the above described when using declarative transaction, a null value is returned when querying LOB data, or &quot;java.sql.SQLException: [DOCKI: 0]: An error such as LobLocator can not span the transaction 101858625&quot; occurs.</span></p><p class="md-end-block md-p"><span class="md-plain">In addition, when entering LOB data, &quot;java&quot;, &quot;java.sql.SQLException: [DOCKI: 0]: An error such as LobLocator can not span the transaction 101858625&quot; occurs.</span></p><p class="md-end-block md-p"><span class="md-plain">The following example is an example of processing LOB data by declaratively processing a transaction in Spring's applicationContext.xml.</span></p><p class="md-end-block md-p"><span class="md-plain">For more detailed information on how to process transactions declaratively, please refer to the document </span><span><em>&quot;Spring Integration Guide for Altibase&quot;.</em></span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) LobSpringIbatisSample's applicationContext.xml file</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot;
+class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+&lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+&lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;sqlMapClient&quot;
+ class=&quot;org.springframework.orm.ibatis.SqlMapClientFactoryBean&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+   &lt;property name=&quot;configLocation&quot; value=&quot;SqlMapConfigExample.xml&quot;/&gt;
+&lt;/bean&gt;  
+&lt;bean id=&quot;transactionManager&quot;
+ class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot;
+class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+  &lt;property name=&quot;transactionManager&quot;  ref=&quot;transactionManager&quot; /&gt;       
+  &lt;property name=&quot;transactionAttributes&quot;&gt;
+     &lt;props&gt;
+    &lt;prop key=&quot;insert*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+    &lt;prop key=&quot;update*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+    &lt;prop key=&quot;delete*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+    &lt;prop key=&quot;get*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+    &lt;/props&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;lobSampleDao&quot; parent=&quot;txProxyTemplate&quot;&gt;
+&lt;property name=&quot;target&quot;&gt;
+     &lt;bean class=&quot;com.altibase.lob.LobSampleDao&quot;&gt;
+        &lt;property name=&quot;sqlMapClient&quot; ref=&quot;sqlMapClient&quot;/&gt;
+     &lt;/bean&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>To run the LobSpringIbatisSample project above, Altibase.jar, ibatis-2.3.4.x.jar, spring-jdbc.jar, spring.orm.jar, spring.jar, commons-logging,kar, and club-nodep-xx files are needed.</span></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><span><img class="confluence-embedded-image" width="500" src="attachments/14058315/15335443.png" data-image-src="attachments/14058315/15335443.png"><br /></span></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058315/14221519.png">eclipse_jdbc6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058315/15335443.png">capture5-1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

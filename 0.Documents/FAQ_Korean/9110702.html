@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : LOCK TIMEOUT 발생 시 조치 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : LOCK TIMEOUT 발생 시 조치 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span style="color: rgb(0,0,0);font-size: medium;"> </span><span style="color: black;font-size: 11.0pt;"><span> <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051199 {padding: 0px;}
+div.rbtoc1624409051199 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051199 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051199'>
+<ul class='toc-indentation'>
+<li><a href='#LOCKTIMEOUT발생시조치방법-개요'>개요 </a></li>
+<li><a href='#LOCKTIMEOUT발생시조치방법-버전'>버전  </a></li>
+<li><a href='#LOCKTIMEOUT발생시조치방법-발생원인'>발생원인 </a></li>
+<li><a href='#LOCKTIMEOUT발생시조치방법-조치방법'>조치방법 </a></li>
+<li><a href='#LOCKTIMEOUT발생시조치방법-참고'>참고 </a></li>
+</ul>
+</div></span></span></p><h1 id="LOCKTIMEOUT발생시조치방법-개요"><strong>개요</strong><span style="color: black;font-size: 11.0pt;"><span> </span></span></h1><hr /><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span><span style="color: black;font-size: 11.0pt;"><span><span style="color: rgb(0,0,0);"><span>SQL </span></span><span style="color: rgb(0,0,0);"><span>실행 도중 다음과 같이 오류가 나서 원하는 작업을 못할 때가 있습니다</span><span><span>. </span></span></span></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><span style="color: rgb(0,0,0);"><span><span>The transaction exceeds lock timeout specified by user </span></span></span></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><br /></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><span>$ altierr -w &quot;lock timeout&quot;<br /> 0x11075 ( 69749) smERR_ABORT_smcExceedLockTimeWait The transaction exceeds lock timeout specified by user. <br /> # *Cause: The transaction failed to lock the object.<br /> # *Action: Please abort the transaction.</span></span></span></p><p> </p><p><span style="color: rgb(0,0,0);"><br /></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><span><br /></span></span></span></p><h1 id="LOCKTIMEOUT발생시조치방법-버전"><strong>버전</strong><span style="color: rgb(0,0,0);"> </span><span style="color: black;font-size: 11.0pt;"><span> </span></span></h1><hr /><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span><span style="color: rgb(0,0,0);"> ALTIBASE HDB 4 이상</span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><p><span style="color: rgb(0,0,0);"><br /></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span></p><h1 id="LOCKTIMEOUT발생시조치방법-발생원인"><strong><span style="color: rgb(0,0,0);">발생원인 </span></strong></h1><hr /><p><span style="color: rgb(0,0,0);"><span><span style="color: rgb(0,0,0);"><span>SQL </span></span><span style="color: rgb(0,0,0);"><span>실행 도중 다음과 같이 오류가 나서 원하는 작업을 못할 때가 있습니다</span><span> </span></span></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><span> <br /> </span>위의 오류코드 내용과 같이 해당 객체<span> - </span>테이블이나 뷰<span>, </span>저장 프로시져 등<span> - </span>에 대해</span><span><span>  lock</span>을 잡을 수가 없다는 오류입니다</span><span><span>. <br /> <br /> </span>테이블에 접근하는 모든 세션은 해당 테이블에 LOCK을 잡고 접근하게 됩니다</span><span><span>. <br /> </span>즉 그 테이블에<span> SELECT/INSERT/UPDATE </span>등의<span> DML</span>을 수행하거나<span> ALTER TABLE </span>등의<span> DDL</span>을 수행하는 등의</span><span><span> <br /> </span>작업을 누군가 하고 있을 때<span> DROP TABLE</span>을 수행하면 이전 작업이<span> commit/rollback</span>할 때 까지 기다리게 됩니다</span><span><span>. <br /> <br /> </span>이 경우<span>, </span>사용자가 없는지 확인하고 이전 작업이<span> commit</span>할 때가지 기다리거나</span><span><span>, </span>세션을 강제로 끊을 수 있습니다</span><span><span>. <br />아래</span> 예와(조치방법)  같이<span> alter database </span>문을 사용하면 세션을 강제로 끊을 수 있습니다</span><span><span>. </span></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span><span><br /></span></span><span><span><br /> </span></span></span></p><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span></p><h1 id="LOCKTIMEOUT발생시조치방법-조치방법"><strong><span style="color: rgb(0,0,0);">조치방법</span></strong><span style="color: black;font-size: 11.0pt;"><span> </span></span></h1><hr /><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span><span style="color: black;font-size: 11.0pt;"><span><span> *<strong> lock </strong></span><strong>정보 확인</strong></span><span><span><strong> </strong><br /> </span></span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select T.table_name, X.lock_desc  from system_.sys_tables_ T, v$lock X  where T.table_oid = X.table_oid  and T.table_name = &#39;T1&#39;; //T1 테이블 LOCK 정보 확인</pre>
+</div></div><p><span><br /> <br /> </span>* <strong>세션 강제 종료 방법</strong><span><span><strong> </strong><br /><strong> </strong><br /> 1.  SESSION ID </span>찾기</span><span><span> </span></span> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select &#39;alter database mydb session close &#39;||ses_id||&#39;; &#39;
+  from (select T.table_name,
+               SES.id ses_id,
+               X.lock_desc,
+               X.lock_cnt,
+               x.TRANS_ID,
+               SES.client_pid pid,
+               SES.COMM_NAME,
+               STM.query qry
+          from v$session SES,
+               v$statement STM,
+               v$lock X,
+               system_.sys_tables_ T
+         where SES.id = STM.session_id
+           and STM.tx_id = X.trans_id
+           and X.table_oid= T.table_oid
+-- and T.table_name like &#39;TEST1%&#39; -- 원하는 테이블을 명시하십시오. 
+               )
+ group by ses_id ;
+ 
+&#39;alter database mydb session close &#39;||SES_  
+----------------------------------------------
+alter database mydb session close 159; 
+alter database mydb session close 160; 
+alter database mydb session close 161; 
+alter database mydb session close 162; 
+4 rows selected.</pre>
+</div></div><p><span><br /></span><span><span>2.  </span>세션 종료시키기</span><span><span> </span></span></p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> $ isql -sysdba -u sys -p manager 
+ iSQL(sysdba)&gt;
+ alter database mydb session close 159; 
+ alter database mydb session close 160; 
+ alter database mydb session close 161; 
+ alter database mydb session close 162; -- 위의 SQL 결과를 copy/paste 해서 실행합니다.</pre>
+</div></div><p><span><br /></span></p><p> </p><h1 id="LOCKTIMEOUT발생시조치방법-참고"><strong><span style="color: rgb(0,0,0);">참고</span></strong><span style="color: black;font-size: 11.0pt;"><span> </span></span></h1><hr /><p style="margin: 0.0cm 0.0cm 0.0pt;"><span style="color: black;font-size: 11.0pt;"><span> </span></span><span style="color: black;font-size: 11.0pt;"><span><span> alter database 명령어로<span> session</span>을 종료해도 해당 세션외의 다른 부분에는 영향을 미치지 않습니다<span><span>. </span></span></span></span></span></p><p><span style="color: black;font-size: 11.0pt;"><span><span><span><span> </span>그러나 서비스 중인 시스템에서<span> session id</span>를 잘못 알고<span> session</span>을 종료했을 경우</span><span><span>,  </span>문제가 될 수 있습니다</span><span><span>. </span></span></span></span></span></p><p><span style="color: black;font-size: 11.0pt;"><span><span>운영을 위한 참고사항으로<span>, </span>서비스 중인 시스템일 경우<span><span>, </span>접속된 세션을 끊어도 또 다른<span> application</span>이 접속하여 해당 테이블에 접근하면</span><span><span> lock</span>이 추가될 수 있으므로 이부분에 대한 고려도 필요합니다</span><span><span>. </span></span></span></span></span></p><p><span style="color: black;font-size: 11.0pt;"><span><span><span><span> </span>가능하다면 작업중에는 해당<span> application</span>이 실행되지 않도록 하는 것이 좋습니다</span><span><span>. </span></span></span></span></span></p><p><span style="color: rgb(0,0,0);font-size: medium;"> </span></p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

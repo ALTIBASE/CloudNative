@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Database Connect</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Database Connect
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347928 {padding: 0px;}
+div.rbtoc1624409347928 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347928 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347928'>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseConnect-ORACLE'>ORACLE</a></li>
+<li><a href='#DatabaseConnect-SampleCode'>Sample Code</a></li>
+<li><a href='#DatabaseConnect-ALTIBASE'>ALTIBASE</a></li>
+<li><a href='#DatabaseConnect-SampleCode.1'>Sample Code</a></li>
+<li><a href='#DatabaseConnect-UsingAT'>Using AT</a></li>
+<li><a href='#DatabaseConnect-Usingconnect_string'>Using connect_string</a></li>
+<li><a href='#DatabaseConnect-FailOveronapplication-side'>FailOver on application-side</a></li>
+</ul>
+</div>
+
+<h2 id="DatabaseConnect-ORACLE">ORACLE</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL CONNECT { :user IDENTIFIED BY :oldpswd | :usr_psw }
+  [{ AT [dbname | :host_variable }] USING :connect_string ]
+    [ {ALTER AUTHORIZATION :newpswd | IN { SYSDBA | SYSOPER } MODE } ];
+</pre>
+</div></div>
+
+<h2 id="DatabaseConnect-SampleCode">Sample Code</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char *username = &quot;SCOTT&quot;;
+char *password = &quot;TIGER&quot;;
+...
+EXEC SQL WHENEVER SQLERROR ...
+EXEC SQL CONNECT :username IDENTIFIED BY :password;
+</pre>
+</div></div>
+
+<h2 id="DatabaseConnect-ALTIBASE">ALTIBASE</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL {AT :host_variable} CONNECT { :user IDENTIFIED BY :user_passwd} {USING :connect_string};
+</pre>
+</div></div>
+
+<h2 id="DatabaseConnect-SampleCode.1">Sample Code</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char *username = &quot;SYS&quot;;
+char *password = &quot;MANAGER&quot;;
+...
+EXEC SQL WHENEVER SQLERROR ...
+EXEC SQL CONNECT :username IDENTIFIED BY :password;
+</pre>
+</div></div>
+
+<ul>
+	<li>APRE doesn't support a syntax like &quot;ALTER AUTHORIZATION&quot;.</li>
+	<li>APRE doesn't support a syntax like &quot;IN {SYSDBA | SYSOPER} MODE&quot;.</li>
+	<li>APRE doesn't support a functionality for auto-connection.</li>
+</ul>
+
+
+<h2 id="DatabaseConnect-UsingAT">Using AT</h2>
+
+<p>When you need to connect multiple database connections, use &quot;AT&quot; in your application source.</p>
+
+<p>We recommend you to use independent connection name using AT clause for each connections.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char usr[20];
+char pwd[20];
+char conn_name1[20];
+char conn_name2[20];
+...
+sprintf (usr, &quot;SYS&quot;);
+sprintf (pwd, &quot;MANAGER&quot;);
+sprintf (conn_name1, &quot;db_connection1&quot;);
+sprintf (conn_name2, &quot;db_connection2&quot;);
+
+EXEC SQL AT :conn_name1 CONNECT :usr IDENTIFIED BY :pwd;
+EXEC SQL AT :conn_name2 CONNECT :usr IDENTIFIED BY :pwd;
+...
+EXEC SQL AT :conn_name1 SELECT ...;
+EXEC SQL AT :conn_name2 PREPARE ...;
+</pre>
+</div></div>
+<ul>
+	<li>ALTIBASE HDB doesn't provide context for multi-thread application. Therefore, User has to manage connections for multi-thread application.</li>
+</ul>
+
+
+<h2 id="DatabaseConnect-Usingconnect_string">Using connect_string</h2>
+
+<p>When you need to specifiy a target database, use &quot;USING&quot; in your application source.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char usr[20];
+char pwd[20];
+char conn_string[200];
+...
+sprintf (usr, &quot;SYS&quot;);
+sprintf (pwd, &quot;MANAGER&quot;);
+sprintf (conn_string, &quot;DSN=192.168.1.35;PORT_NO=20300;NLS_USE=US7ASCII;CONN_TYPE=1&quot;);
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_string;
+</pre>
+</div></div>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Option </p></th>
+<th class="confluenceTh"><p> Meaning </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DSN </p></td>
+<td class="confluenceTd"><p> To specify IP of database server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PORT_NO </p></td>
+<td class="confluenceTd"><p> To specify PORT_NO of database server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NLS_USE </p></td>
+<td class="confluenceTd"><p> To specify national character set of database server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONN_TYPE </p></td>
+<td class="confluenceTd"><p> To specify connection-type.</p>
+<ul>
+	<li>CONN_TYPE=1 : TCP/IP type</li>
+	<li>CONN_TYPE=2 : UNIX Domain Socket type</li>
+	<li>CONN_TYPE=3 : IPC type (use shared-memory area for communication buffer.)</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TIMEOUT=n </p></td>
+<td class="confluenceTd"><p> To specify time-limitation of interval for trying to connect to DB-server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CONNECTION_TIMEOUT=n </p></td>
+<td class="confluenceTd"><p> To specify time-limitation of interval for receiving a packet about result of SQL executed. </p></td>
+</tr>
+</tbody></table></div>
+
+<ul>
+	<li>If you don't specify a connection_string, application tries to connect to a local-server.</li>
+	<li>TIMEOUT and CONNECTION_TIMEOUT are used to check immediately a network-error in your application.</li>
+	<li>You can set a OS user-environment variable to connect to a database.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+export ALTIBASE_NLS_USE=US7ASCII
+export ALTIBASE_PORT_NO=20300
+</pre>
+</div></div></li>
+</ul>
+
+
+<h2 id="DatabaseConnect-FailOveronapplication-side">FailOver on application-side</h2>
+
+<p>AlTIBASE HDB provides functionality to fail-over, we called it as CTF and STF.<br />
+CTF is an acronym of Connection-Time-Failover and STF means Service-Time-Failover.<br />
+CTF is used when application tries to connect to a DBMS and gets an error for connection, application automatically tries to connect to an other DBMS which user defined.<br />
+STF is a available when application tries to execute a SQL and gets an connection-error (as DBMS or Server was down) for connection, application automatically tries to connect to an other DBMS which user defined.</p>
+
+<p><strong><em>Sample Code-1</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+char usr[20];
+char pwd[20];
+char connt_opt[200];
+EXEC SQL END DECLARE SECTION;
+
+sprintf (usr, &quot;SYS&quot;);
+sprintf (pwd, &quot;MANAGER&quot;);
+sprintf (conn_opt, &quot;DSN=192.168.3.54;PORT_NO=20300;CONNTYPE=1;AlternateServers=(192.168.3.54:20300,192.168.3.53:20300);ConnectionRetryCount=3;
+ ConnectionRetryDelay=5;LoadBalance=on;SessionFailOver=on;&quot;&quot; );
+
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt;
+...
+</pre>
+</div></div>
+<p>If fail to connect to &quot;192.168.3.54&quot;, application automatically tries to connect to &quot;192.168.3.53&quot; after 5 seconds.</p>
+
+<p><strong><em>Sample Code-2</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+char usr[20];
+char pwd[20];
+char connt_opt[200];
+EXEC SQL END DECLARE SECTION;
+
+sprintf (usr, &quot;SYS&quot;);
+sprintf (pwd, &quot;MANAGER&quot;);
+sprintf (conn_opt, &quot;DSN=192.168.3.54;PORT_NO=20300;CONNTYPE=1;AlternateServers=(192.168.3.54:20300,192.168.3.53:20300);ConnectionRetryCount=3;
+ ConnectionRetryDelay=5;LoadBalance=on;SessionFailOver=on;&quot;&quot; );
+
+EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :conn_opt;
+...
+...
+EXEC SQL INSERT INTO table VALUES (:....);
+if (sqlca.sqlcode != 0)
+{
+  if (SQLCODE == EMBEDED_ALTIBASE_FAILOVER_SUCCESS)
+  {
+      goto retry_statement;
+  }
+}
+</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+
+<p>In the code above, When execute a insert-SQL, STF happens.<br />
+If user uses STF-functionality, User has to check a error-code as &quot;EMBEDED_ALTIBASE_FAILOVER_SUCCESS&quot;.<br />
+STF functionality doesn't replay a transaction before failover, only reconnect to other server without having session-related information.<br />
+Therefore, user needs to write an additional code to replay.<br class="atl-forced-newline" /></p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Properties </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AlternateServers </p></td>
+<td class="confluenceTd"><p> User describes target-servers when connection-error happened. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ConnectionRetryDelay </p></td>
+<td class="confluenceTd"><p> After this time(second) elapses, application tries to connect to other server. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SessionFailOver </p></td>
+<td class="confluenceTd"><p> User defines to use STF-functionality or not </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

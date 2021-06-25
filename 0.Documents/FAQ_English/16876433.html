@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-41059 ( 266329) Task pool overflow. Check properties.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-41059 ( 266329) Task pool overflow. Check properties.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148671 {padding: 0px;}
+div.rbtoc1624409148671 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148671 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148671'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Version'>Version</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Cause'>Cause</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Whenthenumberofnewconnectionsincreases'>When the number of new connections increases</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-WhenallservicethreadsareinEXECUTEstateandanewconnectionoccurs'>When all service threads are in EXECUTE state and a new connection occurs</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-WhenanewconnectionoccurswhilethenumberoftransactionsreachesTRANSACTION_TABLE_SIZE'>When a new connection occurs while the number of transactions reaches TRANSACTION_TABLE_SIZE</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheck'>How to check</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Checklist'>Checklist</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-HowtocheckMAX_CLIENTsettingvalue'>How to check MAX_CLIENT setting value</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheckthenumberofsessions'>How to check the number of sessions</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheckthenumberoftasks'>How to check the number of tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-ChangeMAX_CLIENTproperty'>Change MAX_CLIENT property</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-Reviewapplication'>Review application</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Version">Version</h1><hr /><p>Altibase HDB 5 or later</p><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Symptom">Symptom</h1><hr /><p>When a new connection attempt from the client to the Altibase server fails with the following error message,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[ERR-91015 : Communication failure.]</pre>
+</div></div><p>The following error message can be seen in the altibase_boot.log of the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ERR-41059(errno=16) Task pool overflow. Check properties.
+Dispatcher failed callback</pre>
+</div></div><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Cause">Cause</h1><hr /><p><span style="color: rgb(0,0,255);"><strong>This occurs when the number of tasks created in the Altibase server reaches MAX_CLIENT.</strong></span></p><p> </p><p>Task is an object created when a new connection is made to the Altibase server. The maximum number of simultaneous creations is affected by the value of the Altibase server property MAX_CLIENT.</p><p>When the number of currently created tasks reaches MAX_CLIENT and a new task object cannot be created, a task pool overflow message appears.</p><p>MAX_CLIENT also refers to the maximum number of sessions that can be connected at the same time, but the task is affected by the same properties because it is eventually mapped to a session.</p><p>The following are possible causes.</p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Whenthenumberofnewconnectionsincreases">When the number of new connections increases</h2><hr /><p>This can happen when the number of new connections increases and the number of tasks exceeds MAX_CLIENT.</p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-WhenallservicethreadsareinEXECUTEstateandanewconnectionoccurs">When all service threads are in EXECUTE state and a new connection occurs</h2><hr /><p>If a new connection fails while all service threads are in EXECUTE state, the connection remains in the form of a task in the Altibase server. Therefore, even if the connection fails for this reason, the number of tasks increases as a new connection occurs.</p><p>When the connection fails as shown below,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-5104D : Connection timeout.]</pre>
+</div></div><p>If the number of tasks exceeds MAX_CLIENT, the connection failure error message changes as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-91015 : Communication failure.]</pre>
+</div></div><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-WhenanewconnectionoccurswhilethenumberoftransactionsreachesTRANSACTION_TABLE_SIZE">When a new connection occurs while the number of transactions reaches TRANSACTION_TABLE_SIZE</h2><hr /><p>If a new connection fails while the number of concurrent transactions reaches TRANSACTION_TABLE_SIZE, the connection remains in the form of a task in the Altibase server. Therefore, even if the connection fails for this reason, the number of tasks increases as a new connection occurs.</p><p>When the connection fails as shown below,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-5104D : Connection timeout.]</pre>
+</div></div><p>If the number of tasks exceeds MAX_CLIENT, the connection failure error message changes as follows.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-91015 : Communication failure.]</pre>
+</div></div><div>In this case, the following message appears in altibase_boot.log.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">TRANSACTION_TABLE_SIZE is full !!
+ Current TRANSACTION_TABLE_SIZE is 1024
+ Please check TRANSACTION_TABLE_SIZE</pre>
+</div></div><p> </p></div><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheck">How to check</h2><hr /><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Checklist">Checklist</h3><p>To find the cause of the task pool overflow, the following items must be checked.</p><ul><li><strong>MAX_CLIENT property setting value</strong><strong><br /></strong></li><li><strong>Number of sessions connected to Altibase server</strong><br />If the number of sessions connected to the Altibase server is equal to MAX_CLIENT, it is caused by increased sessions. If it is less than MAX_CLIENT, check the number of tasks.</li><li><strong>Number of tasks created in Altibase server</strong><br />If the number of sessions is less than MAX_CLIENT and the number of tasks is equal to or greater than MAX_CLIENT, you can suspect the cause below.</li></ul><ol><li><p>When all service threads are in EXECUTE state and a new connection occurs and the task is increased.</p></li><li><p>When the number of transactions reaches TRANSACTION_TABLE_SIZE and a new connection occurs and the task increases</p></li></ol><ul><li><strong>$ALTIBASE_HOME/trc/altibase_boot.log</strong><br />If the number of transactions exceeds TRANSACTION_TABLE_SIZE, the message TRANSACTION_TABLE_SIZE is full is left.</li></ul><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-HowtocheckMAX_CLIENTsettingvalue">How to check MAX_CLIENT setting value</h3><p>Task pool overflow occurs when the number of tasks exceeds the value of the MAX_CLIENT property, so check the value of this property first.</p><ul><li><p><strong>When iSQL connection is possible</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set linesize 1024;
+iSQL&gt; set colsize 30;
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;MAX_CLIENT&#39;;
+NAME                            VALUE1
+-------------------------------------------------------------------
+MAX_CLIENT                      1000
+1 row selected</pre>
+</div></div></li><li><p><strong>When iSQL connection is not possible</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep MAX_CLIENT $ALTIBASE_HOME/conf/altibase.properties</pre>
+</div></div></li></ul><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheckthenumberofsessions">How to check the number of sessions</h3><ul><li><strong>When iSQL connection is possible</strong><br /><p>If iSQL access is available, the number of sessions can be checked with the performance view, and through this, you can infer the cause of task pool overflow to some extent.<br />If the current number of sessions is compared with the MAX_CLIENT value, and the value is the same, the increase in sessions is the cause.<br />If the current number of sessions is less than MAX_CLIENT, it could be due to two other things than the session growth.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the number of sessions</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ export ISQL_CONNECTION = IPC
+$ is -silent -sysdba
+iSQL&gt; SELECT COUNT(*) FROM V$SESSION;                                    -- Check the current number of sessions
+COUNT
+-----------------------
+1000
+1 row selected.</pre>
+</div></div></li><li><strong>When iSQL connection is not possible</strong><br /><p>If it is difficult to connect to iSQL, the number of sessions must be checked with the information on the OS.<br />Depending on the client's connection method, there are two ways to check it.<br />In the case of connecting using both TCP and IPC methods, the user can add up the results and compare them with MAX_CLIENT to determine whether the increase in sessions or other parts are the causes.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When the client connects with TCP</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ netstat -an | grep 20300 | grep ESTA | wc -l                   # Compare the result to MAX_CLIENT
+
+Or
+$ lsof -p pid                                                    # Compare the number of socket files open by the Altibase server with MAX_CLIENT.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When the client connects with IPC</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Linux
+$ ipcs -m | grep -i -e nattch -e eheejung
+key        shmid      owner      perms      bytes      nattch     status
+0x00003ed0 458761     altibase   666        131104     1
+
+# HP-UX, AIX
+$ ipcs -ma | grep -e NATTCH -e eheejung
+T         ID     KEY        MODE        OWNER     GROUP   CREATOR    CGROUP NATTCH      SEGSZ  CPID  LPID   ATIME    DTIME    CTIME
+m    7438362 0x00003353 --rw-rw-rw-  altibase     users  altibase     users      1     655480 13139 12411 17:57:48 no-entry 10:22:18
+
+# SunOS
+$ ipcs -ma | /usr/xpg4/bin/grep -e NATTCH -e beadskin
+T         ID      KEY        MODE        OWNER    GROUP  CREATOR   CGROUP NATTCH      SEGSZ  CPID  LPID   ATIME    DTIME    CTIME
+m          9   0x3863     --rw-rw-rw- altibase    other altibase    other      1     983576 14435 14435 17:31:35 no-entry 17:31:35</pre>
+</div></div></li></ul><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Howtocheckthenumberoftasks">How to check the number of tasks</h3><ul><li><strong>When iSQL connection is possible</strong><br /><p>If the number of sessions is less than MAX_CLIENT, other causes should be investigated.<br />Check the number of tasks with the command below and compare the number of tasks with MAX_CLIENT. The value of logon current means the number of tasks created and can be greater than the number of sessions.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME = &#39;logon current&#39;;</pre>
+</div></div><p>If the number of sessions is less than MAX_CLIENT and the value of logon current is equal to or greater than MAX_CLIENT, there are two possible causes:<br />-When all service threads are in EXECUTE state and a new connection occurs and the task increases<br />-When a new connection occurs while the number of transactions reaches TRANSACTION_TABLE_SIZE and the task increases</p></li><li><strong>When iSQL connection is not possible</strong><br /><p>The number of created tasks can be checked by the logon current value of v$sysstat. However, if a task pool overflow occurs, you may not be able to execute the above statement because a new connection cannot be established.<br />In this case, the number of tasks must be checked with the number of open files in the Altibase server process with the lsof command.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of executing lsof in Linux</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> $ lsof -p PID | grep -e IPv4 -e sock | grep -v LISTEN
+altibase 7494 eheejung   38u  IPv4           40725257                 TCP localhost:21109-&gt;localhost:36248 (ESTABLISHED)     # Sessions in which the connection was established normally, included in the task.
+altibase 7494 eheejung   39u  IPv4           40725262                 TCP localhost:21109-&gt;localhost:36249 (ESTABLISHED)
+altibase 7494 eheejung   40u  sock                0,4            40726084 can&#39;t identify protocol                            # All service threads are in EXECUTE state or
+altibase 7494 eheejung   41u  sock                0,4            40726576 can&#39;t identify protocol                            # When connection fails due to exceeding TRANSACTION_TABLE_SIZE
+altibase 7494 eheejung   42u  sock                0,4            40726604 can&#39;t identify protocol                            # Remaining task</pre>
+</div></div><p>On Solaris, the pfiles command can be used instead of lsof.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ pfiles PID | grep sock
+
+        sockname: AF_INET 0.0.0.0  port: 21109                   # LISTEN
+        sockname: AF_INET 127.0.0.1  port: 21109                 # A session in which the connection was established normally, and this is also included in the task.
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 0.0.0.0  port: 0                       # If all service threads are in EXECUTE state or the connection fails due to exceeding TRANSACTION_TABLE_SIZE, the remaining tasks.
+        sockname: AF_INET 0.0.0.0  port: 0
+        sockname: AF_INET 0.0.0.0  port: 0</pre>
+</div></div></li></ul><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Solution">Solution</h1><hr /><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-ChangeMAX_CLIENTproperty">Change MAX_CLIENT property</h2><hr /><p>If there are many actual simultaneous connection sessions, you need to change MAX_CLIENT.</p><p>When the number of simultaneous connection sessions increases, the number of concurrent transactions increases, and in the case of Unix/Linux systems, the number of open files increases.</p><p>Therefore, if you change MAX_CLIENT larger than the existing value, the following values must be changed as well.</p><ul><li>TRANSACTION_TABLE_SIZE</li><li>max open files</li></ul><p>Refer to &quot;<span style="color: rgb(76,76,76);"><a href="https://docs.altibase.com/pages/viewpage.action?pageId=16876028" rel="nofollow">Notes/Considerations when increasing the number of concurrent connection sessions (MAX_CLIENT)</a>&quot;</span></p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Reviewapplication"><span style="color: rgb(76,76,76);">Review application</span></h2><hr /><p><span style="color: rgb(76,76,76);"> </span></p><p>If the application has the following characteristics, it is necessary to check again.</p><p><span style="color: rgb(76,76,76);"> </span></p><p>Unless the above processing is inevitable due to the nature of the service, consider changing the session to end immediately after the transaction is completed.</p><ul><li><p>If keep making new connections</p></li><li><p>Maintaining unnecessarily connected sessions even though they no longer need to be connected</p></li></ul><p> </p><p><span style="color: rgb(76,76,76);"><br /></span></p><p> </p></div><div><strong><br /></strong></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

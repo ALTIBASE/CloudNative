@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-41059 ( 266329) Task pool overflow. Check properties.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-41059 ( 266329) Task pool overflow. Check properties.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Sep 01, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055821 {padding: 0px;}
+div.rbtoc1624409055821 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055821 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055821'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-버전'>버전</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-현상'>현상</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-원인'>원인</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-신규접속수가증가한경우'>신규 접속 수가 증가한 경우</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-서비스쓰레드가모두EXECUTE상태에서신규접속이발생한경우'>서비스 쓰레드가 모두 EXECUTE 상태에서 신규 접속이 발생한 경우</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-트랜잭션수가TRANSACTION_TABLE_SIZE에도달한상태에서신규접속이발생한경우'>트랜잭션 수가 TRANSACTION_TABLE_SIZE 에 도달한 상태에서 신규 접속이 발생한 경우</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-확인방법'>확인 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-체크리스트'>체크 리스트</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-MAX_CLIENT설정값확인방법'>MAX_CLIENT 설정 값 확인 방법</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-세션수확인방법'>세션 수 확인 방법</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-task수확인방법'>task 수 확인 방법</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-조치'>조치</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-MAX_CLIENT프로퍼티변경'>MAX_CLIENT 프로퍼티 변경</a></li>
+<li><a href='#ERR-41059(266329)Taskpooloverflow.Checkproperties.-어플리케이션검토'>어플리케이션 검토</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 5 이상</p><p> </p><p> </p><p> </p><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-현상"><strong>현상</strong></h1><hr /><p>클라이언트에서 알티베이스 서버로 신규 접속 시도 시 아래와 같은 에러 메시지로 실패할 때, </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[ERR-91015 : Communication failure.]</pre>
+</div></div><p>알티베이스 서버의 altibase_boot.log 에서 아래의 에러 메시지를 볼 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">ERR-41059(errno=16) Task pool overflow. Check properties.
+Dispatcher failed callback</pre>
+</div></div><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><p><strong><br /></strong></p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-원인"><strong>원인</strong></h1><hr /><p><strong><span style="color: rgb(51,102,255);">알티베이스 서버에 생성된 task 수가 MAX_CLIENT 에 도달했을 때 발생합니다.</span></strong></p><p>task 는 알티베이스 서버에 새로운 연결이 맺어질 때 생성되는 객체로, 동시에 생성할 수 있는 최대 수가 알티베이스 서버 프로퍼티 MAX_CLIENT 값에 영향을 받습니다.</p><p>현재 생성된 task 의 수가 MAX_CLIENT 에 도달하여 새로운 task 객체를 생성할 수 없을 때 Task pool overflow 라는 메시지가 나타납니다.</p><p>MAX_CLIENT 는 동시에 접속할 수 있는 최대 세션 수를 의미하기도 하는데, task 는 결국 세션과 대응되기 때문에 같은 프로퍼티에 영향을 받습니다.</p><p>발생할 수 있는 원인은 다음과 같습니다.</p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-신규접속수가증가한경우"><strong>신규 접속 수가 증가한 경우</strong></h2><hr /><p>신규 접속 수가 증가하여 task 의 수가 MAX_CLIENT 를 초과하는 경우 발생할 수 있습니다.</p><p> </p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-서비스쓰레드가모두EXECUTE상태에서신규접속이발생한경우"><strong>서비스 쓰레드가 모두 EXECUTE 상태에서 신규 접속이 발생한 경우</strong></h2><hr /><p>모든 서비스 쓰레드가 EXECUTE 상태에서 신규 접속이 실패한 경우 해당 연결은 알티베이스 서버 내에서 task 형태로 남아 있습니다. 따라서 이런 이유로 접속이 실패하더라도 신규 접속이 발생한 만큼 task 수가 증가하게 됩니다.</p><p>아래와 같이 접속이 실패하다가</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-5104D : Connection timeout.]
+</pre>
+</div></div><p>task 의 수가 MAX_CLIENT 를 초과하게 되면 접속 실패 에러 메시지가 아래와 같이 바뀝니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-91015 : Communication failure.]</pre>
+</div></div><p> </p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-트랜잭션수가TRANSACTION_TABLE_SIZE에도달한상태에서신규접속이발생한경우"><strong>트랜잭션 수가 TRANSACTION_TABLE_SIZE 에 도달한 상태에서 신규 접속이 발생한 경우</strong></h2><hr /><p>동시 수행 중인 트랜잭션의 수가 TRANSACTION_TABLE_SIZE 에 도달한 상태에서 신규 접속이 실패한 경우 해당 연결은 알티베이스 서버 내에서 task 형태로 남아 있습니다. 따라서 이런 이유로 접속이 실패하더라도 신규 접속이 발생한 만큼 task 수가 증가하게 됩니다.</p><p>아래와 같이 접속이 실패하다가</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-5104D : Connection timeout.]
+</pre>
+</div></div><p>task 의 수가 MAX_CLIENT 를 초과하게 되면 접속 실패 에러 메시지가 아래와 같이 바뀝니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is -silent
+[ERR-91015 : Communication failure.]</pre>
+</div></div><p>이 경우 altibase_boot.log 에서는 아래와 같은 메시지가 발생합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">TRANSACTION_TABLE_SIZE is full !!
+ Current TRANSACTION_TABLE_SIZE is 1024
+ Please check TRANSACTION_TABLE_SIZE</pre>
+</div></div><p> </p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-확인방법"><strong>확인 방법</strong></h2><hr /><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-체크리스트">체크 리스트</h3><p>Task pool overflow 의 원인을 찾기 위해서는 아래 항목들을 확인해야 합니다.</p><ul><li><strong>MAX_CLIENT 프로퍼티 설정 값<br /> </strong></li><li><strong>알티베이스 서버에 접속된 세션 수</strong><br /> 알티베이스 서버에 접속된 세션 수가 MAX_CLIENT 와 동일하면 세션 증가가 원인이고  MAX_CLIENT 보다 작다면 task 수를 확인합니다.<br /> </li><li><strong>알티베이스 서버에서 생성된 task 수</strong><br /> 세션 수가 MAX_CLIENT 보다 작고 task 수가 MAX_CLIENT 와 같거나 크다면 아래 원인을 의심해 볼 수 있습니다.<br /><br />1. 서비스 쓰레드가 모두 EXECUTE 상태에서 신규 접속이 발생하여 task 가 증가한 경우<br />2. 트랜잭션 수가 TRANSACTION_TABLE_SIZE 에 도달한 상태에서 신규 접속이 발생하여 task 가 증가한 경우</li></ul><ul><li><strong>$ALTIBASE_HOME/trc/altibase_boot.log</strong><br /> 트랜잭션 수가 TRANSACTION_TABLE_SIZE 을 초과한 경우 TRANSACTION_TABLE_SIZE is full 이라는 메시지가 남습니다.</li></ul><p> </p><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-MAX_CLIENT설정값확인방법">MAX_CLIENT 설정 값 확인 방법</h3><p>Task pool overflow 은 task 의 수가 MAX_CLIENT 프로퍼티의 설정 값을 초과할 때 발생하므로 먼저 이 프로퍼티의 설정 값을 확인합니다.</p><ul style="list-style-type: square;"><li><p><strong>iSQL 접속이 가능한 경우</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL접속이 가능한 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set linesize 1024;
+iSQL&gt; set colsize 30;
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;MAX_CLIENT&#39;;
+NAME                            VALUE1
+-------------------------------------------------------------------
+MAX_CLIENT                      1000
+1 row selected
+</pre>
+</div></div></li><li><p><strong>iSQL 접속이 불가능한 경우</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>iSQL접속이 불가능한 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep MAX_CLIENT $ALTIBASE_HOME/conf/altibase.properties
+</pre>
+</div></div></li></ul><p> </p><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-세션수확인방법">세션 수 확인 방법</h3><ul><li><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-iSQL접속이가능한경우iSQL접속이가능하다면성능뷰를통해세션수를확인할수있으며이를통해Taskpooloverflow의원인을어느정도유추할수있습니다.현재세션수와MAX_CLIENT값을비교하여값이같은경우세션증가가원인입니다.현재세션수가MAX_CLIENT보다작다면세션증가가아닌다른두가지가원인일수있습니다.">iSQL 접속이 가능한 경우<br /><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">iSQL 접속이 가능하다면 성능 뷰를 통해 세션 수를 확인할 수 있으며 이를 통해 Task pool overflow 의 원인을 어느 정도 유추할 수 있습니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">현재 세션 수와 MAX_CLIENT 값을 비교하여 값이 같은 경우 세션 증가가 원인입니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">현재 세션 수가 MAX_CLIENT 보다 작다면 세션 증가가 아닌 다른 두 가지가 원인일 수 있습니다.<br /></span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>세션 수 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ export ISQL_CONNECTION = IPC
+$ is -silent -sysdba
+iSQL&gt; SELECT COUNT(*) FROM V$SESSION;                                    -- 현재 세션 수 확인
+COUNT
+-----------------------
+1000
+1 row selected.
+</pre>
+</div></div><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-"><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"> </span></h4></li><li><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-iSQL접속이불가능한경우iSQL접속이어려운경우OS상의정보로세션수를확인해야합니다.클라이언트의접속방법에따라아래두가지방법으로확인할수있습니다.TCP,IPC두가지방법으로접속하는경우수행결과를모두더하여MAX_CLIENT와비교하여세션증가가원인인지다른부분이원인인지판단할수있습니다.">iSQL 접속이 불가능한 경우<br /><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">iSQL 접속이 어려운 경우 OS 상의 정보로 세션 수를 확인해야 합니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">클라이언트의 접속 방법에 따라 아래 두 가지 방법으로 확인할 수 있습니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">TCP, IPC 두 가지 방법으로 접속하는 경우 수행 결과를 모두 더하여 MAX_CLIENT 와 비교하여 세션 증가가 원인인 지 다른 부분이 원인인 지 판단할 수 있습니다.<br /></span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>클라이언트가 TCP 로 접속하는 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ netstat -an | grep 20300 | grep ESTA | wc -l                   # 결과를 MAX_CLIENT 와 비교
+
+또는
+$ lsof -p pid                                                    # 알티베이스 서버가 오픈하고 있는 소켓 파일 수를 MAX_CLIENT 와 비교</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>클라이언트가 IPC 로 접속하는 경우</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Linux
+$ ipcs -m | grep -i -e nattch -e eheejung
+key        shmid      owner      perms      bytes      nattch     status
+0x00003ed0 458761     altibase   666        131104     1
+
+# HP-UX, AIX
+$ ipcs -ma | grep -e NATTCH -e eheejung
+T         ID     KEY        MODE        OWNER     GROUP   CREATOR    CGROUP NATTCH      SEGSZ  CPID  LPID   ATIME    DTIME    CTIME
+m    7438362 0x00003353 --rw-rw-rw-  altibase     users  altibase     users      1     655480 13139 12411 17:57:48 no-entry 10:22:18
+
+# SunOS
+$ ipcs -ma | /usr/xpg4/bin/grep -e NATTCH -e beadskin
+T         ID      KEY        MODE        OWNER    GROUP  CREATOR   CGROUP NATTCH      SEGSZ  CPID  LPID   ATIME    DTIME    CTIME
+m          9   0x3863     --rw-rw-rw- altibase    other altibase    other      1     983576 14435 14435 17:31:35 no-entry 17:31:35</pre>
+</div></div><p><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"><br /></span></p><div><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"> </span></div><div><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"><br /></span></div></li></ul><h3 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-task수확인방법">task 수 확인 방법</h3><ul><li><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-iSQL접속이가능한경우세션수가MAX_CLIENT보다작다면다른원인을살펴봐야합니다.아래명령어로task의수를확인하고task수와MAX_CLIENT를비교합니다.logoncurrent의값은생성된task의수를의미하며세션수보다클수있습니다.">iSQL 접속이 가능한 경우<br /><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">세션 수가 MAX_CLIENT 보 다 작다면 다른 원인을 살펴봐야 합니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">아래 명령어로 task 의 수를 확인하고 task 수와 MAX_CLIENT 를 비교합니다. logon current 의 값은 생성된 task 의 수를 의미하며 세션 수 보다 클 수 있습니다.<br /></span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>생선된 task 수 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME = &#39;logon current&#39;;</pre>
+</div></div><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-세션수가MAX_CLIENT보다작고logoncurrent의값이MAX_CLIENT와같거나큰경우아래두가지가원인일수있습니다"><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"> </span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">세션 수가 MAX_CLIENT 보다 작고 logon current 의 값이 MAX_CLIENT 와 같거나 큰 경우 아래 두 가지가 원인일 수 있습니다</span></h4><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.--서비스쓰레드가모두EXECUTE상태에서신규접속이발생하여task가증가한경우-트랜잭션수가TRANSACTION_TABLE_SIZE에도달한상태에서신규접속이발생하여task가증가한경우"><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">- 서비스 쓰레드가 모두 EXECUTE 상태에서 신규 접속이 발생하여 task 가 증가한 경우<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">- 트랜잭션 수가 TRANSACTION_TABLE_SIZE 에 도달한 상태에서 신규 접속이 발생하여 task 가 증가한 경우</span></h4><div><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"><br /></span></div></li><li><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-iSQL접속이불가능한경우생성된task수는v$sysstat의logoncurrent값으로확인할수있습니다.하지만Taskpooloverflow이발생한상황이라면새로운연결이맺어지지않기때문에위문장을수행하지못할수있습니다.이때는lsof명령으로알티베이스서버프로세스의오픈파일수로task수를확인해야합니다.">iSQL 접속이 불가능한 경우<br /><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">생성된 task 수는 v$sysstat 의 logon current 값으로 확인할 수 있습니다. 하지만 Task pool overflow 이 발생한 상황이라면 새로운 연결이 맺어지지 않기 때문에 위 문장을 수행하지 못할 수 있습니다.<br /></span><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">이 때는 lsof 명령으로 알티베이스 서버 프로세스의 오픈 파일 수로 task 수를 확인해야 합니다.<br /></span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Linux 에서 lsof 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ lsof -p PID | grep -e IPv4 -e sock | grep -v LISTEN
+altibase 7494 eheejung   38u  IPv4           40725257                 TCP localhost:21109-&gt;localhost:36248 (ESTABLISHED)     # 연결이 정상적으로 맺어진 세션, task 에 포함됨.
+altibase 7494 eheejung   39u  IPv4           40725262                 TCP localhost:21109-&gt;localhost:36249 (ESTABLISHED)
+altibase 7494 eheejung   40u  sock                0,4            40726084 can&#39;t identify protocol                            # 모든 서비스 쓰레드가 EXECUTE 상태이거나
+altibase 7494 eheejung   41u  sock                0,4            40726576 can&#39;t identify protocol                            # TRANSACTION_TABLE_SIZE 초과로 연결이 실패한 경우
+altibase 7494 eheejung   42u  sock                0,4            40726604 can&#39;t identify protocol                            # 남아있는 task
+</pre>
+</div></div><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-Solaris의경우lsof대신pfiles명령어를이용해도됩니다."><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;">Solaris 의 경우 lsof 대신 pfiles 명령어를 이용해도 됩니다.<br /></span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SunOS 에서 pfiles 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ pfiles PID | grep sock
+
+        sockname: AF_INET 0.0.0.0  port: 21109                   # LISTEN
+        sockname: AF_INET 127.0.0.1  port: 21109                 # 연결이 정상적으로 맺어진 세션, 이것도 task 에 포함됨.
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 127.0.0.1  port: 21109
+        sockname: AF_INET 0.0.0.0  port: 0                       # 모든 서비스 쓰레드가 EXECUTE 상태이거나 TRANSACTION_TABLE_SIZE 초과로 연결이 실패한 경우, 남아있는 task.
+        sockname: AF_INET 0.0.0.0  port: 0
+        sockname: AF_INET 0.0.0.0  port: 0
+</pre>
+</div></div><h4 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-.1"><span class="Apple-style-span" style="color: rgb(51,51,51);font-weight: normal;"> </span></h4></li></ul><p><span class="Apple-style-span"><br /></span></p><p><span class="Apple-style-span"><br /></span></p><p> </p><p> </p><p> </p><h1 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-조치"><strong>조치</strong></h1><hr /><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-MAX_CLIENT프로퍼티변경"><strong>MAX_CLIENT 프로퍼티 변경</strong></h2><hr /><p>실제 동시 접속 세션이 많아졌을 경우 MAX_CLIENT 를 변경해야 합니다.</p><p>동시 접속 세션이 많아지면 동시에 수행하는 트랜잭션도 많아지고 Unix/Linux 시스템의 경우 open file 수가 증가하게 됩니다.</p><p>따라서 MAX_CLIENT 를 기존 값보다 크게 변경할 경우 다음의 값들을 같이 변경해야 합니다.</p><ul><li>TRANSACTION_TABLE_SIZE</li><li>max open files</li></ul><p>변경 방법에 관한 설명은 <a href="http://aid.altibase.com/x/FARw" class="external-link" rel="nofollow">동시 접속 세션 수(MAX_CLIENT) 증가 시 고려사항</a> 페이지를 참고하시기 바랍니다.</p><p> </p><p> </p><h2 id="ERR-41059(266329)Taskpooloverflow.Checkproperties.-어플리케이션검토"><strong>어플리케이션 검토</strong></h2><hr /><p>어플리케이션이 아래와 같은 특성을 가진 경우 그 필요성을 다시 한 번 확인 작업이 필요합니다.</p><p>서비스 특성 상 위와 같은 처리가 불가피한 경우가 아니라면 트랜잭션 완료 후 세션을 바로 종료하도록 변경하는 것을 검토해야 합니다.</p><ul style="list-style-type: square;"><li>계속 새로운 연결을 맺는 경우</li><li>더 이상 연결을 맺고 있을 필요가 없음에도 불필요하게 연결된 세션을 유지하는 경우</li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

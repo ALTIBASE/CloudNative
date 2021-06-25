@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 7. Memory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 7. Memory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Aug 01, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409833967 {padding: 0px;}
+div.rbtoc1624409833967 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409833967 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409833967'>
+<ul class='toc-indentation'>
+<li><a href='#id-7.Memory-MemoryMS'>Memory</a>
+<ul class='toc-indentation'>
+<li><a href='#id-7.Memory-[MS01]알티베이스의메모리사용현황MS01[맨위로]'>[MS01] 알티베이스의 메모리 사용 현황 [맨 위로]</a></li>
+<li><a href='#id-7.Memory-[MS02]ALTIBASE의메모리사용량합계MS02[맨위로]'>[MS02] ALTIBASE의 메모리 사용량 합계[맨 위로]</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h2 id="id-7.Memory-MemoryMS"><strong>Memory<span class="confluence-anchor-link" id="id-7.Memory-MS"></span></strong></h2><hr /><p>OS에서 알티베이스가 점유하는 메모리 사용률 관련 정보를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><h4 id="id-7.Memory-[MS01]알티베이스의메모리사용현황MS01[맨위로]">[MS01] 알티베이스의 메모리 사용 현황 <span class="confluence-anchor-link" id="id-7.Memory-MS01"></span><a href="#id-7.Memory-MS">[&#47592; &#50948;&#47196;]</a></h4><ul><li>알티베이스 서버를 구성하는 모듈별 메모리 사용 현황을 볼 수 있다.</li><li><p><span style="line-height: 1.42857;">알티베이스 4 이상 버전에서 사용할 수 있다.  </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME
+     , ROUND(ALLOC_SIZE/1024/1024) &#39;ALLOC(M)&#39;
+     , ROUND(MAX_TOTAL_SIZE/1024/1024) &#39;MAX_TOTAL(M)&#39;
+  FROM V$MEMSTAT
+ ORDER BY 3 DESC ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">NAME</td><td class="confluenceTd"><p>알티베이스를 구성하는 모듈의 이름으로 모듈의 목록은 알티베이스 버전에 따라 차이가 있을 수 있다. 주요 모듈에 대한 간략한 설명은 아래와 같다.</p><p>• Storage_Disk_Ager : Disk Garbage Collection에 사용되는 메모리<br /><span style="line-height: 1.42857;">• </span>Storage_Disk_Buffer : Disk Buffer 관리에 사용되는 메모리<br /><span style="line-height: 1.42857;">• </span>Storage_Disk_Collection : Direct Path Insert와 LOB 연산에 사용되는 메모리<br /><span style="line-height: 1.42857;">• </span>Storage_Disk_Datafile : Disk File 관리에 사용되는 메모리<br /><span>• </span>Storage_Disk_Index : Disk Index 관리에 사용되는 메모리<br />• Storage_Disk_Page : Disk Page 관리에 사용되는 메모리<br />• Storage_Disk_Recovery : Disk 복구에 사용되는 메모리<br />• Storage_Memory_Ager : Memory Garbage Collection 에 사용되는 메모리<br />• Storage_Memory_Collection : Memory Record 관리에 사용되는 메모리<br />• Storage_Memory_Interface : Cursor 등의 Interface 관리에 사용되는 메모리<br />• Storage_Memory_Locking : Locking 관리에 사용되는 메모리<br />• Storage_Memory_Manager : Memory Data 저장에 사용되는 메모리<br />• Storage_Memory_Index : Index 관리에 사용되는 메모리<br />• Storage_Memory_Page : Memory Page 관리에 사용되는 메모리<br />• Storage_Memory_Recovery : Memory 복구에 사용되는 메모리<br />• Storage_Memory_Utility : Storage Manager Tool에 사용되는 메모리<br />• Storage_Memory_Transaction : Transaction 관리에 사용되는 메모리<br />• Temp_Memory : Memory Index 저장에 사용되는 메모리<br />• Transaction_Table : Transaction Table 관리에 사용되는 메모리<br />• Transaction_OID_List : Garbage Collection의 OID 저장에 사용되는 메모리<br />• Transaction_Table_Info : Transaction Table 정보 관리에 사용되는 메모리</p></td></tr><tr><td class="confluenceTd">ALLOC(M)</td><td class="confluenceTd">해당 모듈이 현재 사용하고 있는 메모리 크기.</td></tr><tr><td class="confluenceTd">MAX_TOTAL(M)</td><td class="confluenceTd">해당 모듈이 사용했던 최대 메모리 크기.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-7.Memory-[MS02]ALTIBASE의메모리사용량합계MS02[맨위로]">[MS02] ALTIBASE의 메모리 사용량 합계<span class="confluence-anchor-link" id="id-7.Memory-MS02"></span><a href="#id-7.Memory-MS">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><p>알티베이스 4 이상 버전에서 사용할 수 있다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT ROUND(SUM(ALLOC_SIZE)/1024/1024) &#39;ALLOC(M)&#39;
+     , ROUND(SUM(MAX_TOTAL_SIZE)/1024/1024) &#39;MAX_TOTAL(M)&#39;
+  FROM V$MEMSTAT ;</pre>
+</div></div></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

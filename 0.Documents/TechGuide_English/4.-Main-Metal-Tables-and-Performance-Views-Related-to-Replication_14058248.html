@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. Main Metal Tables and Performance Views Related to Replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Altibase-Meta-Table-and-Performance-View-Overview_14058238.html">2. Altibase Meta Table and Performance View Overview</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. Main Metal Tables and Performance Views Related to Replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p">The relationship between meta tables and performance views in which only the main key column to be referenced in the join query for monitoring related to replication are shown is as follows.</p><p class="md-end-block md-p"><span class="md-plain">For reference, the SYS_REPL_ITEMS_ column name and user name are stored together so that it is not necessary to join SYS_USERS_ and SYS_TABLES_ to know the database user name and table name.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In addition, as mentioned above, due to the nature of the replication transaction without the session number and query number, the corresponding transaction is identified in the replication partner server through v</span><span>$</span><span class="md-plain">repsender_transtbl and v</span><span>$</span><span class="md-plain">repreceiver_transtbl.</span></p><p class="md-end-block md-p md-focus"><img class="confluence-embedded-image" width="700" src="attachments/14058248/14221510.png" data-image-src="attachments/14058248/14221510.png"></p><h2 class="md-end-block md-heading" id="id-4.MainMetalTablesandPerformanceViewsRelatedtoReplication-MainMetaTables"><span class="md-plain">Main Meta Tables</span></h2><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_REPLICATIONS_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores information about all the replicated objects, and it is possible to check detailed information such as the point in time (XSN) in which the replication target server reflects the replication.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_REPL_HOSTS</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores the information of the server to be replicated, and it is possible to check the address (HOST_IP) and port number (PORT_NO) of the server to be replicated.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_REPL_ITEMS_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores information about the table to be replicated.</span></p></li></ul><h2 class="md-end-block md-heading" id="id-4.MainMetalTablesandPerformanceViewsRelatedtoReplication-MainPerformanceViews"><span class="md-plain">Main Performance Views</span></h2><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$repsender</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows the status of the sender, which is a replication send thread. If the sender is not running, it is not searched.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$repgap</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows the gap between the latest redo log serial number and the redo log serial number sent by the sender. It is measured by the sender, so if the sender is not running, it is also not retrieved.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$repreceiver</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows the status of the receiver, which is the replication receiving thread. If the receiver is not running, it is not searched.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$repsender_transtbl</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows the replication transaction that the sender is executing, and the transaction of the other server corresponding to the transaction can be known. This is also not searched if the sender is not running.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">repreceiver_transtbl</span></strong></p><p class="md-end-block md-p md-focus"><span class="md-plain">This is a performance view that shows information about the replication transaction being executed by the received. This shows the transaction of the other server corresponding to the transaction. This is a major reference when a local transaction is waiting due to the lock of a replication transaction. This is also not searched if the receiver is not running.</span></p></li></ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058248/14221510.png">1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

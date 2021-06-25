@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 1. 설계 단계의 고려사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341274.html">Altibase 개발가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 1. 설계 단계의 고려사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> Education/Contents Team</span> on Dec 31, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409849404 {padding: 0px;}
+div.rbtoc1624409849404 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409849404 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409849404'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.설계단계의고려사항-이중화환경의고려사항'>이중화 환경의 고려사항</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.설계단계의고려사항-①ALTIBASE는네트웍기반의이중화방식'>① ALTIBASE는 네트웍 기반의 이중화 방식</a></li>
+<li><a href='#id-1.설계단계의고려사항-②데이터불일치의방지방안고려'>② 데이터 불일치의 방지 방안 고려</a></li>
+<li><a href='#id-1.설계단계의고려사항-③로그기반의이중화방식'>③ 로그 기반의 이중화 방식</a></li>
+</ul>
+</li>
+<li><a href='#id-1.설계단계의고려사항-HA(HighAvailability)및백업에대한고려'>HA(High Availability) 및 백업에 대한 고려</a></li>
+<li><a href='#id-1.설계단계의고려사항-테이블설계의고려사항'>테이블 설계의 고려사항</a>
+<ul class='toc-indentation'>
+<li><a href='#id-1.설계단계의고려사항-①테이블의저장위치를목적에맞게선정'>① 테이블의 저장 위치를 목적에 맞게 선정</a></li>
+<li><a href='#id-1.설계단계의고려사항-②컬럼타입에대한고려'>② 컬럼 타입에 대한 고려</a></li>
+<li><a href='#id-1.설계단계의고려사항-③이중화대상인경우반드시Primarykey를가져야합니다.'>③ 이중화 대상인 경우 반드시 Primary key를 가져야 합니다.</a></li>
+<li><a href='#id-1.설계단계의고려사항-④ForeignKey는트랜잭션의성능을저하시킴으로무분별하게사용하지않습니다.'>④ Foreign Key는 트랜잭션의 성능을 저하시킴으로 무분별하게 사용하지 않습니다.</a></li>
+</ul>
+</li>
+<li><a href='#id-1.설계단계의고려사항-파티션테이블의제한'>파티션 테이블의 제한</a></li>
+<li><a href='#id-1.설계단계의고려사항-하드웨어준비의고려사항'>하드웨어 준비의 고려사항</a></li>
+<li><a href='#id-1.설계단계의고려사항-NotSupportFeature'>Not Support Feature</a></li>
+</ul>
+</div></p><hr /><p>ALTIBASE를 이용하여 DB 또는 시스템 설계를 수행하는 경우 고려할 사항들을 설명합니다. 설계 단계에서 고려하지 못한 사항들은 이후 개발뿐 아니라 운영 단계에까지 미치는 영향이 크기 때문에 반드시 아래 사항들을 고려하여 설계에 참고할 것을 권장합니다.</p><h2 id="id-1.설계단계의고려사항-이중화환경의고려사항"><strong>이중화 환경의 고려사항</strong></h2><h3 id="id-1.설계단계의고려사항-①ALTIBASE는네트웍기반의이중화방식">① ALTIBASE는 네트웍 기반의 이중화 방식</h3><p>ALTIBASE는 네트웍을 기반으로 변경트랜잭션 로그를 송/수신하여 데이터를 동기화 하는 형태의 이중화 방식을 채택하고 있습니다. 즉, 일반적으로 사용자가 흔히 이해하는 디스크를 공유하는 방식이 아닙니다. 따라서, 네트웍 환경에서 발생할 수 밖에 없는 데이터 전송지연 등으로 인한 동기화 부분을 고려하여 설계를 해야 합니다.</p><p>ALTIBASE의 이중화 방식은 Lazy방식과 Eager방식이 있습니다. Lazy방식은 데이터의 전송지연을 허용하는 형태이며 Eager방식은 데이터의 지연을 허용하지 않는 형태입니다. 이와 같은 Lazy/Eager의 설정은 세션단위로도 설정이 가능합니다. 따라서, 데이터의 전송지연이 허용되는 수준의 업무라면 Lazy방식을 채택하고 그렇지 않은 데이터의 동기화가 반드시 필요한 업무라면 Eager방식을 업무 별로 적절하게 설정하여 운용하도록 합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>비교</strong></p></th><th class="confluenceTh"><p><strong>Lazy 방식</strong></p></th><th class="confluenceTh"><p><strong>Eager 방식</strong></p></th></tr><tr><td class="confluenceTd"><p>성능</p></td><td class="confluenceTd"><p>단독 서버의 90% 성능 수준</p></td><td class="confluenceTd"><p>Lazy 방식 대비 현저한 성능저하</p></td></tr><tr><td class="confluenceTd"><p>동기화</p></td><td class="confluenceTd"><p>상대편 서버에 변경트랜잭션 로그의 전송 성공만을 확인하는 구조이기 때문에 성능은 우수한 반면 동기화는 지연될 수 있음</p></td><td class="confluenceTd"><p>상대편 서버에 데이터 불일치를 원천 방지하기 위해 상대편 서버에 Commit 된 후 로컬에도 Commit 되기 때문에 성능은 급격히 지연되지만 데이터의 동기화 부분은 지연되지 않음.</p></td></tr></tbody></table></div><h3 id="id-1.설계단계의고려사항-②데이터불일치의방지방안고려">② 데이터 불일치의 방지 방안 고려</h3><p>동일한 Primary key를 갖는 레코드를 양쪽 서버에서 동시에 서로 다른 값으로 변경하는 경우 이중화 방식에서는 서로 다른 레코드로 변경되는 상황이 발생하게 됩니다. 이 경우 사용자가 원치 않는 데이터의 불일치가 발생하기 때문에 업무요건을 충분히 파악하여 변경 업무를 이중화로 구성된 그룹 내에서 한쪽 서버에서만 발생하도록 프로그램을 배치하거나 동일한 PK를 갖는 레코드가 이중화로 구성된 그룹 내에서 변경이 동시에 발생하지 않도록 배치를 해야만 합니다.</p><p>예를 들면, L4 switch를 사용한다면 업무별로 프로그램을 각기 다른 서버에 배치하여 192.168.1.X망에서 접속한 프로그램은 1번 DBMS서버로 접속을 하고 192.168.2.X망에서 접속한 프로그램은 2번 DBMS서버로 접속을 수행하는 형태의 구성이 가능할 것입니다. 또는, 사용자가 명시적으로 서비스 프로그램의 DBMS접속 부분에 IP를 지정하는 것도 방법이 됩니다.</p><h3 id="id-1.설계단계의고려사항-③로그기반의이중화방식">③ 로그 기반의 이중화 방식</h3><p>ALTIBASE의 이중화는 로컬서버에서 발생한 트랜잭션의 변경로그를 전송하는 형태입니다. 한 개의 SQL문으로 백만 건을 변경하였다 하더라도 동일하게 원격서버로 한 개의 SQL문의 전송되는 형태가 아닌 백만 건의 변경트랜잭션 로그가 모두 전송되는 구조임을 의미합니다.</p><p>이외도 이중화 환경의 주요 고려사항들은 ALTIBASE의 기술문서인『효율적인 이중화 구성 가이드』, 『이중화 제약사항 가이드』문서를 반드시 참고하도록 합니다.</p><h2 id="id-1.설계단계의고려사항-HA(HighAvailability)및백업에대한고려"><strong>HA(High Availability) 및 백업에 대한 고려</strong></h2><p>일반적인 상황에서는 장애가 발생하고 복구가 되면 이중화는 자동으로 자신이 가지고 있는 장애시점에 미처 보내지 못한 트랜잭션 로그를 상대편에 보내어 데이터 동기화를 수행하게 됩니다. 하지만, 네트웍의 특성상 장애 시점에 변경트랜잭션 로그의 전송불가에 의한 데이터 불일치로 인해 서비스를 바로 Fail-Over할 수 없는 업무가 있는지를 고려해야 합니다.</p><p>반드시 데이터가 동기화 된 이후에만 서비스가 가능한 업무라면 ALTIBASE는 데이터 미지연분에 대한 반영을 위해 Off-Line replicator를 제공하고 있습니다. 다만, 이것은 장애 서버의 디스크에 접속이 가능한 상태에서만 사용이 가능하다는 제약조건이 있습니다. (이 기능을 쓰고자 한다면 공유디스크 장비를 구축하는 것을 권장합니다.)</p><p>이러한 Off-Line replicator를 사용할 수 있는 환경이 아니라면 프로그램에서 장애시점의 Raw-Data를 누적하여 필요한 부분만큼 정상서버에 반영한 후 서비스를 이관하는 형태의 HA정책을 수립해야 합니다. 예를 들면, 증권사의 경우 대외계를 통해 나가는 모든 데이터는 고유번호로 관리됩니다. 이 번호는 대외계 시스템과 DB에 동일하게 존재하기 때문에 장애 발생시 대외계와 DB시스템 간에 차이가 발생한 부분만큼을 정상 서버에 반영하는 업무로직을 사용하는 경우도 있습니다.</p><p>HA외에도 물리적인 디스크 장애로 인한 데이터파일의 손상 및 트랜잭션 로그파일의 손상으로 인한 장애에 대비하여 백업정책을 수립해야 합니다. ALTIBASE의 백업 방식은 아카이브 모드를 이용한 전체 백업 방식과 증분 백업 방식을 모두 제공하고 있습니다.</p><p>따라서, 사용자는 백업 시점에 (1) 오프라인 상태에서 모든 필요 파일을 콜드 백업하는 방식, (2) 온라인 상태에서 데이터베이스 또는 테이블스페이스 단위의 전체 백업 방식, (3) 온라인 상태에서 데이터베이스 또는 테이블스페이스 단위의 증분 백업 방식 중 하나를 선택해야 합니다.</p><p>백업방식은 다음과 같은 형태 중 하나를 택해야 합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>방식</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>iLoader 백업</p></td><td class="confluenceTd"><p>주요 테이블 별로 레코드의 스냅샷만을 저장하는 형태로 iloader로 백업을 받는 시점의 데이터만 백업됩니다.</p></td></tr><tr><td class="confluenceTd"><p>콜드 백업</p></td><td class="confluenceTd"><p>ALTIBASE 프로세스를 내린 후 모든 필요 파일을 복사하여 보관하는 형태로 파일을 복사한 시점까지만 복구가 가능합니다.</p></td></tr><tr><td class="confluenceTd"><p>아카이브 전체 백업</p></td><td class="confluenceTd"><p>백업 시점에 트랜잭션 로그파일을 포함하여 전체 데이터베이스 이미지를 백업하기 때문에 파일의 손상이 없는 시점까지 복구가 가능합니다.</p></td></tr><tr><td class="confluenceTd"><p>아카이브 증분 백업</p></td><td class="confluenceTd"><p>처음에 한번 전체 백업을 수행하고 다음부터는 변경된 이미지만 백업하는 형태이며, 트랜잭션 로그파일까지 백업하기 때문에 파일의 손상이 없는 시점까지 복구가 가능합니다. 증분 백업본이 많을수록 복구 시간이 오래 걸리기 때문에 이에 대한 검토가 필요합니다.</p></td></tr></tbody></table></div><p>백업과 관련하여 『ALTIBASE 백업정책 결정을 위한 고려사항』문서를 참고하도록 합니다.</p><h2 id="id-1.설계단계의고려사항-테이블설계의고려사항"><strong>테이블 설계의 고려사항</strong></h2><h3 id="id-1.설계단계의고려사항-①테이블의저장위치를목적에맞게선정">① 테이블의 저장 위치를 목적에 맞게 선정</h3><p>ALTIBASE는 메모리/디스크 테이블스페이스를 모두 지원합니다. 사용자는 빠른 처리성능이 요구되는 업무에 대해서는 어떤 테이블들을 메모리 테이블스페이스 위치 시킬 것인지를 선정해야 합니다. 즉, 메모리/디스크 테이블스페이스에 각각 위치할 업무 목적 별 테이블의 목록을 작성할 필요가 있습니다.<br /> 다만, 하나의 테이블 명으로 메모리/디스크에 동시에 위치할 수 없기 때문에 예를 들어, 당일 처리를 메모리 테이블에 저장하고 이전 처리를 디스크에 저장하고 한다면 테이블을 2개로 분리하여 EXEC_TABLE_MEM / EXEC_TABLE_DISK 와 같은 형태로 테이블을 생성해야 합니다. 조회 시에는 가급적 각각의 테이블을 조회하도록 설계하고, 만약 2개의 테이블을 동시에 조회해야 한다면 UNION ALL 을 이용하여 조회하거나 별도의 View를 생성하여 조회하는 방법을 택하면 됩니다. 단,메모리 테이블과 디스크 테이블로 분리된 2개의 테이블을 동시에 조회하게 될 때의 처리 속도는 디스크 테이블의 처리 성능을 따라갑니다.</p><h3 id="id-1.설계단계의고려사항-②컬럼타입에대한고려">② 컬럼 타입에 대한 고려</h3><p>ALTIBASE가 제공하는 숫자 타입의 경우 Numeric (9)와 같은 타입은 Integer타입으로도 충분히 표현이 가능한데 차지하는 공간은 8byte를 차지합니다. Integer타입에 비해 레코드당 4 byte를 더 점유하게 됩니다. 처리 성능 측면에서도 내부적으로 Numeric의 경우 다시 Native타입으로 변환을 해야 하는 비용이 발생하기 때문에 Integer타입에 비해서는 다소 느릴 수 밖에 없습니다.<br /> 다음의 사항들을 컬럼 타입의 선정에 있어 고려할 것을 권장합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>고려사항</strong></p></td><td class="confluenceTd"><p><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>숫자형</p></td><td class="confluenceTd"><p>1. Native ßà Non-Native의 변환비용 최소화 되도록 고려 <br class="atl-forced-newline" />    (Native타입[Integer, Double, BigInt]이 성능 면에서는 더 유리함) <br class="atl-forced-newline" /> 2. 실수 형의 정밀도를 요하지 않는 경우 Double 타입의 선택 <br class="atl-forced-newline" /> 3. Sum, Avg가 사용되는 컬럼이라면 Double, BigInt 타입의 선택</p></td></tr><tr><td class="confluenceTd"><p>날짜형</p></td><td class="confluenceTd"><p>날짜 관련 연산이 중요한 경우라면 Date 타입을 선택하고 검색 및 비교 연산에 국한된 경우라면 Char/Varchar타입을 선택 <br class="atl-forced-newline" /> (Date 타입은 8byte로 고정되어 있음)</p></td></tr><tr><td class="confluenceTd"><p>Join</p></td><td class="confluenceTd"><p>Join이 발생하는 컬럼이라면 형 변환이 발생하지 않도록 고려</p></td></tr></tbody></table></div><h3 id="id-1.설계단계의고려사항-③이중화대상인경우반드시Primarykey를가져야합니다.">③ 이중화 대상인 경우 반드시 Primary key를 가져야 합니다.</h3><h3 id="id-1.설계단계의고려사항-④ForeignKey는트랜잭션의성능을저하시킴으로무분별하게사용하지않습니다.">④ Foreign Key는 트랜잭션의 성능을 저하시킴으로 무분별하게 사용하지 않습니다.</h3><h2 id="id-1.설계단계의고려사항-파티션테이블의제한"><strong>파티션 테이블의 제한</strong></h2><p>ALTIBASE 파티션 테이블의 경우 현재까지 (버전 6.3.1기준) Partitioned Local Index, Non-Partitioned Global Index를 지원하고 있으며 Partitioned Global Index를 지원하고 있지 않습니다. 따라서, 파티션 테이블 전체를 조회하는 조건 절에 파티션 키가 배제된 형태의 조회 시에는 현저한 성능저하가 발생하기 때문에 파티션 테이블은 업무 목적상 히스토리성 데이터를 월별, 목적별 보관 형태의 목적으로 사용할 것을 권장합니다.</p><h2 id="id-1.설계단계의고려사항-하드웨어준비의고려사항"><strong>하드웨어 준비의 고려사항</strong></h2><p>위에서 언급한 사항들과 관련된 물리적인 고려사항을 정리하여 설명합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p><strong>고려사항</strong></p></td><td class="confluenceTd"><p><strong>설명</strong></p></td></tr><tr><td class="confluenceTd"><p>이중화</p></td><td class="confluenceTd"><p>네트웍을 이용하기 때문에 이중화의 연결은 별도의 Giga-bit 랜카드를 이용하여 서버간에 직접 연결하거나 Private망을 이용한 환경을 권장합니다.</p></td></tr><tr><td class="confluenceTd"><p>디스크</p></td><td class="confluenceTd"><p>백업을 고려할 경우 예측된 DB용량에 추가적으로 테이블스페이스 전체와 함께 일부 아카이브 로그파일이 저장될 수 있는 디스크 공간이 필요합니다.</p></td></tr></tbody></table></div><p>추가적으로 ALTIBASE의 리두로그 파일에 대한 정책은 무한 생성이라고 볼 수 있습니다. 몇 개의 리두로그 파일을 생성하고 재사용하는 구조가 아니라 계속 새로운 리두로그 파일을 생성해 가는 정책을 쓰기 때문에 대량 변경작업등으로 인한 리두로그 파일의 대량 생성이 불가피할 경우들이 있기 때문에 리두로그 파일이 저장될 디스크의 공간은 충분히 책정하는 것이 바람직합니다.<br /> 하드웨어적인 용량산정과 관련된 사항은 『ALTIBASE 용량산정 가이드』문서를 참고하도록 합니다.</p><h2 id="id-1.설계단계의고려사항-NotSupportFeature"><strong>Not Support Feature</strong></h2><p>ALTIBASE는 SQL92 표준을 준수하지만 타 DBMS와 비교하여 약간 상이한 부분들이 존재합니다.<br /> 이와 관련된 자세한 사항은 각 타 DBMS벤더 별로 제공되고 있는 기술문서를 참고하도록 합니다. (Ex)『ORACLE To ALTIBASE 변환 가이드』</p><p>
+
+
+<div class="plugin_pagetree">
+
+        
+        
+    <ul class="plugin_pagetree_children_list plugin_pagetree_children_list_noleftspace">
+        <div class="plugin_pagetree_children">
+        </div>
+    </ul>
+
+    <fieldset class="hidden">
+        <input type="hidden" name="treeId" value="">
+        <input type="hidden" name="treeRequestId" value="/plugins/pagetree/naturalchildren.action?decorator=none&amp;excerpt=false&amp;sort=position&amp;reverse=false&amp;disableLinks=false&amp;expandCurrent=false">
+        <input type="hidden" name="treePageId" value="">
+
+        <input type="hidden" name="noRoot" value="false">
+        <input type="hidden" name="rootPageId" value="7341274">
+
+        <input type="hidden" name="rootPage" value="">
+        <input type="hidden" name="startDepth" value="0">
+        <input type="hidden" name="spaceKey" value="DOCK" >
+
+        <input type="hidden" name="i18n-pagetree.loading" value="Loading...">
+        <input type="hidden" name="i18n-pagetree.error.permission" value="Unable to load page tree. It seems that you do not have permission to view the root page.">
+        <input type="hidden" name="i18n-pagetree.eeror.general" value="There was a problem retrieving the page tree. Please check the server log file for more information.">
+        <input type="hidden" name="loginUrl" value="">
+        <input type="hidden" name="mobile" value="false">
+
+                <fieldset class="hidden">
+                            <input type="hidden" name="ancestorId" value="7341274">
+                    </fieldset>
+    </fieldset>
+</div>
+
+</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

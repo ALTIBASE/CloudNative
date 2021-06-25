@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : WINDOWS환경의 Altibase ODBC 개발 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : WINDOWS환경의 Altibase ODBC 개발 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p style="text-align: center;"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409865487 {padding: 0px;}
+div.rbtoc1624409865487 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409865487 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409865487'>
+<ul class='toc-indentation'>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-개요'>개요</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver설정'>ODBC Driver 설정</a>
+<ul class='toc-indentation'>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-ODBC다운로드'>ODBC 다운로드</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver설치'>ODBC Driver 설치</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-제어판의ODBC설정'>제어판의 ODBC 설정</a></li>
+</ul>
+</li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver개발가이드'>ODBC Driver 개발 가이드</a>
+<ul class='toc-indentation'>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-ODBC연결문자열'>ODBC 연결문자열</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-VisualC++예제소스'>Visual C++ 예제소스</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-VisualC#예제소스'>Visual C# 예제소스</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-VisualBasic예제소스'>Visual Basic 예제소스</a></li>
+<li><a href='#WINDOWS환경의AltibaseODBC개발가이드-LOB사용시주의사항'>LOB 사용 시 주의사항</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="WINDOWS환경의AltibaseODBC개발가이드-개요">개요</h1><hr /><p class="0cm">본 문서는 Windows 환경의 Altibase 개발 환경에서 ODBC Driver를 이용한 각종 개발 툴의 설정 방법등을 가이드한다.</p><p class="0cm">Altibase 버전은 6.5.1 을 기반으로 하며 문서를 위해 사용된 Windows의 버전은 10이다.</p><p class="0cm"><span style="color: rgb(255,0,0);"><strong>Altibase 6.5.1 버전까지만 Windows 용 ODBC 를 제공하며, Altibase 7 버전부터는 제공하지 않는다.</strong></span></p><p class="0cm"> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p><br /><br /></p><h1 id="WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver설정">ODBC Driver 설정</h1><hr /><p>개발하기 전에 Altibase ODBC환경의 개발을 위해서 Altibase가 제공하는 ODBC Driver를 설치해야 한다. <a href="http://support.altibase.com/kr/" class="external-link" rel="nofollow">http://support.altibase.com/kr/</a><a href="http://atc.altibase.com에서" class="external-link" rel="nofollow">에서</a> 다운로드 받을 수 있다.</p><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-ODBC다운로드">ODBC 다운로드</h2><hr /><p><a href="http://support.altibase.com/kr" class="external-link" rel="nofollow">http://support.altibase.com/kr</a> 에 접속하여 “다운로드” → “제품” 부분으로 이동하면 각 버전별 Windows ODBC 파일을 내려 받을 수 있다. (Altibase 6.5.1 버전까지 지원)</p><p>웹 사이트에 없는 이전 버전인 경우 <a href="mailto:support@altibase.com" class="external-link" rel="nofollow">support@altibase.com</a>으로 문의하도록 한다.<br /><br /><img class="confluence-embedded-image confluence-content-image-border" height="619" width="800" src="attachments/13436856/13632883.jpg" data-image-src="attachments/13436856/13632883.jpg"><br /><br /><img class="confluence-embedded-image confluence-content-image-border" width="801" src="attachments/13436856/13632884.jpg" data-image-src="attachments/13436856/13632884.jpg"><br /><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver설치">ODBC Driver 설치</h2><hr /><p><span class="nolink">처음 설치할 경우 WINDOWS CLIENT 패키지를 다운로드 받아 설치하도록 한다.</span></p><p>WINDOWS CLIENT 패키지 설치 시 복잡한 과정이 없으므로 본 문서에서는 별도로 설명하지 않는다.<br />(Altibase ODBC 마찬가지로 설치 시 복잡한 과정은 없다.)</p><p>WINDOWS CLIENT 설치 시 아래와 같이 ODBC 설치 화면이 나온다.<br /><br /><img class="confluence-embedded-image confluence-content-image-border" width="804" src="attachments/13436856/13632886.jpg" data-image-src="attachments/13436856/13632886.jpg"></p><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-제어판의ODBC설정">제어판의 ODBC 설정</h2><hr /><p>Altibase ODBC Driver 등록을 위해서는 “시작” → “제어판&quot; → &quot;관리도구&quot; → &quot;ODBC 데이터 원본(64비트)&quot; → &quot;추가&quot; 를 누른다.</p><p><img class="confluence-embedded-image confluence-content-image-border" width="802" src="attachments/13436856/13632887.jpg" data-image-src="attachments/13436856/13632887.jpg"></p><p>     <br />&quot;추가&quot; 를 누른 후 ALTIBASE_HDB_ODBC_64bit 를 선택 후 &quot;마침&quot;을 누른다.</p><p><img class="confluence-embedded-image confluence-content-image-border" width="803" src="attachments/13436856/13632888.jpg" data-image-src="attachments/13436856/13632888.jpg"></p><p>   <br />아래와 같은 DB 접속 설정 화면이 나오면 연결을 위한 설정 값을 입력한다.</p><p><img class="confluence-embedded-image confluence-content-image-border" width="803" src="attachments/13436856/13632889.jpg" data-image-src="attachments/13436856/13632889.jpg"></p><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh">항 목</th><th style="text-align: center;" class="confluenceTh">설 명</th><th style="text-align: center;" class="confluenceTh">예</th></tr><tr><td style="text-align: center;" class="confluenceTd">Windows DSN Name</td><td style="text-align: center;" class="confluenceTd">다른 DSN Name과 구별되는 고유한 명칭</td><td style="text-align: center;" class="confluenceTd">SERVER1</td></tr><tr><td style="text-align: center;" class="confluenceTd">Host (name or IP)</td><td style="text-align: center;" class="confluenceTd">Altibase DB Server가 위치한 IP 정보</td><td style="text-align: center;" class="confluenceTd">192.168.1.35</td></tr><tr><td style="text-align: center;" class="confluenceTd">Port (default 20300)</td><td style="text-align: center;" class="confluenceTd">Altibase DB Server 연결 Port 정보</td><td style="text-align: center;" class="confluenceTd">20300</td></tr><tr><td style="text-align: center;" class="confluenceTd">User</td><td style="text-align: center;" class="confluenceTd">DB상의 계정</td><td style="text-align: center;" class="confluenceTd">sys</td></tr><tr><td style="text-align: center;" class="confluenceTd">Password</td><td style="text-align: center;" class="confluenceTd">DB계정의 비밀번호</td><td style="text-align: center;" class="confluenceTd">manager</td></tr><tr><td style="text-align: center;" class="confluenceTd">DB Name</td><td style="text-align: center;" class="confluenceTd">DB생성 시점에 만든 고유의 DB_NAME</td><td style="text-align: center;" class="confluenceTd">mydb</td></tr><tr><td style="text-align: center;" class="confluenceTd">NLS_USE</td><td style="text-align: center;" class="confluenceTd">DB 캐릭터셋</td><td style="text-align: center;" class="confluenceTd">MS949</td></tr></tbody></table></div><p> </p><p>각 항목 입력 후 &quot;Test Connection&quot; 버튼을 클릭하면 ODBC Driver를 통해 Altibase DB Server로의 연결 확인이 가능하다.<br />(Altibase DB Server는 구동 상태여야 함.)</p><p> </p><p>정상적으로 설정이 되었다면 아래와 같이 새로 추가된 ODBC 항목을 확인할 수 있다.</p><p><img class="confluence-embedded-image confluence-content-image-border" width="803" src="attachments/13436856/13632890.jpg" data-image-src="attachments/13436856/13632890.jpg"></p><p><br /><br /></p><h1 id="WINDOWS환경의AltibaseODBC개발가이드-ODBCDriver개발가이드">ODBC Driver 개발 가이드</h1><hr /><p>ODBC Driver를 통해 Altibase DB Server에 접속할 경우는 별도의 소스 변환은 크게 필요하지 않으며 연결 부분에서 ODBC 연결문자열등의 변경이 필요하다.</p><p>WINDOWS에서 필요한 ODBC driver를 연동할 수 있는 헤더(ex. windows.h, sql.h, sqlext.h, afxdb.h)와 라이브러리(ex. odbc32.lib)들을 적절하게 사용하여 컴파일하면 된다.</p><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-ODBC연결문자열">ODBC 연결문자열</h2><hr /><p>ODBC Driver를 이용한 프로그램에서는 다음과 같이 연결문자열을 사용한다.</p><p>빨간색으로 표기된 부분은 키워드로 사용되는 것이며, 파란색으로 표기된 부분은 연결할 Altibase DB Server의 접속정보와 ODBC 버전에 맞게 값을 변경하여 사용하면 된다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="2" class="confluenceTd"><strong><span style="color: rgb(255,0,0);">DRIVER=<span style="color: rgb(51,102,255);">ALTIBASE_HDB_ODBC_64bit</span>;user=<span style="color: rgb(51,102,255);">sys</span>;password=<span style="color: rgb(51,102,255);">manager</span>; Server=<span style="color: rgb(51,102,255);">127.0.0.1</span>;PORT=<span style="color: rgb(51,102,255);">20300</span>;NLS_USE=<span style="color: rgb(51,102,255);">MS949</span>;LongDataCompat=<span style="color: rgb(51,102,255);">on</span></span></strong></td></tr><tr><td style="text-align: center;" class="confluenceTd">Driver</td><td style="text-align: center;" class="confluenceTd">ODBC 관리도구에서 확인한 Altibase Driver 이름</td></tr><tr><td style="text-align: center;" class="confluenceTd">User</td><td style="text-align: center;" class="confluenceTd"><span>DB상의 계정</span></td></tr><tr><td style="text-align: center;" class="confluenceTd">Password</td><td style="text-align: center;" class="confluenceTd"><span>DB계정의 비밀번호</span></td></tr><tr><td style="text-align: center;" class="confluenceTd">Server</td><td style="text-align: center;" class="confluenceTd"><span>Altibase DB Server가 위치한 IP 정보</span></td></tr><tr><td style="text-align: center;" class="confluenceTd">Port</td><td style="text-align: center;" class="confluenceTd"><span>Altibase DB Server 연결 Port 정보</span></td></tr><tr><td style="text-align: center;" class="confluenceTd">NLS_USE</td><td style="text-align: center;" class="confluenceTd"><span>DB 캐릭터셋</span></td></tr><tr><td style="text-align: center;" class="confluenceTd">LongDataCompat</td><td style="text-align: center;" class="confluenceTd">ON / OFF (BLOB 등의 대용량 데이터를 사용할 경우 ON 으로 설정)</td></tr></tbody></table></div><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-VisualC++예제소스">Visual C++ 예제소스</h2><hr /><p>Visual C++ 에서의 간단한 연결 예제는 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual C++ 예제소스</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: cpp; gutter: false" style="font-size:12px;">#include &lt;Afx.h&gt;
+#include &lt;Afxdb.h&gt;
+#include &quot;stdafx.h&quot;
+int _tmain(int argc, _TCHAR* argv[])
+{
+	CDatabase db;
+
+	try
+	{
+		db.OpenEx(_T(&quot;ODBC연결문자열”), CDatabase::noOdbcDialog);
+		AfxMessageBox (_T(&quot;Connect OK&quot;));
+	}catch (CDBException *e)
+	{
+		AfxMessageBox(e-&gt;m_strError);
+	}
+	return 0;
+}
+</pre>
+</div></div><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-VisualC#예제소스">Visual C# 예제소스</h2><hr /><p>Visual C++ 에서의 간단한 연결 예제는 아래와 같다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual C# 예제소스</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using System.Data.Odbc;
+
+namespace ConsoleApplication1
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			OdbcConnection cn = new OdbcConnection();
+			
+			try
+				cn.ConnectionString = “ODBC연결문자열”;
+				cn.Open();
+				Console.WriteLine(&quot;connect ok&quot;);
+			}
+			catch (OdbcException ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+			Console.ReadLine();
+		}
+	}
+}</pre>
+</div></div><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-VisualBasic예제소스">Visual Basic 예제소스</h2><hr /><p>Visual Basic 에서의 간단한 연결 예제는 아래와 같으며, 아래 예제에서는 DB에 접속하여 현재 날짜와 시간을 가져오는 소스로 구현되어 있다. (ADO 객체를 사용하여도 동일하다.)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual Basic 예제소스</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: vb; gutter: false" style="font-size:12px;">Sub Main()
+
+	Dim cn As Odbc.OdbcConnection
+	Dim cmd As Odbc.OdbcCommand
+	Dim dr As Odbc.OdbcDataReader 
+ 
+	cn = New Odbc.OdbcConnection
+	cmd = New Odbc.OdbcCommand
+
+	cn.ConnectionString = “ODBC 연결문자열”
+
+	Try
+		cn.Open()
+		Console.WriteLine(&quot;정상적으로 연결되었습니다&quot;)
+		cmd.Connection = cn
+
+		cmd.CommandText = &quot;SELECT TO_CHAR(SYSDATE,&#39;YYYY-MM-DD HH:MI:SS&#39;)FROM DUAL&quot;
+
+		dr = cmd.ExecuteReader()
+		While (dr.Read())
+			Console.WriteLine(dr.GetString(0))
+		End While
+	Catch ex As Odbc.OdbcException
+		Console.WriteLine(&quot;연결에 오류가있습니다.&quot; + ex.Message)
+	End Try
+
+	Console.ReadLine()
+End Sub
+</pre>
+</div></div><p><br /><br /></p><h2 id="WINDOWS환경의AltibaseODBC개발가이드-LOB사용시주의사항">LOB 사용 시 주의사항</h2><hr /><p>Altibase의 경우는 LOB 데이터타입을 사용할 경우, 반드시 접속 정보를 Non-AutoCommit으로 변경 후 사용이 가능하다.</p><p>그렇지 않을 경우 조회할 때 LOB 데이터타입에 대해 NULL을 가지고 오거나 insert / update 시점에 다음과 같은 에러를 발생하게 된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on.</pre>
+</div></div><p> </p><p>다음 C# 소스예제를 통해 BLOB 데이터타입을 테이블에 insert / select 하는 과정을 확인할 수 있다.</p><p>BLOB insert 예제는 DB 접속이 된 상태에서 위에서 설명한 바와 같이 접속 정보를 Non-AutoCommit으로 변경하고 데이터를 insert 하는 예제이다.</p><p>사용된 “blob” 변수는 Byte[] 타입으로 선언하였다.</p><p>BLOB select 예제는 BLOB 데이터타입의 길이를 알아내기 위해 Altibase가 제공하는 BINARY_LENGTH라는 함수를 통해 Byte[]변수를 선언하고, 해당 변수에 데이터를 저장 후 파일로 생성하는 예제로 구성한 경우이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>BLOB insert 예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">// BLOB INSERT
+FileStream fs = new FileStream(&quot;c:\\test.dat&quot;, FileMode.Open, FileAccess.Read);
+ 
+Byte[] blob = new byte[fs.Length];
+fs.Read(blob, 0, System.Convert.ToInt32(fs.Length));
+fs.Close();
+OdbcTransaction tx = cn.BeginTransaction();
+cmd.Transaction = tx;
+cmd.CommandText = &quot;INSERT INTO T1 (C1, C2) VALUES (?, ?)&quot;;
+cmd.Parameters.Add(&quot;C1&quot;, OdbcType.Int);
+cmd.Parameters.Add(&quot;C2&quot;, OdbcType.Binary);
+cmd.Parameters[0].Value = 1;
+cmd.Parameters[1].Value = blob;
+cmd.ExecuteNonQuery();
+tx.Commit();
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>BLOB select 예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">// BLOB SELECT
+cmd.CommandText = &quot;SELECT binary_length(C2), C2 FROM T1&quot;;
+tx = cn.BeginTransaction();
+cmd.Transaction = tx;
+OdbcDataReader dr = cmd.ExecuteReader();
+int len;
+while (dr.Read())
+{
+	len = dr.GetInt32(0);
+	Byte[] ff = new Byte[len];
+	dr.GetBytes(1, 0, ff, 0, len);
+
+	fs = new FileStream(&quot;c:\\test.dat&quot;, FileMode.CreateNew, FileAccess.Write);
+	fs.Write(ff, 0, len);
+	fs.Close();
+}
+</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632883.jpg">odbc1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632885.jpg">odbc2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632884.jpg">odbc2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632886.jpg">odbc3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632887.jpg">odbc4.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632888.jpg">odbc5.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632889.jpg">odbc6.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13436856/13632890.jpg">odbc7.jpg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

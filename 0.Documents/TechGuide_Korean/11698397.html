@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 1. 일상적 점검사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698396.html">Altibase CPU과부하 현상에 대한 분석가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 1. 일상적 점검사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>서비스 운영 중에 갑작스런 CPU의 과부하에 의한 서비스 지연이 발생할 수 있는데 이 과정에서 지속적으로 Altibase CPU 과부하에 의한 현상이 발생할 때 사용자가 확인할 부분과 해결방안에 대해 설명한다.</p><h1 id="id-1.일상적점검사항-1.1일상적점검사항"><strong>1.1 일상적 점검사항</strong></h1><p>사용자는 현재의 CPU부하의 정상유무를 판단하기 위해 다음의 이력관리가 필요하다.  Altibase 는 자체적으로 Altibase가 사용하는 CPU 사용률 정보를 제공하는 기능은 아직 없으므로 CPU 사용률은 OS에서 제공하는 command 를 사용하여야 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">항목</th><th class="confluenceTh">수집방안</th></tr><tr><td class="confluenceTd">시간대별/일별 CPU사용률</td><td class="confluenceTd">OS가 제공하는 프로세스의 CPU사용률 획득방법을 통해 주기적으로 기록/관리한다.</td></tr><tr><td class="confluenceTd">시간대별/일별 트랜잭션 처리량</td><td class="confluenceTd"><p>응용프로그램의 트랜잭션 처리량을 기록/관리한다.<br />이것이 어려울 경우 ALTIBASE에서 제공하는 V$SYSSTAT 을 통해 다음과 같은 정보를 주기적으로 획득하여 기록/관리한다.</p><pre>select name,value from V$SYSSTAT where name in ( 'execute success count','prepare success count','prepare failure count');</pre></td></tr><tr><td class="confluenceTd">서비스쓰레드의 증감여부</td><td class="confluenceTd"><p>평소보다 세션의 증가 혹은, 업무량의 증가로 인해 서비스쓰레드가 증가하는 경우가 있는데 이런 패턴이 발생하는지를 체크한다.<br /><br /></p><p>SELECT COUNT(*) AS THREAD FROM V$SERVICE_THREAD;<br />SELECT COUNT(*) AS SESSION FROM V$SESSION;</p></td></tr></tbody></table></div><p>아래와 같은  shell script를 이용하여 일정 간격으로 수집된 정보를 파일로 기록하는 방식이 좀 더 간편할 수 있다. </p><p>V$sysstat로 구해지는 EXECUTE COUNT는 누적값이므로 단위 시간당 증가량을 구하기 위해서는    단위시간 증가값 = ( 최근값 - 이전값 ) 과 같은 방식으로 계산해야 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"># gettps.sh 
+ALTIPID=`ps -ef | grep $USER | grep  &quot;bin/altibase -p boot&quot;  | grep -v grep | awk &#39;{print $2}&#39;`
+MAXCOUNT=3
+COUNT=0
+INTERVAL=30
+LOGFILE=altitps.log
+
+do_getExecuteCount()
+{
+is -silent &lt;&lt;EOF
+set linesize 1024;
+set colsize 50;
+set feedback off;
+set heading off;
+select &#39;RESULT=&#39;||( select count(*) from v\$session )
+       ||&#39;=&#39; || ( select count(*) from v\$service_thread )
+       ||&#39;=&#39; || ( select sum(value) from v\$sysstat where name in ( &#39;execute success count&#39;,&#39;prepare success count&#39;,&#39;prepare failure count&#39;) )
+from dual;
+EOF
+}
+
+while [ $COUNT -lt $MAXCOUNT ]
+do
+ALTICPU=`ps -o pcpu -p $ALTIPID | grep -v CPU`
+EXECRESULT=`do_getExecuteCount`
+SESSIONCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 2| tr -d &#39; &#39;`
+THREADCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 3 | tr -d &#39; &#39;`
+EXECCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 4 | tr -d &#39; &#39;`
+echo  `date &quot;+%Y%m%d %H%M%S: CPU USAGE=&quot;`$ALTICPU&quot; SESSIONCNT=$SESSIONCNT THREADCNT=$THREADCNT EXECCNT=$EXECCNT&quot;
+
+sleep  $INTERVAL
+COUNT=`expr $COUNT + 1`
+done</pre>
+</div></div><p>위의 shell script를 실행하였을 때는 아래와 같이 출력될 수 있다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$sh gettps.sh</p><p>20170203 150253: CPU USAGE= 12.3 SESSIONCNT=208 THREADCNT=16 EXECCNT=181813<br />20170203 150323: CPU USAGE= 24.8 SESSIONCNT=208 THREADCNT=10 EXECCNT=185834<br />20170203 150353: CPU USAGE= 32.1 SESSIONCNT=212 THREADCNT=15 EXECCNT=189865</p><p>......</p>
+</div></div><p>위 이력정보를 통해 사용자는 다음과 같은 표 형태의 이력을 만들 수 있을 것이다. 단위시간당 증가량 은 엑셀(Excel) 의  셀계산 수식을 사용하는 것이 편리하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">시간(HH:MI:SS)</th><th class="confluenceTh">CPU (%)</th><th class="confluenceTh">Session / Thread</th><th class="confluenceTh">EXECUTE 누적값</th><th colspan="1" class="confluenceTh">단위시간당 EXECUTE 증가량</th><th colspan="1" class="confluenceTh">TPS(Transaction per second)</th></tr><tr><td class="confluenceTd">15:02:53</td><td class="confluenceTd">12.3</td><td class="confluenceTd">208/16</td><td class="confluenceTd"><span>181813</span></td><td colspan="1" class="confluenceTd">-</td><td colspan="1" class="confluenceTd">-</td></tr><tr><td class="confluenceTd">15:03:23</td><td class="confluenceTd">24.8</td><td class="confluenceTd">208/16</td><td class="confluenceTd"><span>185834</span></td><td colspan="1" class="confluenceTd"><span>4021=(<span>185834-<span>181813)</span></span></span></td><td colspan="1" class="confluenceTd">134=<span>4021/30초</span></td></tr><tr><td class="confluenceTd">15:03:53</td><td class="confluenceTd">32.1</td><td class="confluenceTd">212/17</td><td class="confluenceTd"><span>189865</span></td><td colspan="1" class="confluenceTd">4031=(189865-185834)</td><td colspan="1" class="confluenceTd">134=4031/30초</td></tr></tbody></table></div><p>이와 같은 형태의 자료를 통해 일상적인 시점과 CPU과부하 시점의 부하차이가 트랜잭션 처리량의 증가로 인한 것인지를 먼저 판별할 필요가 있다.</p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

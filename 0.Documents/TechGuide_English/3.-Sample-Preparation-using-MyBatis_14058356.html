@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Sample Preparation using MyBatis</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="MyBatis-Integration-Guide-for-Altibase_14058349.html">MyBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Sample Preparation using MyBatis
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on May 19, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>To process SQL statements using MyBatis, the user needs to create a Configuration XML file and mapper XML file. These files allow programmers to easily map JavaBeans to PreparedStatement parameters and ResultSets. </p><p>This chapter describes how to create Configuration XML file, Mapper XML file, and how to process SQL by using these files in the application.</p><h2 id="id-3.SamplePreparationusingMyBatis-CreatingMapperFile">Creating Mapper File</h2><p>The Mapper XML file is a file that specifies the SQL statements to be transferred to the DB, mapping of parameters to be bound to PreparedStatement and mapping of ResultSet results.</p><p>The following is an example of creating a Mapper XML file that processes CRUD in the person table. (UserMapper.xml)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+ 
+&lt;mapper namespace=&quot;com.altibase.sidu.mapper.UserMapper&quot;&gt;
+    &lt;select id=&quot;selectUserData&quot; parameterType=&quot;Integer&quot; resultType=&quot;User&quot;&gt;
+        SELECT user_no as userNo,
+        user_name as userName,
+        user_content as userContent,
+        reg_date as regDate
+        FROM users
+        WHERE user_no = #{userNo}
+    &lt;/select&gt;
+ 
+    &lt;select id=&quot;selectAllUserData&quot; resultType=&quot;User&quot;&gt;
+        SELECT user_no as userNo,
+        user_name as userName,
+        user_content as userContent,
+        reg_date as regDate
+        FROM users
+    &lt;/select&gt;
+ 
+    &lt;insert id=&quot;insertUserData&quot; parameterType=&quot;User&quot;&gt;
+        insert into
+        users(user_no, user_name, user_content, reg_date)
+        values(#{userNo}, #{userName}, #{userContent}, #{regDate})
+    &lt;/insert&gt;
+ 
+    &lt;update id=&quot;updateUserData&quot; parameterType=&quot;User&quot;&gt;
+        update users
+        set user_name = #{userName},
+        user_content = #{userContent},
+        reg_date = #{regDate}
+        where user_no = #{userNo}
+    &lt;/update&gt;
+ 
+    &lt;delete id=&quot;deleteUserData&quot; parameterType=&quot;User&quot;&gt;
+        delete from users
+        where user_no = #{userNo}
+    &lt;/delete&gt;
+&lt;/mapper&gt;</pre>
+</div></div><p>In the &lt;insert&gt;, &lt;update&gt;, &lt;delete&gt;, and &lt;select&gt; tags, each SQL statement for the CRUB operation is defined.</p><p>For more information about each tag, refer to <a href="http://mybatis.github.io/mybatis-3/ko/" class="external-link" rel="nofollow">http://mybatis.github.io/mybatis-3/ko/</a>.</p><h2 id="id-3.SamplePreparationusingMyBatis-CreatingConfigurationFile">Creating Configuration File</h2><p>The Configuration file is the SQL Maps configuration file that writes properties to control SqlMapClient in addition to setting dataSource, Mapper file path, and typeAliases for DB connection.</p><p>The following is an example of a configuration file (mybatis-config.xml).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+ 
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+ 
+&lt;typeAliases&gt;
+    &lt;typeAlias type=&quot;com.altibase.sidu.model.UserVo&quot; alias=&quot;User&quot; /&gt;
+&lt;/typeAliases&gt;
+ 
+&lt;!--  DB Connection Option : UNPOOLED/POOLED/JNDI --&gt;
+&lt;!--  transanctionManager Option : JDBC/MANAGED --&gt;
+&lt;environments default=&quot;development&quot;&gt;
+    &lt;environment id=&quot;development&quot;&gt;
+    &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+    &lt;dataSource type=&quot;POOLED&quot;&gt;
+        &lt;property name=&quot;driver&quot; value=&quot;${jdbc.driver}&quot; /&gt;
+        &lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot; /&gt;
+        &lt;property name=&quot;username&quot; value=&quot;${jdbc.username}&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot; /&gt;
+        &lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+            &lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+            &lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+            &lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+    &lt;/dataSource&gt;
+    &lt;/environment&gt;
+&lt;/environments&gt;
+     
+&lt;mappers&gt;
+    &lt;mapper resource=&quot;com/altibase/sidu/mapper/UserMapper.xml&quot; /&gt;
+&lt;/mappers&gt;
+ 
+&lt;/configuration&gt;</pre>
+</div></div><p>In the &lt;properties&gt; tag, specify the path and name of the properties file where the properties defined in the form of name = value are written. In the &lt;settings&gt; tag, write the properties to control the configuration. In the &lt;transactionManager&gt; and &lt;dataSource&gt;, write the DB information to connect.</p><p>In addition, the &lt;mappers&gt; tag writes the path and name of the previously created Mapper files. Unlike the previous iBatis, MyBatis can set several DBs in the configuration file and set a specific DB at the time of creating SqlSessionFactory object, compared to the fact that only one DB setting can be done in iBatis.</p><p>For more information about each tag, refer to <a href="http://mybatis.github.io/mybatis-3/en/." class="external-link" rel="nofollow">http://mybatis.github.io/mybatis-3/en/.</a></p><h2 id="id-3.SamplePreparationusingMyBatis-CreatingApplication">Creating Application</h2><p>CRUB operations can be processed by integrating with objects mapped to DB tables by using the instance of the SqlSession object provided by MyBatis in the application. In order to integrate with DB using MyBatis, first, read the configuration file with the configuration for the DB connection, create a SqlSession Factory object, obtain the SqlSession object from the object, and process the query mapped to the Mapper.</p><p>The following is an application that inserts, changes, and selects data in the user table of the DB. That part that gets the connection from the application was classified as a separate class.</p><p>Ex) SiduMain.java of altibase_mybatis_sidu</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// Configuration DB Connection
+MybatisUtil.java
+…
+inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);
+sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+sqlSession = sqlSessionFactory.openSession(false);
+…
+UserVo userVo = new UserVo();
+…
+ 
+//select User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.selectUserData&quot;;
+userVo = MybatisUtil.getSqlSessionFactory().selectOne(statement, user_no);
+…
+ 
+// select all User
+List&lt;UserVo&gt; userVos = MybatisUtil.getSqlSessionFactory().selectList(statement);
+…
+ 
+// update User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.updateUserData&quot;;
+            res_count = MybatisUtil.getSqlSessionFactory().update(statement, userVo);
+…
+ 
+// insert User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.insertUserData&quot;;
+res_count = MybatisUtil.getSqlSessionFactory().insert(statement, userVo);
+…
+ 
+// delete User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.deleteUserData&quot;;
+res_count = MybatisUtil.getSqlSessionFactory().insert(statement, user_no);</pre>
+</div></div><p>First, read Mapper file to create SqlSessionFactory object and create SqlSession object from the created SqlSessionFactory object. The method to get SqlSession from Sample is as follows. </p><p>sqlSessionFactory.openSession (boolean arg0);<br />The Boolean argument of the method is a value that determines the autocommit mode.(<br />inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);<br />sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);<br />sqlSession = sqlSessionFactory.openSession(false);<br />)</p><p>Then, each method of CRUD class is called with id named in SqlSession object and Mapper.(<br />String statement = &quot;com.altibase.sidu.mapper.UserMapper.updateUserData&quot;;<br />sqlSession.update(statement, update)</p><p><span style="color: rgb(34,34,34);">For more information about each tag, refer to <a href="http://mybatis.github.io/mybatis-3/en/" class="external-link" rel="nofollow">http://mybatis.github.io/mybatis-3/en/</a>.</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

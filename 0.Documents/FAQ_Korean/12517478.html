@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : [Linux] Altibase 서버 프로세스 자동 시작 스크립트 등록 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : [Linux] Altibase 서버 프로세스 자동 시작 스크립트 등록 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Sep 12, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409050667 {padding: 0px;}
+div.rbtoc1624409050667 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409050667 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409050667'>
+<ul class='toc-indentation'>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-개요'>개요</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-버전'>버전</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-OS'>OS</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-등록방법'>등록 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-자동시작스크립트샘플'>자동 시작 스크립트 샘플</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-/etc/init.d에스크립트등록'>/etc/init.d 에 스크립트 등록</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-스크립트수정'>스크립트 수정</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-스크립트실행권한변경'>스크립트 실행 권한 변경</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-chkconfig수행'>chkconfig 수행</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-chkconfig등록확인'>chkconfig 등록 확인</a></li>
+<li><a href='#id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-로그'>로그</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-개요">개요</h1><hr /><p>Linux 서버에서 OS 부팅 시 Altibase 서버 프로세스를 자동 시작하는 방법에 관해 설명합니다.</p><p> </p><p> </p><p> </p><h1 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-버전">버전</h1><hr /><p>Altibase 4 이상</p><p> </p><p> </p><p> </p><h1 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-OS">OS</h1><hr /><p>Linux</p><p> </p><p> </p><p> </p><h1 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-등록방법">등록 방법</h1><hr /><p> </p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-자동시작스크립트샘플">자동 시작 스크립트 샘플</h3><ul style="list-style-type: square;"><li><a href="attachments/12517478/12713987">altibased</a></li></ul><p>자동 시작 스크립트는 아래와 같은 상황에서 동작하도록 작성했습니다.</p><ul style="list-style-type: square;"><li>하나의 서버에 1개의 Altibase 서버가 운용</li><li>OS 유저 altibase 에서 Altibase 서버를 설치하고 startup/shutdown 권한을 가짐</li><li>bash 쉘에서 동작</li><li>chkconfig 유틸리티 사용</li></ul><p><span style="color: rgb(255,0,0);">이 스크립트는 샘플 파일입니다. 고객사 OS 유저의 환경 설정에 따라 의도와 다르게 동작할 수도 있으니 반드시 테스트하여 정상 수행 여부를 확인하시기 바랍니다.</span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-/etc/init.d에스크립트등록">/etc/init.d 에 스크립트 등록</h3><p>자동 시작 스크립트 altibased 파일을 /etc/init.d 디렉토리에 업로드합니다.</p><p> </p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-스크립트수정">스크립트 수정</h3><p>스크립트 상단 user 변수를 고객사 환경에 맞게 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi /etc/init.d/altibased
+#!/bin/bash
+#
+# altibase
+#
+# chkconfig: 2345 20 80
+# description: ALTIBASE process startup
+user=altibase                         #  Altibase 서버 프로세스를 구동/중지할 수 있는 권한을 가진 사용자로 변경</pre>
+</div></div><p> </p><p> </p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-스크립트실행권한변경">스크립트 실행 권한 변경</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ chmod +x altibased
+
+$ ls -l altibased
+-rwxr-xr-x 1 root root 811 Sep  3 13:50 /etc/init.d/altibased</pre>
+</div></div><p> </p><p> </p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-chkconfig수행">chkconfig 수행</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ chkconfig --add altibased</pre>
+</div></div><p> </p><p> </p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-chkconfig등록확인">chkconfig 등록 확인</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ls -l /etc/rc.d/rc*.d/K*alti*
+$ ls -l /etc/rc.d/rc*.d/S*alti*</pre>
+</div></div><p> </p><p><span><br /></span></p><h3 id="id-[Linux]Altibase서버프로세스자동시작스크립트등록방법-로그">로그</h3><p><span>로그는 /var/log/${user}_altibased.log 에 남도록 설정했습니다. </span></p><p><span><br /></span></p><p><span><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/12517478/12713987">altibased</a> (application/octet-stream)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

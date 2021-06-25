@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 1. Memory 사용량 일상적 점검</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698518.html">Altibase Memory 사용량 증가 분석가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 1. Memory 사용량 일상적 점검
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="id-1.Memory사용량일상적점검-Memory사용량일상적점검"><strong>Memory 사용량 일상적 점검</strong></h1><hr /><p>서비스 운영 중에 갑작스런 메모리부족에 의한 서비스 지연이 발생할 수 있는데 이 과정에서 지속적으로 메모리부족 현상이 발생할 때 사용자가 확인할 부분과 해결방안에 대해 설명한다.</p><h2 id="id-1.Memory사용량일상적점검-OS별시스템메모리/Swap확인방법"><strong><span style="color: rgb(0,0,0);">OS별 시스템 메모리/Swap 확인 방법</span></strong></h2><p><strong><span style="color: rgb(0,0,0);"> </span></strong><span style="color: rgb(0,0,0);">장비의 여유메모리가 부족한지 여부는 OS명령어를 이용하여 가용메모리를 확인 할수 있다.</span></p><p><span style="color: rgb(0,0,0);">아래의 OS 명령어를 통해 메모리 사용부분을 확인해 볼수 있다.</span></p><ol><ol><li><p>AIX<span style="color: rgb(255,0,0);"> </span></p><p><img class="confluence-embedded-image gliffy-image confluence-external-resource" alt="svmon결과" width="450" src="http://aid.altibase.com/download/attachments/11206714/svmon%EA%B2%B0%EA%B3%BC.png?version=1&amp;modificationDate=1481247858000&amp;api=v2" data-image-src="http://aid.altibase.com/download/attachments/11206714/svmon%EA%B2%B0%EA%B3%BC.png?version=1&amp;modificationDate=1481247858000&amp;api=v2"> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>항목</strong><strong> (</strong><strong>붉은</strong><strong> </strong><strong>박스</strong><strong>)</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>설명</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">size</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">전체 물리적 메모리의 페이지 개수를 의미한다. 실제 1page는 4,096byte임으로 7936M의 메모리를 갖는 시스템임.</span></p></td></tr><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">inuse</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">(Computational + Persistent)의 실제 사용 중인 물리적인 메모리의 페이지 개수</span></p></td></tr><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">free</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">물리적 메모리에서 사용 중이지 않은 페이지 개수</span></p></td></tr><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">pin</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">Swap out할 수 없는 물리적 메모리의 페이지 개수</span></p></td></tr><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">virtual</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">VMM (Virtual Memory Manager)에 의해 생성된 페이지 개수</span></p></td></tr><tr><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">pg space</span></p></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);">Paging space 공간의 사용량</span></p></td></tr></tbody></table></div><p>  </p></li><li><p>HPUX</p><p><span># glance -&gt; m 메모리 확인</span></p><p><img class="confluence-embedded-image" width="600" src="attachments/11698519/11665730.png" data-image-src="attachments/11698519/11665730.png"></p><p><span>현재 물리적인 메모리 32.0GB</span> <span>- 시스템 9.6GB + 유저 13.8GB + 파일캐쉬 722MB</span> <span>- 버퍼캐쉬 0GB + 프리 7.9GB (사용가능한 메모리량)</span></p><p><span><br /></span></p></li><li><p>LINUX : linux에서는 메모리 사용 현황을 top 명령으로 조회할수 있으며, 아래는 top 결과 샘플이고 샘플내의 여러 항목들 중에서 free 와 cached의 값이 주요 항목이다.</p><p><img class="confluence-embedded-image" width="700" src="attachments/11698519/11665728.png" data-image-src="attachments/11698519/11665728.png"></p><p>linux에서 가용메모리 계산은 free + buffers + cached로 할수 있다.</p><p>위의 top 명령 결과로 메모리 용량을 분석해 본다면,</p><p>- 전제 물리 메모리 : 16630888k - 실제 사용중인 메모리(used - cached - buffers) : 16559108k - 16034200k - 100516k = 424392k - 실제 가용한 메모리 (free + buffers + cached) : 71780k + 100516k + 16034200k = 16206496k - 전체 메모리(실제 사용중인메모리 + 실제 가용한메모리) : 424392k + 16206496k = 16630888k</p><p>아래는 free명령을 통해 조회한 결과이다.(-m 옵션은 MB단위 출력지정) <span style="color: rgb(255,0,0);"> <img class="confluence-embedded-image" width="700" src="attachments/11698519/11665729.png" data-image-src="attachments/11698519/11665729.png"></span></p></li></ol></ol><p><span style="color: rgb(255,0,0);"> </span></p><h2 id="id-1.Memory사용량일상적점검-일상적점검사항"><strong>일상적 점검사항</strong></h2><p>사용자는 현재의 메모리사용량에 대한 정상유무를 판단하기 위해 다음의 이력관리가 필요하다. 이것은 문제상황이 발생할 때 정상 대비 증가된 부분을 분석하여 원인을 추적하는데 중요한 정보로 활용이 가능하다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">항목</th><th class="confluenceTh">수집방안</th></tr><tr><td class="confluenceTd">시간대별/일별 메모리사용률</td><td class="confluenceTd">OS가 제공하는 Altibase 프로세스의 메모리사용률 획득방법을 통해 주기적으로 기록/관리한다.</td></tr><tr><td class="confluenceTd">시간대별/일별 트랜잭션 처리량</td><td class="confluenceTd"><p>응용프로그램의 트랜잭션 처리량을 기록/관리한다. 이것이 어려울 경우 ALTIBASE에서 제공하는 V$SYSSTAT 을 통해 다음과 같은 정보를 주기적으로 획득하여 기록/관리한다.</p><pre>select * from v$memstat order by alloc_size desc;</pre></td></tr><tr><td class="confluenceTd">서비스쓰레드의 증감여부</td><td class="confluenceTd"><p>평소보다 세션의 증가 혹은, 업무량의 증가로 인해 서비스쓰레드가 증가하는 경우가 있는데 이런 패턴이 발생하는지를 체크한다.</p><p>SELECT COUNT(*) AS THREAD FROM V$SERVICE_THREAD; SELECT COUNT(*) AS SESSION FROM V$SESSION;</p></td></tr></tbody></table></div><p>  </p><p>아래와 같은  shell script를 이용하여 일정 간격으로 수집된 정보를 파일로 기록하는 방식이 좀 더 간편할 수 있다. </p><p>V$sysstat로 구해지는 EXECUTE COUNT는 누적값이므로 단위 시간당 증가량을 구하기 위해서는    단위시간 증가값 = ( 최근값 - 이전값 ) 과 같은 방식으로 계산해야 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"># gettps.sh 
+ALTIPID=`ps -ef | grep $USER | grep  &quot;bin/altibase -p boot&quot;  | grep -v grep | awk &#39;{print $2}&#39;`
+MAXCOUNT=3
+COUNT=0
+INTERVAL=30
+
+do_getExecuteCount()
+{
+  is -silent &lt;&lt;EOF
+  set linesize 1024;
+  set colsize 50;
+  set feedback off;
+  set heading off;
+  select &#39;RESULT=&#39;||( select count(*) from v\$session )
+       ||&#39;=&#39; || ( select count(*) from v\$service_thread )
+       ||&#39;=&#39; || ( select sum(value) from v\$sysstat where name in ( &#39;execute success count&#39;,&#39;prepare success count&#39;,&#39;prepare failure count&#39;) )
+  from dual;
+EOF
+}
+while [ $COUNT -lt $MAXCOUNT ]
+do
+  ALTICPU=`ps -o pcpu -p $ALTIPID | grep -v CPU`
+  ALTIMEM=`ps -o pmem -p $ALTIPID | grep -v MEM`
+  EXECRESULT=`do_getExecuteCount`
+  SESSIONCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 2| tr -d &#39; &#39;`
+  THREADCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 3 | tr -d &#39; &#39;`
+  EXECCNT=`echo $EXECRESULT | grep &quot;RESULT=&quot; | cut -d&#39;=&#39; -f 4 | tr -d &#39; &#39;`
+  echo  `date &quot;+%Y%m%d %H%M%S: CPU USAGE=&quot;`$ALTICPU&quot; &quot; MEM USAGE=$ALTIMEM&quot; SESSIONCNT=$SESSIONCNT THREADCNT=$THREADCNT EXECCNT=$EXECCNT&quot;
+  sleep  $INTERVAL
+  COUNT=`expr $COUNT + 1`
+done</pre>
+</div></div><p> </p><p>위의 shell script를 실행하였을 때는 아래와 같이 출력될 수 있다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ sh get.sh<br />20170213 110718: CPU USAGE= 7.1  MEM USAGE= 0.6 SESSIONCNT=1 THREADCNT=25 EXECCNT=1201<br />20170213 110748: CPU USAGE= 7.1  MEM USAGE= 0.6 SESSIONCNT=1 THREADCNT=25 EXECCNT=1202<br />20170213 110818: CPU USAGE= 7.1  MEM USAGE= 0.6 SESSIONCNT=1 THREADCNT=25 EXECCNT=1203</p><p>......</p>
+</div></div><p><span style="color: rgb(255,0,0);"><br /></span></p><h2 id="id-1.Memory사용량일상적점검-V$MEMSTAT"><strong>V$MEMSTAT</strong></h2><p>V$MEMSTAT는 Altibase가 제공하는 내부 모듈 별 메모리 사용량에 대한 Performance View이다.</p><p>Altibase 프로세스가 점유하고있는 메모리가 클경우 V$MEMSTAT 를 통해 Altibase의 메모리 사용부분을 세부적으로 확인할수 있다.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">항목</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">설명</div></th></tr></thead><tbody><tr><td class="confluenceTd">Query_Prepare</td><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL 처리 시 Prepare 과정에서 SQL 문장 분석, 통계정보, 실행계획, 바인딩 등의 정보를 내부적으로 관리하기 위한 메모리를 필요로 한다.</span><span style="color: rgb(0,0,0);">일반적으로 어플리케이션에서 SQL이 매번 Prepare, Execute 구조로 수행되면(Direct Execute 방식) 이 항목의 메모리 사용량이 증가할 수 있다.</span><br /><span style="color: rgb(0,0,0);">SQL 수행 시 Prepare Execute 방식(1번 Prepare + N번 Execute) 으로 수행하면 이 항목의 메모리 사용량은 어느 정도 증가 후 운영 중 일정 크기를 유지하게 된다.</span><span style="color: rgb(0,0,0);">이 값은 모든 세션에서 사용하는 Query_Prepare 의 전체 크기이다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">Query_Execute</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL 실행 과정에서 데이터 Sort 및 중간 결과 값을 저장하기 위해 사용하는 메모리 크기를 나타낸다.<br />메모리 테이블 또는 <a name="9003236" rel="nofollow"></a>TEMP_TBS_MEMORY 힌트를 사용한 SQL 실행 시 증가할 수 있다.<br />이 값은 모든 세션에서 사용하는 Query_Execute 의 전체 크기이다. <span style="color: rgb(34,34,34);">AltibaseS</span>QL 실행 종료 시점에 메모리는 해제된다. 따라서 정상적인 경우에 어느 정도 증가했다가 감소하며 운영 중 일정 크기를 유지하게 된다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">Query_Binding</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">SQL 실행 과정에서 바인딩 변수를 저장하기 위한 메모리 크기를 나타낸다. 이 값은 하나의 SQL에 사용된 바인딩 변수에 영향을 받는다.</span><span style="color: rgb(0,0,0);">PrepareStatement 를 close 하거나 세션 종료 시 메모리를 반환하므로 정상적인 경우에 어느 정도 증가했다가 감소하며 운영 중 일정 크기를 유지하게 된다.</span><span style="color: rgb(0,0,0);">일반적으로 Query_Binding 가 증가하는 사례는 아래와 같다.<br /></span><span style="color: rgb(0,0,0);">1) statement 들이 급격하게 증가한 경우</span><br /><span style="color: rgb(0,0,0);">2) 너무 큰 데이터형에 대하여 binding을 수행</span><br /><span style="color: rgb(0,0,0);">3) PrepareStatement 를 제대로close 안하였을 경우</span><br /><span style="color: rgb(0,0,0);">4) exception 처리 시 무한 반복하여 prepare statement를 발생시킨 경우</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">Storage_Memory_Manager</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">메모리 테이블스페이스 관리를 위한 정보와 메모리 테이블의 데이터가 저장되는 공간으로, Altibase의 고성능 데이터 처리를 위해 메모리에 상주된 메모리 데이터의 크기이다.</span><span style="color: rgb(0,0,0);">메모리데이터의 누적되어 커질경우 이 항목의 값이 증가한다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">Index_Memory</span></td><td class="confluenceTd"><span style="color: rgb(0,0,0);">메모리 테이블에 생성한 인덱스를 위한 메모리 사용량을 보여준다.</span><span style="color: rgb(0,0,0);">이 값이 증가하는 것은 메모리 인덱스의 사용량이 증가했음을 의미한다. 메모리를 많이 소비하는 인덱스를 제거하여 메모리를 정리할 수 있다.</span></td></tr><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">Storage_Disk_Buffer</span></td><td class="confluenceTd"><p><span style="color: rgb(0,0,0);"><span style="font-size: 10.0pt;"><span style="color: rgb(0,0,0);">디스크 버퍼 관리자에 의해 사용되는 메모리로, 디스크 테이블스페이스 의 데이터를 메모리에 버퍼링하여 데이터를 처리하는 공간이다.</span></span></span></p><p><span style="color: rgb(0,0,0);"><span style="font-size: 10.0pt;">이 공간이 작으면, 디스크 페이지의 In/Out 의 자주 발생하게 되어 성능이 저하될수 있다.</span></span></p></td></tr></tbody></table></div><p><span style="color: rgb(255,0,0);"> </span></p><p> </p><p><span style="color: rgb(255,0,0);"><br /></span></p><h2 id="id-1.Memory사용량일상적점검-대표적인메모리증가유형"><strong>대표적인 메모리 증가 유형</strong><span style="color: rgb(255,0,0);"> </span></h2><p>앞서 설명한 '일상적 점검' 항목을 기준으로 Altibase의 메모리 증가 부분은 다음과 같이 정리할 수 있다. </p><ol><li>메모리 테이블의 데이터가 증가에 의한 경우</li><li>실행되는 SQL 문장의 수가 증가하는 경우</li><li>MVCC(Multi Version Concurrency Control)기법에 의해 증가되는 경우</li><li>Aging 대상정보의 삭제가 지연 처리되는 경우 </li></ol><p><span style="color: rgb(255,0,0);"> </span><br />위와 같은 대표적인 경우들에 대해 원인과 조치방법에 대해 자세히 살펴보도록 한다.</p><p><span style="color: rgb(255,0,0);"> </span></p><p><span style="color: rgb(255,0,0);"><br /></span></p><p> </p><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665725.png">image2017-2-13 11:18:3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665726.png">image2017-2-13 11:22:12.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665727.png">image2017-2-13 11:24:18.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665728.png">image2017-2-13 11:27:46.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665729.png">image2017-2-13 13:54:34.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698519/11665730.png">image2017-2-13 14:21:10.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

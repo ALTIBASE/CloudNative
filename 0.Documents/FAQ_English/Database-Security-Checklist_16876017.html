@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Database Security Checklist</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Database Security Checklist
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144740 {padding: 0px;}
+div.rbtoc1624409144740 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144740 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144740'>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseSecurityChecklist-Overview'>Overview</a></li>
+<li><a href='#DatabaseSecurityChecklist-AccountManager'>Account Manager</a>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseSecurityChecklist-Listofaccounts(Useraccountmanagementtoblockunauthorizedaccess)'>List of accounts (User account management to block unauthorized access)</a></li>
+<li><a href='#DatabaseSecurityChecklist-Usingweakpassword(changedefaultaccountandpassword)'>Using weak password (change default account and password)</a></li>
+<li><a href='#DatabaseSecurityChecklist-UsingWITHGRANTOPTION'>Using WITH GRANT OPTION</a></li>
+</ul>
+</li>
+<li><a href='#DatabaseSecurityChecklist-CheckingEnvironmentFiles'>Checking Environment Files</a>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseSecurityChecklist-Altibase.propertiesfileaccessauthoritysetting'>Altibase.properties file access authority setting</a></li>
+<li><a href='#DatabaseSecurityChecklist-LogAnchor,Logfile,Datafileaccessprivilegesetting'>Log Anchor, Logfile, Datafile access privilege setting</a></li>
+<li><a href='#DatabaseSecurityChecklist-CheckingiSQLcommandshellhistory'>Checking iSQL command shell history</a></li>
+</ul>
+</li>
+<li><a href='#DatabaseSecurityChecklist-DBMSSecuritySettings'>DBMS Security Settings</a>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseSecurityChecklist-UsingPublicSynonym'>Using Public Synonym</a></li>
+<li><a href='#DatabaseSecurityChecklist-Accountlockoutpolicysettingssuchaslockouttimeaccordingtothenumberofloginfailure'>Account lockout policy settings such as lockout time according to the number of login failure</a></li>
+<li><a href='#DatabaseSecurityChecklist-패스워드복잡도설정'>패스워드 복잡도 설정</a></li>
+<li><a href='#DatabaseSecurityChecklist-Periodicchangeofpassword'>Periodic change of password</a></li>
+<li><a href='#DatabaseSecurityChecklist-ChangingtheALTIBASEHDBserviceportdefault'>Changing the ALTIBASE HDB service port default</a></li>
+<li><a href='#DatabaseSecurityChecklist-SessionIDLE_TIMEOUTsettings'>Session IDLE_TIMEOUT settings</a></li>
+<li><a href='#DatabaseSecurityChecklist-Basicauditing(usersentences,privileges,objects,etc.)'>Basic auditing (user sentences, privileges, objects, etc.)</a></li>
+<li><a href='#DatabaseSecurityChecklist-RestrictionofremoteaccesstoDBserver'>Restriction of remote access to DB server</a></li>
+<li><a href='#DatabaseSecurityChecklist-SettingSYSDBAloginrestrictions'>Setting SYSDBA login restrictions</a></li>
+</ul>
+</li>
+<li><a href='#DatabaseSecurityChecklist-SecurityPatch'>Security Patch</a>
+<ul class='toc-indentation'>
+<li><a href='#DatabaseSecurityChecklist-Applyingthelatestpatch'>Applying the latest patch</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="DatabaseSecurityChecklist-Overview">Overview</h1><hr /><p>This document explains how to check each DB vulnerability diagnosis item.</p><p>This document is and diagnosis items were prepared based on customer inquiries.</p><p> </p><h1 id="DatabaseSecurityChecklist-AccountManager">Account Manager</h1><hr /><p> </p><h2 id="DatabaseSecurityChecklist-Listofaccounts(Useraccountmanagementtoblockunauthorizedaccess)">List of accounts (User account management to block unauthorized access)</h2><hr /><h4 id="DatabaseSecurityChecklist-Howtocheck">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check database users</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME FROM SYSTEM_.SYS_USERS_;</pre>
+</div></div><p> </p><h4 id="DatabaseSecurityChecklist-Howtomanage">How to manage</h4><p>If there is an unnecessary account in the database user output result, check the DBA or application manager and remove it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Delete user
+DROP USER user_name ;
+
+-- Delete the user and all objects created by the user
+DROP USER user_name CASCADE;</pre>
+</div></div><h2 id="DatabaseSecurityChecklist-Usingweakpassword(changedefaultaccountandpassword)"><br />Using weak password (change default account and password)</h2><hr /><h4 id="DatabaseSecurityChecklist-Howtocheck.1">How to check</h4><p>The default password for the user is created when ALTIBASE HDB is installed is as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>USER</p></th><th class="confluenceTh"><p>PASSWORD</p></th></tr><tr><td class="confluenceTd"><p>SYS</p></td><td class="confluenceTd"><p>MANAGER</p></td></tr><tr><td class="confluenceTd"><p>ALTITEST</p></td><td class="confluenceTd"><p>ALTITEST</p></td></tr></tbody></table></div><p>Connect to the database and check whether to use the default password.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; CONNECT SYS/MANAGER;
+Connect success.</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.1">How to manage</h4><p>If access is possible with the default password, change the password of the user after checking the association with the application.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of changing password</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER USER user1 IDENTIFIED BY password1234$;
+Alter success.</pre>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>To know how to change the SYS user password, refer to the &quot;<a href="https://aid.altibase.com/display/FAQE/How+to+change+sys+user+password" class="external-link" rel="nofollow">How to change the sys user password</a>' page.</p>
+                    </div>
+    </div>
+<h2 id="DatabaseSecurityChecklist-UsingWITHGRANTOPTION"><br />Using WITH GRANT OPTION</h2><hr /><p>With WITH GRANT OPTION, the user who has been granted object access rights can grant the appropriate rights to other users, so object access rights can be abused without DBA management.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT DISTINCT(A.USER_NAME) GRANTEE,      -- Users with WITH GRANT OPTION
+       C.USER_NAME GRANTOR,                -- User granted WITH GRANT OPTION
+       B.OBJ_TYPE,                         -- 객Object type (T: table, S: sequence, P: stored procedure or stored function, V: view)
+       B.OBJ_ID,                           -- Object ID (for tables, views, and sequences, maps to the TABLE_ID of SYS_TABLES_; for stored procedures and stored functions, maps to the PROC_OID of SYS_PROCEDURES_)
+       D.PRIV_NAME,                        -- Previlege name
+       B.WITH_GRANT_OPTION                 -- If the value is 1, it means that WITH GRANT OPTION has been granted.
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_GRANT_OBJECT_ B,
+       SYSTEM_.SYS_USERS_ C,
+       SYSTEM_.SYS_PRIVILEGES_ D
+ WHERE A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.GRANTEE_ID = A.USER_ID
+   AND B.GRANTOR_ID = C.USER_ID
+   AND B.PRIV_ID = D.PRIV_ID
+   AND B.WITH_GRANT_OPTION = 1;</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.2">How to manage</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Granting permission without WITH GRANT OPTION after removing WITH GRANT OPTION</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- When the user6 user has the privilege to grant SELECT and DELETE privileges on the employees table to other users.
+REVOKE SELECT, DELETE ON employees FROM user6;
+GRANT SELECT, DELETE ON employees TO user6;</pre>
+</div></div><h1 id="DatabaseSecurityChecklist-CheckingEnvironmentFiles">Checking Environment Files</h1><hr /><h2 id="DatabaseSecurityChecklist-Altibase.propertiesfileaccessauthoritysetting">Altibase.properties file access authority setting</h2><hr /><p>Maliciously altered altibase.properties file, one of the Altibase critical files, can lead to database failure.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.2">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To check altibase.properties file permissions</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/conf/altibase_properties</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.3">How to manage</h4><p>Set the altibase.properties file privilege setting to 600 or 640.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of file privilege setting</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/conf/altibase.properties
+-rw-r--r-- 1 heejung.lee heejung.lee 27652 2014-09-26 12:52 /data/heejung.lee/63119/conf/altibase.properties
+
+$ find $ALTIBASE_HOME -name altibase.properties -exec chmod 600 {} \;
+
+$ ls -l $ALTIBASE_HOME/conf/altibase.properties
+-rw------- 1 heejung.lee heejung.lee 27652 2014-09-26 12:52 /data/heejung.lee/63119/conf/altibase.properties</pre>
+</div></div><h2 id="DatabaseSecurityChecklist-LogAnchor,Logfile,Datafileaccessprivilegesetting">Log Anchor, Logfile, Datafile access privilege setting</h2><p>Database failure may occur if the log anchor, logfile, and datafile files, which are important files for ALTIBASE HDB database operation, are modified with malicious intent.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.3">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check the privileges of Log Anchor, Logfile, and Datafile files</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/logs/loganchor*</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.4">How to manage</h4><p>Log Anchor, Logfile, Datafile file privileges setting is set to 600 or 640.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of privilege setting</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l $ALTIBASE_HOME/logs/loganchor*
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor0
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor1
+-rw-r----- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor2
+
+
+$ find $ALTIBASE_HOME --name loganchor* -exec chmod 600 {} \;
+
+$ ls -l $ALTIBASE_HOME/logs/loganchor*
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor0
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor1
+-rw------- 1 heejung.lee heejung.lee 14156 2014-09-26 12:53 /data/heejung.lee/63119/logs/loganchor2</pre>
+</div></div><p> </p><h2 id="DatabaseSecurityChecklist-CheckingiSQLcommandshellhistory"><span style="color: rgb(0,0,0);">Checking iSQL command shell history</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">When connecting to a database using iSQL, if an account and password are entered together, the password may be leaked because the record is recorded in the shell history (.history or .sh_history) file.</span></p><p><strong><span style="color: rgb(0,0,0);">How to check</span></strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To check isql execution history in shell history file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ grep isql ~/.sh_history</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.5"><span style="color: rgb(0,0,0);">How to manage</span></h4><p><span style="color: rgb(0,0,0);">When connecting to iSQL, do not enter the user and password at the shell prompt.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To check isql execution history in shell history file</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -s 127.0.0.1 -port 31109          # If the user connects in this way, the user&#39;s username and password may be exposed.
+
+# Enter the account and password individually after executing only the iSQL command as shown below.
+
+$ isql&amp;nbsp;
+…
+Write Server Name (default:127.0.0.1) :
+Write UserID : sys
+Write Password :
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20300
+iSQL&gt;</pre>
+</div></div><p><span style="color: rgb(0,0,0);">Set access privilege to 600 to protect the shell history (.history or .sh_history) file.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ chmod 600 ~/.sh_history</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p><h1 id="DatabaseSecurityChecklist-DBMSSecuritySettings"><span style="color: rgb(0,0,0);">DBMS Security Settings</span></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);"><br /></span></p><h2 id="DatabaseSecurityChecklist-UsingPublicSynonym"><span style="color: rgb(0,0,0);">Using Public Synonym</span></h2><hr /><h4 id="DatabaseSecurityChecklist-Howtocheck.4"><span style="color: rgb(0,0,0);">How to check</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To check public Synonym</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT OBJECT_OWNER_NAME, SYNONYM_NAME FROM SYSTEM_.SYS_SYNONYMS_ WHERE OBJECT_OWNER_NAME = &#39;SYSTEM_&#39;;</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-HowtoManage"><span style="color: rgb(0,0,0);">How to Manage</span></h4><p><span style="color: rgb(0,0,0);">PUBLIC SYNONYM is created when a database is created to provide convenience to DB users, and it is not recommended to delete it because it uses general queries such as dual table lookup, or it is frequently used in procedures such as print and println.</span></p><p><span style="color: rgb(0,0,0);">However, if it inevitably needs to be dropped, the user can use the DROP statement as shown below.</span></p><p><span style="color: rgb(0,0,0);">Please drop it after checking whether PUBLIC SYNONYM is used in the application.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To drop PUBLIC SYNONYM</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DROP PUBLIC SYNONYM synonym_name;</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p><h2 id="DatabaseSecurityChecklist-Accountlockoutpolicysettingssuchaslockouttimeaccordingtothenumberofloginfailure"><span style="color: rgb(0,0,0);">Account lockout policy settings such as lockout time according to the number of login failure</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><h4 id="DatabaseSecurityChecklist-Applicableversion"><span style="color: rgb(0,0,0);">Applicable version</span></h4><ul><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 4.3.9.211</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 5.3.3.89</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 5.5.1.5.1</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 6.1.1.2.1</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 6.3.1</span></li></ul><h4 id="DatabaseSecurityChecklist-Howtocheck.5"><span style="color: rgb(0,0,0);">How to check</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check if the database user has the appropriate settings</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- In FAILED_LOGIN_ATTEMPTS, if the number of connection failures exceeds the set value, the password of the user is locked.
+-- PASSWORD_LOCK_TIME means password lockout period (days).
+-- If it is 0, it means not set.
+SELECT USER_NAME, FAILED_LOGIN_ATTEMPTS, PASSWORD_LOCK_TIME FROM SYSTEM_.SYS_USERS_;</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.6"><span style="color: rgb(0,0,0);">How to manage</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- After adding FAILED_LOGIN_ATTEMPTS and PASSWORD_LOCK_TIME properties in $ALTIBASE_HOME/conf/altibase.properties, restart ALTIBASE HDB server.
+-- When a database user is created after setting this property, the password expiration date is set based on this value.
+-- The following is how to check the property settings.
+
+SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;FAILED_LOGIN_ATTEMPTS&#39;, &#39;PASSWORD_LOCK_TIME&#39;);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When creating a database user</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE USER user1 IDENTIFIED BY user1 LIMIT (FAILED_LOGIN_ATTEMPTS 3, PASSWORD_LOCK_TIME 3);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When performing ALTER USER</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ALTER USER USER1 LIMIT (FAILED_LOGIN_ATTEMPTS 3, PASSWORD_LOCK_TIME 3);</pre>
+</div></div><h2 id="DatabaseSecurityChecklist-패스워드복잡도설정"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">패스워드 복잡도 설정</span></span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><h4 id="DatabaseSecurityChecklist-Applicableversion.1"><span style="color: rgb(0,0,0);">Applicable version</span></h4><ul><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 4.3.9.211</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 5.3.3.89</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 5.5.1.5.1</span></li><li><span style="color: rgb(0,0,0);">From ALTIBASE HDB 6.1.1.2.1</span></li><li><span style="color: rgb(0,0,0);">ALTiBASE HDB 6.3.1</span></li></ul><h4 id="DatabaseSecurityChecklist-Howtocheck.6"><span style="color: rgb(0,0,0);">How to check</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT USER_NAME, PASSWORD_VERIFY_FUNCTION FROM SYSTEM_.SYS_USERS_;         -- The PASSWORD_VERIFY_FUNCTION column means password complexity setting,
+                                                                            -- If it is NULL, it means it is not set.</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.7">How to manage</h4><p>To set the database user password complexity, create a callback function and use the PASSWORD_VERIFY_FUNCTION option in the LIMIT clause when executing CREATE USER or ALTER USER.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE USER username IDENTIFIED BY password LIMIT (PASSWORD_VERIFY_FUNCTION user callback function; -- PASSWORD_VERIFY_FUNCTION option password complexity setting in LIMIT clause
+
+-- Example
+CREATE USER user1 IDENTIFIED BY &quot;user1&quot; LIMIT (PASSWORD_VERIFY_FUNCTION pwd_verify_function);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ALTER USER username LIMIT (PASSWORD_VERIFY_FUNCTION user callback function);
+
+-- Example
+ALTER USER user1 LIMIT (PASSWORD_VERIFY_FUNCTION pwd_verify_function);</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To create callback function</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE FUNCTION pwd_verify_function
+( username varchar(20),
+    password varchar(20))
+RETURN varchar(100)
+AS
+result        varchar(100);
+pwdLength     integer;
+isDigit       boolean;
+isChar        boolean;
+isPunction    boolean;
+digitArray    varchar(20);
+punctionArray varchar(25);
+charArray     varchar(52);
+
+BEGIN
+    digitArray    := &#39;0123456789&#39;;
+    charArray     := &#39;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;;
+    punctionArray :=&#39;!&quot;#$%&amp;()``*+,-/:;&lt;=&gt;?_&#39;;
+
+    -- Check if the password is same as the username
+    IF LOWER(password) = LOWER(username) THEN
+        result := &#39;Password same as or similar to user&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check for the minimum length of the password
+    IF LENGTH(password) &lt; 4 THEN
+        result := &#39;Password length less than 4&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check if the password is too simple.
+    IF LOWER(password) IN (&#39;welcome&#39;, &#39;database&#39;, &#39;account&#39;, &#39;user&#39;, &#39;password&#39;, &#39;altibase&#39;, &#39;computer&#39;, &#39;abcd&#39;) THEN
+        result := &#39;Password too simple&#39;;
+        RETURN result;
+    END IF;
+
+    -- Check if the password contains at least one letter, one digit and one
+    -- punctuation mark.
+    -- 1. Check for the digit
+    isDigit := FALSE;
+    pwdLength := length(password);
+    FOR i IN 1...10 LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(digitArray,i,1) THEN
+        isDigit := TRUE;
+        GOTO findchar;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isDigit = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    -- 2. Check for the character
+    &lt;&lt;findchar&gt;&gt;
+    isChar := FALSE;
+    FOR i IN 1...length(charArray) LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(charArray,i,1) THEN
+        isChar := TRUE;
+        --GOTO findpunct;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isChar = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    -- 3. Check for the punctuation
+    &lt;&lt;findpunct&gt;&gt;
+    isPunction := FALSE;
+    FOR i IN 1...length(punctionArray) LOOP
+    FOR j IN 1...pwdLength LOOP
+    IF substr(password,j,1) = substr(punctionArray,i,1) THEN
+        isPunction := TRUE;
+        GOTO endsearch;
+    END IF;
+    END LOOP;
+    END LOOP;
+    IF isPunction = FALSE THEN
+        result := &#39;Password should contain at least one digit, one character and one punctuation&#39;;
+        RETURN result;
+    END IF;
+
+    &lt;&lt;endsearch&gt;&gt;
+
+    result := &#39;TRUE&#39;;
+    RETURN result;
+END;
+/
+</pre>
+</div></div><h2 id="DatabaseSecurityChecklist-Periodicchangeofpassword"><span style="color: rgb(0,0,0);"><br />Periodic change of password</span></h2><hr /><h4 id="DatabaseSecurityChecklist-Applicableversion.2"><span style="color: rgb(0,0,0);">Applicable version</span></h4><ul><li><span style="color: rgb(0,0,0);">ALTIBASE HDB 4.3.9.211</span></li><li><span style="color: rgb(0,0,0);">ALTIBASE HDB 5.3.3.89</span></li><li><span style="color: rgb(0,0,0);">ALTIBASE HDB 5.5.1.5.1</span></li><li><span style="color: rgb(0,0,0);">ALTIBASE HDB 6.1.1.2.1</span></li><li><span style="color: rgb(0,0,0);">ALTIBASE HDB 6.3.1</span></li></ul><h4 id="DatabaseSecurityChecklist-Howtocheck.7"><span style="color: rgb(0,0,0);">How to check</span></h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check if PASSWORD_LIFE_TIME for each user is set</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> select user_name, PASSWORD_LIFE_TIME  from system_.sys_users_;          -- The value of PASSWORD_LIFE_TIME is in days, and if it is 0, it means that it is not set.</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-CheckthePASSWORD_LIFE_TIMEpropertywiththecommandbelow.Ifthevalueis0,itmeansthatthepasswordexpirationdateisnotset.">Check the PASSWORD_LIFE_TIME property with the command below. If the value is 0, it means that the password expiration date is not set.</h4><p>After adding the PASSWORD_LIFE_TIME property in $ALTIBASE_HOME/conf/altibase.properties, restart the ALTIBASE HDB server.<br />When a database user is created after setting this property, the password expiration date is set based on this value.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Setting the PASSWORD_LIFE_TIME property</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;PASSWORD_LIFE_TIME&#39;;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE USER user1 IDENTIFIED BY user1 LIMIT (PASSWORD_LIFE_TIME 5);     -- Setting the password expiration date using the LIMIT clause</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When performing ALTER USER</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER USER USER1 LIMIT (PASSWORD_LIFE_TIME 7);</pre>
+</div></div><h2 id="DatabaseSecurityChecklist-ChangingtheALTIBASEHDBserviceportdefault">Changing the ALTIBASE HDB service port default</h2><hr /><p>The default service port of the ALTIBASE HDB server is 20300.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.8">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To check Service Port</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;PORT_NO&#39;;</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.8">How to manage</h4><p>After changing the value of PORT_NO in $ALTIBASE_HOME/conf/altibase.properties, restart the Altibase server process.</p><p> </p><h2 id="DatabaseSecurityChecklist-SessionIDLE_TIMEOUTsettings">Session IDLE_TIMEOUT settings</h2><hr /><p>IDLE_TIMEOUT can be changed for each session, so it can be changed in session even if it is affected by ALTIBASE HDB server properties when connected.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.9">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check ALTIBASE HDB server settings</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select name, value1 from v$property where name = &#39;IDLE_TIMEOUT&#39;;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Settings applied per session</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select DB_USERNAME, IDLE_TIME_LIMIT, COMM_NAME, CLIENT_APP_INFO, CLIENT_PID from v$session;</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.9">How to manage</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>To change properties</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET IDLE_TIMEOUT = 60;   -- When changing session units. The unit is seconds.
+ALTER SYSTEM SET IDLE_TIMEOUT = 60;    -- When applied to all sessions. Applied from the newly connected session.</pre>
+</div></div><ul><li>To reflect the changed value even when the Altibase server process is restarted, the value of the IDLE_TIMEOUT property must be changed in $ALTIBASE_HOME/conf/altibase.properties.</li></ul><h2 id="DatabaseSecurityChecklist-Basicauditing(usersentences,privileges,objects,etc.)">Basic auditing (user sentences, privileges, objects, etc.)</h2><hr /><p>Auditing function is provided starting from ALTIBASE HDB version 6.3.1.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.10">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check-How to check whether auditing is set</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT * FROM SYSTEM_.SYS_AUDIT_OPTS_;
+
+--Example
+iSQL&gt; SELECT * FROM SYSTEM_.SYS_AUDIT_OPTS_;
+USER_NAME             OBJECT_NAME           OBJECT_TYPE           SELECT_OP  INSERT_OP  UPDATE_OP  DELETE_OP  MOVE_OP  MERGE_OP  ENQUEUE_OP  DEQUEUE_OP  LOCK_TABLE_OP  EXECUTE_OP  COMMIT_OP  ROLLBACK_OP  SAVEPOINT_OP  CONNECT_OP  DISCONNECT_OP  ALTER_SESSION_OP  ALTER_SYSTEM_OP  DDL_OP
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTITEST              AUD1                  TABLE                 -/-  A/A  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-  -/-
+1 row selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check-whether to enable auditing</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT * FROM SYSTEM_.SYS_AUDIT_
+
+--Example
+iSQL&gt; select * from system_.sys_audit_;                      -- If the value of IS_STARTED is 1, it means that the auditing function is activated.
+IS_STARTED  START_TIME  STOP_TIME    RELOAD_TIME
+--------------------------------------------------------
+1           23-JUN-2014               23-JUN-2014
+1 row selected.</pre>
+</div></div><ul><li>For a description of each field, please refer to -&gt; 3. Data Dictionary section of the <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">General Reference</a> manual.</li></ul><h4 id="DatabaseSecurityChecklist-Howtomanage.10">How to manage</h4><p>If auditing is not set, refer to '14. Database Auditing' and '5. Set it by referring to the 'Data Control' section.</p><p>Manual download page: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a></p><h2 id="DatabaseSecurityChecklist-RestrictionofremoteaccesstoDBserver">Restriction of remote access to DB server</h2><hr /><p>This feature is available starting from ALTIBASE HDB 5.</p><h4 id="DatabaseSecurityChecklist-Howtocheckandmanage">How to check and manage</h4><p>Check the ACCESS_LIST property in $ALTIBASE_HOME/conf/altibase.properties.</p><p>If it is not set, you need to restart after changing the setting in altibase.properties file.</p><h2 id="DatabaseSecurityChecklist-SettingSYSDBAloginrestrictions">Setting SYSDBA login restrictions</h2><p>ALTIBASE HDB has no login restrictions for SYSDBA and can only control remote access.<br />This feature is available starting from ALTIBASE HDB version 5.</p><h4 id="DatabaseSecurityChecklist-Howtocheck.11">How to check</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME =&#39;REMOTE_SYSDBA_ENABLE&#39;; --value1 = 1: remote access of sysdba is possible, value1 = 0: remote access of sysdba is not possible</pre>
+</div></div><h4 id="DatabaseSecurityChecklist-Howtomanage.11">How to manage</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to manage</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET REMOTE_SYSDBA_ENABLE = 0;</pre>
+</div></div><ul><li>To reflect the changed value even when the Altibase server process is restarted, the value of the REMOTE_SYSDBA_ENABLE property must be changed in $ALTIBASE_HOME/conf/altibase.properties.</li></ul><h1 id="DatabaseSecurityChecklist-SecurityPatch">Security Patch</h1><hr /><h2 id="DatabaseSecurityChecklist-Applyingthelatestpatch">Applying the latest patch</h2><hr /><p>The latest version of ALTIBASE HDB can be found on the <a href="http://support.altibase.com/en/product" class="external-link" rel="nofollow">Customer Support Service Portal</a>.</p><p>However, since patch packages are uploaded irregularly except for the following cases, please contact us for the latest patch version by requesting service at +82-2-2082-1114 or the <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">C</a><a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">ustomer Support Service Portal</a><a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">.</a></p><ul><li>When a major version is released</li><li>When critical bugs are reflected</li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

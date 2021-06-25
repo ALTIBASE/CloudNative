@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase JBoss 연동가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase JBoss 연동가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 1 Team</span>, last modified on Jan 03, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p style="text-align: left;"><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409851397 {padding: 0px;}
+div.rbtoc1624409851397 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409851397 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409851397'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-개요'>개요</a></li>
+<li><a href='#AltibaseJBoss연동가이드-JBoss설치'>JBoss 설치</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-설치전준비사항'>설치 전 준비사항</a></li>
+<li><a href='#AltibaseJBoss연동가이드-기본설치'>기본 설치</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-Windows환경JDK설정'>Windows 환경 JDK 설정</a></li>
+<li><a href='#AltibaseJBoss연동가이드-Unix환경JDK설정'>Unix 환경 JDK 설정</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseJBoss연동가이드-JBoss디렉토리구조'>JBoss 디렉토리 구조</a></li>
+<li><a href='#AltibaseJBoss연동가이드-JBoss구동'>JBoss 구동</a></li>
+<li><a href='#AltibaseJBoss연동가이드-JBoss종료'>JBoss 종료</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-구동시포트중복으로인한에러'>구동 시 포트 중복으로 인한 에러</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#AltibaseJBoss연동가이드-ALTIBASE와JBOSS의연동'>ALTIBASE와 JBOSS의 연동</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-JDBC드라이버'>JDBC 드라이버</a></li>
+<li><a href='#AltibaseJBoss연동가이드-JDBC드라이버설정'>JDBC 드라이버 설정</a></li>
+<li><a href='#AltibaseJBoss연동가이드-데이터소스파라미터'>데이터소스 파라미터</a></li>
+<li><a href='#AltibaseJBoss연동가이드-데이터소스설정'>데이터소스 설정</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-로컬트랜잭션'>로컬 트랜잭션</a></li>
+<li><a href='#AltibaseJBoss연동가이드-분산트랜잭션'>분산 트랜잭션</a></li>
+<li><a href='#AltibaseJBoss연동가이드-Failover'>Failover</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#AltibaseJBoss연동가이드-샘플예제'>샘플 예제</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-JSP샘플예제'>JSP 샘플 예제</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseJBoss연동가이드-기존WAR이용'>기존 WAR 이용</a></li>
+<li><a href='#AltibaseJBoss연동가이드-WAR생성'>WAR 생성</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><br /></strong></p><h1 id="AltibaseJBoss연동가이드-개요">개요</h1><hr /><p>본 문서는 Altibase와 JBoss를 연동하여 운영하기 위한 가이드 문서로써 JBoss를 설치하는 방법 및 환경변수 설정방법, Altibase와 JBoss를 연동하는 방법에 대해서 기술한다. <br /> 본 문서는 Altibase 6.5.1과 JBOSS 6.1.0.Final 버전에 대해 기술한 문서이다.</p><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="AltibaseJBoss연동가이드-JBoss설치">JBoss 설치</h1><hr /><p>본 장에서는 JBoss를 설치하고 구동하는 방법, 환경 변수를 설정하는 방법, IP 주소 바인딩 하는 방법, 디렉토리 구조 등에 대해서 설명한다.</p><h2 id="AltibaseJBoss연동가이드-설치전준비사항">설치 전 준비사항</h2><hr /><p>JBOSS는 Java EE 6 표준 인증을 받은 응용프로그램이기 때문에 JBoss를 사용하기 위해서는 JDK 1.6 이상을 설치해야 한다.</p><p>테스트 환경에서는 JDK 1.7을 사용했다.</p><h2 id="AltibaseJBoss연동가이드-기본설치">기본 설치</h2><hr /><p style="margin-left: 30.0px;">JBoss를 설치하기 위해서 해당 버전의 패키지를 JBoss홈페이지에서 다운로드 받는다. (<a href="http://www.jboss.org/jbossas/downloads" class="external-link" rel="nofollow">http://www.jboss.org/jbossas/downloads</a>)<br /> 패키지를 다운로드 받은 후, 윈도우 환경에서는 압축 도구를 이용하여 압축을 풀고, 유닉스 환경에서는 unzip 명령어를 통하여 압축을 푼다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>압축 해제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">unzip jboss-6.1.0.GA.zip 
+ … 생략 … 
+ inflating: jboss-6.1.0.GA/server/web/deployers/jboss-jca.deployer/jboss-jca-deployer.jar 
+ inflating: jboss-6.1.0.GA/server/web/deployers/jbossweb.deployer/web.xml 
+ inflating: jboss-6.1.0.GA/server/web/deployers/metadata-deployer-jboss-beans.xml 
+ inflating: jboss-6.1.0.GA/server/web/deployers/security-deployer-jboss-beans.xml 
+ 
+ #</pre>
+</div></div><p style="margin-left: 30.0px;"><br />본 문서에는 압축을 풀어서 생기는 jboss-6.1.0.Final 디렉토리를 JBOSS_HOME 으로 명칭한다.패키지 압축을 푸는 것으로 JBoss의 설치는 완료되며, JDK를 설정한 후에 구동시키면 된다. <br /> 패키지 압축을 풀면 해당 패키지와 동일한 이름의 디렉토리가 생기게 되며, 디렉토리 하위에는 JBoss구동 및 종료, 테스트에 대한 모든 파일과 디렉토리가 있다.</p><h3 id="AltibaseJBoss연동가이드-Windows환경JDK설정">Windows 환경 JDK 설정</h3><hr /><p style="margin-left: 30.0px;">Windows 환경에서 JDK를 설정하는 방법은 다음과 같으며, 두 가지 방법 중 한가지를 선택하여 설정한다.</p><ul><li style="list-style-type: none;background-image: none;"><ul><li>시스템 환경 변수에 JAVA_HOME 변수를 추가</li></ul></li></ul><p style="margin-left: 60.0px;"><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221377.png" data-image-src="attachments/13437492/14221377.png"></p><p> </p><ul><li style="list-style-type: none;background-image: none;"><ul><li><p>Joss 구동 스크립트인 JOBSS_HOME/bin/run.bat 파일에 추가</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>run.bat</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">@echo off
+rem -------------------------------------------------------------------------
+rem JBoss Bootstrap Script for Windows
+rem -------------------------------------------------------------------------
+rem $Id: run.bat 111395 2011-05-18 07:45:07Z beve $
+
+ set JAVA_HOME=C:\Program Files\java\jdk1.7.0         ← JDK 경로를 추가
+@if not &quot;%ECHO%&quot; == &quot;&quot; echo %ECHO%
+@if &quot;%OS%&quot; == &quot;Windows_NT&quot; setlocal
+if &quot;%OS%&quot; == &quot;Windows_NT&quot; (
+ set &quot;DIRNAME=%~dp0%&quot;
+) else (
+ set DIRNAME=.\
+)
+
+ … 생략 …</pre>
+</div></div></li></ul></li></ul><h3 id="AltibaseJBoss연동가이드-Unix환경JDK설정">Unix 환경 JDK 설정</h3><hr /><p style="margin-left: 30.0px;">Unix 환경에서 JDK를 설정하는 방법은 다음과 같으며, 네 가지 방법 중 한 가지를 선택하여 설정한다.</p><p> </p><ul><li>시스템 환경 변수에 JAVA_HOME 변수를 추가</li><li><p>JBoss 구동 스크립트인 JBOSS_HOME/bin/run.sh 파일에 추가<br /><br /></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>run.sh</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">#!/bin/sh
+### ====================================================================== ###
+## ##
+## JBoss Bootstrap Script ##
+## ##
+### ====================================================================== ###
+### $Id: run.sh 111395 2011-05-18 07:45:07Z beve $ ###
+# Extract the directory and the program name
+
+
+JAVA_HOME=/usr/jdk/jdk1.7.0 ← JDK 경로를 추가*
+
+… 생략 … | </pre>
+</div></div></li></ul><h2 id="AltibaseJBoss연동가이드-JBoss디렉토리구조">JBoss 디렉토리 구조</h2><hr /><p style="margin-left: 30.0px;">JBoss를 설치하면 다음과 같은 디렉토리들이 생성된다.</p><p style="margin-left: 30.0px;"><br /><img class="confluence-embedded-image" height="581" width="486" src="attachments/13437492/14221360.png" data-image-src="attachments/13437492/14221360.png"><br class="atl-forced-newline" /><br class="atl-forced-newline" /></p><h2 id="AltibaseJBoss연동가이드-JBoss구동">JBoss 구동</h2><hr /><p style="margin-left: 30.0px;">JBoss를 설치하고 JDK 설정을 하면 JBoss를 구동할 수 있다. <br />Unix 환경에서는 JBOSS_HOME/bin/run.sh 스크립트를 실행시켜서 구동할 수 있으며, Winodws 환경에서는 JBOSS_HOME/bin/run.bat 배치 파일을 실행시켜서 구동할 수 있다.</p><p style="margin-left: 30.0px;"> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>run.sh 수행</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># sh run.sh 
+
+ … 생략 …
+16:44:55,672 INFO [xnio] XNIO Version 2.1.0.CR2
+16:44:55,678 INFO [nio] XNIO NIO Implementation Version 2.1.0.CR2
+16:44:55,858 INFO [remoting] JBoss Remoting version 3.1.0.Beta2
+16:44:55,907 INFO [TomcatDeployment] deploy, ctxPath=/
+16:44:55,960 정보 [HornetQServerImpl] trying to deploy queue jms.queue.ExpiryQueue
+16:44:56,026 정보 [HornetQServerImpl] trying to deploy queue jms.queue.DLQ
+16:44:56,039 정보 [service] Removing bootstrap log handlers
+16:44:56,078 INFO [org.apache.coyote.http11.Http11Protocol] Starting Coyote HTTP/1.1 on http-127.0.0.1-8080
+16:44:56,080 INFO [org.apache.coyote.ajp.AjpProtocol] Starting Coyote AJP/1.3 on ajp-127.0.0.1-8009
+16:44:56,081 INFO [org.jboss.bootstrap.impl.base.server.AbstractServer] JBossAS [6.1.0.Final &quot;Neo&quot;] Started in 19s:637ms</pre>
+</div></div><p style="margin-left: 30.0px;"> </p><p style="margin-left: 30.0px;"><br class="atl-forced-newline" />JBoss가 정상적으로 구동이 되면 가장 마지막 로그 메시지에 &quot;Started&quot;라는 문구가 출력되며, 웹 콘솔로 접근하여 정상적으로 JBoss가 구동되었는지 확인할 수 있다.(<a class="external-link" href="http://server_ip" rel="nofollow">http://server_ip:</a>포트번호). <br /> Administration Console에 admin 계정(패스워드: admin)으로 접속하여 현재 구동중인 JBoss에 대한 운영이 가능하다.</p><p style="margin-left: 30.0px;"><img class="confluence-embedded-image" width="800" src="attachments/13437492/14221376.png" data-image-src="attachments/13437492/14221376.png"></p><p> </p><h2 id="AltibaseJBoss연동가이드-JBoss종료">JBoss 종료</h2><hr /><p style="margin-left: 30.0px;">JBoss를 종료하기 위해서는 JBOSS_HOME/bin/shutdown.sh 또는 shutdown.bat 스크립트를 실행한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>shutdown.sh 수행</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># sh shutdown.sh –S    ← localhost로 구동한 경우
+ Shutdown message has been posted to the server. 
+ Server shutdown may take a while - check logfiles for completion 
+ #</pre>
+</div></div><p> </p><p><span style="color: rgb(0,0,0);font-size: 20.0px;"><br />JBoss 구동 및 종료 시 유의사항</span></p><hr /><p style="margin-left: 30.0px;">JBoss를 구동하고 종료할 때 유의사항은 다음과 같다.</p><h3 id="AltibaseJBoss연동가이드-구동시포트중복으로인한에러">구동 시 포트 중복으로 인한 에러</h3><hr /><p style="margin-left: 30.0px;">JBoss는 기본으로 설정되어 있는 기본 Port는 &quot;8080&quot; 이다. <br />하지만 이 포트를 다른 프로그램에서 사용하고 있을 경우 JBoss구동 시에 다음과 같은 에러가 발생하기 때문에 Port 변경이 필요하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>port 충돌 에러</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">DEPLOYMENTS IN ERROR: 
+Deployment &quot;WebServer&quot; is in error due to the following reason(s): LifecycleException: Protocol handler initialization failed: java.net.BindException: Address already in use /127.0.0.1:8080</pre>
+</div></div><p style="margin-left: 30.0px;"><br /><br class="atl-forced-newline" />JBoss의 기본 Port를 변경하기 위해서는 JBOSS_HOME/server/default/deploy/jbossweb.sar/server.xml 파일에서 Connector port를 수정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>server.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;8088&quot; address=&quot;${jboss.bind.address}&quot; redirectPort=&quot;${jboss.web.https.port}&quot; /&gt;</pre>
+</div></div><p> </p><p> </p><h1 id="AltibaseJBoss연동가이드-ALTIBASE와JBOSS의연동">ALTIBASE와 JBOSS의 연동</h1><hr /><p style="margin-left: 30.0px;">본 장에서는 Altibase와 JBoss를 연동하여 사용하기 위한 설정 방법에 대해서 설명한다. <br class="atl-forced-newline" /><br class="atl-forced-newline" /></p><h2 id="AltibaseJBoss연동가이드-JDBC드라이버">JDBC 드라이버</h2><hr /><p style="margin-left: 30.0px;">JDBC란 Java 응용프로그램에서 데이터베이스에 연결하여 여러 SQL을 실행할 수 있도록 제공하는 표준 인터페이스를 말한다. <br />이러한 JDBC 드라이버는 각 데이터베이스 벤더에서 제공하고 있으며, Altibase에서는 Altibase.jar 파일로 제공하고 있다. <br />이 JDBC 드라이버는 $ALTIBASE_HOME/lib 디렉토리 안에 존재한다. </p><p> </p><h2 style="text-align: left;" id="AltibaseJBoss연동가이드-JDBC드라이버설정">JDBC 드라이버 설정</h2><hr /><p style="margin-left: 30.0px;">응용프로그램에서 직접 구현하여 커넥션 풀을 사용하는 경우에는 응용프로그램과 JDBC 드라이버를 같이 패키징하면 되지만 JBoss의 JNDI를 통해 데이터소스에 접근하고자 한다면 <br />JDBC 드라이버를 모든 server configuration에서 접근이 가능한 곳에 위치시켜야 한다. <br />JBoss에서는 JBOSS_HOME/common/lib 디렉토리에 JDBC 드라이버(Altibase.jar) 를 위치시키면 모든 server configuration 에서 접근이 가능하다. <br />해당 디렉토리는 동적으로 반영되지 않기 때문에 JDBC 드라이버를 위치시킨 후, 반드시 JBoss를 재기동시켜야 한다.</p><p><br class="atl-forced-newline" /><br class="atl-forced-newline" /></p><h2 id="AltibaseJBoss연동가이드-데이터소스파라미터">데이터소스 파라미터</h2><hr /><p style="margin-left: 30.0px;">다음은 Altibase와 JBoss를 연동하여 사용하기 위한 데이터소스 설정 파라미터이며, 데이터소스 설정 시 사용할 수 있는 거의 모든 설정 정보를 포함하고 있다. <br />나열된 파라미터들의 정의를 확인한 후, 필요로 하는 파라미터들을 조합하여 데이터소스 파일에 설정한다. <br />문서 편집기를 이용하여 데이터소스 파일을 직접 생성할 수 있으며, xx-ds.xml의 형태로 JBOSS_HOME/server/default/deploy 디렉토리에 위치시킨다.</p><p> </p><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="margin-left: 30.0px;text-align: center;" class="confluenceTh">파라미터</th><th style="text-align: center;" class="confluenceTh">설명</th></tr><tr><td style="text-align: left;margin-left: 90.0px;" class="confluenceTd">&lt;jndi-name&gt;</td><td class="confluenceTd"><ul><li>사용할 데이터소스의 이름을 설정</li><li>응용프로그램에서 jndi-name을 lookup 시켜 사용</li></ul></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;connection-url&gt;</p></td><td colspan="1" class="confluenceTd"><p>접속할 DBMS의 URL을 설정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;driver-class&gt;</p></td><td colspan="1" class="confluenceTd"><p>DBMS와 연동 시 사용할 JDBC 드라이버를 설정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;user-name&gt;</p></td><td colspan="1" class="confluenceTd"><p>사용자 설정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;password&gt;</p></td><td colspan="1" class="confluenceTd"><p>패스워드 설정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;new-connection-sql&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션 생성시 호출할 SQL 지정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;check-valid-connection-sql&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션 풀에서 커넥션을 얻었을 때 호출할 SQL 지정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;valid-connection-checker-class-name&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션 풀에서 커넥션을 호출하기 전에 유효한 커넥션인지 확인함</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;exception-sorter-class-name&gt;</p></td><td colspan="1" class="confluenceTd"><p>에러 발생 시 DBMS의 에러코드와 메시지를 확인</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;track-statements&gt;</p></td><td colspan="1" class="confluenceTd"><p>Statement와 Resultset이 unclosed 되는 경우 추적하는 모니터링 옵션</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;prepared-statement-cache-size&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션당 캐싱할 Preparestatement의 수로써 다음 호출 때 재사용함</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;shared-prepared-statements&gt;</p></td><td colspan="1" class="confluenceTd"><p>Preparestatement 캐싱 여부를 지정하는 것으로 동일 트랜잭션에서 여러번 호출하는 경우 Statement를 반환함. 기본값은 false.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;query-timeout&gt;</p></td><td colspan="1" class="confluenceTd"><p>SQL의 Timeout 값을 설정</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;background-validation&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션이 유효한지 검사하는 과정의 오버헤드를 줄이기 위해서 사용하는 옵션. 기본값은 false.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;idle-timeout-minutes&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션이 닫히기 전까지 idle 상태의 최대 시간. 기본값은 15분</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;background-validation-minutes&gt;</p></td><td colspan="1" class="confluenceTd"><p>Connectionvalidator가 실행하는 주기. 기본값은 10분.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;min-pool-size&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션 풀의 최소 개수</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;max-pool-size&gt;</p></td><td colspan="1" class="confluenceTd"><p>커넥션 풀의 최대 개수</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;transaction-isolation&gt;</p></td><td colspan="1" class="confluenceTd"><p>Transaction Isolation Level을 지정하지 않으면 DBMS의 기본값을 사용함</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;metadata&gt;</p></td><td colspan="1" style="margin-left: 30.0px;text-align: left;" class="confluenceTd"><span>Standardjbosscmp-jdbc.xml 파일에 정의되어 있는 type-mapping</span></td></tr></tbody></table></div><p> </p><p> </p><h2 id="AltibaseJBoss연동가이드-데이터소스설정">데이터소스 설정</h2><hr /><p style="margin-left: 30.0px;">Altibase와 JBoss를 연동하여 사용하기 위해 데이터소스를 설정하는 방법에 대하여 기술한다. </p><p style="margin-left: 30.0px;"> </p><h3 style="margin-left: 30.0px;" id="AltibaseJBoss연동가이드-로컬트랜잭션">로컬 트랜잭션</h3><hr /><p style="margin-left: 30.0px;">Altibase와 JBoss를 연동하기 위한 최소한의 데이터소스 설정이므로 추가적인 항목이 필요한 경우 위에서 언급한 항목을 적절하게 사용하도록 한다. <br />파일명은 &quot;xx-ds.xml&quot; 의 형태로 저장하며, JBoss를 재구동하지 않아도 자동으로 데이터소스 파일을 감지하여 바인딩한다.</p><p style="margin-left: 30.0px;"> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> &lt;datasources&gt; 
+&lt;local-tx-datasource&gt;
+ &lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt; 
+ &lt;connection-url&gt;jdbc:Altibase://127.0.0.1:20300/mydb&lt;/connection-url&gt; 
+ &lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt; 
+ &lt;user-name&gt;sys&lt;/user-name&gt; 
+ &lt;password&gt;manager&lt;/password&gt; 
+
+ &lt;min-pool-size&gt;10&lt;/min-pool-size&gt; 
+ &lt;max-pool-size&gt;100&lt;/max-pool-size&gt; 
+ &lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt; 
+ &lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt; 
+
+ &lt;metadata&gt; 
+ &lt;type-mapping&gt;Altibase&lt;/type-mapping&gt; 
+ &lt;/metadata&gt; 
+&lt;/local-tx-datasource&gt;
+ &lt;/datasources&gt;</pre>
+</div></div><h3 style="margin-left: 30.0px;" id="AltibaseJBoss연동가이드-분산트랜잭션">분산 트랜잭션</h3><hr /><p style="margin-left: 30.0px;">다음은 분산 트랜잭션을 사용하는 경우의 데이터소스 파일의 설정 예이다. <br />JBOSS_HOME/docs/jca 디렉토리에는 DBMS 별로 로컬/분산 트랜잭션에 대한 데이터소스 설정 예제파일이 있으므로 참고하여 설정하도록 한다. <br />파일은 “xx-xa-ds.xml” 의 형태로 저장한다.</p><p style="margin-left: 30.0px;"> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-xa-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasource&gt;
+  &lt;xa-datasource&gt;
+&lt;jndi-name&gt;AltibaseDS&lt;/jndi-name&gt; 
+&lt;track-connection-by-tx /&gt; 
+&lt;isSameRM-override-value&gt;false&lt;/isSameRM-override-value&gt; 
+&lt;xa-datasource-class&gt;Altibase.jdbc.driver.ABXADataSource&lt;/xa-datasource-class&gt; 
+&lt;xa-datasource-property name=&quot;ServerName&quot;&gt;127.0.0.1&lt;/xa-datasource-property&gt; 
+&lt;xa-datasource-property name=&quot;PortNumber&quot;&gt;20300&lt;/xa-datasource-property&gt; 
+&lt;xa-datasource-property name=&quot;User&quot;&gt;sys&lt;/xa-datasource-property&gt; 
+  &lt;xa-datasource-property name=&quot;Password&quot;&gt;manager&lt;/xa-datasource-property&gt; 
+&lt;metadata&gt;
+  &lt;type-mapping&gt;Altibase&lt;/type-mapping&gt; 
+&lt;/metadata&gt;
+&lt;!--pooling parameters--&gt;
+    &lt;min-pool-size&gt;5&lt;/min-pool-size&gt;
+    &lt;max-pool-size&gt;250&lt;/max-pool-size&gt;
+    &lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+    &lt;idle-timeout-minutes&gt;5&lt;/idle-timeout-minutes&gt;
+    &lt;check-valid-connection-sql&gt;select * from system_.sys_database_&lt;/check-valid-connection-sql&gt;
+  &lt;/xa-datasource&gt;
+  &lt;/datasources&gt;
+
+</pre>
+</div></div><p> </p><h3 style="margin-left: 30.0px;" id="AltibaseJBoss연동가이드-Failover">Failover</h3><hr /><p style="margin-left: 30.0px;">Failover는 DBMS 의 장애로 인해 서비스가 중단되는 것을 방지하기 위해 사용중인 DBMS의 장애 시에 이를 감지하고 다른 DBMS로 절체하여 계속적인 서비스를 제공하기 위한 기능이다. <br />Failover 기능은 JBOSS 에서 제공하는 구문을 이용하는 방법과 ALTIBASE 에서 제공하는 구문을 이용하는 방법이 있다.<br />ALTIBASE 에서는 5.3.3 이상 버전에서만 Failover 기능을 제공하기 때문에 하위 버전을 사용 시 JBOSS의 구문을 이용해야 한다. <br />다음은 ALTIBASE에서 제공하는 구문을 통한 Failover 이다. 데이터소스 파일을 수정한 다음 첫번째 url의 DBMS를 종료시키고 테스트해보면 두번째 url의 DBMS로 Failover 가 되는 것을 확인할 수 있다. <br />ALTIBASE에서 제공하는 구문을 사용하면 CTF(Connection Time Failover)와 STF(Session Time Failover)가 가능하다.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasources&gt;
+&lt;local-tx-datasource&gt;
+&lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt; 
+&lt;connection-url&gt;jdbc:Altibase://127.0.0.1:20911/mydb?
+AlternateServers=(192.168.1.76:20911)&amp;amp; ConnectionRetryCount=3&amp;amp;
+ConnectionRetryDelay=3&amp;amp;LoadBalance=off&amp;amp;
+SessionFailOver=on &lt;/connection-url&gt;
+&lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt;
+&lt;user-name&gt;sys&lt;/user-name&gt;
+&lt;password&gt;manager&lt;/password&gt;
+&lt;min-pool-size&gt;10&lt;/min-pool-size&gt;
+&lt;max-pool-size&gt;100&lt;/max-pool-size&gt;
+&lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+&lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt;
+&lt;metadata&gt;
+&lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+&lt;/metadata&gt;
+&lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;
+
+
+
+</pre>
+</div></div><p> </p><p style="margin-left: 30.0px;">다음은 JBOSS 에서 제공하는 Failover 구문이다.<br />Failover 할 DBMS 의 connection-url을 추가해주고, 두 url을 구분하는 구분자를 &lt;url-delimiter&gt;로 지정해준다. <br />JBOSS에서 제공하는 구문을 사용하면 CTF(Connection Time Failover)만 가능하다.<br />테스트 하는 방법은 위의 내용과 동일하다.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasources&gt;
+&lt;local-tx-datasource&gt;
+&lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt;
+&lt;connection-url&gt; jdbc:Altibase://127.0.0.1:20911/mydb,
+                       jdbc:Altibase://192.168.1.76:20911/mydb&lt;/connection-url&gt;
+&lt;url-delimiter&gt;,&lt;/url-delimiter&gt;
+&lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt;
+&lt;user-name&gt;sys&lt;/user-name&gt;
+&lt;password&gt;manager&lt;/password&gt;
+&lt;min-pool-size&gt;10&lt;/min-pool-size&gt;
+&lt;max-pool-size&gt;100&lt;/max-pool-size&gt;
+&lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+&lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt;
+&lt;metadata&gt;
+&lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+&lt;/metadata&gt;
+&lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;
+
+
+
+</pre>
+</div></div><p> </p><h1 id="AltibaseJBoss연동가이드-샘플예제">샘플 예제</h1><hr /><p style="margin-left: 30.0px;">위에서 Altibase와 JBoss의 연동 방법에 대해서 알아봤다면, 본 장에서는 위의 설정을 이용하여 Altibase에 접속 및 쿼리를 수행함으로써 Altibase와 JBoss의 연동을 확인해본다. <br class="atl-forced-newline" /><br class="atl-forced-newline" /></p><h2 id="AltibaseJBoss연동가이드-JSP샘플예제">JSP 샘플 예제</h2><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>test.jsp</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;javax.naming.*&quot; %&gt; 
+&lt;%@ page import=&quot;java.sql.*&quot; %&gt; 
+&lt;%@ page import=&quot;javax.sql.*&quot; %&gt; 
+ &lt;% 
+ Connection con=null; 
+ Statement st=null; 
+ ResultSet rs=null; 
+ try 
+ { 
+ InitialContext ctx = new InitialContext(); 
+ DataSource ds = (DataSource)ctx.lookup(&quot;java:/AltiTest&quot;); 
+ con=ds.getConnection(); 
+ st=con.createStatement(); 
+ rs=st.executeQuery(&quot;select * from dual&quot;); 
+ while(rs.next()) 
+ { 
+ out.println(&quot;Result :&quot; + rs.getString(1)+&quot;&lt;br&gt;&quot;); 
+ } 
+ } 
+ catch(Exception e) 
+ { 
+ out.println(&quot;Error:&quot; + e.getMessage()); 
+ e.printStackTrace(); 
+ } 
+ finally 
+ { 
+ if(rs!=null)rs.close(); 
+ if(st!=null)st.close(); 
+ if(con!=null)con.close(); 
+ } 
+ %&gt;</pre>
+</div></div><p> </p><p><span style="color: rgb(0,0,0);font-size: 20.0px;"><br />실행 방법</span></p><hr /><p style="margin-left: 30.0px;">Altibase와 JBoss의 연동 테스트를 하기 위해 두 가지 방법을 사용할 수 있다. <br />기존에 배포되어 있는 WAR에 테스트 하고자 하는 JSP 파일을 생성하는 방법과 WAR 를 직접 생성하고 JBoss에 디플로이 한 후 테스트하는 방법이 있다.</p><h3 id="AltibaseJBoss연동가이드-기존WAR이용">기존 WAR 이용</h3><hr /><p style="margin-left: 30.0px;">JBOSS_HOME/server/default/deploy 디렉토리에는 JBoss에서 기본적으로 제공하는 WAR가 있다. 제공되는 WAR 에 JSP 예제 파일을 생성한 후, 테스트해본다. <br /> 본 문서에서 테스트할 때는 기본 위치인  ROOT.war 에 JSP 파일을 생성하여 사용했다. (JBOSS_HOME\server\default\deploy\ROOT.war)<br /> JSP 파일을 생성한 후에는 주소창에 JBoss가 구동 중인 서버 IP와 포트번호, JSP 파일 이름을 차례대로 입력한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody style="margin-left: 30.0px;"><tr style="margin-left: 30.0px;"><td style="margin-left: 30.0px;" class="confluenceTd"><p style="margin-left: 30.0px;text-align: left;">http://server_ip:포트번호/jsp 파일 이름 <br class="atl-forced-newline" /> 예) <a href="http://192.168.1.35:8180/jmx-console/test.jsp" class="external-link" rel="nofollow">http://localhost/test.jsp</a></p></td></tr></tbody></table></div><p style="margin-left: 30.0px;"><br class="atl-forced-newline" /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221378.png" data-image-src="attachments/13437492/14221378.png"></p><h3 id="AltibaseJBoss연동가이드-WAR생성">WAR 생성</h3><hr /><p style="margin-left: 30.0px;">JBoss 웹 콘솔을 사용하여 JSP 파일을 이용한 테스트하는 방법에 대해서 설명한다. <br />배포(deploy)는 어플리케이션의 서비스들을 시작하기 위해서 JBoss에 모듈 파일을 올리고 제어하는 모든 동작을 일컫는 작업을 의미한다. <br />샘플 테스트에서는 위에서 제공한 샘플 예제를 이용하여 WAR 파일을 작성하고, JBoss 서버에 배포하여 실행시키는 방법에 대하여 설명한다. <br />샘플 테스트에서 사용하는 WAR 파일은 이클립스를 사용하여 생성하였다.</p><p style="margin-left: 30.0px;"> </p><ol><li>이클립스를 실행시켜서 [File] → [New] → [Project] 를 선택한 후에 다음의 Wizard 에서 [Web] → &quot;Dynamic Web Project&quot; 를 선택하여 프로젝트 이름을 설정한다.<br /><br /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221381.jpg" data-image-src="attachments/13437492/14221381.jpg"><br /><br /></li><li>다음과 같이 프로젝트가 생성이 되면, 위의 샘플 예제를 JSP 파일로 생성하여 &quot;WebContent&quot; 디렉토리 밑에 추가, Altibase.jar 는 &quot;lib&quot; 디렉토리 밑에 추가해준다.<br /><br /><img class="confluence-embedded-image" src="attachments/13437492/14221380.jpg" data-image-src="attachments/13437492/14221380.jpg"><br /><br /></li><li>JSP 파일과 Altibase.jar 파일을 추가했으면, [File] → [Export] 를 선택하고, [Web] → &quot;War file&quot; 를 선택하여 생성할 경로를 지정해주면 WAR 가 생성된다.<br /><br /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221382.jpg" data-image-src="attachments/13437492/14221382.jpg"><br /><br /></li><li>WAR 파일이 생성되면, JBoss 웹 콘솔에서 &quot;Web Application&quot; → &quot;Add a new resource&quot; 를 클릭하여 WAR 파일을 업로드 한다.<br /><br /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221379.jpg" data-image-src="attachments/13437492/14221379.jpg"><br /><br /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221384.jpg" data-image-src="attachments/13437492/14221384.jpg"><br /><br /></li><li>생성한 WAR 파일을 업로드 하면 자동적으로 deploy가 되며, deploy가 성공했다는 메시지가 출력된다. deploy 된 WAR 파일도 리스트에서 확인할 수 있다.<br /><br /><img class="confluence-embedded-image" width="500" src="attachments/13437492/14221385.jpg" data-image-src="attachments/13437492/14221385.jpg"><br /><br /></li><li>deploy가 완료되면 인터넷 창을 실행해 다음과 같은 URL을 입력하여 실행시키면 된다.</li></ol><div class="table-wrap"><table class="confluenceTable"><tbody style="margin-left: 30.0px;"><tr style="margin-left: 30.0px;"><td style="margin-left: 30.0px;" class="confluenceTd"><p style="margin-left: 30.0px;">http://server_ip:포트번호/WAR 이름/jsp 파일 이름 <br class="atl-forced-newline" /> 예) <a href="http://192.168.1.35:8180/AltiTest/test.jsp" class="external-link" rel="nofollow">http://localhost:8080/AltiTest/test.jsp</a></p></td></tr></tbody></table></div><p>        <img class="confluence-embedded-image" width="500" src="attachments/13437492/14221386.jpg" data-image-src="attachments/13437492/14221386.jpg"><br /><br /></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221359.png">worddav08fbb5b9744800ddddc05554dc766ffb.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221360.png">worddavd022e7d63dde7ea41d95bdbf394e6705.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221361.png">worddavcd81edc3b3dc451caba792caa0e27599.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221362.png">worddav555486b066c5bd9ed1bc7a43798face2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221363.png">worddav4b3e6b9ea1d09caac1bcac97204633fe.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221364.png">worddavbbd6bbaf6e77f82800b779f9765efdfe.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221365.png">worddave1608054cc9d206d568f0e83ed6a6bc0.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221366.png">worddav1321a12960b76cdfee1691fb8110edca.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221367.png">worddav37ac14e6a834581d1e9c4f010a5b65d3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221368.png">worddavbe628d329426aad7f39eac0a9ea7852e.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221369.png">worddavd15f85e51bf10d04de778e6debdd3e50.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221383.jpg">localhost.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221376.png">image2019-12-11 16:52:3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221377.png">image2019-12-11 21:1:47.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221378.png">image2019-12-11 21:13:51.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221375.jpg">localhost.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221379.jpg">admin.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221381.jpg">eclipse2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221382.jpg">eclipse3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221387.jpg">eclipse1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221388.jpg">war1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221389.jpg">war2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221390.jpg">war3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221380.jpg">eclipse1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221384.jpg">war1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221385.jpg">war2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13437492/14221386.jpg">war3.jpg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

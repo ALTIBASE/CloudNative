@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 12. Constraints</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 12. Constraints
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409834300 {padding: 0px;}
+div.rbtoc1624409834300 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409834300 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409834300'>
+<ul class='toc-indentation'>
+<li><a href='#id-12.Constraints-Constraints'>Constraints</a>
+<ul class='toc-indentation'>
+<li><a href='#id-12.Constraints-[CT01]전체제약조건목록'>[CT01] 전체 제약조건 목록</a></li>
+<li><a href='#id-12.Constraints-[CT02]PK,FK,UNIQUE관련제약조건및테이블,인덱스목록'>[CT02] PK, FK, UNIQUE 관련 제약조건 및 테이블, 인덱스 목록</a></li>
+<li><a href='#id-12.Constraints-[CT03]복합인덱스컬럼구성목록'>[CT03] 복합 인덱스 컬럼 구성 목록</a></li>
+<li><a href='#id-12.Constraints-[CT04]인덱스정보요약'>[CT04] 인덱스 정보 요약</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h2 id="id-12.Constraints-Constraints"><strong>Constraints</strong></h2><hr /><p>constraints 정보를 확인하기 위한 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><h4 id="id-12.Constraints-[CT01]전체제약조건목록">[CT01] 전체 제약조건 목록</h4><ul style="list-style-type: square;"><li><p>데이터베이스 내에 생성된 모든 제약조건 목록을 보여준다.</p></li><li><p>아래 쿼리는 알티베이스 6.3.1 이상 버전에서 동작하며 주석 부분을 삭제하면 하위 버전에서도 사용할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 6.3.1 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT USER_NAME
+     , TABLE_NAME OBJECT_NAME
+     , DECODE(B.TABLE_TYPE, &#39;T&#39;, &#39;TABLE&#39;, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;V&#39;, &#39;VIEW&#39;, &#39;SEQUENCE&#39;) OBJECT_TYPE
+     , C.CONSTRAINT_NAME CONST_NAME
+     , DECODE(C.CONSTRAINT_TYPE, 0, &#39;FOREIGN KEY&#39;, 
+                                 1, &#39;NOT NULL&#39;, 
+                                 2, &#39;UNIQUE&#39;, 
+                                 3, &#39;PRIMARY KEY&#39;, 
+                                 4, &#39;NULL&#39;, 
+                                 5, &#39;TIMESTAMP&#39;, 
+                                 6, &#39;LOCAL UNIQUE&#39;, 
+                                 7, &#39;CHECK&#39;) CONST_TYPE
+     , COLUMN_NAME
+     , CHECK_CONDITION          -- 알티베이스 6.3.1 이전 버전에서는 삭제 후 사용
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_TABLES_ B,
+       SYSTEM_.SYS_CONSTRAINTS_ C,
+       SYSTEM_.SYS_COLUMNS_ D,
+       SYSTEM_.SYS_CONSTRAINT_COLUMNS_ E
+ WHERE A.USER_ID=C.USER_ID
+   AND B.TABLE_ID = C.TABLE_ID
+   AND A.USER_ID = D.USER_ID
+   AND A.USER_ID = E.USER_ID
+   AND B.TABLE_ID = D.TABLE_ID
+   AND B.TABLE_ID = E.TABLE_ID
+   AND C.CONSTRAINT_ID = E.CONSTRAINT_ID
+   AND D.COLUMN_ID = E.COLUMN_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39; 
+ ORDER BY USER_NAME, OBJECT_NAME, CONST_TYPE;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">OBJECT_TYPE</td><td class="confluenceTd"><p>오브젝트의 타입.</p><p>TABLE(T), VIEW(V), SEQUENCE(S), QUEUE(Q)</p></td></tr><tr><td class="confluenceTd">CONST_TYPE</td><td class="confluenceTd"><p>제약조건 타입.</p><p>FOREIGN KEY(0), NOT NULL(1), UNIQUE(2),PRIMARY KEY(3), NULL(4), TIMESTAMP(5), LOCAL UNIQUE(6), CHECK(7)</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>CHECK_CONDITION</p></td><td colspan="1" class="confluenceTd">CHECK 제약조건을 지정할 때 정의한 무결성 규칙을 보여준다. 이 컬럼은 알티베이스 6.3.1 부터 지원한다.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-12.Constraints-[CT02]PK,FK,UNIQUE관련제약조건및테이블,인덱스목록">[CT02] PK, FK, UNIQUE 관련 제약조건 및 테이블, 인덱스 목록</h4><ul style="list-style-type: square;"><li><p>Primary key, Foreign key, Unique 제약조건에 대한 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티에비스 4.3.9 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , B.TABLE_NAME
+     , DECODE(C.CONSTRAINT_TYPE, 0, &#39;FK&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;) CONST_TYPE
+     , C.CONSTRAINT_NAME CONST_NAME
+     , DECODE(D.INDEX_NAME, C.CONSTRAINT_NAME, NULL, INDEX_NAME) INDEX_NAME
+     , (SELECT TABLE_NAME
+          FROM SYSTEM_.SYS_TABLES_
+         WHERE TABLE_ID = C.REFERENCED_TABLE_ID) R_TABLE
+     , (SELECT INDEX_NAME
+          FROM SYSTEM_.SYS_INDICES_
+         WHERE INDEX_ID = C.REFERENCED_INDEX_ID) R_INDEX
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_TABLES_ B,
+       SYSTEM_.SYS_CONSTRAINTS_ C LEFT OUTER JOIN SYSTEM_.SYS_INDICES_ D ON C.INDEX_ID = D.INDEX_ID
+ WHERE C.TABLE_ID = B.TABLE_ID
+   AND A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND C.USER_ID = A.USER_ID
+   AND C.CONSTRAINT_TYPE IN (3, 0, 2, 6) --PK, FK, UNIQUE, LOCAL UNIQUE 
+ ORDER BY TABLE_NAME, CONST_TYPE ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">R_TABLE</td><td class="confluenceTd">제약조건이 FK의 경우 참조대상 테이블의 이름.</td></tr><tr><td class="confluenceTd">R_INDEX</td><td class="confluenceTd">제약조건이 FK의 경우 참조대상 인덱스의 이름.</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-12.Constraints-[CT03]복합인덱스컬럼구성목록">[CT03] 복합 인덱스 컬럼 구성 목록</h4><ul style="list-style-type: square;"><li><p>복한 인덱스 구성 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT D.USER_NAME
+     , C.TABLE_NAME
+     , B.INDEX_NAME
+     , E.COLUMN_NAME
+     , A.INDEX_COL_ORDER COL_ORDER
+     , DECODE(A.SORT_ORDER, &#39;A&#39;, &#39;ASC&#39;, &#39;D&#39;, &#39;DESC&#39;) SORT
+  FROM SYSTEM_.SYS_INDEX_COLUMNS_ A,
+       SYSTEM_.SYS_INDICES_ B,
+       SYSTEM_.SYS_TABLES_ C,
+       SYSTEM_.SYS_USERS_ D,
+       SYSTEM_.SYS_COLUMNS_ E
+ WHERE D.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND C.TABLE_TYPE = &#39;T&#39;
+   AND A.INDEX_ID = B.INDEX_ID
+   AND A.TABLE_ID = C.TABLE_ID
+   AND A.USER_ID = D.USER_ID
+   AND A.COLUMN_ID = E.COLUMN_ID
+ ORDER BY USER_NAME, TABLE_NAME, INDEX_NAME, COL_ORDER ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">COL_ORDER</td><td class="confluenceTd">인덱스 컬럼의 구성 순서로 0부터 시작한다.</td></tr><tr><td class="confluenceTd">SORT</td><td class="confluenceTd">인덱스 컬럼의 정렬 형태. / ASC(A), DESC(D)</td></tr></tbody></table></div></li></ul><p> </p><h4 id="id-12.Constraints-[CT04]인덱스정보요약">[CT04] 인덱스 정보 요약</h4><ul style="list-style-type: square;"><li><p>모든 인덱스 정보를 보여준다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.USER_NAME
+     , C.INDEX_NAME
+     , C.INDEX_ID
+     , B.TABLE_NAME
+     , NVL(D.NAME, &#39;SYS_TBS_MEMORY&#39;) TBS_NAME
+     , C.IS_UNIQUE
+     , C.COLUMN_CNT
+  FROM SYSTEM_.SYS_USERS_ A,
+       SYSTEM_.SYS_TABLES_ B,
+       SYSTEM_.SYS_INDICES_ C LEFT OUTER JOIN V$TABLESPACES D ON C.TBS_ID = D.ID
+ WHERE A.USER_NAME &lt;&gt; &#39;SYSTEM_&#39;
+   AND B.TABLE_TYPE = &#39;T&#39;
+   AND C.TABLE_ID = B.TABLE_ID
+   AND C.USER_ID = A.USER_ID
+ ORDER BY B.TABLE_NAME, C.INDEX_NAME ;</pre>
+</div></div></li></ul><ul style="list-style-type: square;"><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><span style="color: rgb(0,0,0);">TBS_NAME</span></td><td class="confluenceTd"><p>인덱스가 저장된 테이블스페이스의 이름.</p><p>(A4에서도 호환이 가능하도록 테이블스페이스가 없는 인덱스는 메모리 테이블스페이스로 간주)</p></td></tr><tr><td class="confluenceTd">IS_UNIQUE</td><td class="confluenceTd">인덱스의 유니크 여부. / TRUE(T), FALSE(F)</td></tr><tr><td class="confluenceTd">COLUMN_CNT</td><td class="confluenceTd">인덱스를 구성하는 컬럼의 개수.</td></tr></tbody></table></div></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

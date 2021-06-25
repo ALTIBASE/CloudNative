@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. unixODBC Manager Installation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-and-unixODBC-Integration-Guide_14647413.html">Altibase and unixODBC Integration Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. unixODBC Manager Installation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>In order to use unixODBC Manager, the binary of the software must be created according to the platform. This chapter describes the necessary parts for each step. It is assumed that the compiler uses the native compiler, and in the case of gcc/g++, there are no options to pay attention to, so there will be no explanation. (However, when creating 32/64bit, the compile option must be used carefully.)</p><h1 id="id-1.unixODBCManagerInstallation-DownloadingunixODBCManager">Downloading unixODBC Manager</h1><div>The user can download the unixODBC Manager from the following web address:</div><div><a href="http://www.unixodbc.org/" class="external-link" rel="nofollow">http://www.unixodbc.org/</a></div><div><img class="confluence-embedded-image" src="attachments/14647417/14778398.png" data-image-src="attachments/14647417/14778398.png"></div><div><ul><li>Download from the following web address <a href="http://www.unixodbc.org" class="external-link" rel="nofollow">http://www.unixodbc.org</a> -&gt; Click Download on the left side of the screen -&gt; Click Download button to download the source.</li></ul><p>The downloaded unixODBC is a compressed file in the following format.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><pre>unixODBC-2.3.2.tar.gz</pre></th></tr></tbody></table></div><h1 id="id-1.unixODBCManagerInstallation-InstallationunixODBCManager">Installation unixODBC Manager</h1><p>To install unixODBC, perform the following process.</p><h2 id="id-1.unixODBCManagerInstallation-1.Decompressingthesource">1. Decompressing the source</h2><p>Decompress the source in the appropriate path.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; mkdir install
+ 
+Shell&gt; cd install
+ 
+Shell&gt; gzip -dc unixODBC*.gz | tar xvf -</pre>
+</div></div><h2 id="id-1.unixODBCManagerInstallation-2.Settingenvironmentvariablesforcompilation">2. Setting environment variables for compilation</h2><p>Check the bit of the odbc driver to be used.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; file $ALTIBASE_HOME/lib/libaltibase_odbc*
+ 
+/altibase_home/lib/libaltibase_odbc-64bit-ul32.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, not stripped
+/altibase_home/lib/libaltibase_odbc-64bit-ul64.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, not stripped</pre>
+</div></div><p>Based on the identified bits, it is necessary to determine which bit of 32/64bit unixODBC Manager is to be compiled. Please note that ul32/ul64 included in the odbc driver file name does not mean the file bit of the odbc driver.</p><p>ul32 means that the driver is using SQLLEN=4byte(32bit), and ul64 means that the driver is using SQLLEN=8byte(64bit).</p><p>The bit-type of the file is classified according to ELF 64-bit and ELF 32-bit in the execution result of the above command.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>The bit types of the unixodbc and odbc driver must match each other. If unixodbc is compiled with 64bit, the Altibase odbc driver must also use 64bit, and if the unixodbc is 32bit, the Altibase odbc driver also uses 32bit which is a dedicated odbc driver.</p>
+                    </div>
+    </div>
+<h3 id="id-1.unixODBCManagerInstallation-SettingthesizeofSQLLENandSQLULENtype">Setting the size of SQLLEN and SQLULEN type</h3><div>SQLEN and SQLULEN types are used when declaring the parameter variable type of the unixodbc function. Depending on the size of SIZEOF_LONG_INT, it is determined whether the size of SQLEN and SQLULEN is 32bit or 64bit. SQLLEN / SQLULEN size is declared as 32bit in 32bit OS and 64bit in 64bit OS.</div><div>To use SQLLEN/SQLULEN as 32bit (4byte) in 64bit OS, declare the following compilation environment variable.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1</pre>
+</div></div><p><br />If BUILD_LEGACY_64_BIT_MODE=1 is set as above, SQLLEN is compiled to use 32bit (4byte) size.</p><h3 id="id-1.unixODBCManagerInstallation-SQLLEN/SQLULENtypesizemustbeusedas32bit"><span style="color: rgb(255,0,0);">SQLLEN / SQLULEN type size must be used as 32bit</span></h3>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Using export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1, it is strongly recommended to use SQLLEN as 4 bytes (32 bits). When SQLLEN/SQLULEN is used as 64bit (8byte), an error occurred in the transfer of values between unixodbc and altibase.</p><p>Because of this, when using the SQLColAttribute function of unixODBC in PHP/Python, the column type classification value transferred as an argument value may be calculated as an incorrect value and the value may not be retrieved normally, so SQLLEN=4byte(32bit) should be used.</p><p>Also, sqltypes.h provided by ALTIBASE is a 32-bit SQLLEN if no other option is given at compile-time, so when an application program uses ALTIBASE sqltypes.h, SQLLEN is transferred to the unixodbc manager as 32-bit.</p><p>However, if the unixodbc manager does not give a separate option, the SQLLEN is used as 64bit, so the ODBC functions SQLfetch() and SQLMoreResult() intermittently transfer incorrect return values due to the mismatch of the SQLLEN length between the application program and the unixodbc manager.</p><p>To prevent this, it is recommended to use only 32bit unixodbc SQLLEN.</p>
+                    </div>
+    </div>
+<h3 id="id-1.unixODBCManagerInstallation-Selectinguniodbccompilationbittype">Selecting uniodbc compilation bit type</h3><p>it can selectively compile unixodbc to 32bit or 64bit with the compilation environment variable. It is compiled as 64bit by default in 64bit OS. To compile unixodbc with 32bit program in 64bit OS, set as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=&lt;32/64bit compile option&gt;
+export LDFLAGS=&lt;32/64bit compile option&gt;
+export CC=&lt;C compiler&gt;
+export CXX=&lt;C++ compiler&gt;</pre>
+</div></div><p> </p><p>Environment variables to be set for each platform are as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">Variable</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">AIX</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">HP</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">SUN</div></th></tr></thead><tbody><tr><td class="confluenceTd"><p align="center">64bit</p><p align="center">compile</p></td><td class="confluenceTd"><p>OBJECT_MODE=64 in the environment variable</p></td><td class="confluenceTd"><p>Add &quot;+DD64 -DBUILD_REAL_64_BIT_MODE&quot; to CFLAGS.</p></td><td class="confluenceTd"><p>Set &quot;/usr/lib/64&quot; and &quot;/usr/ucblib/sparv9&quot; in LD_LIBRARY_PATH_64.</p></td></tr><tr><td class="confluenceTd"><p align="center">CC</p></td><td class="confluenceTd"><p>/usr/vac/bin/xlc</p></td><td class="confluenceTd"><p>/opt/aCC/bin/aCC</p></td><td class="confluenceTd"><p>/opt/SUNWspro/bin/cc</p></td></tr><tr><td class="confluenceTd"><p align="center">CFLAGS</p><p align="center">LDFLAGS</p></td><td class="confluenceTd"><p align="center">-q64 (64bit)</p></td><td class="confluenceTd"><p align="center">+DD64 (64bit)</p></td><td class="confluenceTd"><p align="center">-xarch=v9 (64bit)</p></td></tr><tr><td class="confluenceTd"><p align="center">CXX</p></td><td class="confluenceTd"><p>/usr/vacpp/bin/xlC_r</p></td><td class="confluenceTd"><p>/opt/aCC/bin/aCC</p></td><td class="confluenceTd"><p>/opt/SUNWspro/bin/CC</p></td></tr><tr><td class="confluenceTd"><p align="center">LD</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>/opt/SUNWspro/bin/CC</p></td></tr></tbody></table></div><p>In the case of the compiler, the path can be changed depending on the path installed by the user, so the user must check the path installed in the target device.</p><p>The options of CFLGAS and LDFLAGS are also specified differently according to the 32/64bit compilation option. (ELF class error may occur)</p><h4 id="id-1.unixODBCManagerInstallation-Exampleofacompilationenvironmentvariabletocompileunixodbcto32bitonLinux64bitOS">Example of a compilation environment variable to compile unixodbc to 32bit on Linux 64bit OS</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=&quot;-m32 -DBUILD_LEGACY_64_BIT_MODE=1&quot;
+export LDFLAGS=-m32
+export CXXFLAGS=-m32</pre>
+</div></div><p>After declaring as above and going with the subsequent compilation process, unixodbc with a SQLLEN size of 4 bytes (32 bits) and an executable file bit number of 32 bits is compiled.</p><h2 id="id-1.unixODBCManagerInstallation-3.Configurationprocessforthe&#39;make&#39;process">3. Configuration process for the 'make' process</h2><p>Perform the configuration. Here, the directory to be installed and some options required for the make process are set.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; ./configure –prefix=/home/unixODBC –-disable-gui --enable-threads=yes
+checking for a BSD-compatible install..../install-sh -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+…….</pre>
+</div></div><p>In the configuration stage, all environments for compiling are checked, so if an error occurs, necessary binaries must be installed directly.</p><p>The directory where unixODBC is installed is installed in the path set as the prefix argument value. For example, if prefix=/home/unixODBC, unixODBC is finally installed in /home/unixODBC after install operation.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">prefix: path to install unixODBC
+enable-gui: Whether to build GUI ODBC Administrator
+enable-threads: The default is &quot;yes&quot; if thread-support is found on your machine. All modern Linuxes will have pthreads support in glibc so it is probably best to leave this to default.
+If the enable-threads option is set to no, the following error may occur when testing the connection with isql, so set enable-threads=yes.
+$ ./isql Altiodbc
+./isql: symbol lookup error: /home/altibase_home/lib/libaltibase_odbc-64bit-ul64.so: undefined symbol: pthread_sigmask</pre>
+</div></div><h2 id="id-1.unixODBCManagerInstallation-4.Compiling">4. Compiling</h2><h3 id="id-1.unixODBCManagerInstallation-performmake">perform make</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; make
+source=&#39;lstDelete.c&#39; object=&#39;lstDelete.lo&#39; libtool=yes \DEPDIR=.deps depmode=none /bin/bash ../depcomp \ -mt -c -o lstDelete.lo lstDelete.c
+……
+make[1]: Leaving directory `/home/unixODBC-2.3.2/samples&#39;
+make[1]: Entering directory `/home/unixODBC-2.3.2&#39;
+make[1]: Nothing to be done for `all-am&#39;.
+make[1]: Leaving
+directory `/home/unixODBC-2.3.2&#39;</pre>
+</div></div><p>In the case of AIX, it may be estimated that there may be errors in compilation depending on the patch level of the operating system.</p><h3 id="id-1.unixODBCManagerInstallation-Performmakeinstall">Perform make install</h3><p>When performing make is finished, the binary files completed with compilation are installed in the installation directory by executing make install. Since it is installed in the prefix directory specified in the configuration step, you must have access rights to the directory in advance.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; make install
+…..
+mkdir -p /home/unixODBC/etc/ODBCDataSources
+/home/unixODBC/bin/odbc_config --header &gt;
+/home/unixODBC/include/unixodbc_conf.h
+make[2]: Leaving directory `/home/unixODBC-2.3.2&#39;
+make[1]: Leaving
+directory `/home/unixODBC-2.3.2&#39;</pre>
+</div></div><h3 id="id-1.unixODBCManagerInstallation-Checkforthenormalinstallation"><br />Check for the normal installation</h3><div>Check if the library is loaded normally after installation</div></div><div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; cd /home/unixODBC/bin
+Shell&gt;  ./dltest $ALTIBASE_HOME/lib/libaltibase_odbc-64bit-ul32.so
+SUCCESS: Loaded /home/altibase_home/lib/libaltibase_odbc-64bit-ul32.so</pre>
+</div></div><p><br />The dltest file is located under the bin in the directory where unixODBC is installed. If unixODBC Manager is normally installed as above, dltest for the ODBC driver for Unix provided by ALTIBASE should run normally.</p></div></div></div><div><span style="color: rgb(0,0,0);font-size: 16.0px;font-weight: bold;"><br /></span></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647417/14778398.png">unixodbc_download.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

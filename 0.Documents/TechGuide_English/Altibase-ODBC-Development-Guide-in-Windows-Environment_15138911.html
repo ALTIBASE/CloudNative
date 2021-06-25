@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Altibase ODBC Development Guide in Windows Environment</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Altibase ODBC Development Guide in Windows Environment
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409365198 {padding: 0px;}
+div.rbtoc1624409365198 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409365198 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409365198'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-Overview'>Overview</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-AltibaseODBCDriverConfiguration'>Altibase ODBC Driver Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-DownloadingODBC'>Downloading ODBC</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-InstallingODBCDriver'>Installing ODBC Driver</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCsettingsinControlPanel'>ODBC settings in Control Panel</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCDriverDevelopmentGuide'>ODBC Driver Development Guide</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCconnectionstring'>ODBC connection string</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualC++examplesource'>Visual C++ example source</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualC#examplesource'>Visual C# example source</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualBasicexamplesource'>Visual Basic example source</a></li>
+<li><a href='#AltibaseODBCDevelopmentGuideinWindowsEnvironment-ConsiderationswhenusingLOB'>Considerations when using LOB</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-Overview">Overview</h1><hr /><p>This document describes how to set up various development tools using the ODBC Driver in Altibase development in the Windows environment.</p><p>This document is based on Altibase version 6.5.1 and Windows 10.</p><p><strong><span style="color: rgb(255,0,0);">The ODBC for Windows is provided only up to Altibase version 6.5.1, and not provided to Altibase version 7 or later.</span></strong></p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center.</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<h1 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-AltibaseODBCDriverConfiguration">Altibase ODBC Driver Configuration</h1><hr /><p>Before the development, the ODBC Driver provided by Altibase must be installed. This can be downloaded from <a href="http://support.altibase.com/en/." class="external-link" rel="nofollow">http://support.altibase.com/en/.</a></p><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-DownloadingODBC">Downloading ODBC</h2><hr /><p>Go to <a href="http://support.altibase.com/en/," class="external-link" rel="nofollow">http://support.altibase.com/en/,</a> then &quot;Downloads&quot; → &quot;Products&quot; to download Windows ODBC files for each version. (Supports up to Altibase version 6.5.1)</p><p>For older versions that are unable on the website, please contact <a href="mailto:support@altibase.com" class="external-link" rel="nofollow">support@altibase.com</a>.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335435.png" data-image-src="attachments/15138911/15335435.png"></p><p>                                      <img class="confluence-embedded-image" src="attachments/15138911/15335436.png" data-image-src="attachments/15138911/15335436.png"></p><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-InstallingODBCDriver">Installing ODBC Driver</h2><hr /><p>When installing for the first time, download and install the WINDOWS CLIENT package.</p><p>Since there is no complicated process when installing the WINDOW CLIENT package, this document will not describe it separately.</p><p>When installing WINDOWS CLIENT, the ODBC installation screen appears as shown below.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335437.jpg" data-image-src="attachments/15138911/15335437.jpg"></p><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCsettingsinControlPanel">ODBC settings in Control Panel</h2><hr /><p>To register Altibase ODBC Driver, click “Start” → “Control Panel” → “Management Tools” → “ODBC Data Source (64-bit)” → “Add”.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335438.jpg" data-image-src="attachments/15138911/15335438.jpg"></p><p>After clicking &quot;Add&quot;, select ALTIBASE_HDB_ODBC_64bit and click &quot;Finish&quot;.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335439.jpg" data-image-src="attachments/15138911/15335439.jpg"></p><p>When the following DB connection setting screen appears, enter the setting value for the connection.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335440.jpg" data-image-src="attachments/15138911/15335440.jpg"></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">Items</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Description</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Example</div></th></tr></thead><tbody><tr><td class="confluenceTd">DB Name</td><td class="confluenceTd">DB_NAME created at the time of DB creation</td><td class="confluenceTd">mydb</td></tr><tr><td class="confluenceTd">Host (name or IP)</td><td class="confluenceTd">IP information where Altibase DB Server is located</td><td class="confluenceTd">192.168.1.35</td></tr><tr><td class="confluenceTd">NLS_USE</td><td class="confluenceTd">DB character set</td><td class="confluenceTd">MS949</td></tr><tr><td class="confluenceTd">Password</td><td class="confluenceTd">DB account password</td><td class="confluenceTd">manager</td></tr><tr><td class="confluenceTd">Port (default 20300)</td><td class="confluenceTd">Altibase DB Server connection port information</td><td class="confluenceTd">20300</td></tr><tr><td class="confluenceTd">User</td><td class="confluenceTd">Account on DB</td><td class="confluenceTd">sys</td></tr><tr><td class="confluenceTd">Windows DSN Name</td><td class="confluenceTd">Name that distinguishes it from other DSN names</td><td class="confluenceTd">SERVER1</td></tr></tbody></table></div><p><br />If the user clicks the &quot;Test Connection&quot; button after entering each item, the user can check the connection to the Altibase Driver with ODBC Driver. (Altibase DB Server must be running.)</p><p>If this is properly set, the user can check the newly added ODBC items as follows.</p><p><img class="confluence-embedded-image" src="attachments/15138911/15335442.jpg" data-image-src="attachments/15138911/15335442.jpg"></p><h1 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCDriverDevelopmentGuide">ODBC Driver Development Guide</h1><hr /><p>When connecting to the Altibase DB server with ODBC driver, separate source conversion is not required, and ODBC connection strings need to be changed in the connection part.</p><p>Compile and use appropriate heads (ex. windows.h, sql.h, sqlext.h, afxdb.h) and library (ex. odbc32.lib) that can integrate ODBC drivers required in WINDOWS.</p><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-ODBCconnectionstring">ODBC connection string</h2><hr /><p>In a program using the ODBC Driver, the connection string is used as follows.</p><p>The path marked in red is used as a keyword, and the part marked in blue can be used after changing the value according to the connection information of the Altibase DB Server to be connected and the ODBC version.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td colspan="2" class="confluenceTd"><strong><span style="color: rgb(255,0,0);">DRIVER=<span style="color: rgb(51,102,255);">ALTIBASE_HDB_ODBC_64bit</span>;user=<span style="color: rgb(51,102,255);">sys</span>;password=<span style="color: rgb(51,102,255);">manager</span>; Server=<span style="color: rgb(51,102,255);">127.0.0.1</span>;PORT=<span style="color: rgb(51,102,255);">20300</span>;NLS_USE=<span style="color: rgb(51,102,255);">MS949</span>;LongDataCompat=<span style="color: rgb(51,102,255);">on</span></span></strong></td></tr><tr><td style="text-align: center;" class="confluenceTd">Driver</td><td style="text-align: center;" class="confluenceTd">Altibase Driver name checked in ODBC management tool</td></tr><tr><td style="text-align: center;" class="confluenceTd">User</td><td style="text-align: center;" class="confluenceTd">User account on DB</td></tr><tr><td style="text-align: center;" class="confluenceTd">Password</td><td style="text-align: center;" class="confluenceTd">DB account password</td></tr><tr><td style="text-align: center;" class="confluenceTd">Server</td><td style="text-align: center;" class="confluenceTd">IP information where Altibase DB Server is located.</td></tr><tr><td style="text-align: center;" class="confluenceTd">Port</td><td style="text-align: center;" class="confluenceTd">Altibase DB Server connection port information</td></tr><tr><td style="text-align: center;" class="confluenceTd">NLS_USE</td><td style="text-align: center;" class="confluenceTd">DB character set</td></tr><tr><td style="text-align: center;" class="confluenceTd">LongDataCompat</td><td style="text-align: center;" class="confluenceTd">ON / OFF (Set to ON when using large data such as BLOB)</td></tr></tbody></table></div><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualC++examplesource">Visual C++ example source</h2><hr /><p>A simple connection example in Visual C++ is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual C++ example source</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: cpp; gutter: false" style="font-size:12px;">#include &lt;Afx.h&gt;
+#include &lt;Afxdb.h&gt;
+#include &quot;stdafx.h&quot;
+int _tmain(int argc, _TCHAR* argv[])
+{
+    CDatabase db;
+ 
+    try
+    {
+        db.OpenEx(_T(&quot;ODBC connection string”), CDatabase::noOdbcDialog);
+        AfxMessageBox (_T(&quot;Connect OK&quot;));
+    }catch (CDBException *e)
+    {
+        AfxMessageBox(e-&gt;m_strError);
+    }
+    return 0;
+}
+</pre>
+</div></div><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualC#examplesource">Visual C# example source</h2><hr /><p>A simple connection example in Visual C++ is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual C# example source</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">using System;using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+ 
+using System.Data.Odbc;
+ 
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            OdbcConnection cn = new OdbcConnection();
+             
+            try
+                cn.ConnectionString = “ODBC connection string”;
+                cn.Open();
+                Console.WriteLine(&quot;connect ok&quot;);
+            }
+            catch (OdbcException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Console.ReadLine();
+        }
+    }
+} </pre>
+</div></div><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-VisualBasicexamplesource"><span style="color: rgb(0,0,0);">Visual Basic example source</span></h2><hr /><p>A simple connection example in Visual Basic is as follows. In the example below, it is implemented as a source that connects to a DB and gets the current date and time. (The same applies when using ADO objects).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Visual Basic example source</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: vb; gutter: false" style="font-size:12px;">Sub Main() 
+    Dim cn As Odbc.OdbcConnection
+    Dim cmd As Odbc.OdbcCommand
+    Dim dr As Odbc.OdbcDataReader
+ 
+    cn = New Odbc.OdbcConnection
+    cmd = New Odbc.OdbcCommand
+ 
+    cn.ConnectionString = “ODBC connection string”
+ 
+    Try
+        cn.Open()
+        Console.WriteLine(&quot;Successfully connected.&quot;)
+        cmd.Connection = cn
+ 
+        cmd.CommandText = &quot;SELECT TO_CHAR(SYSDATE,&#39;YYYY-MM-DD HH:MI:SS&#39;)FROM DUAL&quot;
+ 
+        dr = cmd.ExecuteReader()
+        While (dr.Read())
+            Console.WriteLine(dr.GetString(0))
+        End While
+    Catch ex As Odbc.OdbcException
+        Console.WriteLine(&quot;Error in the connection&quot; + ex.Message)
+    End Try
+ 
+    Console.ReadLine()
+End Sub</pre>
+</div></div><h2 id="AltibaseODBCDevelopmentGuideinWindowsEnvironment-ConsiderationswhenusingLOB">Considerations when using LOB</h2><hr /><p>In the case of Altibase, if LOB data type is used, it can be used after changing the connection information to Non-AutoCommit.</p><p>If not, NULL for LOB data type is brought when retrieving, or the following error occurs when insert/update time.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on. </pre>
+</div></div><p>With the following example of C# source, the user can see the process of inserting/selecting a BLOB data type into a table.</p><p>The example of BLOB insert is an example of changing the connection information to Non-AutoCommit and inserting data as described above while the DB is connected.</p><p>The used “blob” variable is declared as Byte[] type.</p><p>The example of BLOB select is an example that declares a Byte[] variable through a function called BINARY_LENGTH provided by Altibase to find out the length of a BLOB data type, saves data in the variable, and creates a file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of BLOB insert</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">// BLOB INSERTFileStream fs = new FileStream(&quot;c:\\test.dat&quot;, FileMode.Open, FileAccess.Read);
+ 
+Byte[] blob = new byte[fs.Length];
+fs.Read(blob, 0, System.Convert.ToInt32(fs.Length));
+fs.Close();
+OdbcTransaction tx = cn.BeginTransaction();
+cmd.Transaction = tx;
+cmd.CommandText = &quot;INSERT INTO T1 (C1, C2) VALUES (?, ?)&quot;;
+cmd.Parameters.Add(&quot;C1&quot;, OdbcType.Int);
+cmd.Parameters.Add(&quot;C2&quot;, OdbcType.Binary);
+cmd.Parameters[0].Value = 1;
+cmd.Parameters[1].Value = blob;
+cmd.ExecuteNonQuery();
+tx.Commit(); </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of BLOB select</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: c#; gutter: false" style="font-size:12px;">// BLOB SELECTcmd.CommandText = &quot;SELECT binary_length(C2), C2 FROM T1&quot;;
+tx = cn.BeginTransaction();
+cmd.Transaction = tx;
+OdbcDataReader dr = cmd.ExecuteReader();
+int len;
+while (dr.Read())
+{
+    len = dr.GetInt32(0);
+    Byte[] ff = new Byte[len];
+    dr.GetBytes(1, 0, ff, 0, len);
+ 
+    fs = new FileStream(&quot;c:\\test.dat&quot;, FileMode.CreateNew, FileAccess.Write);
+    fs.Write(ff, 0, len);
+    fs.Close();
+} </pre>
+</div></div><p> </p><div><span style="color: rgb(0,0,0);font-size: 20.0px;"><br /></span></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335434.jpg">odbc1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335435.png">odbc1_eng.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335436.png">odbc2_eng.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335437.jpg">odbc3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335438.jpg">odbc4.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335439.jpg">odbc5.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335441.jpg">odbc6.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335440.jpg">odbc6.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15138911/15335442.jpg">odbc7.jpg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

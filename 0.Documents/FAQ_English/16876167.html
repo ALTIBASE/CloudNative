@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Connection disconnection, error codes, and error messages in each case (APRE*C/C++, SQLCLI)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Connection disconnection, error codes, and error messages in each case (APRE*C/C++, SQLCLI)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146464 {padding: 0px;}
+div.rbtoc1624409146464 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146464 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146464'>
+<ul class='toc-indentation'>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Overview'>Overview</a></li>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Version'>Version</a></li>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Whentheconnectionisdisconnectedfromtheapplicationprogram'>When the connection is disconnected from the application program</a></li>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Howtocheckerrorcodesanderrormessagesforeachapplicationprogram'>How to check error codes and error messages for each application program</a></li>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Connectionerrorstateanderrormessage'>Connection error state and error message</a></li>
+<li><a href='#Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Conclusion'>Conclusion</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Overview">Overview</h1><hr /><p>This document describes the cases where the connection is disconnected in the application program and the error codes and messages in each situation.</p><p> </p><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Version">Version</h1><hr /><ul><li>This document is written based on ALTIBASE HDB version 6.3.1.</li><li>For additional information or updates, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or leave a comment on this page.</li></ul><p> </p><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Whentheconnectionisdisconnectedfromtheapplicationprogram">When the connection is disconnected from the application program</h1><hr /><p>In the following situations, the connection is not established.</p><ol><li>It is not connected</li><li>Communication socket error or disconnection from the server-side</li><li>If a previously disconnected connection was not detected (if the connection was previously disconnected)</li><li>If it is disconnected by timeout<br />There are Query Timeout, Fetch Timeout, UTrans Timeout, and Idle Timeout. In the case of Query Timeout, the connection is not disconnected, but in all other cases, the connection is disconnected.</li><li>When the DB Server is shutdown</li><li>If the connection is not possible because the DB server is shutdown (Connect failure)</li></ol><p> </p><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Howtocheckerrorcodesanderrormessagesforeachapplicationprogram">How to check error codes and error messages for each application program</h1><hr /><p>If the application program is written in ALTIBASE Embedded SQL (APRE*C/C++), the values that can be checked are as follows.</p><ol><li>sqlca.sqlcode (query execution return value - SQL_SUCCESS, SQL_ERROR, etc)</li><li>sqlca.sqlerrm.sqlerrmc (error message)</li><li>SQLCODE (error code)</li><li>SQLSTATE (state code)</li></ol><p>If the application is written in SQLCLI, the following values can be checked.</p><p>It can be checked by calling SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength).</p><ol><li>state (state code)</li><li>err (error code)</li><li>msg (error message)</li></ol><p> </p><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Connectionerrorstateanderrormessage">Connection error state and error message</h1><hr /><ol><li><p>In case of not connecter or previously disconnected</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+	====================================================
+	sqlca STRUCTURE
+	.sqlcode [-2] (SQL_ERROR)
+	.sqlerrm.sqlerrmc The connection does not exist. (Name:default connection)
+	SQLCODE [-2]
+	SQLSTATE [&quot;08003&quot;]
+	====================================================
+
+[SQLCLI/ODBC] 
+1. In case of haven&#39;t connected
+	====================================================
+	return value [-2]
+	SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+	error state (state) [&quot;&quot;]
+	error number (err) [0] in Hex(0)
+	error message (msg) [ ?]
+	====================================================
+2. In case of disconnected before
+	====================================================
+	return value [-1] (SQL_ERROR)
+	SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+	error state (state) [&quot;08003&quot;]
+	error number (err) [331830] in Hex(51036)
+	error message (msg) [Connection does not exist (err8)]
+	====================================================</pre>
+</div></div></li><li><p>In case of the connection is disconnected (the server disconnection or a network error)</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(&#39;errno&#39;)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC] 
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(&#39;errno&#39;)]
+====================================================
+</pre>
+</div></div></li><li><p>In case of the query was executed again without detecting that the connection was previously disconnected.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Connection does not exist (err11)]
+SQLCODE [-1]
+SQLSTATE [&quot;08003&quot;]
+====================================================
+
+[SQLCLI/ODBC] 
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08003&quot;]
+error number (err) [331830] in Hex(51036)
+error message (msg) [Connection does not exist (err8)]
+====================================================</pre>
+</div></div></li><li><p>In case of disconnection by Timeout<br />Fetch Timeout, UTrans Timeout, Idle Timeout all return the same error. (Timeout is recorded in altibase_boot.log.)</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(131)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(131)]
+====================================================</pre>
+</div></div></li><li><p>In case of the DB server is shutdown</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(131)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(131)]
+====================================================</pre>
+</div></div></li><li><p>Connection failure</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Client unable to establish connection]
+SQLCODE [-327730] [50032]
+SQLSTATE [08001]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [08001]
+error number (err) [327730] in Hex(50032)
+error message (msg) [Client unable to establish connection]
+====================================================</pre>
+</div></div></li></ol><h1 id="Connectiondisconnection,errorcodes,anderrormessagesineachcase(APRE*C/C++,SQLCLI)-Conclusion">Conclusion</h1><hr /><p>As a result of checking the error code for each situation, there are 3 cases as follows.</p><ul style="list-style-type: square;"><li><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08001&quot;] SQLCODE [1(0x01)] errno [32770(0x050032)]</span><br /><span style="color: rgb(0,0,0);">Connection failure</span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08003&quot;] SQLCODE(errno) [331830(0x051036)]</span></span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">In case of not connected (after disconnection)</span></span><br /><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">In case the connection is already disconnected</span></span></li><li><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08S01&quot;] SQLCODE(errno) [331843(0x051043)]</span></span></span><br /><span style="color: rgb(0,0,0);">Socket disconnection</span><br /><span style="color: rgb(0,0,0);">In case of interruption due to timeout</span><br />In case of the server being shutdown</li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

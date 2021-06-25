@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Redo Logfile</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Redo Logfile
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check </span><span>t</span><span>he redo log file informa</span><span>t</span><span>ion is as follows.</span></p><h3 class="md-end-block md-heading md-focus" id="id-5.RedoLogfile-RedoLogFileInformation"><span class="md-plain md-expand">Redo Log File Information</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT OLDEST_ACTIVE_LOGFILE OLDEST_LOGFILE
+     , CURRENT_LOGFILE CURRENT_LOGFILE
+     , CURRENT_LOGFILE-OLDEST_ACTIVE_LOGFILE LOGFILE_GAP
+  FROM V$ARCHIVE ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-p" id="id-5.RedoLogfile-MainColumnDescription"><span class="md-expand"><strong>Main Column Description</strong></span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain md-expand">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">OLDEST_LOGFILE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of the oldest redo log file</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CURRENT_LOGFILE</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of online redo log files currently in use</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LOGFILE_GAP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of redo log files between the current online redo log file and the oldest redo log file</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-5.RedoLogfile-CumulativeNumberofWaitsforRedoLogFilePrepare"><span class="md-plain md-expand">Cumulative Number of Waits for Redo Log File Prepare</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT LF_PREPARE_WAIT_COUNT FROM V$LFG ;</pre>
+</div></div><ul><li><h4 id="id-5.RedoLogfile-MainColumnDescription.1"><strong><span class="md-plain">Main Column Description</span></strong></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LF_PREPARE_WAIT_COUNT</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">When attempting to switch from the current redo log file to a new redo log file, it indicates the number of times the service thread has waited because the next redo log file has not been created yet. If this value is large, change the value of the PREPARE_LOG_FILE_COUNT property to a larger value and apply (restart) it to create a sufficient number of redo log files in advance. It is accumulated and summed from the time the Altibase server is started, and initialized when the Altibase server is shut down.</span></span></td></tr></tbody></table></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

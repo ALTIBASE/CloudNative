@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Causes and resolution for increase of Altibase process memory usage</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Memory-Usage-Increase-Analysis-Guide_14647388.html">Altibase Memory Usage Increase Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Causes and resolution for increase of Altibase process memory usage
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409361940 {padding: 0px;}
+div.rbtoc1624409361940 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409361940 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409361940'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-1.Whendatainthememorytableisincreased'>1. When data in the memory table is increased</a></li>
+<li><a href='#id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-2.WhenthenumberofexecutingSQLstatementsincreases'>2. When the number of executing SQL statements increases</a></li>
+<li><a href='#id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-3.WhenitisincreasedbytheMVCC(Multi-VersionConcurrencyControl)Technique'>3. When it is increased by the MVCC (Multi-Version Concurrency Control) Technique</a></li>
+<li><a href='#id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-4.Whenthedeletionofagingtargetinformationisdelayed.'>4. When the deletion of aging target information is delayed.</a></li>
+</ul>
+</div></p><hr /><p>The memory that has been increased due to processes other than the memory of Altibas is not covered in this document. However, this chapter will describe how to deal with the increase of Altibase process memory.</p><p>As mentioned in the previous chapter, the memory increase of Altibase can be organized as follows:</p><ol><li>When data in the memory table is increased</li><li>When the number of executing SQL statements increases</li><li>When it is increased by the MVCC (Multi-Version Concurrency Control) technique</li><li>When the deletion of aging target information is delayed</li></ol><h2 id="id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-1.Whendatainthememorytableisincreased"><strong>1. When data in the memory table is increased</strong></h2><p>The trend of memory data usage increase can be checked with the SQL statement below.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>set linesize 100;
+set colsize 30;
+SELECT A.TABLE_NAME 
+     , (B.FIXED_ALLOC_MEM + B.VAR_ALLOC_MEM) ALLOC
+     , (B.FIXED_USED_MEM + B.VAR_USED_MEM) USED
+  FROM SYSTEM_.SYS_TABLES_ A ,
+       V$MEMTBL_INFO B
+ WHERE A.TABLE_OID = B.TABLE_OID
+   AND A.TABLE_TYPE = &#39;T&#39;
+ ORDER BY 2 DESC;
+</pre>
+</div></div><p><span style="color: rgb(34,34,34);">Among the results from the above query, 'Alloc' includes both space where data is stored and the available space. ('Used' means only space where data is stored.)</span></p><p><span style="color: rgb(34,34,34);"><span>If the user has deleted around '900M' after loading '1G' of data, the table will have '1G' allocated space, '100M' of used space, and the remaining '900M' will be empty space for that table only.</span></span></p><p><span style="color: rgb(34,34,34);"><span>The part that most ALTIBASE users confuse is the part about '900M'. Since the data has been deleted,' users tend to be confused about whether it is not normal if this space is 'Free' in the ALTIBASE or OS system and the memory usage is reduced.</span></span></p><p><span style="color: rgb(34,34,34);">Most of the memory management structure of the OS does not immediately return to the OS even if the program is free for once allocated memory. In practice, an algorithm that allocates to a reserved area on the more and uses the free area when another application program runs out of memory is generally used. In other words, because the cost of the process of allocating and freeing memory is high, frequent memory allocation/free is not possible.</span></p><p><span style="color: rgb(34,34,34);">This algorithmic concept applies equally to Altibase. Altibase also keeps the used spaces as space to be resued in the table even if data is deleted.</span></p><p><span style="color: rgb(34,34,34);">If the user finds such a table, the action taken is as follows.</span></p><ol><li><p><span style="color: rgb(34,34,34);">Compaction the table</span><br /><span style="color: rgb(34,34,34);">Memory tables are allocated space from the memory tablespace. However, if space increases due to loading/deleting a large amount of data in one table, the space to be allocated to other tables in the same memory tablespace may become insufficient. The table can be returned so that it can be used, and this is called compaction.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER TABLE table_name COMPACT;</pre>
+</div></div><p><span style="color: rgb(34,34,34);"><br /></span></p></li><li><p><span style="color: rgb(34,34,34);">Restart Altiabse</span></p><p><span style="color: rgb(34,34,34);">By taking the above actions, the primary action is possible so that other tables in the same memory tablespace can be allocated space. However, the memory usage occupied by the OS still does not decrease. In this case, restarting Altibase can have the same effect as reducing memory usage, which is possible for the following reason.</span></p><p><span style="color: rgb(34,34,34);">In the restart process, the data pages of all memory tablespaces are loaded into memory, but empty pages that are not actually written to are not loaded into memory, thus reducing memory usage.</span></p><p><span style="color: rgb(34,34,34);">If it is difficult for the user to perform compaction on each table, the compaction effect can be seen by restarting Altibase in the regular PM process.</span></p></li></ol><div><span style="color: rgb(34,34,34);"><span style="color: rgb(34,34,34);"> </span></span><h2 id="id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-2.WhenthenumberofexecutingSQLstatementsincreases"><strong>2. When the number of executing SQL statements increases</strong></h2><p>The user can check periodically with the number of queries recorded in v$statement. The queries recorded in v$statement are not accurate because only the queries executed in the currently connected session are recorded, but it is helpful to figure out the approximate number.</p><p>In this case, there is no action for the user to take as it is an increase in inquiries necessary for business purposes, but there are cases where the following items are checked with the developer.</p><ol><li><p>Check whether all queries are closed after use<br />In general, after a query is used, the object for the query must be closed.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Ex) JAVA/JDBC</p><pre>Connection cn;
+prepareStatement ps;
+ps = cn.prepareStatement (&quot;select…&quot;);
+…
+ps.close();</pre>
+</div></div><p>If a statement such as 'ps.close' does not exist in the above code, Altibase internal models such as &quot;Query_Prepare&quot; will continue to maintain the memory for the query, and if this situation is repeated, the memory will continue to be used unless the session is terminated.<br />Even if Altibase frees the memory once used, it is not immediately recovered from the actual OS, and as a result, the memory usage is increased. Therefore, it is necessary to check whether the object used for query execution is normally released.<br /><br /></p></li><li><p>Check when similar queries are still used<br />Consider the following example.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT 1 FROM DUAL WHERE C1 = 1;
+SELECT 1 FROM DUAL WHERE C1 = 2;
+SELECT 1 FROM DUAL WHERE C1 = 3;
+ 
+</pre>
+</div></div><p>The above query can be solved with one statement by replacing it with a phrase such as “SELECT 1 FROM DUAL WHERE C1 = ?” and developing it in a form that only changes the variable value of the query condition.</p><p>If similar queries as above are accumulated and executed, the current version of Altibase allocates memory by analyzing each query as a different query.</p></li></ol><h2 id="id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-3.WhenitisincreasedbytheMVCC(Multi-VersionConcurrencyControl)Technique"><strong>3. When it is increased by the MVCC (Multi-Version Concurrency Control) Technique</strong></h2><p>The MVCC technique refers to a general concurrency control method of DBMS that improves performance by preventing inquiry/change operations from waiting for each other. Currently, the Altibase memory table operates in the form of creating a copy of a record at the time of change operation and recording the changed information in the copy.</p><p>Therefore, when the record is changed, the original and the duplicated exist together. (At the time of deletion, there is no increase in memory as above, and an increase may occur due to aging delay.)</p><p>This means that when a large amount of change operation is performed, as many copies as the number of records subject to change work are created. (It has a trade-off relationship that increases the use of resources as fast as performance.)</p><p>This copy is created in the space of the table. Therefore, when a large amount of change operation occurs, the usage of the table increases. If there is empty space in the table, the corresponding space is used, and if there is not enough space, space is allocated from the tablespace and used.</p><p>The user should use the usage result for each table to select tables with Alloc/Used differences and resolve it when an abnormal usage is found in the operation. As a countermeasure, the user should use a method such as table compaction or restart. Also, since a large amount of change operation in the DBMS work process is not recommended in general, it is recommended to perform change operations in units of a certain record.</p><span style="color: rgb(34,34,34);"><span style="color: rgb(34,34,34);"> </span></span><div>For example, if it has to change to 10 million records, divide them into units of tens of thousands of records and perform the change. (Using the LIMIT clause)</div></div><div><h2 id="id-2.CausesandresolutionforincreaseofAltibaseprocessmemoryusage-4.Whenthedeletionofagingtargetinformationisdelayed."><strong>4. When the deletion of aging target information is delayed.</strong></h2><p>The original record is subject to deletion because the clone created by the MVCC described above will become the final record at the time of commit.</p><p>If a rollback occurs, the duplicate is subject to deletion. (These records to be deleted are called “Old Version” or “Garbage Data”, and the process of deletion is internally used by the term aging, and an internal module called GC (Garbage Collector) is in charge.)</p><p>The problem is that there may be cases in which the deletion targets cannot be deleted for some reason. If this state persists, the deletion targets will continue to accumulate, which may cause an increase in memory usage.</p><p>Whether or not GC aging can be checked with the following query.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT ADD_OID_CNT, GC_OID_CNT FROM V$MEMGC;</pre>
+</div></div><p>“Add_oid_cnt” refers to the target that transactions hand over to the aging target.</p><p>That is, it is the same as the number of transactions that requested aging, and “gc_oid_cnt” means the number of aging targets processed by GC.</p><p>If the above figures are constantly changing, it can be said that GC is operating normally even if there is a delay in processing speed. However, if “gc_oid_cnt” does not increase at a specific point in time, it can be considered that a problem has occurred.</p><p>The GC module can delete the record only if the record to be deleted is not referenced by any transaction, and the delete target list can be deleted only in the order requested.</p><p>Therefore, there is a problem with the GC, this is a type of problem in which a certain transaction still remains unfinished, so it is necessary to find and clean up the corresponding transaction.</p><p>These queries can be found with the following queries.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT A.SESSION_ID,
+       B.QUERY
+  FROM V$TRANSACTION A,
+       V$STATEMENT B,
+       V$MEMGC C
+ WHERE A.ID = B.TX_ID
+   AND (A.MEMORY_VIEW_SCN = C.MINMEMSCNINTXS
+        OR A.MIN_MEMORY_LOB_VIEW_SCN = C.MINMEMSCNINTXS);</pre>
+</div></div><p>When the above query is executed, the query information that has a problem including the query is displayed.</p><p>If a query other than the monitoring query is displayed, tuning if the query execution or if the user did not terminate normally after executing the query, check the source of the program and take measures to enable the normal termination.</p><p>※ Memory increase related to MVCC and GC is limited to the memory table.</p><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : varchar, char 타입 비교</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="05.-SQL_6520888.html">05. SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : varchar, char 타입 비교
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="varchar,char타입비교-개요"><strong><span style="color: rgb(0,0,0);">개요</span></strong></h1><hr /><p><span style="color: rgb(0,0,0);">varchar타입과 char 타입에 대한 비교 입니다.</span></p><p> </p><h1 id="varchar,char타입비교-버전"><strong>버전</strong></h1><hr /><p>알티베이스 모든 버전에 해당합니다.</p><p> </p><p> </p><h1 id="varchar,char타입비교-VARCHAR타입과CHAR타입의비교"><strong>VARCHAR 타입과 CHAR 타입의 비교</strong></h1><hr /><p><span style="color: rgb(0,0,0);">iSQL&gt; create table dual (X char(1));</span></p><p><span style="color: rgb(0,0,0);">Create success.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; insert into dual values ('x');</span><br /><span style="color: rgb(0,0,0);">1 row inserted.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual;</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">1 row selected.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual where char'a ' = char'a ';</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">1 row selected.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual where varchar'a ' = varchar'a ';</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">No rows selected.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual where varchar'a' = char'a ';</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">No rows selected.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual where varchar'a' = char'a';</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">1 row selected.</span><br /><span style="color: rgb(0,0,0);">iSQL&gt; select 1 from dual where varchar'a ' = char'a ';</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">--------------</span><br /><span style="color: rgb(0,0,0);">1 </span><br /><span style="color: rgb(0,0,0);">1 row selected.</span><br /><br /><br /><br /><span style="color: rgb(0,0,0);">char type 인 경우 비교시 length가 큰쪽을 기준으로 0x20이 더해져서 비교되고</span><br /><span style="color: rgb(0,0,0);">char , varchar의 비교시 varchar의 유효 데이타 (0x00의 위치) 기준으로 비교되는 것을 보여주고 있습니다.</span><br /><span style="color: rgb(0,0,0);">가끔 SESC 코딩시 변수를 varchar의 경우는 0x00으로 초기화 하고 char의 경우는 </span><br /><span style="color: rgb(0,0,0);">0x20으로 초기하는 경우가 있는데 위의 규칙이 있으므로 0x00으로 초기화하는 것이 좋습니다.</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

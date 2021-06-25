@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : unixODBC Manager의 설치</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698379.html">Altibase와 unixODBC 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : unixODBC Manager의 설치
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p> unixODBC Manager를 사용하기 위해서는 해당 제품의 바이너리를 플랫폼에 맞게 생성해야 한다. 각 단계별로 필요한 부분을 설명한다. 컴파일러는 기본적으로 Native 컴파일러를 쓰는 것으로 가정하며 gcc/g++의 경우는 특별히 주의할 옵션이 없음으로 설명을 생략한다. (단, 32/64bit의 생성시 동일하게 컴파일 옵션은 주의해서 써야 한다.)</p><h1 id="unixODBCManager의설치-unixODBCManager다운로드">unixODBC Manager 다운로드</h1><p>다음의 웹 주소에서 다운로드 받을 수 있다</p><p><img class="confluence-embedded-image" width="500" src="attachments/11698380/11665548.png" data-image-src="attachments/11698380/11665548.png"></p><p> </p><ul><li><a href="http://www.unixodbc.org" class="external-link" rel="nofollow">http://www.unixodbc.org</a> -&gt; 화면 좌측의 Download 클릭 -&gt; Download 버튼 클릭을 통해 소스를 다운받도록 한다.</li></ul><p>다운로드 받은 제품은 다음과 같은 형태의 압축파일이다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>unixODBC-2.3.2.tar.gz</pre>
+</div></div><p> </p><h1 id="unixODBCManager의설치-unixODBCManager의설치">unixODBC Manager 의 설치</h1><p>unixODBC의 설치를 위해서 다음과 같은 과정을 수행한다.</p><h2 id="unixODBCManager의설치-1.소스의압축해제"><span style="color: rgb(0,0,0);">1. 소스의 압축해제</span></h2><p>소스를 적절한 경로에서 압축을 해제한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; mkdir install
+
+Shell&gt; cd install
+
+Shell&gt; gzip -dc unixODBC*.gz | tar xvf -</pre>
+</div></div><h2 id="unixODBCManager의설치-2.컴파일용환경변수설정"><span style="color: rgb(0,0,0);">2. 컴파일용 환경변수 설정</span></h2><h3 id="unixODBCManager의설치-사용할odbcdriver의bit확인"><span style="color: rgb(0,0,0);"> </span><span style="color: rgb(0,0,0);">사용할 odbc driver의  bit  확인</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; file $ALTIBASE_HOME/lib/libaltibase_odbc*
+
+/altibase_home/lib/libaltibase_odbc-64bit-ul32.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, not stripped
+/altibase_home/lib/libaltibase_odbc-64bit-ul64.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, not stripped</pre>
+</div></div><p>확인된 비트를 기준으로 unixODBC Manager를 32/64bit 중  어떤 bit 로 컴파일 할지를 결정해야 한다.  여기서 주의할 점은  odbc driver 파일 이름에 포함된  ul32/ul64 가  odbc driver 의 파일 bit를 의미하지 않는 점이다.  ul32 는 SQLLEN=4byte(32bit) 를 사용하는 Driver 란 의미이고 ul64는 SQLLEN=8byte(64bit) 를 사용하는 Driver 라는 의미이다.    파일의 bit 타입은   위 명령어 실행 결과중에  ELF 64-bit ,  ELF 32-bit  에 따라서  구분한다.</p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>unixodbc 와 odbc driver 의 bit 종류가 서로 일치하여야 한다. unixodbc를 64bit 로 컴파일 한 경우는 altibase odbc driver 도 64bit를 써야 하며 unixodbc가 32bit 인 경우는 altibase odbc driver도 32bit 전용 odbc driver를 사용한다.</p>
+                    </div>
+    </div>
+<h3 id="unixODBCManager의설치-SQLLEN및SQLULENtype의크기설정"><span style="color: rgb(0,0,0);">SQLLEN 및 SQLULEN type의 크기 설정</span></h3><p>SQLEN 과 SQLULEN  type은 unixodbc function 의   파라미터 변수 type 선언시 사용된다.  SIZEOF_LONG_INT 크기에 따라서 SQLEN 과 SQLULEN 의 크기가 32bit 일지 64bit 일지 결정된다.  SQLLEN /SQLULEN 크기는  기본적으로 32bit OS에서는 32bit 이고 64bit OS에서는 64bit 로 선언된다.</p><p>64bit OS에서  SQLLEN/SQLULEN을  32bit(4byte) 로  사용하기 위해서는  아래의 컴파일 환경변수 선언을 하면 된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1</pre>
+</div></div><p>위와 같이  BUILD_LEGACY_64_BIT_MODE=1 로 설정된 경우 SQLLEN 은 32bit(4byte) 크기를 사용하도록 컴파일 된다. </p><h3 id="unixODBCManager의설치-SQLLEN/SQLULENtype크기를반드시32bit로사용할것"><span style="color: rgb(255,0,0);">SQLLEN /SQLULEN type 크기를  반드시 32bit로 사용할 것</span></h3>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1 를 사용하여 SQLLEN 을 4byte(32bit) 로 사용할 것을 적극적으로 권고한다. SQLLEN/SQLULEN 을 64bit(8byte) 로 사용시 unixodbc 와 altibase 간의 값 전달에 오류가 발생하는 현상이 확인되었다.  </p><p>이로 인해서 PHP<span style="line-height: 1.42857;">/Python 에서 unixODBC의 </span> SQLColAttribute 함수 사용시 인자값으로 전달된 칼럼 타입 구분값이 잘못된 값으로 계산되어 정상적으로 값이 조회되지 않는 현상이 발생할 수 있으므로 SQLLEN=4byte(32bit) 를 사용하도록 한다.</p><p><span>또한 ALTIBASE 에서 제공하는 sqltypes.h 는 compile 시 별다른 옵션을 주지않으면 기본적으로 SQLLEN 이 32bit 가 되므로 응용 프로그램이 ALTIBASE sqltypes.h 를 사용할 경우 SQLLEN은 32bit 로 unixodbc manager로 전송하게 된다.</span></p><p><span>그러나 unixodbc manager는 별도의 옵션을 주지 않을 경우 SQLLEN 을 64bit 로 사용하게 되어서 응용프로그램과 unixodbc manager간의 SQLLEN 길이 mismatch 로 인해서 ODBC 함수인 <span>SQLfetch(), SQLMoreResult()  함수가 간헐적으로 잘못된 반환값을 전달하는 문제가 생기는 경우가 있다.</span></span></p><p><span><span>이를 방지 하기 위해서도 unixodbc SQLLEN 을 32bit 만 사용할 것을 권장한다.</span></span></p>
+                    </div>
+    </div>
+<p> </p><h3 id="unixODBCManager의설치-unixodbc컴파일bit종류선택">unixodbc 컴파일 bit 종류 선택</h3><p>컴파일 환경변수를 통해서 unixodbc 를 32bit  또는 64bit 로  선택적으로 컴파일할 수 있다.  64bit OS에서 default로 64bit 로 컴파일된다.    64bit OS에서 32bit 프로그램으로 unixodbc를 컴파일 하기 위해서는 아래와 같이  설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=&lt;32/64bit 컴파일옵션&gt;
+export LDFLAGS=&lt;32/64bit 컴파일옵션&gt;
+export CC=&lt;C컴파일러&gt;
+export CXX=&lt;C++컴파일러&gt;</pre>
+</div></div><p> </p><p>각 플랫폼 별로 설정할 환경변수들은 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">구분</th><th class="confluenceTh">AIX</th><th class="confluenceTh">HP</th><th class="confluenceTh">SUN</th></tr><tr><td class="confluenceTd"><p align="center">CC</p></td><td class="confluenceTd"><p>/usr/vac/bin/xlc</p></td><td class="confluenceTd"><p>/opt/aCC/bin/aCC</p></td><td class="confluenceTd"><p>/opt/SUNWspro/bin/cc</p></td></tr><tr><td class="confluenceTd"><p align="center">CXX</p></td><td class="confluenceTd"><p>/usr/vacpp/bin/xlC_r</p></td><td class="confluenceTd"><p>/opt/aCC/bin/aCC</p></td><td class="confluenceTd"><p>/opt/SUNWspro/bin/CC</p></td></tr><tr><td class="confluenceTd"><p align="center">CFLAGS</p><p align="center">LDFLAGS</p></td><td class="confluenceTd"><p align="center" style="text-align: left;">-q64 (64bit)</p></td><td class="confluenceTd"><p align="center" style="text-align: left;">+DD64 (64bit)</p></td><td class="confluenceTd"><p align="center" style="text-align: left;">-xarch=v9 (64bit)</p></td></tr><tr><td class="confluenceTd"><p align="center">LD</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p style="text-align: left;">/opt/SUNWspro/bin/CC</p></td></tr><tr><td class="confluenceTd"><p align="center">64bit</p><p align="center">컴파일</p></td><td class="confluenceTd"><p>환경변수에 OBJECT_MODE=64</p></td><td class="confluenceTd"><p>CFLAGS에 &quot;+DD64 -DBUILD_REAL_64_BIT_MODE&quot; 추가한다.</p></td><td class="confluenceTd"><p>LD_LIBRARY_PATH_64에 &quot;/usr/lib/64&quot; 및 &quot;/usr/ucblib/sparv9&quot;을 설정한다.</p></td></tr></tbody></table></div><p>컴파일러의 경우는  사용자가 설치한 경로에 따라서 경로가 바뀔 수 있음으로 대상 장비에 설치된 경로는 사용자가 확인하여야 한다.<br />CFLGAS 및 LDFLAGS의 옵션도 32/64bit 컴파일 옵션에 따라 다르게 지정하도록 한다. (ELF class 오류가 발생할 수 있음)</p><p> </p><h4 id="unixODBCManager의설치-Linux64bitOS에서unixodbc를32bit로컴파일하기위한컴파일환경변수예">Linux 64bit OS에서 unixodbc를  32bit로 컴파일 하기 위한 컴파일 환경변수 예</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export CFLAGS=&quot;-m32 -DBUILD_LEGACY_64_BIT_MODE=1&quot;
+export LDFLAGS=-m32 
+export CXXFLAGS=-m32   </pre>
+</div></div><p>위와 같이 선언한 후 이후의  컴파일 과정을 거치면 SQLLEN 크기가 4byte(32bit) 이며  실행파일의 bit 수가 32bit 인  unixodbc가 컴파일된다.</p><p> </p><h2 id="unixODBCManager의설치-3.make를위한configuration과정">3. make 를 위한  configuration 과정</h2><p> configuration을 수행한다. 여기서는 설치할 디렉토리 및 make과정에 필요한 몇 가지 옵션을 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; ./configure –prefix=/home/unixODBC –-disable-gui --enable-threads=yes
+checking for a BSD-compatible install..../install-sh -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+…….</pre>
+</div></div><p>configuration 단계에서는 컴파일을 수행하기 위한 제반 환경을 체크하기 때문에 에러가 발생할  경우 필요한 바이너리 등은 직접 설치해야 한다  unixODBC가 설치된 디렉토리는  prefix 인자값으로 설정된 경로에 설치된다.  예를 들어서  prefix=/home/unixODBC  일 경우  install 작업후에  unixODBC는  /home/unixODBC 에 최종적으로 설치된다.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>prefix : unixODBC를 설치할 경로</p><div>enable-gui :  GUI ODBC Administrator를 build 여부 </div><div>enable-threads : <span style="color: rgb(63,63,63);">The default is &quot;yes&quot; if thread-support is found on your machine. All modern Linuxes will have pthreads support in glibc so it is probably best to leave this to default.</span></div><div>enable-threads 옵션을 no로 설정할 경우  isql로 접속테스트시 아래 에러가 발생할 수 있으므로 enable-threads=yes 로 설정한다.</div><div><div>$ ./isql Altiodbc</div><div>./isql: symbol lookup error: /home/altibase_home/lib/<a class="external-link" href="http://libaltibase_odbc-64bit-ul64.so/" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: <strong>undefined symbol: pthread_sigmask</strong></div></div>
+                    </div>
+    </div>
+<h2 id="unixODBCManager의설치-4.컴파일수행"><span style="color: rgb(0,0,0);">4. 컴파일 수행</span></h2><h3 id="unixODBCManager의설치-make수행">make 수행</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; make
+source=&#39;lstDelete.c&#39; object=&#39;lstDelete.lo&#39; libtool=yes \DEPDIR=.deps depmode=none /bin/bash ../depcomp \ -mt -c -o lstDelete.lo lstDelete.c
+……
+make[1]: Leaving directory `/home/unixODBC-2.3.2/samples&#39;
+make[1]: Entering directory `/home/unixODBC-2.3.2&#39;
+make[1]: Nothing to be done for `all-am&#39;.
+make[1]: Leaving
+directory `/home/unixODBC-2.3.2&#39;</pre>
+</div></div><p>AIX의 경우 운영체제의 패치레벨에 따라 컴파일이 오류가 나는 경우가 있는 것으로 추정되는 경우가 있다</p><h3 id="unixODBCManager의설치-makeinstall수행">make install 수행</h3><p>make 가 끝나면  make instal  수행을 통해서 컴파일이 완로된 바이너리 파일들이  설치 디렉토리에 설치 되도록 한다. 앞서 configuration단계에서 지정한 prefix디렉토리에 설치되기 때문에 사전에 해당 디렉토리에 대한 접근권한이 있어야 한다</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; make install
+…..
+mkdir -p /home/unixODBC/etc/ODBCDataSources
+/home/unixODBC/bin/odbc_config --header &gt;
+/home/unixODBC/include/unixodbc_conf.h
+make[2]: Leaving directory `/home/unixODBC-2.3.2&#39;
+make[1]: Leaving
+directory `/home/unixODBC-2.3.2&#39;</pre>
+</div></div><h3 id="unixODBCManager의설치-정상설치여부확인">정상 설치여부 확인</h3><p>설치 후 정상적으로 library를 로딩하는지 확인한다</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; cd /home/unixODBC/bin
+Shell&gt;  ./dltest $ALTIBASE_HOME/lib/libaltibase_odbc-64bit-ul32.so
+SUCCESS: Loaded /home/altibase_home/lib/libaltibase_odbc-64bit-ul32.so</pre>
+</div></div><p>dltest 실행파일은 unixODBC가 설치된 디렉토리의 bin  아래에 위치한다.  위와 같이 정상적으로 unixODBC Manager가 설치되면 ALTIBASE가  제공하는 unix용 ODBC driver에 대한 dltest가 정상적으로 성공해야 한다.</p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698380/11665548.png">unixodbc_download.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Conversion Procedure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Oracle-Conversion-Guide_14647316.html">Altibase Oracle Conversion Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Conversion Procedure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409360877 {padding: 0px;}
+div.rbtoc1624409360877 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409360877 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409360877'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ConversionProcedure-DATAconversionandapplicationoperationprocedure'>DATA conversion and application operation procedure</a></li>
+<li><a href='#id-3.ConversionProcedure-CheckingDATAconsistency'>Checking DATA consistency</a></li>
+<li><a href='#id-3.ConversionProcedure-Resolvingdataconversionfailure'>Resolving data conversion failure</a></li>
+<li><a href='#id-3.ConversionProcedure-ConversionTools'>Conversion Tools</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.ConversionProcedure-MigrationCenter'>Migration Center</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>Use an automated tool called Migration Center for data conversion.</p><p>Before the conversion work, it is necessary to create a user and create a tablespace according to the environment used in the previous DBMS for mapping work.</p><p>When specific DB-dependent functions are applied, the manual conversion is performed.</p><p><img class="confluence-embedded-image" src="attachments/14647349/14778370.png" data-image-src="attachments/14647349/14778370.png"></p><h2 id="id-3.ConversionProcedure-DATAconversionandapplicationoperationprocedure"><strong>DATA conversion and application operation procedure</strong></h2><p><img class="confluence-embedded-image" src="attachments/14647349/14778374.png" data-image-src="attachments/14647349/14778374.png"></p><h2 id="id-3.ConversionProcedure-CheckingDATAconsistency"><strong>Checking DATA consistency</strong></h2><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>APPLICATION Verification</p></th><td class="confluenceTd"><p><strong>Deduction of verification</strong></p><p>-Deduction of verification plans with the prior consultation with customers</p><p>Example) Online screen capture or comparison of reports, comparison of batch reports, etc.</p></td></tr><tr><th class="confluenceTh"><p>DATA Verification</p></th><td class="confluenceTd"><p><strong>Migration Center Report</strong><br class="atl-forced-newline" />-Comparison of the total number of table data between original DBMS and ALTIBASE with the migration result report</p><p><br class="atl-forced-newline" /><strong>Deduction of verification</strong></p><p>-Deduction of verification plans with the prior consultation with customers</p><p>Example) Checking the total number of data, comparing the sum of data in a specific column, comparing the result of executing a specific query, etc.</p></td></tr></tbody></table></div><h2 id="id-3.ConversionProcedure-Resolvingdataconversionfailure"><strong>Resolving data conversion failure</strong></h2><p><strong><img class="confluence-embedded-image" src="attachments/14647349/14778375.png" data-image-src="attachments/14647349/14778375.png"></strong></p><h2 id="id-3.ConversionProcedure-ConversionTools"><strong>Conversion Tools</strong></h2><h3 id="id-3.ConversionProcedure-MigrationCenter"><strong>Migration Center</strong></h3><p>1) Advantages of Migration Center</p><p> East to use with GUI-based tool<br /> Easy execution and high performance of transferring by supporting CLI mode<br /> Transfer data along with schema in one operation<br /> Perform migration by mapping different data types<br /> Support user-defined formats to support flexible data migration<br /> Provide step-by-step step summary report on conversion results</p><p>2) How to use</p><p>(1) Add Database Connection</p><p>Input the information of Source/Targe DBMS<br /> Connection Name : Can be arbitrarily specified<br /> IP : DBMS Server IP<br /> Port : DBMS Server Port<br /> User : Connected user account<br /> Password : Connected user password<br /> SID : Service name<br /> IP Version : IPv4/IPv6</p><p><img class="confluence-embedded-image" src="attachments/14647349/14778376.png" data-image-src="attachments/14647349/14778376.png"></p><p>Since the JDBC driver is used to connect to the database, it is important to prepare a suitable JDBC driver for the source database and target database. For user convenience, several JDBC drivers suitable for supported databases are provided with the Migration Center.</p><p>(2) Create Project</p><p>Create a project for data migraiton<br /> Project Name : Can be arbitrarily specified<br /> Project Path : Automatically created<br /> Source Database : Oracle<br /> Destination Database : Altibase</p><p><img class="confluence-embedded-image" src="attachments/14647349/14778378.png" data-image-src="attachments/14647349/14778378.png"></p><p>(3) Build Project</p><p>Select the method (Fast/Slow) to get the number of records in the table from the source database and proceed.<img class="confluence-embedded-image" src="attachments/14647349/14778379.png" data-image-src="attachments/14647349/14778379.png"></p><p>(4) Reconcile Project</p><p>This is the most important step in the migration process that defines how to perform the migration.</p><p> User Mode: Defines all tables and all data accessible to the user account defined when creating the source database as migration targets<br /> Table Mode: Select and define the table to migrate data from among all tables accessible to the user account defined when creating the source database</p><p><img class="confluence-embedded-image" src="attachments/14647349/14778380.png" data-image-src="attachments/14647349/14778380.png"></p><p> Data Type Mapping: Data type mapping between Oracle and Altibase<br /> PSM Data Type Mapping: Data type mapping between Oracle PL/SQL and Altibase PSM<br /> Tablespace to Tablespace Mapping: Oracle and Altibase tablespace mapping<br /> Table to Tablespace Mapping: Specify the tablespace to store Altibase tables<br /> Select Editing: Add/edit Oracle data search condition<br /> DDL Editing: Edit the final DDL of Altibase</p><div><strong><img class="confluence-embedded-image" src="attachments/14647349/14778381.png" data-image-src="attachments/14647349/14778381.png"></strong></div><div><p>(5) Run Project</p><p>Run the data migration.</p></div><div><strong><img class="confluence-embedded-image" src="attachments/14647349/14778382.png" data-image-src="attachments/14647349/14778382.png"></strong></div><div>(6) PL/SQL Convert Tool</div><div>Use Oracle PL/SQL saved a file using the Migration Center to change the syntax for the data type.</div><div>Change to business logic are not automatically converted and must be converted manually by the developer who implemented the business logic.</div><div><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Download<br />Down on <a class="external-link" href="http://support.altibase.com/kr/product" rel="nofollow">http://support.altibase.com/en/</a></p><p><a class="external-link" href="http://support.altibase.com/kr/product" rel="nofollow">http://support.altibase.com/en/product</a></p><p>For more information: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><br />Contact us: 02-2082-1114</p>
+                    </div>
+    </div>
+</div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh">Stage</th><th class="confluenceTh"><span style="color: rgb(0,0,0);">Content</span></th><th class="confluenceTh">Output</th><th class="confluenceTh">Admin</th></tr><tr><td rowspan="4" class="confluenceTd">1st Stage</td><td rowspan="4" class="confluenceTd">System Analysis</td><td class="confluenceTd">Requirements analysis</td><td rowspan="4" class="confluenceTd">System analysis report</td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td class="confluenceTd"><p>Environment analysis</p><ul><li>OS, HW, SW, etc.</li></ul></td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td class="confluenceTd"><p>DBMS analysis</p><ul><li>Data Size (cases, Bytes)</li><li>Number of objects (Table, Index, etc.)</li><li>Tablespace size</li><li>Function, Procedure</li></ul></td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td class="confluenceTd"><p>Business analysis</p><ul><li>Ratio of online/batch operations</li><li>Query complexity of batch work</li></ul><p> </p></td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td rowspan="2" class="confluenceTd">2nd Stage</td><td rowspan="2" class="confluenceTd">Impact Analysis</td><td class="confluenceTd">Risk impact analysis</td><td class="confluenceTd">Impact analysis report</td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td class="confluenceTd">Analysis of correlation between application and database for table usage and related matrix</td><td class="confluenceTd"> </td><td class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td rowspan="2" class="confluenceTd">3rd Stage</td><td rowspan="2" class="confluenceTd">Schedule Planning</td><td class="confluenceTd">Schedule planning</td><td rowspan="2" class="confluenceTd">Schedule</td><td rowspan="2" class="confluenceTd"><ul><li>PM</li></ul></td></tr><tr><td class="confluenceTd">Establish supporting staffs plan</td></tr><tr><td rowspan="3" class="confluenceTd">4th Stage</td><td rowspan="3" class="confluenceTd">Conversion</td><td class="confluenceTd"><p>Conversion using Migration Center</p><p>- Including Scheme and Data</p></td><td class="confluenceTd"> </td><td class="confluenceTd"><ul><li>DBA</li></ul></td></tr><tr><td colspan="1" class="confluenceTd">Manual conversion for non-standard schema and SP</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><ul><li>Developer</li></ul></td></tr><tr><td colspan="1" class="confluenceTd">Data verification</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr><tr><td rowspan="2" class="confluenceTd">5th Stage</td><td rowspan="2" class="confluenceTd">Optimization</td><td colspan="1" class="confluenceTd">Configuration optimization with parameter tuning</td><td rowspan="2" class="confluenceTd">Optimization result report</td><td colspan="1" class="confluenceTd"><ul><li>DBA</li></ul></td></tr><tr><td colspan="1" class="confluenceTd">Performance optimization with SQL and procedure tuning</td><td colspan="1" class="confluenceTd"><ul><li>DBA</li><li>APP Developer</li></ul></td></tr></tbody></table></div><p><br /><br /></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778370.png">ConversionProcedure_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778372.png">trans2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778373.png">trans2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778371.png">trans2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778374.png">trans2 (1).png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778375.png">trans3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778377.png">trans4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778376.png">trans4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778378.png">trans5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778379.png">trans6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778380.png">trans7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778381.png">trans8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647349/14778382.png">trans9.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

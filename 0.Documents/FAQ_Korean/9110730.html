@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Altibase에서 수행된 쿼리 로그 남기는 방법(altiProfile)은?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Altibase에서 수행된 쿼리 로그 남기는 방법(altiProfile)은?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053338 {padding: 0px;}
+div.rbtoc1624409053338 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053338 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053338'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-개요'>개요</a></li>
+<li><a href='#Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-프로파일링관련프로퍼티'>프로파일링 관련 프로퍼티</a></li>
+<li><a href='#Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-프로파일링시작및중지방법'>프로파일링 시작 및 중지 방법</a></li>
+<li><a href='#Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-결과분석방법'>결과 분석 방법</a></li>
+<li><a href='#Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-주의사항'>주의사항</a></li>
+</ul>
+</div></p><h1 id="Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-개요">개요</h1><hr /><p>알티베이스 서버에서 실행되는 모든 SQL 문을 trace할 수 있습니다.</p><p>알티베이스 프라퍼티를 설정/해제함으로써 가능하며, SQL문 외에 수행시간, 색인/디스크 접근 정보, PLAN 정보, 세션 정보 그리고 알티베이스 시스템 정보도 함께 trace 가능합니다.</p><p>여기에서는 알티베이스 프로파일링 및 결과 확인 방법에 대해 설명합니다.</p><h1 id="Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-프로파일링관련프로퍼티">프로파일링 관련 프로퍼티</h1><hr /><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property Name</th><th class="confluenceTh">설명</th></tr><tr><td class="confluenceTd">QUERY_PROF_FLAG</td><td class="confluenceTd"><p>프로파일링 여부 및 로깅 레벨 설정</p><p>0   : 프로파일링 비활성화 (기본값)</p><p>1   : SQL문이 실행될 때마다 SQL문, 수행시간, 실행정보, 색인/디스크 접근 정보 출력</p><p>2   : prepare된 SQL문이 실행될 때마다 Bind Parameter 값 출력 (변수값 바인딩 정보가 있는 경우에 한함.)</p><p>4   : SQL문이 실행될 때마다 실행계획 출력</p><p>8   : 3초마다 세션 정보<a name="9001460" rel="nofollow"></a>(V$SESSTAT) 출력</p><p>16  : 3초마다 시스템 정보<a name="9001463" rel="nofollow"></a>(V$SYSSTAT) 출력</p><p>32  : 3초마다 메모리 정보<a name="9001466" rel="nofollow"></a>(V$MEMSTAT) 출력</p><p>bit 단위로 값을 조합해서 설정도 가능합니다.</p><p>예를 들어, 7(1 + 2 + 4)로 설정하면 매 SQL문 실행시 Plan과, Bind되는 변수 값,  Statement 및 수행시간 등의 정보가 출력됩니다.</p><p>63(1 + 2 + 4 + 8 + 16 + 32)으로 설정하면 출력 가능한 모든 정보가 출력되는데, 매 SQL문 실행시 [BIND] [PLAN] [STATEMENT] 순서로 SQL문 실행정보가 출력되고  </p><p>3초마다 [SESSION] [SYSTEM] [MEMORY] 순서로 알티베이스 상태 정보가 출력됩니다.</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>QUERY_PROF_LOG_DIR</p><p>(6.5.1 이상)</p></td><td colspan="1" class="confluenceTd"><p><a name="9008248" rel="nofollow"></a>프로파일링 결과파일이 저장될 디렉토리 경로</p><p>기본값 : $ALTIBASE_HOME/trc</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_SIZE</td><td class="confluenceTd"><p>통계 정보가 저장될 버퍼 크기</p><p>기본값 : 1MBytes</p><p>범위 : 32KBytes ~ 4GBytes-1</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_FLUSH_SIZE</td><td class="confluenceTd"><p>버퍼가 얼만큼 찼을 때 flush할지 크기를 설정</p><p>기본값 : 32KBytes</p><p>범위 : 512Bytes ~ 4GBytes-1</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_FULL_SKIP</td><td class="confluenceTd"><p>통계정보 버퍼가 가득찰 경우에, 프로파일링을 안하고 건너뛸 것인지 모두 기록될 때까지 대기할 것인지를 선택.</p><p>기본값 : 1</p><p>범위 : 0(wait) 또는 1(skip)</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_FILE_SIZE</td><td class="confluenceTd"><p>프로파일링 로그파일의 최대 크기</p><p>기본값 : 100MBytes</p><p>범위 : 0 ~ 4GBytes-1</p><p>          0  : Limited by OS limits</p><p>        &gt; 0 : 해당 크기 만큼 로그를 기록하고, close 후, 새로운 파일을 생성하여 계속 로깅함.</p><p>                로그파일명은 alti-#시간-#번호.prof와 같은 형식으로 만들어지며 번호는 0부터 시작해서 1씩 증가함</p></td></tr></tbody></table></div><h1 id="Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-프로파일링시작및중지방법">프로파일링 시작 및 중지 방법</h1><hr /><ul><li>프로파일링 시작<br />다음 명령어 수행 후부터 실행되는 모든 SQL문에 대한 정보를 로그파일에 기록합니다.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTER SYSTEM SET QUERY_PROF_FLAG = <em>value</em>;</p><p>ALTER SYSTEM SET TIMED_STATISTICS = 1;</p>
+</div></div><p style="margin-left: 30.0px;"><em>value</em> : 위 QUERY_PROF_FLAG 프로퍼티 설명을 참고합니다.</p><p style="margin-left: 30.0px;">TIMED_STATISTICS : 5.1.5 이상 버전에서 SQL문의 수행시간을 확인하기 위해서는 이 프로퍼티 값을 1(기본값은 0)로 설정해야 합니다. (그 이하버전에서는 해당 프로퍼티가 없으며, 디폴트로 모든 SQL문의 수행시간 확인이 가능합니다.)</p><p> </p><ul><li>프로파일링 중지<br />프로파일링을 중지하려면 다음 명령어를 수행합니다.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTER SYSTEM SET QUERY_PROF_FLAG = 0;</p>
+</div></div><h1 id="Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-결과분석방법">결과 분석 방법</h1><hr /><p>프로파일링을 시작하면 $ALTIBASE_HOME/trc/<strong>alti#시간-#번호.prof</strong> 형식으로 로그파일이 생성됩니다. (6.5.1 이상 버전에서는 QUERY_PROF_LOG_DIR 프로퍼티에 로그파일 경로 설정 가능)</p><p>로그파일은 이진형태이므로 <strong>altiProfile</strong> 명령어를 이용하여 텍스트 파일로 변환해야 하며 방법은 아래와 같습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ <strong>altiProfile</strong> alti-#시간-#번호.prof &gt; #번호.out</p>
+</div></div><p>로그파일 변환결과가 stdout으로 출력되므로 위 예제와 같이 파일로 저장하는 것을 권장합니다.</p><p>다음은 변환된 결과 내용에 대한 설명입니다.</p><ul><li>QUERY_PROF_FLAG = 1 로 설정한 경우</li></ul><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>출력 형식</b></div><div class="panelContent">
+<p>[STATEMENT] 기록시간 ( 세션_ID/SQL문_ID/트랜잭션_ID )</p><p>   SQL 문</p><p>   사용자 정보 :</p><p>   실행 소요 시간</p><p>   실행 정보 : 성공/실패 여부 및 성공/실패 건수</p><p>   색인 접근 정보</p><p>   디스크 접근 정보</p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[STATEMENT] 2007/11/06 14:35:03 (56/7/79168)
+  SQL
+     =&gt; [UPDATE EMPLOYEE SET DNO = ?, EMP_TEL = ? WHERE ENO = ?]
+
+
+  User Info
+     User    ID     = 2
+     Client PID     = 8294
+     Client Type    = [CLI]
+
+
+  Elapsed Time
+     Total =            0 sec      194 usec
+     Parse =            0 sec      381 usec
+     Valid =            0 sec      152 usec
+     Optim =            0 sec      161 usec
+     Execu =            0 sec      135 usec
+     Fetch =            0 sec        0 usec
+
+
+  Query Execute Info
+     EXECUTE Result =                    1 (0:failure, 1:success)
+     Optimizer Mode =                    0
+     Cost      Mode =                    3
+     Used Memory    =                    0
+     SUCCESS   SUM  =                    1
+     FAILURE   SUM  =                    0
+     PROCESSED ROW  =                    1
+
+
+  Index Access Info
+     Memory Full  Scan Count  =                    0
+     Memory Index Scan Count  =                    1
+     Disk   Full  Scan Count  =                    0
+     Disk   Index Scan Count  =                    0
+
+
+  Disk Access Info
+     READ   DATA PAGE  =                    0
+     WRITE  DATA PAGE  =                    0
+     GET    DATA PAGE  =                    0
+     CREATE DATA PAGE  =                    0
+     READ   UNDO PAGE  =                    0
+     WRITE  UNDO PAGE  =                    0
+     GET    UNDO PAGE  =                    0
+     CREATE UNDO PAGE  =                    0</pre>
+</div></div><p> </p><ul><li>QUERY_PROF_FLAG = 2 로 설정한 경우<br />prepare된 SQL문에 바인드 되는 변수값을 출력하지만 binary 타입으로 출력되어 사용자가 분석할 수 없습니다.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[BIND] 2007/11/06 14:35:03 (56/7/0)
+    [
+    00000000 0 3 0 0 0 2 7 D1 0 1 0 D 0 B 30 31
+    00000010 34 35 34 31 31 32 33 36 36 0 0 2 0 4 0 0
+    00000020 0
+    ]</pre>
+</div></div><p> </p><ul><li>QUERY_PROF_FLAG = 4 로 설정한 경우<br />SQL문의 실행을 위해 생성되는 실행계획 정보를 출력합니다.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[PLAN] 2007/11/06 14:35:03(56/7/79168)
+[
+SCAN ( TABLE: EMPLOYEE, INDEX: __SYS_IDX_ID_228, ACCESS: ??, SELF_ID: 2 )
+]    
+</pre>
+</div></div><p> </p><ul><li>QUERY_PROF_FLAG = 8 로 설정한 경우<br />현재 서버에 생성된 모든 세션에 대해, 아래와 같이 세션정보가 기록되며 select * from v$sesstat order by sid, seqnum  실행결과와 동일합니다.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>출력 형식</b></div><div class="panelContent">
+<p>[SESSION STAT] 기록시간 (세션_ID)</p><p>   필드명 = 값</p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[SESSION STAT] 2007/11/06 11:30:22 (36)
+        logon current                             =          1
+        logon cumulative                          =          1
+        data page read                            =          0
+        data page write                           =          0
+        data page gets                            =          0
+        data page create                          =          0
+        undo page read                            =          0
+        undo page write                           =          0
+        undo page gets                            =          0
+        undo page create                          =          0
+        base time in second                       =          0
+        query timeout                             =          0
+        idle timeout                              =          0
+        fetch timeout                             =          0
+        utrans timeout                            =          0
+        session terminated                        =          0
+        session commit                            =          2
+        session rollback                          =          0
+        execute success count                     =          2
+        execute failure count                     =          0
+        prepare success count                     =          2
+        prepare failure count                     =          0
+        write redo log count                      =         21
+        write redo log bytes                      =       4919
+        byte received via inet                    =        465
+        byte sent via inet                        =        601
+        byte received via unix domain             =          0
+        byte sent via unix domain                 =          0
+        semop count for receiving via ipc         =          0
+        semop count for sending via ipc           =          0
+        memory table cursor full scan count       =          2
+        memory table cursor index scan count      =          1
+        disk table cursor full scan count         =          0
+        disk table cursor index scan count        =          0
+        lock acquired count                       =          1
+        lock released count                       =          1
+</pre>
+</div></div><p> </p><ul><li>QUERY_PROF_FLAG = 16 로 설정한 경우<br />알티베이스 시스템의 전반적인 내용을 출력하며 select * from v$sysstat order by seqnum 실행 결과와 동일합니다.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[SYSTEM STAT] 2007/11/06 11:30:22 (0)
+     logon current                             =          3
+     logon cumulative                          =         34
+     data page read                            =          1
+     data page write                           =          3
+     data page gets                            =         14
+     data page create                          =          3
+     undo page read                            =          3
+     undo page write                           =          0
+     undo page gets                            =     130327
+     undo page create                          =          0
+     base time in second                       = 1194316222
+     query timeout                             =          0
+     idle timeout                              =          0
+     fetch timeout                             =          0
+     utrans timeout                            =          0
+     session terminated                        =          0
+     session commit                            =        245
+     session rollback                          =          2
+     execute success count                     =        342
+     execute failure count                     =          3
+     prepare success count                     =        345
+     prepare failure count                     =          2
+     write redo log count                      =        102
+     write redo log bytes                      =      15190
+     byte received via inet                    =     208466
+     byte sent via inet                        =     461498
+     byte received via unix domain             =       4849
+     byte sent via unix domain                 =      11745
+     semop count for receiving via ipc         =          0
+     semop count for sending via ipc           =          0
+     memory table cursor full scan count       =        170
+     memory table cursor index scan count      =      12635
+     disk table cursor full scan count         =          0
+     disk table cursor index scan count        =          0
+     lock acquired count                       =         61
+     lock released count                       =         15
+</pre>
+</div></div><p> </p><ul><li>QUERY_PROF_FLAG = 32 로 설정한 경우<br />해당 시점에서 알티베이스 모듈별 메모리 사용량을 출력하며 select * from v$memstat  order by seqnum 실행 결과와 동일합니다.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>출력 형식</b></div><div class="panelContent">
+<p>[MEMORY STAT] 기록시간</p><p>     모듈명 : (현재 사용 메모리량 / 단위 메모리 갯수 / 사용했던 최대 메모리량)    </p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[MEMORY STAT] 2007/11/06 11:30:22
+         Main_Module_Channel : (155400/ 3/ 155400)
+         Main_Module_Distributed : (0/ 0/ 0)
+         Main_Module_Interface : (0/ 0/ 65560)
+         Main_Module_Thread : (728040/ 16/ 730600)
+         Main_Module_Utility : (0/ 0/ 0)
+         Query_Common : (1400/ 23/ 2640)
+         Query_Meta : (359176/ 2049/ 361360)
+         Query_DML : (0/ 0/ 1336)
+         Query_Sequence : (0/ 0/ 0)
+         Query_Replication : (0/ 0/ 0)
+         Query_PSM_Node : (0/ 0/ 0)
+         Query_PSM_Execute : (4993992/ 118/ 4993992)
+         Query_Prepare : (262240/ 4/ 1770352)
+         Query_Execute : (196680/ 3/ 458952)
+         Query_Binding : (8384/ 8/ 150048)
+         Query_Transaction : (0/ 0/ 0)
+         Query_Conversion : (0/ 0/ 19048)
+         Mathematics : (50176/ 190/ 109120)
+         Storage_Manager : (0/ 0/ 0)
+         Storage_Disk_Ager : (8464/ 3/ 8464)
+         Storage_Disk_Buffer : (164242040/ 34/ 164258448)
+         Storage_Disk_Collection : (0/ 0/ 0)
+         Storage_Disk_Datafile : (2760/ 14/ 2792)
+         Storage_Disk_Index : (2444760/ 25/ 2444760)
+         Storage_Disk_Page : (1056/ 3/ 1056)
+         Storage_Disk_Recovery : (0/ 0/ 1072)
+         Storage_Memory_Ager : (840/ 5/ 2254144)
+         Storage_Memory_Collection : (4195592/ 3/ 4196152)
+         Storage_Memory_Interface : (317576/ 321/ 317576)
+         Storage_Memory_Locking : (11938744/ 1124/ 11938744)
+         Storage_Memory_Manager : (18713376/ 80/ 50179448)
+         Storage_Memory_Index : (10836424/ 25/ 11039600)
+         Storage_Memory_Page : (5517400/ 33665/ 5517400)
+         Storage_Memory_Recovery : (53739512/ 15/ 53740072)
+         Storage_Memory_Utility : (11843832/ 5218/ 11843832)
+         Storage_Memory_Transaction : (1863448/ 3105/ 1863448)
+         Temp_Memory : (0/ 0/ 0)
+         Transaction_Table : (205955888/ 3074/ 205955888)
+         Transaction_OID_List : (688296/ 3/ 688296)
+         Transaction_Private_Buffer : (0/ 0/ 0)
+         Transaction_Table_Info : (1990656/ 21504/ 1991296)
+         Index_Memory : (4195592/ 3/ 4195592)
+         LOG_Memory : (0/ 0/ 0)
+         OS_Independent : (27754720/ 228/ 27754720)
+         Other : (0/ 0/ 0)
+</pre>
+</div></div><h1 id="Altibase에서수행된쿼리로그남기는방법(altiProfile)은?-주의사항">주의사항</h1><hr /><p>프로파일링을 활성화 할 경우, 알티베이스 서버 내에서 실행되는 모든 SQL문에 대해 수행정보를 로그파일에 기록하며, 설정에 따라 3초 주기로 알티베이스 상태를 프로파일링하므로, 알티베이스 성능에 영향을 줄 뿐만 아니라 시스템에도 부하를 줄 수 있습니다.</p><p>또한 프로파일링에 의한 로그 기록으로 디스크 사용량이 높아져 디스크 풀 발생 가능성도 있습니다.</p><p>따라서 기본적으로 운영 서버에서 프로파일링을 활성화하는 것은 권장하지 않습니다.</p><p>테스트, 성능 분석 및 튜닝 시에 단시간 사용하기를 권장하며, 프로파일링 할 때 반드시 디스크 사용량을 함께 모니터링하여 적절히 중지하시기 바랍니다.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

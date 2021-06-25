@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Main meta table and performance views related to session, query, transaction, lock, service thread, and memory DB GC</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Altibase-Meta-Table-and-Performance-View-Overview_14058238.html">2. Altibase Meta Table and Performance View Overview</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Main meta table and performance views related to session, query, transaction, lock, service thread, and memory DB GC
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain"><span style="color: rgb(34,34,34);">scion </span>The user can check the session, query, transaction, lock, service thread, and memory DB GC status in real time through meta table and performance view. The ERD below shows the join relationship between the meta table used in the monitoring query and the performance view.</span></p><p class="md-end-block md-p"><span class="md-plain">v$memgc, which is marked separately, is a performance view for the memory DB GC, and has no direct relationship with other meta tables and performance views, but is used with a specific column of v$transaction.</span></p><p class="md-end-block md-p"><span class="md-plain">Note that the statistics information related to query execution among the columns of v$statement is updated only when the TIMED_STATISTICS property is activated (1), so you must check whether the property is activated. The default value of TIMED_STATISTICS is disabled (0).</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For reference, transaction due to replication also utilize v</span><span>$</span><span class="md-plain">transaction, v</span><span>$</span><span class="md-plain">lock, and v</span><span>$</span><span class="md-plain">lock_wait, but are referred to separately in the replication section due to the nature of the replication transaction without session number or query number.</span></p><p class="md-end-block md-p md-focus"><img class="confluence-embedded-image" src="attachments/14058240/14221507.png" data-image-src="attachments/14058240/14221507.png"></p><p class="md-end-block md-p md-focus"> </p><h2 class="md-end-block md-heading" id="id-1.Mainmetatableandperformanceviewsrelatedtosession,query,transaction,lock,servicethread,andmemoryDBGC-MainMetaTables"><strong><span class="md-plain">Main Meta Tables</span></strong></h2><hr /><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_USERS<br /></span></strong> It is a meta table that is widely used as a meta table to store database user information such as the USER_NAME.</p><p class="md-end-block md-p"><span class="md-plain"><br /></span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_TABLES<br /></span></strong>This is a meta table that stores not only tables (including queue tables), but also sequence and view information, so it is possible to check information such as the object name (TABLE_NAME), which is basically used with SYS_USERS_.</p></li></ul><h2 class="md-end-block md-heading" id="id-1.Mainmetatableandperformanceviewsrelatedtosession,query,transaction,lock,servicethread,andmemoryDBGC-MainPerformanceViews"><strong><span class="md-plain">Main Performance Views</span></strong></h2><hr /><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span>$<span class="md-plain">session<br /></span></strong>This is a performance view that shows session information of the currently connected user.</p><p class="md-end-block md-p"><span class="md-plain"><br /></span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span>$<span class="md-plain">statement, v</span>$<span class="md-plain">sqltext, v</span>$<span class="md-plain">plantext<br /></span></strong>This is a performance view that shows query information and query level statistics related to the session, and it is possible to measure the execution time and frequency of queries. This view shows one direct-execute query and several preparsed query information per session and disappears at the end of the session. The query length shown in this view is 16K.</p><p class="md-end-block md-p"><span class="md-plain">If the text of the query exceeds 16K, use v</span><span>$</span><span class="md-plain"> sqltext, a performance view that shows the entire query text, and use v</span><span>$</span><span class="md-plain">plantext to check the execution plan corresponding to the query.</span></p><p class="md-end-block md-p"><span class="md-plain">As mentioned before, statistical information related to query execution among columns of v</span><span>$</span><span class="md-plain">statement is provided only when the TIMED_STATISTICS property is activated (1), so the user must check whether the property is activated. The default value of TIMED_STATISTICS is disabled (0).</span></p></li></ul><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$service_thread<br /></span></strong><span class="md-plain">As a performance view showing the status of service threads, the user can check related sessions and queries by joining v</span><span>$</span><span class="md-plain">session and v</span><span>$</span><span class="md-plain">statement. The view itself is meaning, so it can be monitored alone.</span></p><p class="md-end-block md-p"><span class="md-plain"><br /></span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span>$<span class="md-plain">transaction, v</span>$<span class="md-plain">memgc<br /></span></strong><span class="md-plain">v</span><span>$</span><span class="md-plain"> transaction is a performance view that shows information about all currently executed transactions, and is basically used when monitoring locks. In addition, the MVCC status associated with session and syntax can be checked through v$memgc, which is a performance view that shows information of the memory DB GC.</span></p></li></ul><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span>$<span class="md-plain">lock, v</span>$<span class="md-plain">lock_wait<br /></span></strong><span class="md-plain">v</span><span>$</span><span class="md-plain">lock is a performance view that shows all information about the lock that occurred during the execution of a transaction, and is used with v</span><span>$</span><span class="md-plain">lock_wait, which represents the ancestor relationship of the lock.</span></p></li></ul><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span>$<span class="md-plain">lock_statement<br /></span></strong>v$lock_statement vis a performance view that shows the last statement executed in the transaction that acquired the current lock, and is mainly used to quickly check the related session and statement when a lock occurs</p></li></ul><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058240/14221507.png">image2016-7-13 9_31_15.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Memory table and index usage</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Memory table and index usage
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147359 {padding: 0px;}
+div.rbtoc1624409147359 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147359 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147359'>
+<ul class='toc-indentation'>
+<li><a href='#Memorytableandindexusage-Overview'>Overview</a></li>
+<li><a href='#Memorytableandindexusage-Memorytabledatausagequery'>Memory table data usage query</a></li>
+<li><a href='#Memorytableandindexusage-Memorytableindexusage'>Memory table index usage</a>
+<ul class='toc-indentation'>
+<li><a href='#Memorytableandindexusage-Querytocheckmemorytableindexinformation(allavailablefromHDB4toHDB7)'>Query to check memory table index information (all available from HDB 4 to HDB 7)</a></li>
+<li><a href='#Memorytableandindexusage-Querytocheckusagepermemorytableindex(availablefromHDB5.xorlater)'>Query to check usage per memory table index (available from HDB 5.x or later)</a></li>
+<li><a href='#Memorytableandindexusage-Querytochecktotalindexusagepermemorytable(availablefromHDB5.xorlater)'>Query to check total index usage per memory table (available from HDB 5.x or later)</a></li>
+<li><a href='#Memorytableandindexusage-Querysizeperindexofmemorytable(for6.x)'>Query size per index of memory table (for 6.x)</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="Memorytableandindexusage-Overview">Overview</h1><hr /><p>This document describes the memory table and index usage query.</p><p> </p><h1 id="Memorytableandindexusage-Memorytabledatausagequery">Memory table data usage query</h1><p>The following query can be used in all versions of Altibase.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>set linesize 2048;
+set colsize 30;
+SELECT   a.user_name
+        ,NVL(d.name,&#39;SYS_TBS_MEMORY&#39;)  AS &#39;TABLESPACE_NAME&#39;
+        , b.table_name
+        , round((c.fixed_alloc_mem + c.var_alloc_mem)/(1024*1024),2) &#39;ALLOC(M)&#39;
+        , round((c.fixed_used_mem + c.var_used_mem)/(1024*1024),2) &#39;USED(M)&#39;
+        , round((c.fixed_used_mem + c.var_used_mem)/(c.fixed_alloc_mem + c.var_alloc_mem)*100,2) &#39;EFFICIENCY(%)&#39;
+FROM   system_.sys_users_ a
+     , system_.sys_tables_ b
+     , v$memtbl_info c left outer join v$tablespaces d  on c.tablespace_id = d.id
+WHERE  b.table_type = &#39;T&#39;
+  and a.user_id = b.user_id
+  and b.table_oid = c.table_oid
+order by 1,2,3, 4 desc ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       TABLESPACE_NAME                 TABLE_NAME                      TABLE_OID            ALLOC(M)    USED(M)     EFFICIENCY(%)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             SYS_TBS_MEM_DATA                TEST_T2                         3323512              0.41        0.38        93.9
+SYS                             USER_MEM_TBS                    MEM_T1                          3321192              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_COLUMNS_                    1453416              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_DATUMS_                     1469656              0.03        0           0
+SYSTEM_                         SYS_TBS_MEM_DIC                 STO_ELLIPSOIDS_                 1471976              0.03        0           0
+ </pre>
+</div></div><p> </p><h1 id="Memorytableandindexusage-Memorytableindexusage">Memory table index usage</h1><hr /><p>The index usage of a memory table cannot be checked directly by a query. Altibase memory tables have a size of 16 bytes per index regardless of the number and type of index columns, and the index usage can be calculated as 16 bytes * number of records.</p><h2 id="Memorytableandindexusage-Querytocheckmemorytableindexinformation(allavailablefromHDB4toHDB7)">Query to check memory table index information (all available from HDB 4 to HDB 7)</h2><p>The index information for each table can be checked with the following query. To check the index size, the user must check the number of records and calculate it separately, or use a query that calculates the size of the index of the memory table containing the function.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>set linesize 2048;
+set colsize 30;
+
+ SELECT
+        c.user_name
+        , decode(f.table_type, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) object_type
+        , table_name object_name
+        , e.index_name
+        , rpad(case2(e.index_type=1, &#39;b-tree&#39;, &#39;r-tree&#39;),10,&#39; &#39;) index_type
+        , &#39;16 bytes * rowcount&#39; &#39;ALLOC&#39;
+ FROM      v$memtbl_info a
+        ,  v$index b
+        , system_.sys_users_ c
+        , system_.sys_indices_ e
+        , system_.sys_tables_ f
+ WHERE
+       a.table_oid = f.table_oid
+   and b.index_id = e.index_id
+   and e.user_id = c.user_id
+   and f.user_id = e.user_id
+   and f.tbs_id = a.tablespace_id
+   and f.table_oid = b.table_oid
+   and c.user_name &lt;&gt; &#39;SYSTEM_&#39; ;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       OBJECT_TYPE  OBJECT_NAME                     INDEX_NAME                      INDEX_TYPE  ALLOC
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             TABLE  T1                              IDX1_T2                         b-tree      16 bytes * rowcount
+SYS                             TABLE  T1                              IDX1_T1                         b-tree      16 bytes * rowcount
+2 rows selected.</pre>
+</div></div><p> </p><h2 id="Memorytableandindexusage-Querytocheckusagepermemorytableindex(availablefromHDB5.xorlater)">Query to check usage per memory table index (available from HDB 5.x or later)</h2><p>The usercan use the following query to check the usage per index of a memory table. Before using the query, the user must create a DB function that can get the number of records for that table.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>1. Create a function that can count the number of records in the table.
+CREATE FUNCTION GETCOUNT(u_name varchar(40), t_name varchar(40))
+ RETURN INTEGER
+ AS
+    RECORDCOUNT integer;
+BEGIN
+       EXECUTE IMMEDIATE &#39;SELECT count(*)  FROM &#39; || u_name||&#39;.&#39;||t_name INTO RECORDCOUNT ;
+RETURN RECORDCOUNT;
+
+END;
+
+/
+
+
+2. Use function to query the usage per index.
+set linesize 2048;
+set colsize 30;
+SELECT
+        c.user_name
+        , decode(f.table_type, &#39;Q&#39;, &#39;QUEUE&#39;, &#39;T&#39;, &#39;TABLE&#39;) object_type
+        , table_name object_name
+        , e.index_name
+        , rpad(case2(e.index_type=1, &#39;b-tree&#39;, &#39;r-tree&#39;),10,&#39; &#39;) index_type
+        , ROUND( 16 * GETCOUNT(c.user_name, f.table_name) / 1024/1024, 2)  &#39;ALLOC(M)&#39;
+ FROM      v$memtbl_info a
+        ,  v$index b
+        , system_.sys_users_ c
+        , system_.sys_indices_ e
+        , system_.sys_tables_ f
+ WHERE
+       a.table_oid = f.table_oid
+   and b.index_id = e.index_id
+   and e.user_id = c.user_id
+   and f.user_id = e.user_id
+   and f.tbs_id = a.tablespace_id
+   and f.table_oid = b.table_oid
+   and c.user_name &lt;&gt; &#39;SYSTEM_&#39; ; </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME                       OBJECT_TYPE  OBJECT_NAME                     INDEX_NAME                      INDEX_TYPE     ALLOC(M)
+-----------------------------------------------------------------------------------------------------------------------------------------------
+SYS                             TABLE  T1                              IDX1_T2                         b-tree         0.76
+SYS                             TABLE  T1                              IDX1_T1                         b-tree         0.76
+SYS                             TABLE  T2                              IDX2                            b-tree         0.31
+3 rows selected.</pre>
+</div></div><h2 id="Memorytableandindexusage-Querytochecktotalindexusagepermemorytable(availablefromHDB5.xorlater)">Query to check total index usage per memory table (available from HDB 5.x or later)</h2><p>Query the total index usage per table used by the memory table. Before using the query, the user must create a DB function that can get the number of records for that table.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>1. Create a function that can count the number of records in the table.
+CREATE FUNCTION GETCOUNT(u_name varchar(40), t_name varchar(40))
+ RETURN INTEGER
+ AS
+    RECORDCOUNT integer;
+BEGIN
+       EXECUTE IMMEDIATE &#39;SELECT count(*)  FROM &#39; || u_name||&#39;.&#39;||t_name INTO RECORDCOUNT ;
+RETURN RECORDCOUNT;
+
+END;
+
+/
+
+
+2. Use function to look up the total index usage size per table.
+select
+          user_name
+        , table_name
+        , count(index_name) AS &#39;INDEX_COUNT&#39;
+        , round( SUM(alloc) /1024/1024, 2 ) as &#39;Alloc(M)&#39;
+from (
+         SELECT
+                  c.user_name
+                , f.table_name
+                , e.index_name
+                , 16 * GETCOUNT(c.user_name, f.table_name) AS alloc
+         FROM      v$memtbl_info a
+                ,  v$index b
+                , system_.sys_users_ c
+                , system_.sys_indices_ e
+                , system_.sys_tables_ f
+         WHERE
+               a.table_oid = f.table_oid
+           and b.index_id = e.index_id
+           and e.user_id = c.user_id
+           and f.user_id = e.user_id
+           and f.tbs_id = a.tablespace_id
+           and f.table_oid = b.table_oid
+           and c.user_name &lt;&gt; &#39;SYSTEM_&#39;
+     )
+ group by user_name, table_name;  </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> USER_NAME                       TABLE_NAME                      INDEX_COUNT          Alloc(M)
+------------------------------------------------------------------------------------------------------
+SYS                             T1                              2                    1.53
+SYS                             T2                              1                    0.31
+2 rows selected.
+iSQL&gt;</pre>
+</div></div><p> </p><h2 id="Memorytableandindexusage-Querysizeperindexofmemorytable(for6.x)">Query size per index of memory table (for 6.x)</h2><p>The user can query more accurate memory table usage per index with the following query. Available in version 6.1.1 or later.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>SELECT U.USER_NAME, T.TABLE_NAME TABLE_NAME
+     , B.INDEX_NAME
+     , LPAD(I.IS_PARTITIONED, 14) INDEX_PARTITIONED
+     , ROUND(((USED_NODE_COUNT+ PREPARE_NODE_COUNT) / 15 * 32768)/1024/1024, 1) AS &#39;SIZE(MB)&#39;
+  FROM V$MEM_BTREE_HEADER B
+     , SYSTEM_.SYS_INDICES_ I
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_USERS_ U
+ WHERE 1=1
+   AND B.INDEX_ID = I.INDEX_ID
+   AND I.TABLE_ID = T.TABLE_ID
+   AND B.INDEX_TBS_ID &lt;&gt; 0
+   AND U.USER_ID = T.USER_ID
+ ORDER BY TABLE_NAME, B.INDEX_ID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">USER_NAME             TABLE_NAME            INDEX_NAME            INDEX_PARTITIONED     SIZE(MB)    
+----------------------------------------------------------------------------------------------------------
+SYS                   EMPLOYEES             __SYS_IDX_ID_143                   F        0           
+SYS                   EMPLOYEES             EMP_IDX1                           F        0           
+SYS                   FOO                   __SYS_IDX_ID_171                   F        0           
+SYS                   GOODS                 __SYS_IDX_ID_145                   F        0           
+SYS                   GOODS                 __SYS_IDX_ID_146                   F        0           
+SYS                   MEM_T                 M_IDX01                            F        36.5        
+SYS                   M_PART_SALES          M_IDX_PREFIX                       T        0           
+SYS                   M_PART_SALES          IDX_PART_1                         T        8.7         
+SYS                   M_PART_SALES          IDX_PART_2                         T        0.7         
+SYS                   M_PART_SALES          IDX_PART_3                         T        0.7         </pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

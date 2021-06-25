@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Table/Column Definition</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Table/Column Definition
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 24, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147597 {padding: 0px;}
+div.rbtoc1624409147597 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147597 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147597'>
+<ul class='toc-indentation'>
+<li><a href='#Table/ColumnDefinition-Overview'>Overview</a></li>
+<li><a href='#Table/ColumnDefinition-Tabledefinition'>Table definition</a></li>
+<li><a href='#Table/ColumnDefinition-Columndefinition'>Column definition</a></li>
+</ul>
+</div> <span class="confluence-anchor-link" id="Table/ColumnDefinition-table/columndesc"></span></p><p> </p><h1 id="Table/ColumnDefinition-Overview">Overview</h1><hr /><p>This is a query required when creating user table and column definitions.</p><p> </p><h1 id="Table/ColumnDefinition-Tabledefinition">Table definition</h1><hr /><p>The table owner, table name, number of records, table creation date, and last DDL execution date information can be checked.</p><p>The number of records can be checked from Altibase 6.3.1, which added the performance view related to statistical information.</p><p>There are differences in the query statement for each version, so refer to the statement for each version.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 6.3.1 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> 
+-- USER_NAME  : Table owner
+-- TABLE_NAME : Table name
+-- RECORD_CNT : Number of records. Statistical information must be collected from this information in order to see accurate information. &#39;-&#39; means a table that has never collected statistical information.
+-- CREATED_DATE : Date of table creation
+-- LAST_DDL_DATE : Date of last DDL execution
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , DECODE(D.NUM_ROW, NULL, &#39;-&#39;, D.NUM_ROW) &#39;RECORD_CNT&#39;              -- Number of records,&#39;-&#39; is a table that has never collected statistical information
+     , TO_CHAR(T.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;CREATED_DATE&#39;          -- Date of table creation
+     , TO_CHAR(T.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;LAST_DDL_DATE&#39;   -- Date of last DDL execution
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+       LEFT OUTER JOIN V$DBMS_STATS D ON D.TARGET_ID = T.TABLE_OID AND D.TYPE = &#39;T&#39;
+ WHERE U.USER_ID NOT IN (0, 1)  -- System user PUBLIC, except SYSTEM_
+   AND T.TABLE_TYPE = &#39;T&#39;  -- Table only
+   AND U.USER_ID = T.USER_ID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 5.3.3 / 5.5.1 / 6.1.1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME  : Table owner
+-- TABLE_NAME : Table name
+-- CREATED_DATE : Date of table creation
+-- LAST_DDL_DATE : Date of last DDL execution
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , TO_CHAR(T.CREATED, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;CREATED_DATE&#39;          -- Date of table creation
+     , TO_CHAR(T.LAST_DDL_TIME, &#39;YYYY-MM-DD HH:MI:SS&#39;) &#39;LAST_DDL_DATE&#39;   -- Date of last DDL execution
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE U.USER_ID NOT IN (0, 1)  -- System user PUBLIC, except SYSTEM_
+   AND T.TABLE_TYPE = &#39;T&#39;  -- Table only
+   AND U.USER_ID = T.USER_ID
+;
+
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 4.3.9</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME  : Table owner
+-- TABLE_NAME : Table name
+ 
+SELECT U.USER_NAME &#39;USER_NAME&#39;
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE U.USER_ID NOT IN (0, 1)  -- System user PUBLIC, except SYSTEM_
+   AND T.TABLE_TYPE = &#39;T&#39;  -- Table only
+   AND U.USER_ID = T.USER_ID
+;</pre>
+</div></div><p> </p><p> </p><h1 id="Table/ColumnDefinition-Columndefinition">Column definition</h1><hr /><p>The column name, data type, size, NOT NULL, constraint information, and column order information can be checked.</p><p>There are differences in the query statement for each version, so refer to the statement for each version.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 6.3.1 or later</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- USER_NAME : Owner name 
+-- TABLE_NAME : Table name
+-- COLUMN_NAME : Column name
+-- DATA_TYPE : Data type
+-- COLUMN_SIZE : Column size
+-- CONST_TYPE : Constraint type
+-- CHECK_CONDITION : Condition of CHECK constraint
+-- COLUMN_ORDER : Column order
+  
+SELECT U.USER_NAME &#39;USER_NAME&#39; 
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , C.COLUMN_NAME &#39;COLUMN_NAME&#39;
+     , DECODE(C.DATA_TYPE, 1, &#39;CHAR&#39;, 12, &#39;VARCHAR&#39;, -8, &#39;NCHAR&#39;, -9, &#39;NVARCHAR&#39;, 2, &#39;NUMERIC/DECIMAL&#39;, 6, &#39;FLOAT/NUMBER&#39;, 8, &#39;DOUBLE&#39;, 7, &#39;REAL&#39;, -5, &#39;BIGINT&#39;, 4, &#39;INTEGER&#39;, 5, &#39;SMALLINT&#39;, 9, &#39;DATE&#39;, 30, &#39;BLOB&#39;, 40, &#39;CLOB&#39;, 20001, &#39;BYTE&#39;, 20002, &#39;NIBBLE&#39;, -7, &#39;BIT&#39;, -100, &#39;VARBIT&#39;, 10003, &#39;GEOMETRY&#39;) &#39;DATA_TYPE&#39;
+     , DECODE(C.DATA_TYPE, 2, C.PRECISION||&#39;.&#39;||C.SCALE, 6, C.PRECISION||&#39;.&#39;||C.SCALE, C.PRECISION) COLUMN_SIZE
+     , DECODE(CONST.CONSTRAINT_TYPE, 0, &#39;FK&#39;, 1, &#39;NOT NULL&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;, 5, &#39;TIMESTAMP&#39;, 6, &#39;LOCAL UNIQUE&#39;, 7, &#39;CHECK&#39;) CONST_TYPE
+     , CONST.CHECK_CONDITION     
+     , C.COLUMN_ORDER &#39;COLUMN_ORDER&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_COLUMNS_ C
+       LEFT OUTER JOIN system_.SYS_CONSTRAINT_COLUMNS_ CONST_COL ON CONST_COL.COLUMN_ID = C.COLUMN_ID 
+       LEFT OUTER JOIN SYSTEM_.SYS_CONSTRAINTS_ CONST ON CONST.CONSTRAINT_ID = CONST_COL.CONSTRAINT_ID
+ WHERE U.USER_NAME NOT IN (&#39;PUBLIC&#39;, &#39;SYSTEM_&#39;)
+   AND T.TABLE_TYPE = &#39;T&#39;
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = C.TABLE_ID  
+ ORDER BY U.USER_NAME, T.TABLE_NAME, C.COLUMN_ORDER   
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase version 4.3.9 / 5.3.3 / 5.5.1 / 6.1.1 </b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> -- USER_NAME : Name owner 
+-- TABLE_NAME : Table name
+-- COLUMN_NAME : Column name
+-- DATA_TYPE : Data type
+-- COLUMN_SIZE : Column size
+-- CONST_TYPE : Constraint type
+-- COLUMN_ORDER : Column order
+  
+SELECT U.USER_NAME &#39;USER_NAME&#39; 
+     , T.TABLE_NAME &#39;TABLE_NAME&#39;
+     , C.COLUMN_NAME &#39;COLUMN_NAME&#39;
+     , DECODE(C.DATA_TYPE, 1, &#39;CHAR&#39;, 12, &#39;VARCHAR&#39;, -8, &#39;NCHAR&#39;, -9, &#39;NVARCHAR&#39;, 2, &#39;NUMERIC/DECIMAL&#39;, 6, &#39;FLOAT/NUMBER&#39;, 8, &#39;DOUBLE&#39;, 7, &#39;REAL&#39;, -5, &#39;BIGINT&#39;, 4, &#39;INTEGER&#39;, 5, &#39;SMALLINT&#39;, 9, &#39;DATE&#39;, 30, &#39;BLOB&#39;, 40, &#39;CLOB&#39;, 20001, &#39;BYTE&#39;, 20002, &#39;NIBBLE&#39;, -7, &#39;BIT&#39;, -100, &#39;VARBIT&#39;, 10003, &#39;GEOMETRY&#39;) &#39;DATA_TYPE&#39;
+     , DECODE(C.DATA_TYPE, 2, C.PRECISION||&#39;.&#39;||C.SCALE, 6, C.PRECISION||&#39;.&#39;||C.SCALE, C.PRECISION) COLUMN_SIZE
+     , DECODE(CONST.CONSTRAINT_TYPE, 0, &#39;FK&#39;, 1, &#39;NOT NULL&#39;, 2, &#39;UNIQUE&#39;, 3, &#39;PK&#39;, 4, &#39;NULL&#39;, 5, &#39;TIMESTAMP&#39;, 6, &#39;LOCAL UNIQUE&#39;, 7, &#39;CHECK&#39;) CONST_TYPE    
+     , C.COLUMN_ORDER &#39;COLUMN_ORDER&#39;
+  FROM SYSTEM_.SYS_USERS_ U
+     , SYSTEM_.SYS_TABLES_ T
+     , SYSTEM_.SYS_COLUMNS_ C
+       LEFT OUTER JOIN system_.SYS_CONSTRAINT_COLUMNS_ CONST_COL ON CONST_COL.COLUMN_ID = C.COLUMN_ID 
+       LEFT OUTER JOIN SYSTEM_.SYS_CONSTRAINTS_ CONST ON CONST.CONSTRAINT_ID = CONST_COL.CONSTRAINT_ID
+ WHERE U.USER_NAME NOT IN (&#39;PUBLIC&#39;, &#39;SYSTEM_&#39;)
+   AND T.TABLE_TYPE = &#39;T&#39;
+   AND U.USER_ID = T.USER_ID
+   AND T.TABLE_ID = C.TABLE_ID  
+ ORDER BY U.USER_NAME, T.TABLE_NAME, C.COLUMN_ORDER   
+;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

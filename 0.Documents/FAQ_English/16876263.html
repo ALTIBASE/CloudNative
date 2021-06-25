@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB  5.5.1,  6.1.1, 6.3.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Memory-tablespace-usage_16876261.html">Memory tablespace usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB  5.5.1,  6.1.1, 6.3.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 24, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147404 {padding: 0px;}
+div.rbtoc1624409147404 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147404 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147404'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-Overview'>Overview</a></li>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-Reference-AboutMemoryTablespaceAttributes'>Reference - About Memory Tablespace Attributes</a></li>
+</ul>
+</div></p><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-Overview">Overview</h1><hr /><ul><li>Starting from ALTIBASE HDB version 5.5.1, V$VOL_TABLESpACES, which stores information on volatile memory tablespaces, has been added.</li><li>Using this Performance View, all memory tablespace usage including volatile memory tablespace usage can be inquired with the following query.</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>--
+--TBS_ID   : Tablespace ID
+--TBS_TYPE : Memory tablespace type 
+--           0 - System memory tablespace. A tablespace for storing metadata necessary for the operation of the database system
+--           1 - System memory tablespace. A tablespace that can store data created by default when creating a database
+--           2 - User memory tablespace. User-created memory tablespace
+--           8 - Volatile tablespaces created by users
+--TBS_NAME : Memory tablespace name
+--MAX(M)   : Max amount of memory that can be used by memory tablespace
+--           If MAXSIZE is not specified when creating a tablespace, MEM_MAX_DB_SIZE is displayed.        
+--           If the tablespace attribute is AUTOEXTEND OFF, TOTAL is output.
+--TOTAL(M) : Total number of pages allocated from the memory tablespace. It is the same as the size of the checkpoint image file creation.
+--           It also includes a free page. Free pages are not loaded into memory when the Altibase server is started. So, it is difficult to use and judge physical memory as much as this value. 
+--           This value is decreased only by executing DROP TABLESPACE. 
+--ALLOC(M) : Amount of memory being used by the memory tablespace
+--USED(M)  : The size of the memory storing data among ALLOCs
+--USAGE(%) : ALLOC utilization rate compared to MAX
+--STATE    : State of the tablespace 
+--           1 - Offline, 2 - Online, 3 - Offline tablespace being backed up, 4 - Tablespace in an online state that are up-to-date, 
+--           128 - Dropped tablespace, 1024-discarded tablespace, 1028-discarded tablespace being backed up
+set linesize 1024
+set colsize 20
+SELECT ID TBS_ID
+     , DECODE(TYPE, 0, &#39;MEMORY_DICTIONARY&#39;, 1, &#39;MEMORY_SYS_DATA&#39;, 2, &#39;MEMORY_USER_DATA&#39;, 8, &#39;VOLATILE_USER_DATA&#39;) TBS_TYPE
+     , NAME TBS_NAME
+     , ROUND( DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE , 0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE, M.MAXSIZE) /1024/1024, 2 ) &#39;MAX(M)&#39;
+     , ROUND( M.ALLOC_PAGE_COUNT * T.PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;
+     , ROUND(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,T.TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024, 2) &#39;ALLOC(M)&#39;
+     , NVL(MT.USED, 0) &#39;USED(M)&#39;
+     , ROUND(DECODE(MAXSIZE, 140737488322560, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*T.PAGE_SIZE/ D.MEM_MAX_DB_SIZE ,0, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) / T.TOTAL_PAGE_COUNT , (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) * T.PAGE_SIZE/ M.MAXSIZE) * 100 , 2) &#39;USAGE(%)&#39;
+     , DECODE(T.STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+     , DECODE(M.AUTOEXTEND_MODE,1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$DATABASE D
+     , V$TABLESPACES T
+     , (SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , DECODE(MAX_SIZE, 0, (SELECT VALUE1 FROM V$PROPERTY WHERE NAME = &#39;VOLATILE_MAX_DB_SIZE&#39;), MAX_SIZE) AS MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$VOL_TABLESPACES
+         UNION ALL
+        SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN(SELECT TABLESPACE_ID, ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM V$MEMTBL_INFO
+         GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+ WHERE T.ID = M.SPACE_ID;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_ID      TBS_TYPE            TBS_NAME              MAX(M)      TOTAL(M)    ALLOC(M)    USED(M)     USAGE(%)    STATE           AUTOEXTEND  
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+0           MEMORY_DICTIONARY   SYS_TBS_MEM_DIC       10240       4.03        4           1.007       0.04        ONLINE          ON   
+1           MEMORY_SYS_DATA     SYS_TBS_MEM_DATA      10240       8.03        0.09        0           0           ONLINE          ON   
+5           MEMORY_USER_DATA    USER_MEM_TBS          3072.03     3072.03     712.38      686.646     23.19       ONLINE          OFF  
+6           MEMORY_USER_DATA    USER_MEM_TBS_2        10240       768.03      694.38      686.646     6.78        ONLINE          ON   
+8           MEMORY_USER_DATA    USER_MEM_TBS_3        1024        512.03      4.03        0           0.39        ONLINE          ON   </pre>
+</div></div><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-Reference-AboutMemoryTablespaceAttributes">Reference - About Memory Tablespace Attributes</h1><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;CURR_SIZE(MB)&#39;
+     , TO_CHAR(AUTOEXTEND_NEXTSIZE/1024/1024, &#39;999,999,999&#39;) &#39;NEXT_SIZE(MB)&#39;
+     , TO_CHAR(DECODE(MAXSIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAXSIZE)/1024/1024, &#39;999,999,999&#39;) &#39; MAXSIZE(MB)&#39;
+     , DECODE(AUTOEXTEND_MODE, 1, &#39;ON&#39;, 0, &#39;OFF&#39;) &#39;AUTOEXTEND&#39; 
+  FROM V$MEM_TABLESPACES, V$DATABASE D
+UNION ALL  
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;CURR_SIZE(MB)&#39;
+     , TO_CHAR(NEXT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;NEXT_SIZE(MB)&#39;
+     , TO_CHAR(DECODE(MAX_SIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAX_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39; MAXSIZE(MB)&#39;
+     , DECODE(AUTOEXTEND_MODE, 1, &#39;ON&#39;, 0, &#39;OFF&#39;) &#39;AUTOEXTEND&#39; 
+  FROM V$VOL_TABLESPACES, V$DATABASE D ;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

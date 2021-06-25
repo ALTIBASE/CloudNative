@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-01044 Client&#39;s query exceeded in the execution time limitation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-01044 Client&#39;s query exceeded in the execution time limitation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 19, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149243 {padding: 0px;}
+div.rbtoc1624409149243 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149243 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149243'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Version'>Version</a></li>
+<li><a href='#ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Explanation'>Explanation</a></li>
+<li><a href='#ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Cause'>Cause</a></li>
+<li><a href='#ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Action'>Action</a></li>
+<li><a href='#ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Explanation">Explanation</h2>
+
+<p>The query abnormally terminates.</p>
+
+
+
+<h2 id="ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Cause">Cause</h2>
+
+<p>QUERY_TIMEOUT specifies the maximum amount of time allowed for a query to complete its execution.</p>
+
+<p>This property prevents long-running queries from causing server load.</p>
+
+<p>This error message is output when a query was executed for a longer time than the value specified for QUERY_TIMEOUT.</p>
+
+<p>Information of the query is output to Altibase_boot.log.</p>
+
+<h2 id="ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Action">Action</h2>
+
+<p>This error occurs when the query execution time exceeded QUERY_TIMEOUT.</p>
+
+<p>QUERY_TIMEOUT is the maximum amount of time allowed for a query to complete its execution.</p>
+
+<p>The best way to fix this error is to reduce the overall execution time by tuning the query (e.g., adding an index).</p>
+
+<p>A quick workaround would be to increase QUERY_TIMEOUT to avoid the error.</p>
+
+<ul>
+	<li>Check the QUERY_TIMEOUT property value (default : 3600 seconds).
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT name, value1 FROM v$property WHERE name LIKE &#39;%TIMEOUT%&#39;;</pre>
+</div></div></li>
+	<li>Modify the value.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET query_ timeout= desired value;</pre>
+</div></div></li>
+</ul>
+
+
+<h2 id="ERR-01044Client&#39;squeryexceededintheexecutiontimelimitation-Reference">Reference</h2>
+
+<p>This error message can be attributed to various causes: high service traffic load or suddenly changed query plans can incur prolonged query execution time.</p>
+
+<p>This error should be fixed by tuning queries.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Online Backup and Time Based Recovery</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="04.-Backup-and-Recovery_16876100.html">04. Backup and Recovery</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Online Backup and Time Based Recovery
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146154 {padding: 0px;}
+div.rbtoc1624409146154 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146154 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146154'>
+<ul class='toc-indentation'>
+<li><a href='#OnlineBackupandTimeBasedRecovery-Overview'>Overview</a></li>
+<li><a href='#OnlineBackupandTimeBasedRecovery-Version'>Version</a></li>
+<li><a href='#OnlineBackupandTimeBasedRecovery-Onlinebackupprocedure'>Online backup procedure</a></li>
+<li><a href='#OnlineBackupandTimeBasedRecovery-Timebasedrecovery'>Time based recovery</a></li>
+<li><a href='#OnlineBackupandTimeBasedRecovery-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="OnlineBackupandTimeBasedRecovery-Overview">Overview</h1><hr /><p>This section explains how to perform Online Backup and Time Based Recovery, which can be performed when the Altibase server is operated in archive log mode.</p><p>Online Backup is not possible except in Archivelog Mode.</p><p> </p><h1 id="OnlineBackupandTimeBasedRecovery-Version">Version</h1><hr /><p>ALTIBASE HDB version 4 or later</p><p> </p><h1 id="OnlineBackupandTimeBasedRecovery-Onlinebackupprocedure">Online backup procedure</h1><hr /><p>1. Online backup is possible only when the DB is running in the archive mode, and the procedure to check and change the archive mode is as follows.</p><p>A. How to check Archivelog mode</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select ARCHIVE_MODE from v$archive;ARCHIVE_MODE       
+ -----------------------
+0                        // 0: Archive_mode not used, 1: Archive mode used</pre>
+</div></div><p>B. How to change Archive mode</p><p>The Archive mode cannot be changed while online and can be changed at the Control stage after DB shutdown.</p><p>After connecting to sysdba mode, start-up in the Control stage and change to Archive mode.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[cheol@as48-x64 ~]$ is -sysdba
+iSQL(sysdba)&gt; startup control;
+Connecting to the DB server... 
+Connected.TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL
+Command execute success. 
+ 
+2) Change to Archivelog mode
+iSQL(sysdba)&gt; alter database archivelog;Alter success.</pre>
+</div></div><p>2. Procedure to perform Online Backup when DB is operating in Archivelog Mode</p><p>A. Database Online Backup by database system</p><p>1) Database unit online backup</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter database backup database to &#39;/backup&#39;;  // The backup directory can be arbitrarily changed.</pre>
+</div></div><p>The following files are copied to the /backup directory.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SYS_TBS_MEM_DIC-0-0   
+SYS_TBS_MEM_DATA-0-0
+system001.dbf 
+system002.dbf 
+undo001.dbf
+loganchor0 
+loganchor2 
+loganchor1</pre>
+</div></div><p>2) In case of online backup for a specific tablespace unit</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter database backup tablespace SYS_TBS_MEM_DIC to ‘/backup_dir’;  // A stable version of the SYS_TBS_MEM_DIC data files is backed up online to the /backup_dir directory.
+$ ls /backup_dirSYS_TBS_MEM_DIC-0-0</pre>
+</div></div><p>3) Log anchor online backup</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter database backup loganchor to ‘/backup_dir’;  // All log anchor files are backed up online to the /backup_dir directory.
+$ ls /backup_dir
+loganchor0 loganchor1 loganchor2</pre>
+</div></div><p>B. Online backup by DBA</p><p>1) Online backup by tablespace</p><p>Ex) Online backup of data files of USER_MEMORY_TBS and USER_DISK_TBS tablespaces in /backup_dir.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Ex) Online backup of data files of USER_MEMORY_TBS and USER_DISK_TBS tablespaces in /backup_dir.</pre>
+</div></div><p>The memory tablespace data file is backed up online after confirming that it is a stable version of the data file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; alter tablespace USER_MEMORY_TBS begin backup;
+iSQL(sysdba)&gt; select * from v$stable_mem_datafiles;
+MEM_DATA_FILE 
+--------------------------------------------------
+/altibase_home/dbs/USER_MEM_TBS-0-0  // stable version
+ 
+$ cp $ALTIBASE_HOME/dbs/USER_MEMORY_TBS-0-0  /backup_dir/  
+ 
+iSQL(sysdba)&gt; alter tablespace USER_MEMORY_TBS end backup; 
+iSQL(sysdba)&gt; alter tablespace USER_DISK_TBS begin backup;  
+ 
+$ cp $ALTIBASE_HOME/dbs/USER_DISK_TBS.dbf /backup_dir/  
+ 
+iSQL(sysdba)&gt; alter tablespace USER_DISK_TBS end backup; 
+ 
+$ ls /backup_dir
+USER_MEMORY_TBS-0-0 USER_DISK_TBS.dbf</pre>
+</div></div><p>2) Finishing online backup by DBA</p><p>Commands to force archive log files related to the backup must be executed so that even if the current log file is not used up, it is instructed to close it and continue logging to the next log file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER SYSTEM SWITCH LOGFILE;</pre>
+</div></div><p> </p><h1 id="OnlineBackupandTimeBasedRecovery-Timebasedrecovery">Time based recovery</h1><hr /><p>It is operating in Archivelog Mode and is a recovery procedure when online backup (or cold backup) for the entire DB is performed more than once before the desired recovery point.</p><p>Ex) The tablespace USER_DISK_TBS was deleted by mistake. (July 23, 2015 14:11)</p><p>Database recovery procedure to the state of 10 minutes before the tablespace existed</p><p>At the last backup, the entire DB was backed up as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE BACKUP DATABASE TO ‘/backup_dir’;</pre>
+</div></div><p>A. Copy the data files of all disk tablespaces of the backed up database to the original location of the data files.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cp /backup_dir/*.dbf $ALTIBASE_HOME/dbs
+$ cp /backup_dir/SYS_TBS_* $ALTIBASE_HOME/dbs</pre>
+</div></div><p>B. Check the archive log files required for recovery and copy and use the backed up log anchor files.</p><p>1) Check the archive log files required for recovery</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; select last_deleted_logfile from v$lfg;
+LAST_DELETED_LOGFILE 
+------------------------ 
+15021                // Archive log file number required for recovery</pre>
+</div></div><p> </p><p>In the altibase_sm.log file created in the $ALTIBASE_HOME/trc directory, check the files that were forcibly archived when the backup was completed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[2015/07/23 13:59:59] [Thread-6] [Level-9]Waiting logfile15341 to archive  //Forced archived file number, i.e. logfile15021 ~ logfile15341 files are required for recovery.</pre>
+</div></div><p> </p><p>2) Copy the backed up log anchor file</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ cp /backup_dir/loganchor* /ALTIBASE_HOME/logs;</pre>
+</div></div><p> </p><p>3) Because the SYS_TBS_DISK_TEMP tablespace is not backed up, create a new one.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE CREATE DATAFILE ‘temp001.dbf’</pre>
+</div></div><p> </p><p>4) Perform incomplete media recovery.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE RECOVER DATABASE  UNTIL TIME &#39;2015-07-23:14:01:00&#39;;</pre>
+</div></div><p> </p><p>Since the incomplete media recovery has performed, the resetlogs option must be used while going to the meta startup stage.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE mydb META RESETLOGS;</pre>
+</div></div><p> </p><p>5) Since the server was started and the log was reset, the entire database was backed up.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE mydb SERVICE;
+iSQL(sysdba)&gt; ALTER DATABASE BACKUP DATABASE TO ‘/backup_dir’;</pre>
+</div></div><p> </p><h1 id="OnlineBackupandTimeBasedRecovery-Reference">Reference</h1><hr /><p>More detailed information can be found in the Table of Contents of the Admin Manual &gt; <strong>Backup and Recovery cases</strong>.</p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

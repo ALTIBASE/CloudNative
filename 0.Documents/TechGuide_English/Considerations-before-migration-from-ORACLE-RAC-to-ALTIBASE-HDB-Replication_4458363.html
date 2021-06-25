@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Considerations before migration from ORACLE RAC to ALTIBASE HDB Replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7.-HA-Support_2986528.html">7. HA Support</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Considerations before migration from ORACLE RAC to ALTIBASE HDB Replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_heerock</span>, last modified on Sep 12, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409352858 {padding: 0px;}
+div.rbtoc1624409352858 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409352858 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409352858'>
+<ul class='toc-indentation'>
+<li><a href='#ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Dataconsistency'>Data consistency</a></li>
+<li><a href='#ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-DDLExecutioninthereplicatedenvironment'>DDL Execution in the replicated environment</a></li>
+<li><a href='#ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Foreignkeyconstraint'>Foreign key constraint</a></li>
+<li><a href='#ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Trigger'>Trigger</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Dataconsistency">Data consistency</h2>
+
+<p>ALTIBASE Replication sender thread tries to transfer XLOG as soon as the changed transaction is issued.</p>
+
+<p>However if there're numerous changed transactions, there may be unsent transaction log although sender thread works hard.</p>
+
+<p>It can cause data inconsistency between ALTIBASE instances. In order to overcome this issue, ALTIBASE inroduce EAGER Replication.</p>
+
+<p>ALTIBASE does not support 2-phase commit protocol, therefore, the order of transactions may not be kept.</p>
+
+<h2 id="ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-DDLExecutioninthereplicatedenvironment">DDL Execution in the replicated environment</h2>
+
+<p>DDL statements cannot be executed on tables for which the replication recovery option has been<br />
+specified.</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>One of the extra replication features that ALTIBASE HDB supports is the recovery option.</p>
+
+<p>If the OPTIONS value is set to 1 in the SYS_REPLICATIONS_ meta table, the recovery option is used,<br />
+whereas if the OPTIONS value is set to 0, the recovery option is not used.</p>
+
+<p>However, the recovery option cannot be changed while replication is active.</p>
+
+<p>If the recovery option is not used, all of the recovery-related information maintained in the system is cleared.</p>
+                    </div>
+    </div>
+
+
+<p>To execute DDL statements in such a case, drop the tables from the replication object and<br />
+execute the DDL statements.</p>
+
+<p>Futhermore, DDL statements cannot be executed while replication is running in EAGER mode.</p>
+
+<p>To execute DDL statements in such a case, stop replication, execute the<br />
+DDL statements, and start replication again.</p>
+
+<p>Supposing that the name of a replication target table is t1, A user can execute DDL statements<br />
+using REPLICATION_DDL_ENABLE option as follows.</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Execution of the TRUNCATE TABLE statement.
+(SYS User)
+iSQL&gt; ALTER SYSTEM SET REPLICATION_DDL_ENABLE = 1;
+Alter success.
+(Table Owner)
+iSQL&gt; ALTER SESSION SET REPLICATION = DEFAULT;
+Alter success.
+iSQL&gt; TRUNCATE TABLE t1;
+Truncate success.
+(SYS User)
+iSQL&gt; ALTER SYSTEM SET REPLICATION_DDL_ENABLE = 0;
+Alter success.</pre>
+</div></div>
+
+<h2 id="ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Foreignkeyconstraint">Foreign key constraint</h2>
+
+<p>Because parent key makes a pair with child key in the foreign key, even in the event of change occurrence, it can be operated within a range of table having a parent key.</p>
+
+<p><span style="color: rgb(0,0,0);">It has few advantages in that it searches for a table which own parent key before change in a table having child key.</span></p>
+
+<p><span style="color: rgb(0,0,0);">We don't recommend you to choose this constraint in a replicated environment as in the filelds of communication which has a high priority in performance.</span></p>
+
+<p><span style="color: rgb(0,0,0);">It can cause problem of data consistency with a mixture of the local transaction and replicated transaction as well as performance degradation.</span></p>
+
+<p><span style="color: rgb(0,0,0);">A consistency problem will be likely to happen in a active:active</span><span style="color: rgb(0,0,0);">(</span><span style="color: rgb(0,0,0);"><a href="http://aid.altibase.com/display/MGOK/About+Replication#AboutReplication-ActiveStandBy" class="external-link" rel="nofollow">Refer to this page</a></span><span style="color: rgb(0,0,0);">)</span> <span style="color: rgb(0,0,0);">environment which can cause a conflict.</span></p>
+
+<p>But, there is a way to use a foreign key in a replication environment by modifying a property.</p>
+
+<p>We don't recommend you to use this property as well.</p>
+
+<h2 id="ConsiderationsbeforemigrationfromORACLERACtoALTIBASEHDBReplication-Trigger">Trigger</h2>
+
+<p>Change operation using trigger is not replicated, Because it doesn't pass change to a remote server on a replicated environment.</p>
+
+<p>Even if rows of table, replication target table, is not modified by a triggering event, change will not be applied on the remotely replicated machine.</p>
+
+<p>That's why a trigger doesn't pass the QP step internally, Trigger should be made on a remotely replicated machine.</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>The Query Processor (QP)<br />
+When a user requests the execution of an SQL statement, the QP, which is responsible for processing SQL statements and is one of the main components of a DBMS, undertakes the following steps:<br />
+parsing Checks the syntax of the SQL text and creates a parse tree<br />
+validation Performs a semantics check on the SQL statement and extends the parse tree<br />
+optimization Creates an optimized execution plan based on calculated data access costs<br />
+binding host variable binding<br />
+execution <a class="unresolved" href="#">By the Storage Manager</a> according to the execution plan</p>
+                    </div>
+    </div>
+
+<p><br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

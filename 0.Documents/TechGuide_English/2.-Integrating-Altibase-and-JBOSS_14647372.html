@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Integrating Altibase and JBOSS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JBOSS-Integration-Guide-for-Altibase_14647358.html">JBOSS Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Integrating Altibase and JBOSS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409361414 {padding: 0px;}
+div.rbtoc1624409361414 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409361414 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409361414'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-JDBCDriver'>JDBC Driver</a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-JDBCDriverConfiguration'>JDBC Driver Configuration</a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-DataSourceparameters'>DataSource parameters</a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-DataSourceConfiguration'>DataSource Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-LocalTransaction'>Local Transaction</a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-Distributedtransaction'>Distributed transaction</a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-'> </a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-.1'> </a></li>
+<li><a href='#id-2.IntegratingAltibaseandJBOSS-Failover'>Failover</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>This chapter describes how to integrate Altibase and JBoss.</p><h2 id="id-2.IntegratingAltibaseandJBOSS-JDBCDriver"><span style="color: rgb(0,0,0);">JDBC Driver</span></h2><div><hr /><p>JDBC is a standard interface that provides a Java application program to connect to a database and execute various SQLs.<br />These JDBC drivers are provided by each database vendor, and Altibase provides it as an Altibase.jar file.<br />This JDBC driver is in the $ALTIBASE_HOME/lib directory.</p><h2 id="id-2.IntegratingAltibaseandJBOSS-JDBCDriverConfiguration">JDBC Driver Configuration</h2><hr /><p>When using the connection pool by implementing it directly in the application program, the application program and the JDBC driver can be packaged together. However, if the user wants to access the data source through JNDI of JBoss, the JDBC driver must be located in a place accessible from all server configurations.</p><p>In the JBoss, if the JDBC driver (Altibase.jar) is placed in the JBOSS_HOME/common/lib directory, it can access from all server configurations.</p><p>Since the directory is not reflected dynamically, JBoss must be restarted after locating the JDBC driver.</p><h2 id="id-2.IntegratingAltibaseandJBOSS-DataSourceparameters">DataSource parameters</h2><hr /><p>The following are data source configuration parameters for interlocking Altibase and JBoss, and contain almost all configuration information that can be used when configuring the DataSource.</p><p>After checking the definition of the listed parameters, combine the required parameters, and set them in the data source file.</p><p>Data source files can be directly created by using a text editor, and are located in the JBOSS_HOME/server/default/deploy directory in the form of xx-ds.xml.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th style="text-align: center;" class="confluenceTh"><div class="tablesorter-header-inner">Parameter</div></th><th style="text-align: center;" class="confluenceTh"><div class="tablesorter-header-inner">Description</div></th></tr></thead><tbody><tr><td class="confluenceTd">&lt;jndi-name&gt;</td><td class="confluenceTd"><ul><li>Set the name of the data source to be used</li><li>Use it by looking up Jndi-name in the application</li></ul></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;connection-url&gt;</p></td><td colspan="1" class="confluenceTd">Set the URL of the DBMS to connect to<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;driver-class&gt;</p></td><td colspan="1" class="confluenceTd">Set the JDBC driver to be used when integrating with the DBMS<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;user-name&gt;</p></td><td colspan="1" class="confluenceTd"><p>Set the user name</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;password&gt;</p></td><td colspan="1" class="confluenceTd"><p>Set the password</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;new-connection-sql&gt;</p></td><td colspan="1" class="confluenceTd"><p>Designate the SQL to be called when the connection is created</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;check-valid-connection-sql&gt;</p></td><td colspan="1" class="confluenceTd">Designate the SQL to be called when a connection is obtained from the connection pool<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;valid-connection-checker-class-name&gt;</p></td><td colspan="1" class="confluenceTd"><p>Check the connection is valid before calling the connection from the connection pool</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;exception-sorter-class-name&gt;</p></td><td colspan="1" class="confluenceTd">When an error occurs, check the error code and message of the DBMS<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;track-statements&gt;</p></td><td colspan="1" class="confluenceTd">Monitoring option to track when statement and Resultset are unclosed<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;prepared-statement-cache-size&gt;</p></td><td colspan="1" class="confluenceTd">Reuse the number of Preparestatement to be cached per connection in the next call<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;shared-prepared-statements&gt;</p></td><td colspan="1" class="confluenceTd"><p>Specify whether to cache Preparestatement. if it is called multiple times in the same transaction, a statement is returned.</p><p>Default: false</p><p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;query-timeout&gt;</p></td><td colspan="1" class="confluenceTd"><p>Set the SQL Timeout value</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;background-validation&gt;</p></td><td colspan="1" class="confluenceTd"><p>The option used to reduce the overhead of checking if the connection is valid.</p><p>Default: false</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;idle-timeout-minutes&gt;</p></td><td colspan="1" class="confluenceTd"><p>The maximum amount of time idle before the connection is closed.</p><p>Default: 15 minutes</p><p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;background-validation-minutes&gt;</p></td><td colspan="1" class="confluenceTd"><p>The cycle the Connectionvalidator runs.</p><p>Default: 10 minutes</p><p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;min-pool-size&gt;</p></td><td colspan="1" class="confluenceTd">The minimum number of connection pools<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;max-pool-size&gt;</p></td><td colspan="1" class="confluenceTd">The maximum number of connection pools<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;transaction-isolation&gt;</p></td><td colspan="1" class="confluenceTd">If the Transaction Isolation Level is not specified, the default value of DBMS is used.<p> </p></td></tr><tr><td colspan="1" class="confluenceTd"><p>&lt;metadata&gt;</p></td><td colspan="1" class="confluenceTd">Type-mapping defined in the standardjbosscmp-jdbc.xml file</td></tr></tbody></table></div><h2 id="id-2.IntegratingAltibaseandJBOSS-DataSourceConfiguration"><br />DataSource Configuration</h2><hr /><p>This section describes how to configure the dataSource when integrating Altibase and JBoss.</p><h3 id="id-2.IntegratingAltibaseandJBOSS-LocalTransaction">Local Transaction</h3><hr /><p>Because this is for the minimum DataSource configuration for integrating Altibase and JBoss, if additional items are needed, use the appropriate contents mentioned above.</p><p>The file name is saved in the form of &quot;xx-ds.xml&quot; and automatically detects and binds the data source file without restarting JBoss.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasources&gt;
+&lt;local-tx-datasource&gt;
+ &lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt;
+ &lt;connection-url&gt;jdbc:Altibase://127.0.0.1:20300/mydb&lt;/connection-url&gt;
+ &lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt;
+ &lt;user-name&gt;sys&lt;/user-name&gt;
+ &lt;password&gt;manager&lt;/password&gt;
+ 
+ &lt;min-pool-size&gt;10&lt;/min-pool-size&gt;
+ &lt;max-pool-size&gt;100&lt;/max-pool-size&gt;
+ &lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+ &lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt;
+ 
+ &lt;metadata&gt;
+ &lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+ &lt;/metadata&gt;
+&lt;/local-tx-datasource&gt;
+ &lt;/datasources&gt; </pre>
+</div></div><h3 id="id-2.IntegratingAltibaseandJBOSS-Distributedtransaction"><span style="color: rgb(34,34,34);"><br />Distributed transaction</span></h3><hr /><h3 id="id-2.IntegratingAltibaseandJBOSS-"><span style="color: rgb(34,34,34);"> </span></h3><p>The following is an example of a data source file configuration when using a distributed transaction.</p><p>In the JBOSS_HOME/docs/jca directory, there is an example file for setting the data source for local/distributed transactions for each DBMS, so please refer to the setting.</p><p>Save the file in the form of “xx-xa-ds.xml”.</p><h3 id="id-2.IntegratingAltibaseandJBOSS-.1"><span style="color: rgb(34,34,34);"> </span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-xa-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> &lt;datasource&gt;
+  &lt;xa-datasource&gt;
+&lt;jndi-name&gt;AltibaseDS&lt;/jndi-name&gt;
+&lt;track-connection-by-tx /&gt;
+&lt;isSameRM-override-value&gt;false&lt;/isSameRM-override-value&gt;
+&lt;xa-datasource-class&gt;Altibase.jdbc.driver.ABXADataSource&lt;/xa-datasource-class&gt;
+&lt;xa-datasource-property name=&quot;ServerName&quot;&gt;127.0.0.1&lt;/xa-datasource-property&gt;
+&lt;xa-datasource-property name=&quot;PortNumber&quot;&gt;20300&lt;/xa-datasource-property&gt;
+&lt;xa-datasource-property name=&quot;User&quot;&gt;sys&lt;/xa-datasource-property&gt;
+  &lt;xa-datasource-property name=&quot;Password&quot;&gt;manager&lt;/xa-datasource-property&gt;
+&lt;metadata&gt;
+  &lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+&lt;/metadata&gt;
+&lt;!--pooling parameters--&gt;
+    &lt;min-pool-size&gt;5&lt;/min-pool-size&gt;
+    &lt;max-pool-size&gt;250&lt;/max-pool-size&gt;
+    &lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+    &lt;idle-timeout-minutes&gt;5&lt;/idle-timeout-minutes&gt;
+    &lt;check-valid-connection-sql&gt;select * from system_.sys_database_&lt;/check-valid-connection-sql&gt;
+  &lt;/xa-datasource&gt;
+  &lt;/datasources&gt;</pre>
+</div></div><p> </p><h3 id="id-2.IntegratingAltibaseandJBOSS-Failover">Failover</h3><hr /><p>Failover is a function to provide continuous service by detecting a failure of a DBMS in us and switching to another DBMS to prevent service interruption due to a DBMS failure.</p><p>There are two methods of the Failover function. Because Altibase only provides the failover function in version 5.3.3 or later, the syntax of JBOSS should be used when using a lower version. </p><p>The following is the Failover using the syntax provided by Altibase. After modifying the DataSource file, shutting down the DBMS of the first URL, and testing it, then the failover to the DBMS of the second URL is done.</p><p>CTF (Connection Time Failover) and STF (Session Time Failover) are possible by using the syntax provided in Altibase.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasources&gt;
+&lt;local-tx-datasource&gt;
+&lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt;
+&lt;connection-url&gt;jdbc:Altibase://127.0.0.1:20911/mydb?
+AlternateServers=(192.168.1.76:20911)&amp;amp; ConnectionRetryCount=3&amp;amp;
+ConnectionRetryDelay=3&amp;amp;LoadBalance=off&amp;amp;
+SessionFailOver=on &lt;/connection-url&gt;
+&lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt;
+&lt;user-name&gt;sys&lt;/user-name&gt;
+&lt;password&gt;manager&lt;/password&gt;
+&lt;min-pool-size&gt;10&lt;/min-pool-size&gt;
+&lt;max-pool-size&gt;100&lt;/max-pool-size&gt;
+&lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+&lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt;
+&lt;metadata&gt;
+&lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+&lt;/metadata&gt;
+&lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;</pre>
+</div></div><p>The following is the Failover syntax provided by JBoss.</p><p>Add the connection-url of the DBMS to be failover, and designate the delimiter to separate the two URL as &lt;url-delimiter&gt;.</p><p>When using the syntax provided by JBoss, only CTF (Connection Time Failover) is possible. To test it, it is the same as above.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>altibase-ds.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;datasources&gt;
+&lt;local-tx-datasource&gt;
+&lt;jndi-name&gt;AltiTest&lt;/jndi-name&gt;
+&lt;connection-url&gt; jdbc:Altibase://127.0.0.1:20911/mydb,
+                       jdbc:Altibase://192.168.1.76:20911/mydb&lt;/connection-url&gt;
+&lt;url-delimiter&gt;,&lt;/url-delimiter&gt;
+&lt;driver-class&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/driver-class&gt;
+&lt;user-name&gt;sys&lt;/user-name&gt;
+&lt;password&gt;manager&lt;/password&gt;
+&lt;min-pool-size&gt;10&lt;/min-pool-size&gt;
+&lt;max-pool-size&gt;100&lt;/max-pool-size&gt;
+&lt;blocking-timeout-millis&gt;5000&lt;/blocking-timeout-millis&gt;
+&lt;idle-timeout-minutes&gt;15&lt;/idle-timeout-minutes&gt;
+&lt;metadata&gt;
+&lt;type-mapping&gt;Altibase&lt;/type-mapping&gt;
+&lt;/metadata&gt;
+&lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;</pre>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

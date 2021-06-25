@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ALTIBASE HDB 5.1.5</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7342005.html">디스크 테이블스페이스 사용량</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ALTIBASE HDB 5.1.5
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified by <span class='editor'> richard.nahm	</span> on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ALTIBASEHDB5.1.5-/*&lt;![CDATA[*/div.rbtoc1624409053866{padding:0px;}div.rbtoc1624409053866ul{list-style:disc;margin-left:0px;}div.rbtoc1624409053866li{margin-left:0px;padding-left:0px;}/*]]&gt;*/개요#ALTIBASEHDB5.1.5-개요디스크테이블스페이스사용량조회#ALTIBASEHDB5.1.5-디스크테이블스페이스"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053866 {padding: 0px;}
+div.rbtoc1624409053866 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053866 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053866'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.1.5-개요'>개요</a></li>
+<li><a href='#ALTIBASEHDB5.1.5-디스크테이블스페이스사용량조회'>디스크 테이블스페이스 사용량 조회</a></li>
+</ul>
+</div></h1><p> </p><p> </p><h1 id="ALTIBASEHDB5.1.5-개요"><strong>개요</strong></h1><hr /><ul><li>ALTIBASE HDB 5 에서는 디스크 테이블의 구조 변경으로 디스크 테이블스페이스의 사용량을 구할 수 없고 할당 크기만을 알 수 있습니다.</li><li>ALTIBASE HDB 5.3.3 부터는 사용량을 구할 수 있게 개선되었습니다. (언두 테이블스페이스 및 임시 테이블스페이스는 제외)</li></ul><p> </p><p> </p><p> </p><h1 id="ALTIBASEHDB5.1.5-디스크테이블스페이스사용량조회"><strong>디스크 테이블스페이스 사용량 조회</strong></h1><hr /><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>디스크 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>SET LINESIZE 1024;SET COLSIZE 30;SELECT  NAME TBS_NAME                                         -- 디스크 테이블스페이스 이름
+      , TO_CHAR(ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2)) &#39;MAX(M)&#39;                             -- 테이블스페이스 최대 크기
+      , ROUND(TOTAL_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;                        -- 현재까지 할당 받은 페이지의 합계
+      , DECODE(TYPE, 7, ROUND((SELECT (SUM(total_page_count) * PAGE_SIZE)/1024/1024
+                                 FROM V$undo_seg)+
+                              (SELECT (SUM(ALLOC_PAGE_COUNT) * PAGE_SIZE)/1024/1024
+                                 FROM v$tss_seg), 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2)) &#39;ALLOC(M)&#39;   -- 현재까지 할당받은 페이지 중 &#39;빈 페이지&#39;를 제외한 &#39;사용 중인 페이지&#39;만의 합계
+      , DECODE(TYPE, 7, ROUND( ( (SELECT SUM(total_page_count) FROM V$undo_seg) +
+                                 (SELECT SUM(ALLOC_PAGE_COUNT) FROM v$tss_seg ) ) / D.MAX  * 100, 2)
+                      , ROUND(ALLOCATED_PAGE_COUNT / D.MAX * 100, 2))             &#39;USAGE(%)&#39;   -- MAX대비 ALLOC 사용률
+       , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+       , D.AUTOEXTEND
+  FROM V$TABLESPACES T
+       ,(SELECT  SPACEID
+              , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+              , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+           FROM V$DATAFILES
+           GROUP BY SPACEID) D
+ WHERE T.ID = D.SPACEID
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>결과 예시</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_NAME                        MAX(M)                          TOTAL(M)    ALLOC(M)    USAGE(%)    STATE           AUTOEXTEND  
+----------------------------------------------------------------------------------------------------------------------------------------
+SYS_TBS_DISK_DATA               2048                            100         0.25        0.01        ONLINE          ON   
+SYS_TBS_DISK_UNDO               2048                            100         2           0.1         ONLINE          ON   
+SYS_TBS_DISK_TEMP               2048                            100         0.25        0.01        ONLINE          ON   
+3 rows selected.</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7342009/8618043.txt">ALTIBASE_HDB_5.1.5_disk_tablespace_usage.txt</a> (text/plain)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

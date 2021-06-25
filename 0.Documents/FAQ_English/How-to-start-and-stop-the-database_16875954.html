@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to start and stop the database</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to start and stop the database
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145286 {padding: 0px;}
+div.rbtoc1624409145286 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145286 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145286'>
+<ul class='toc-indentation'>
+<li><a href='#Howtostartandstopthedatabase-HowtostopAltibase'>How to stop Altibase</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtostartandstopthedatabase-(1)Usingtheserverstopscript'>(1) Using the server stop script</a></li>
+<li><a href='#Howtostartandstopthedatabase-(2)Usingtheshutdowncommandafterconnectingtoisql'>(2) Using the shutdown command after connecting to isql</a></li>
+</ul>
+</li>
+<li><a href='#Howtostartandstopthedatabase-HowtostartAltibase'>How to start Altibase</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtostartandstopthedatabase-(1)Usingtheserverstartscript'>(1) Using the server start script</a></li>
+<li><a href='#Howtostartandstopthedatabase-(2)Usingthestartupcommandafterconnectingtoisql'>(2) Using the startup command after connecting to isql</a></li>
+</ul>
+</li>
+<li><a href='#Howtostartandstopthedatabase-Howtocheckwhetherthedatabaseisstartednormallyafterstartingthedatabase'>How to check whether the database is started normally after starting the database</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtostartandstopthedatabase-(1)Displayedmessageafterserverstart'>(1) Displayed message after server start</a></li>
+<li><a href='#Howtostartandstopthedatabase-(2)Connectiontestwithisql'>(2) Connection test with isql</a></li>
+<li><a href='#Howtostartandstopthedatabase-(3)Simplycheckingquery'>(3) Simply checking query</a></li>
+</ul>
+</li>
+<li><a href='#Howtostartandstopthedatabase-HowtoforciblyshutdownAltibase'>How to forcibly shutdown Altibase</a></li>
+<li><a href='#Howtostartandstopthedatabase-ErrormessageatALTIBASEserverstart/stop'>Error message at ALTIBASE server start/stop</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtostartandstopthedatabase-(1)Thedatabaseserverisalreadyupandrunning.'>(1)   The database server is already up and running.</a></li>
+<li><a href='#Howtostartandstopthedatabase-(2)AnotherSYSDBAsessionisalreadyrunning'> (2)  Another SYSDBA session is already running</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="Howtostartandstopthedatabase-HowtostopAltibase">How to stop Altibase</h1><hr /><p>There are two methods to stop the Altibase database as follows.</p><h2 id="Howtostartandstopthedatabase-(1)Usingtheserverstopscript">(1) Using the server stop script</h2><p>The DB server can be stopped with a simple command and this is the most used method. The DB server can be stopped from starting with the command &quot;server stop&quot; in the unix user account where Altibase is installed.</p><p>Command: shell&gt; server stop</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>How to stop db with the server stop command</b></div><div class="panelContent">
+<p><strong>$ server stop</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />Ok..Shutdown Proceeding....</p><p><br />TRANSITION TO PHASE : Shutdown Altibase<br />  [RP] Finalization : PASS<br /><strong>shutdown immediate success.     <span style="color: rgb(0,0,255);"> (If the shutdown is successful, the message shown on the left is displayed.)</span></strong></p>
+</div></div><h2 id="Howtostartandstopthedatabase-(2)Usingtheshutdowncommandafterconnectingtoisql">(2) Using the shutdown command after connecting to isql</h2><p>After connecting to isql, the DB can be stopped by selectively using the shutdown method with the shutdown command.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>db stop using shutdown command after connecting isql</b></div><div class="panelContent">
+<p>$ <strong>isql -sysdba               &lt;- - - Must connect in sysdba mode.</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />Write UserID : sys<br />Write Password : <br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]</p><p>iSQL(sysdba)&gt; select db_name from v$database;<br />DB_NAME                                                                                                                           <br />------------------------------------------------------------------------------------------------------------------------------------<br /><strong>mydb </strong>                                                                                                                             <br />1 row selected.<br />iSQL(sysdba)&gt; <strong>alter database </strong><span style="color: rgb(0,0,255);"><em>mydb</em></span> <strong>shutdown immediate;    &lt;- - mydb, the dbname, is optional during installation and may vary from DB to DB.</strong><br />Ok..Shutdown Proceeding....</p><p><br />TRANSITION TO PHASE : Shutdown Altibase<br />  [RP] Finalization : PASS<br /><strong>Alter success.</strong><br />iSQL(sysdba)&gt; exit</p>
+</div></div><p> </p><h1 id="Howtostartandstopthedatabase-HowtostartAltibase">How to start Altibase</h1><hr /><p>There are two methods to start the Altibase database.</p><h2 id="Howtostartandstopthedatabase-(1)Usingtheserverstartscript">(1) Using the server start script</h2><hr /><p>The DB server can be started with a simple command and this is the most used method. The DB server can be started with the command &quot;server start&quot; as follows from the unix user account where Altibase is installed.</p><p>Command: shell&gt; server start</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>db start method with the server start command</b></div><div class="panelContent">
+<p><strong>$ server start</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />Connecting to the DB server.. Connected.</p><p><br />TRANSITION TO PHASE : PROCESS</p><p><br />TRANSITION TO PHASE : CONTROL</p><p><br />TRANSITION TO PHASE : META<br />  [SM] Recovery Phase - 1 : Preparing Database<br />                          : Dynamic Memory Version =&gt; Parallel Loading<br />  [SM] Recovery Phase - 2 : Loading Database <br />  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...<br />                            Refining Disk Table <br />  [SM] Refine Memory Table : ................................................................................................... [SUCCESS]<br />  [SM] Rebuilding Indices [Total Count:102] ...................................................................................................... [SUCCESS]</p><p><br />TRANSITION TO PHASE : SERVICE<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><strong>--- STARTUP Process SUCCESS ---   </strong><br /><strong>Command execute success.</strong><br />$</p><p>  </p>
+</div></div><p> </p><h2 id="Howtostartandstopthedatabase-(2)Usingthestartupcommandafterconnectingtoisql">(2) Using the startup command after connecting to isql</h2><hr /><p>The DB can be started step by step after connecting to the DB in sysdba mode with isql from the unix user account where Altibase is installed.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>How to start db after connecting to isql</b></div><div class="panelContent">
+<p><strong>$ isql -sysdba</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />Write UserID : sys<br />Write Password : <br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />iSQL(sysdba)&gt; <strong>startup;</strong><br />Connecting to the DB server.. Connected.</p><p><br />TRANSITION TO PHASE : PROCESS</p><p><br />TRANSITION TO PHASE : CONTROL</p><p><br />TRANSITION TO PHASE : META<br />  [SM] Recovery Phase - 1 : Preparing Database<br />                          : Dynamic Memory Version =&gt; Parallel Loading<br />  [SM] Recovery Phase - 2 : Loading Database <br />  [SM] Recovery Phase - 3 : Skipping Recovery &amp; Starting Threads...<br />                            Refining Disk Table <br />  [SM] Refine Memory Table : ................................................................................................... [SUCCESS]<br />  [SM] Rebuilding Indices [Total Count:102] ...................................................................................................... [SUCCESS]</p><p><br />TRANSITION TO PHASE : SERVICE<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><strong>--- STARTUP Process SUCCESS ---   </strong><br /><strong>Command execute success.</strong><br />iSQL(sysdba)&gt; exit</p><p> </p>
+</div></div><h1 id="Howtostartandstopthedatabase-Howtocheckwhetherthedatabaseisstartednormallyafterstartingthedatabase">How to check whether the database is started normally after starting the database</h1><hr /><p>After starting Altibase, it can be checked whether the ALTIBASE DB server has been successfully started using the following method.</p><h2 id="Howtostartandstopthedatabase-(1)Displayedmessageafterserverstart">(1) Displayed message after server start</h2><p>When starting the DB with the server start command or isql, it checks whether &quot;— STARTUP Process Success —&quot; is output as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Message after server start</b></div><div class="panelContent">
+<p><strong>$ server start</strong><br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br />[ERR-910FB : Connected to idle instance]<br />Connecting to the DB server.. Connected.</p><p>..............................mitted...............................</p><p>.....................................................................<br />  [CM] Listener started : TCP on port 20419<br />  [CM] Listener started : UNIX<br />  [RP] Initialization : [PASS]</p><p><span style="color: rgb(0,0,255);"><strong>--- STARTUP Process SUCCESS ---   </strong></span><br /><span style="color: rgb(0,0,255);"><strong>Command execute success.</strong></span></p><div><span style="color: rgb(0,0,255);"><br /></span></div>
+</div></div><h2 id="Howtostartandstopthedatabase-(2)Connectiontestwithisql">(2) Connection test with isql</h2><hr /><p>The DB status can be checked by executing a simple SQL statement on is or isql, an interactive query execution tool, and checking whether the query is operating normally.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>DB status check with isql connection</b></div><div class="panelContent">
+<p>$ is<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20419<br />iSQL&gt; select sysdate from dual;<br />SYSDATE      <br />---------------<br />08-MAR-2016  <br />1 row selected.<br />iSQL&gt;</p><p> </p>
+</div></div><p> </p><h2 id="Howtostartandstopthedatabase-(3)Simplycheckingquery">(3) Simply checking query</h2><hr /><p>The DB status can be checked by executing the query below.</p><ul><li><p>Check the number of sessions: Check the number of sessions currently connected to the DB.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from v$session;
+COUNT                
+-----------------------
+1                    
+1 row selected.
+ </pre>
+</div></div></li><li><p>Check the replication gap: If the user is using the replication, the replication gap can be checked.<br />If the replication gap value increases or decreases repeatedly, it is normal.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select rep_name, rep_gap from v$repgap;
+REP_NAME                                  REP_GAP              
+------------------------------------------------------------------
+REP1                                      567    
+1 rows selected.
+iSQL&gt; 
+ 
+ </pre>
+</div></div></li><li><p>Transaction processing status<br />Inquire about the accumulated transaction throughput currently being processed by DML or DB. If it continues to increase, it is normal.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select * from v$sysstat where name like &#39;%execute%count%&#39;;
+SEQNUM      NAME                                                VALUE
+-----------------------------------------------------------------------------------------
+28          execute success count                               3186
+29          execute success count : insert                      3119
+30          execute success count : update                      0
+31          execute success count : delete                      0
+32          execute success count : select                      66
+33          rep_execute success count : insert                  0
+34          rep_execute success count : update                  0
+35          rep_execute success count : delete                  0
+36          execute failure count                               0
+9 rows selected.
+iSQL&gt;
+ 
+ </pre>
+</div></div></li></ul><h1 id="Howtostartandstopthedatabase-HowtoforciblyshutdownAltibase">How to forcibly shutdown Altibase</h1><hr /><p>If the Altibase database server is in a hang state due to system malfunction or lack of system resources, and the DB cannot be stopped using a normal method such as server stop, the following command can be used.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>How to forcibly shutdown Altibase</b></div><div class="panelContent">
+<p>$ server kill<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419</p><p>$</p><p> </p>
+</div></div>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>server kill kills the DB process in the same way as killing ALTIBASE with kill -9. It is not recommended under normal circumstances.</p><p>If ALTIBASE is forcibly shutdown with the server kill, the recovery process will be performed at the next start. If there is a large amount of undo and redo transactions during the recovery process, it may take a long time to start the server.</p><p>Therefore, it is recommended to set the database with the normal server stop command if possible.</p>
+                    </div>
+    </div>
+<h1 id="Howtostartandstopthedatabase-ErrormessageatALTIBASEserverstart/stop">Error message at ALTIBASE server start/stop</h1><hr /><h2 id="Howtostartandstopthedatabase-(1)Thedatabaseserverisalreadyupandrunning.">(1)   The database server is already up and running.</h2><p>If the user tries to start an additional server while the Altibase server is already started, the following message is displayed. The server cannot be started because the database has already been started.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ server start</span><br /><span>-----------------------------------------------------------------</span><br /><span>     Altibase Client Query utility.</span><br /><span>     Release Version 5.3.5.36</span><br /><span>     Copyright 2000, ALTIBASE Corporation or its subsidiaries.</span><br /><span>     All Rights Reserved.</span><br /><span>-----------------------------------------------------------------</span><br /><span>ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419</span><br /><strong>The database server is already up and running.</strong><br /><span>[ERR-4107A : Unable to startup to the specified phase at current state.]</span><br /><span>$ </span></p>
+</div></div><h2 id="Howtostartandstopthedatabase-(2)AnotherSYSDBAsessionisalreadyrunning"> (2)  Another SYSDBA session is already running</h2><div><hr /></div><div>Sessions with sysdba privileges only allow one connection to the DB. This is an error message that appears when an additional sysdba connection for server start or server stop fails when there is a session already connected to sysdba.</div><div>Try to reconnect after ending a connected sysdba session.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ server start<br />-----------------------------------------------------------------<br />     Altibase Client Query utility.<br />     Release Version 5.3.5.36<br />     Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />     All Rights Reserved.<br />-----------------------------------------------------------------<br />ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20419<br /><strong>[ERR-41041 : Another SYSDBA session is already running.]</strong><br />$</p>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

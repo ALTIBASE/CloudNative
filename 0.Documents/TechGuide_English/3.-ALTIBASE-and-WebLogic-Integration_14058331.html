@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. ALTIBASE and WebLogic Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="WEBLOGIC-Integration-Guide-for-Altibase_14058319.html">WEBLOGIC Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. ALTIBASE and WebLogic Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on May 18, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This chapter describes the integration procedure for creating a JDBC data source for ALTIBASE to integrated using the domain management console and then running a simple web application using the JDBC data source.</p><h2 id="id-3.ALTIBASEandWebLogicIntegration-CreatingJDBCDataSource">Creating JDBC Data Source</h2><p>This is the procedure for creating a JDBC data source for ALTIBASE and setting up the connection pool of the JDBC data source.</p><p>For reference, in the lower version, the connection pool was created first, and then the JDBC data source to use the connection pool was created. However, in the higher version, when the JDBC data source is created, the connection pool is automatically created.</p><p>Basically, the JDBC driver setting for the JDBC data source to be created must be preceded by referring to HOW to Set the JDBC Driver to be used in WebLogic.</p><h3 id="id-3.ALTIBASEandWebLogicIntegration-CreatingJDBCDataSource.1">Creating JDBC Data Source</h3><p>Create a JDBC data source &quot;altibase&quot; for ALTIBASE 5 installed locally.</p><p>1.Connect to the management console provided by the domain management server.</p><p><a href="http://127.0.0.1:7001/console" rel="nofollow" class="external-link">http://127.0.0.1:<span style="color: rgb(255,0,0);">7001</span>/console</a></p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221543.png" data-image-src="attachments/14058331/14221543.png"></p><p>2. Log in by entering the user name and password of the management server.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221544.png" data-image-src="attachments/14058331/14221544.png"></p><p>3. Select the &quot;Data Source&quot; item on the main page of the management console.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221545.png" data-image-src="attachments/14058331/14221545.png"></p><p>4. Select a general data source from [DOCKI: New].</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221546.png" data-image-src="attachments/14058331/14221546.png"></p><p>5. After entering the JDBC data source properties, go to the next step.</p><ul><li>JDBC data source, JNDI name should be the same in general.</li><li>Select the data type [DOCKI: Other].</li></ul><p><img class="confluence-embedded-image" src="attachments/14058331/14221547.png" data-image-src="attachments/14058331/14221547.png"></p><p>6. Check database type (other)</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221548.png" data-image-src="attachments/14058331/14221548.png"></p><p>7. Skip the subsequent “JDBC data source attribute” step and go to the next step.</p><p>8. Set the &quot;Transaction Options&quot;. If there is nothing special to set, go to the next step.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221549.png" data-image-src="attachments/14058331/14221549.png"></p><p>9. Enter ALTIBASE information to be linked. (sys / manager)</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221550.png" data-image-src="attachments/14058331/14221550.png"></p><p>10. Enter the JDBC information related to the connection pool for ALTIBASE connection.</p><ul><li><p>Driver class name</p><p>When using Altibase.jar, Altibase.jdbc.driver.AltibaseDriver</p><p>When using Altibase # .jar, Altibase # .jdbc.driver.AltibaseDriver</p></li><li>URL<br /><p>Enter the connection URL based on the information of ALTIBASE entered in the previous step.<br />jdbc: Altibase: //127.0.0.1: 20300 / mydb</p></li><li><p>Property</p><p>In the case of ALTIBASE 4, the user to access in “user = sys” format must be entered.</p><p>In the case of ALTIBASE 5 and ALTIBASE 6, it can be omitted.</p></li><li>Test Table<br />Generally, a dummy table, dual, is specified.</li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221551.png" data-image-src="attachments/14058331/14221551.png"></p><p>11. Click [DOCKI: Configuration Test] to proceed to the next step if the connection test is successful. If the test fails, refer to the linkage error section first.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221552.png" data-image-src="attachments/14058331/14221552.png"></p><p>12. Select the management server as the server on which to deploy the JDBC data source, and then select [DOCKI: Done].</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221553.png" data-image-src="attachments/14058331/14221553.png"></p><p>13. Confirm that the JDBC data source has been successfully added.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221554.png" data-image-src="attachments/14058331/14221554.png"></p><h3 id="id-3.ALTIBASEandWebLogicIntegration-ChangeConnectionPoolSettings">Change Connection Pool Settings</h3><p>When the user creates a JDBC data source, related connection pools are also created. The connection pool has various properties. If necessary, refer to the following procedure to change the settings.</p><p>Changing the attributes presented as examples is not mandatory, but is recommended.</p><p>1. On the management console main screen, select the “Data Sources” item, select the JDBC data source you want to change, and then select the [DOCKI: Connection Pool] tab of the [DOCKI: Configuration] tab.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221555.png" data-image-src="attachments/14058331/14221555.png"></p><p>2. Change the following properties as appropriate and select [DOCKI: Save].</p><ul><li>Initial Capacity<br />The default number of connection pools is 1, but a larger number is recommended considering the workload.</li></ul><h3 id="id-3.ALTIBASEandWebLogicIntegration-Check">Check</h3><p>Check whether the JDBC data source creating was successful.</p><ul><li>Check in WebLogic</li></ul><p>Select the &quot;Data Source&quot; item on the main screen of management console, click the JDBC data source the user wants to check, and check the connection success on the [DOCKI: Testing] tab of the [DOCKI: Monitoring] tab.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221556.png" data-image-src="attachments/14058331/14221556.png"></p><ul><li>Check in ALTIBASE</li></ul><p>Perform a session-related query in ALTIBASE, which is the connection target of the JDBC data source, and check whether the session exists as much as the initial capacity of the established connection pool.</p><p>Below is the execution result when the initial capacity is set to 10. The user can see that there are 10 JDBC type sessions.</p><div class="jhH5U"><div class="tw-src-ltr"><div class="oSioSc"><div><div class="g9WsWb"><div class="iYB33c"><div class="tw-menu"><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CMD&gt; isql -s 127.0.0.1 -u sys -p manager -port 20300
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 5.3.3.12
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 20300
+iSQL&gt; set linesize 200
+iSQL&gt; set colsize 20
+iSQL&gt; select comm_name, client_type,
+   2   db_username, id session_id from v$session;
+COMM_NAME             CLIENT_TYPE   DB_USERNAME   SESSION_ID 
+--------------------------------------------------------------
+TCP 127.0.0.1:11274   JDBC          SYS           60         
+TCP 127.0.0.1:5126    JDBC          SYS           61         
+TCP 127.0.0.1:8710    JDBC          SYS           63         
+TCP 127.0.0.1:12294   JDBC          SYS           64         
+TCP 127.0.0.1:13318   JDBC          SYS           65         
+TCP 127.0.0.1:18694   JDBC          SYS           66         
+TCP 127.0.0.1:19462   JDBC          SYS           67         
+TCP 127.0.0.1:19974   JDBC          SYS           68         
+TCP 127.0.0.1:20486   JDBC          SYS           69         
+TCP 127.0.0.1:21254   JDBC          SYS           70         
+TCP 127.0.0.1:34311   CLI-32LE      SYS           72         
+11 rows selected.</pre>
+</div></div><p> </p></div></div></div></div></div></div><div><h2 id="id-3.ALTIBASEandWebLogicIntegration-CreatingandDeployingWebApplication"><strong>Creating and Deploying Web Application</strong></h2><p>This is an example of creating and deploying a simple web application for integration.</p><h3 id="id-3.ALTIBASEandWebLogicIntegration-CreatingWebApplication"><strong>Creating Web Application</strong></h3><p>Create a web application named sample and the default page welcome.html.</p><p>1.After creating a directory with the name of the web application, create &quot;WEB-INF&quot; as a sub-directory.</p><p><img class="confluence-embedded-image" src="attachments/14058331/14221557.png" data-image-src="attachments/14058331/14221557.png"></p><p>2. Create a web.xml file with the following contents in the WEB-INF directory.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE web-app PUBLIC &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot; &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;&gt;
+&lt;web-app&gt;
+  &lt;welcome-file-list&gt;
+     &lt;welcome-file&gt;welcome.html&lt;/welcome-file&gt;
+  &lt;/welcome-file-list&gt;
+&lt;/web-app&gt;</pre>
+</div></div><h3 id="id-3.ALTIBASEandWebLogicIntegration-Arrangement">Arrangement</h3><p>The user can manually deploy through the deployment menu provided in the management console, but for convenience, use automatic deployment through $DOMAIN_HOME/autodeploy provided when installed in development mode.</p><p>1.Place the entire web application directory created under $DOMAIN_HOME/autodeploy.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221558.png" data-image-src="attachments/14058331/14221558.png"></p><div><strong><br /></strong></div><div>2. Select the &quot;Deployment&quot; menu on the left side of the main page of the management console to check the automatic placement.</div></div><h3 id="id-3.ALTIBASEandWebLogicIntegration-Check.1">Check</h3><p>The example of the basic page of the web application confirms the success of the deployment.</p><p>1.Create welcome.html in the sample directory with the following content.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;head&gt;&lt;title&gt;Welcome Page&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;welcome!!&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div></div><p>2. Access the created page and check the output.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221559.png" data-image-src="attachments/14058331/14221559.png"></p><h2 id="id-3.ALTIBASEandWebLogicIntegration-IntegrationExample"><strong>Integration Example</strong></h2><p><strong><br /></strong>By executing the example of connecting to ALTIBASE through JNDI of the JDBC data source, it is checked whether the connection with ALTIBASE was successful.</p><h3 id="id-3.ALTIBASEandWebLogicIntegration-ALTIBASEIntegration">ALTIBASE Integration</h3><p>Create a web application program that works with ALTIBASE to check the connection information.</p><p>1.Create singleVersion.jsp in the sample directory with the following contents.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page contentType=&quot;text/html;charset=euc-kr&quot; pageEncoding=&quot;euc-kr&quot;%&gt;
+&lt;%@ page import=&quot;java.sql.*, javax.naming.*, javax.sql.*&quot;%&gt;
+ 
+&lt;head&gt;&lt;title&gt;Single Version Test Page&lt;/title&gt;&lt;/head&gt;
+ 
+&lt;body&gt;
+&lt;%
+     Context    initCtx = new InitialContext();
+     DataSource ds      = (DataSource)initCtx.lookup(&quot;altibase&quot;);
+     Connection sCon    = ds.getConnection();
+     Statement  sStmt   = sCon.createStatement();
+ 
+     String query = &quot;select &#39;&quot; +
+                    &quot;&lt;b&gt;DB name: &lt;/b&gt;&#39;||trim(db_name)||&#39;&lt;br&gt;&quot; +
+                    &quot;&lt;b&gt;version: &lt;/b&gt;&#39;||trim(product_signature)||&#39;&lt;br&gt;&quot; +
+                    &quot;&lt;b&gt;Current Time: &lt;/b&gt;&#39;&quot;+
+                    &quot;||to_char(sysdate,&#39;yyyy/mm/dd hh24:mi:ss&#39;)||&#39;&lt;hr&gt;&#39;&quot; +
+                    &quot; from v$database;&quot;;
+ 
+     ResultSet sRes = sStmt.executeQuery(query);
+     sRes.next();
+     out.println(&quot;&lt;font size=4&gt;&lt;b&gt;ALTIBASE Connection Info&lt;/b&gt;&lt;/font&gt;&lt;p&gt;&quot;);
+     out.println(sRes.getString(1));
+ 
+     sRes.close();
+     sStmt.close();
+     sCon.close();
+%&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div></div><p>2. Access to the created page and check whether the information of the integrating target Altibase is displayed with error.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221560.png" data-image-src="attachments/14058331/14221560.png"></p><h3 id="id-3.ALTIBASEandWebLogicIntegration-IntegratingDifferentVersionsofALTIBASE">Integrating Different Versions of ALTIBASE</h3><p>Create a web application program that works with ALTIBASE and ALTIBASE 5 at the same time to check the connection information.</p><p>1.Refer too How to set the JDBC Driver to be used in WebLogic and set the JDBC driver files for ALTIBASE 5, and ALTIBASE 6 in advance to be used in WebLogic.</p><p>(ALTIBASE JDBC provides a JDBC driver with a different name in the package for that version. It is prepared for easy use by copying from a higher version or lower version. In other words, to use HDB 5 and 6 versions simultaneously, the user can get the name changed version and use it.</p><p>*The two drivers provided in the HDB package are the same driver with different names.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>HDB Version</p></td><td class="confluenceTd"><p>ALTIBASE 5</p></td><td class="confluenceTd"><p>ALTIBASE 6</p></td><td class="confluenceTd"><p>ALTIBASE 7</p></td></tr><tr><td class="confluenceTd"><p>Current Package Version</p></td><td class="confluenceTd"><p>Altibase.jar</p></td><td class="confluenceTd"><p>Altibase.jar</p></td><td class="confluenceTd"><p>Altibase.jar</p></td></tr><tr><td class="confluenceTd"><p>For Compatibility Name Change Version</p></td><td class="confluenceTd"><p>Altibase5.jar</p></td><td class="confluenceTd"><p>Altibase6.jar</p></td><td class="confluenceTd"><p>Altibase7.jar</p></td></tr></tbody></table></div><p>)</p><p>2. Create a JDBC data source for each. (JNDI makes it the same as the JDBC data source name.)</p><ul><li>JDBC data source altibase for ALTIBASE using Altibase.jar<br />(Driver class name: Altibase.jdbc.driver.AltibaseDriver)</li><li>JDBC data source altibase5 for ALTIBASE 5 using Altibase5.jar<br />(Driver class name: Altibase.jdbc.driver.AltibaseDriver)</li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221561.png" data-image-src="attachments/14058331/14221561.png"></p><p>3. In the sample directory, create multiVersion.jsp with the following content.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page contentType=&quot;text/html;charset=euc-kr&quot; pageEncoding=&quot;euc-kr&quot;%&gt;
+&lt;%@ page import=&quot;java.sql.*, javax.naming.*, javax.sql.*&quot;%&gt;
+ 
+&lt;head&gt;&lt;title&gt;Multi Version Test Page&lt;/title&gt;&lt;/head&gt;
+ 
+&lt;body&gt;
+&lt;%
+     Context initCtx  = new InitialContext();
+     DataSource ds1   = (DataSource)initCtx.lookup(&quot;altibase5&quot;);
+     DataSource ds2   = (DataSource)initCtx.lookup(&quot;altibase6&quot;);
+     Connection sCon1 = ds1.getConnection();
+     Connection sCon2 = ds2.getConnection();
+     Statement sStmt1 = sCon1.createStatement();
+     Statement sStmt2 = sCon2.createStatement();
+ 
+     String query = &quot;select &#39;&quot; +
+                    &quot;&lt;b&gt;DB name: &lt;/b&gt;&#39;||trim(db_name)||&#39;&lt;br&gt;&quot; +
+                    &quot;&lt;b&gt;version: &lt;/b&gt;&#39;||trim(product_signature)||&#39;&lt;br&gt;&quot; +
+                    &quot;&lt;b&gt;Current Time: &lt;/b&gt;&#39;&quot;+
+                    &quot;||to_char(sysdate,&#39;yyyy/mm/dd hh24:mi:ss&#39;)||&#39;&lt;hr&gt;&#39;&quot; +
+                    &quot; from v$database;&quot;;
+ 
+     ResultSet sRes1 = sStmt1.executeQuery(query);
+     ResultSet sRes2 = sStmt2.executeQuery(query);
+     sRes1.next();
+     sRes2.next();
+ 
+     out.println(&quot;&lt;font size=4&gt;&lt;b&gt;First ALTIBASE Connection Info.&quot;);
+     out.println(&quot;&lt;/font&gt;&lt;/b&gt;&lt;p&gt;&quot;+sRes1.getString(1));
+     out.println(&quot;&lt;font size=4&gt;&lt;b&gt;Second ALTIBASE Connection Info.&quot;);
+     out.println(&quot;&lt;/font&gt;&lt;/b&gt;&lt;p&gt;&quot;+sRes2.getString(1));
+ 
+     sRes1.close();
+     sRes2.close();
+     sStmt1.close();
+     sStmt2.close();
+     sCon1.close();
+     sCon2.close();
+%&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div></div><p>4. Access to the created page and check whether the information of the integrating target Altibase is displayed without error.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14058331/14221562.png" data-image-src="attachments/14058331/14221562.png"></p></div><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221543.png">console_connection1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221544.png">console_connection2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221545.png">console_menu1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221546.png">console_menu2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221547.png">console_datasource1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221548.png">console_datasource2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221549.png">console_datasource3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221550.png">console_datasource4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221551.png">console_datasource5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221552.png">console_datasource6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221553.png">console_datasource7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221554.png">console_datasource10.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221555.png">console_datasource11.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221556.png">console_datasource12.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221557.png">web_inf.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221558.png">console_deploy1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221559.png">console_deploy3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221560.png">console_deploy4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221561.png">console_altibase5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058331/14221562.png">console_altibase5_2.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

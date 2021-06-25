@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : HP-UX에서 부팅 시 알티베이스를 자동으로 시작(startup)하는 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : HP-UX에서 부팅 시 알티베이스를 자동으로 시작(startup)하는 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051124 {padding: 0px;}
+div.rbtoc1624409051124 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051124 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051124'>
+<ul class='toc-indentation'>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-개요'>개요</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-HP-UXStartupScript란?'>HP-UX Startup Script란?</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-알티베이스자동구동/종료를위한스크립트작성방법'>알티베이스 자동 구동/종료를 위한 스크립트 작성 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP1'>STEP 1</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP2'>STEP 2</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP3'>STEP 3</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP4'>STEP 4</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP5'>STEP 5</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP6'>STEP 6</a></li>
+<li><a href='#HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP7'>STEP 7</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-개요">개요</h1><hr /><p>HP-UX에서 부팅 시 알티베이스를 자동으로 구동시키기 위한 방법에 대해 설명합니다.</p><h1 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-HP-UXStartupScript란?">HP-UX Startup Script란?</h1><hr /><p>HP-UX에서는 시스템 부팅/종료 시 수행되는 스크립트 파일들을 다음과 같이 관리합니다.</p><ol><li>부팅 시 수행하는 실제 스크립트 파일들은 /sbin/init.d 디렉토리에 존재합니다.</li><li>위 스크립트 파일들을 위한 설정파일들은 /etc/rc.config.d 디렉토리에 존재합니다. 하나의 rc script 마다 하나의 설정파일을 가지며 스크립트 수행에 필요한 변수들의 정의와 값을 설정합니다.</li><li>부팅 시 수행하는 스크립트 파일들은 /sbin/rc*.d 디렉토리에 존재하며 이 파일들은 /sbin/init.d 디렉토리에 존재하는 파일들의 심볼릭 링크입니다.</li></ol><h1 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-알티베이스자동구동/종료를위한스크립트작성방법">알티베이스 자동 구동/종료를 위한 스크립트 작성 방법</h1><hr /><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP1">STEP 1</h2><hr /><p><strong>/etc/rc.config.d/altibase_conf</strong> 파일을 만듭니다.</p><p>위에서 설명했듯이 이 파일에 알티베이스의 구동/종료 시 필요한 변수들을 정의하고 값을 설정합니다.</p><p>이 파일의 내용은 아래와 같습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+ALTIBASE_HOME=/altibase/altibase_home; export ALTIBASE_HOME<br />PATH=$ALTIBASE_HOME/<a class="external-link" href="http://bin/usr/bin:/sbin" rel="nofollow">bin:/usr/bin:/sbin</a>; export PATH<br />ALTIBASE_OWNER=altibase<br />START_ALTIBASE=1
+</div></div><p>만약 HP-UX 부팅 시 알티베이스의 자동 구동을 하고 싶지 않다면 START_ALTIBASE의 값을 0으로 설정합니다. 그리고 ALTIBASE_OWNER나 ALTIBASE_HOME이 변경되었을 경우에는 반드시 altibase_conf 파일도 수정해야 합니다.</p></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP2">STEP 2</h2><hr /><p><strong>/sbin/init.d/alti_start</strong> 파일을 만듭니다.</p><p>이 파일은 알티베이스 구동 명령어를 이용하여 실제로 알티베이스를 구동하는 스크립트입니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#!/sbin/sh</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>fi</p><p>ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p manager -sysdba -noprompt&quot;</p><p>${ADMIN} &lt;&lt; EOF</p><p>startup</p><p>quit</p><p>EOF</p>
+</div></div></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP3">STEP 3</h2><hr /><p><strong>/sbin/init.d/alti_stop</strong> 파일을 만듭니다.</p><p>이 파일은 알티베이스 종료 명령어를 이용하여 실제로 알티베이스를 종료하는 스크립트입니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p class="_mce_tagged_br">#!/sbin/sh</p><p class="_mce_tagged_br">if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p class="_mce_tagged_br">. /etc/rc.config.d/altibase_conf</p><p class="_mce_tagged_br">fi</p><p class="_mce_tagged_br">ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p manager -sysdba -noprompt&quot;</p><p class="_mce_tagged_br">FUNC_CHECK_ISQL_CONN()</p><p class="_mce_tagged_br">{</p><p class="_mce_tagged_br">    case $ISQL_CONNECTION in</p><p class="_mce_tagged_br">        [Ii][Pp][Cc])</p><p class="_mce_tagged_br">        unset ISQL_CONNECTION</p><p class="_mce_tagged_br">        ;;</p><p>        *)</p><p>        ;;</p><p>    esac</p><p>}</p><p> </p><p># Permit sysdba via IPC</p><p>FUNC_CHECK_ISQL_CONN</p><p>${ADMIN} &lt;&lt; EOF &gt; /dev/null</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_PAGE_COUNT = 0;</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_SLEEP_SEC  = 0;</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_SLEEP_USEC = 0;</p><p>quit;</p><p>EOF</p><p>killCheckServer &gt; ${ALTIBASE_HOME}/trc/killCheckServer.log 2&gt;&amp;1</p><p>${ADMIN} &lt;&lt; EOF</p><p>shutdown immediate;</p><p>quit;</p><p>EOF</p>
+</div></div></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP4">STEP 4</h2><hr /><p><strong>/sbin/init.d/altibase</strong> 파일을 만듭니다.</p><p>이 파일은 /sbin/init.d/template 파일을 복사해서 만들면 되는데, 실제로 나중에 Start/Stop script가 Symbolic Link를 만들 파일입니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#!/sbin/sh</p><p>#</p><p># @(#)B.11.11_LR</p><p>#</p><p># NOTE: This script is not configurable! Any changes made to this</p><p># script will be overwritten when you upgrade to the next</p><p># release of HP-UX.</p><p>#</p><p># WARNING: Changing this script in any way may lead to a system that</p><p># is unbootable. Do not modify this script.</p><p> </p><p>#</p><p> </p><p>rval=0</p><p> </p><p># Check the exit value of a command run by this script. If non-zero, the</p><p># exit code is echoed to the log file and the return value of this script</p><p># is set to indicate failure.</p><p> </p><p>set_return() {</p><p>x=$?</p><p>if [ $x -ne 0 ]; then</p><p>echo &quot;EXIT CODE: $x&quot;</p><p>rval=1 # script FAILed</p><p>fi</p><p>}</p><p> </p><p># Kill the named process(es).</p><p># $1=</p><p> </p><p>killproc() {</p><p>pid=`ps -el | awk '( ($NF ~ /'&quot;$1&quot;'/) &amp;&amp; ($4 != mypid) &amp;&amp; ($5 != mypid) )</p><p>{ print $4 }' mypid=$$ `</p><p>if [ &quot;X$pid&quot; != &quot;X&quot; ]; then</p><p>if kill &quot;$pid&quot;; then</p><p>echo &quot;$1 stopped&quot;</p><p>else</p><p>rval=1</p><p>echo &quot;Unable to stop $1&quot;</p><p>fi</p><p>fi</p><p>}</p><p> </p><p>case $1 in</p><p>'start_msg')</p><p># Emit a _short_ message relating to running this script with</p><p># the &quot;start&quot; argument; this message appears as part of the checklist.</p><p>echo &quot;Starting the Altibase Database&quot;</p><p>;;</p><p> </p><p>'stop_msg')</p><p># Emit a _short_ message relating to running this script with</p><p># the &quot;stop&quot; argument; this message appears as part of the checklist.</p><p>echo &quot;Stopping the Altibase Database&quot;</p><p>;;</p><p> </p><p>'start')</p><p># source the system configuration variables</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>else</p><p>echo &quot;ERROR: /etc/rc.config defaults file MISSING&quot;</p><p>fi</p><p> </p><p># Check to see if this script is allowed to run...</p><p>if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</p><p>rval=2</p><p>else</p><p> </p><p># Execute the commands to start your subsystem</p><p>su - $ALTIBASE_OWNER -c &quot;/sbin/init.d/alti_start&quot;</p><p>fi</p><p>;;</p><p> </p><p>'stop')</p><p># source the system configuration variables</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>else</p><p>echo &quot;ERROR: /etc/rc.config defaults file MISSING&quot;</p><p>fi</p><p> </p><p># Check to see if this script is allowed to run...</p><p>if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</p><p>rval=2</p><p>else</p><p>su - $ALTIBASE_OWNER -c &quot;/sbin/init.d/alti_stop&quot;</p><p># Execute the commands to stop your subsystem</p><p>fi</p><p>;;</p><p> </p><p>*)</p><p>echo &quot;usage: $0 {start|stop|start_msg|stop_msg}&quot;</p><p>rval=1</p><p>;;</p><p>esac</p>
+</div></div></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP5">STEP 5</h2><hr /><p>/sbin/rc2.d 디렉토리에서 Startup Script와 Shutdown Script의 Symbolic Link를 만듭니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># cd /sbin/rc2.d</p><p># ln -s /sbin/init.d/altibase S955altibase</p><p># ln -s /sbin/init.d/altibase K955altibase</p>
+</div></div></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP6">STEP 6</h2><hr /><p>각각의 스크립트가 정상적으로 수행될 수 있도록 실행 권한을 수정합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># cd /sbin/rc2.d</p><p># chmod 755 S955altibase</p><p># chmod 755 K955altibase</p><p># cd /sbin/init.d</p><p># chmod 755 *alti*</p>
+</div></div></li></ul><ul><li><h2 id="HP-UX에서부팅시알티베이스를자동으로시작(startup)하는방법-STEP7">STEP 7</h2><hr /><p>정상적으로 동작하는지 테스트해 봅니다. 이 때 테스트는 root 계정에서 수행해야 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># su - root</p><p># /sbin/init.d/altibase</p>
+</div></div></li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

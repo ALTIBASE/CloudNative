@@ -1,0 +1,81 @@
+-- ALTIBASE HDB 4.3.9 디스크 테이블 사용량 조회 쿼리
+set linesize 1024;
+set colsize 20;
+SELECT U.USER_NAME 'USER_NAME'                                                                                      -- 데이터베이스 사용자
+     , TBL.TABLE_NAME 'TABLE_NAME'                                                                                  -- 테이블 이름
+     , TBS.NAME 'TBS_NAME'                                                                                          -- 테이블이 속한 테이블스페이스 이름
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024 , '999,999,999') 'TBS_MAX(KB)'                           -- 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, '999,999,999') 'ALLOC(KB)'  -- 테이블에서 할당받은 전체 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT)/1024, '999,999,999') 'USED(KB)'    -- 테이블의 실 사용량(데이터 사용량)
+     , TO_CHAR((((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/(TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE))*100), '99.9') 'USAGE(%)' -- 테이블스페이스 최대 크기를 기준으로 한 사용률
+  FROM X$SEGMENT SEG
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE SEG.TABLE_OID = TBL.TABLE_OID
+   AND SEG.SPACE_ID = TBL.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND TBL.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = 'T'
+   AND SEG.SEGMENT_TYPE = 6
+ ORDER BY USER_NAME, TABLE_NAME
+ ;
+
+
+
+
+
+-- ALTIBASE HDB 4.3.9 디스크 인덱스 사용량 조회 쿼리
+set linesize 1024
+set colsize 20
+SELECT U.USER_NAME AS 'USER_NAME'           -- 데이터베이스 사용자
+     , TBL.TABLE_NAME AS 'TABLE_NAME'       -- 테이블 이름
+     , IDX.INDEX_NAME AS 'INDEX_NAME'       -- 인덱스 이름
+     , TBS.NAME AS 'TBS_NAME'               -- 인덱스가 속한 테이블스페이스 이름
+     , TO_CHAR((TBS.TOTAL_PAGE_COUNT * TBS.PAGE_SIZE)/1024 , '999,999,999') AS 'TBS_MAX(KB)'                            -- 테이블스페이스의 최대 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_TOTAL_COUNT)/1024, '999,999,999') AS 'ALLOC(KB)'   -- 인덱스에서 할당받은 전체 크기
+     , TO_CHAR((TBS.A_EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.EXTENT_FULL_COUNT )/1024, '999,999,999') AS 'USED(KB)'    -- 인덱스의 실 사용량(데이터 사용량)
+    , TO_CHAR((((TBS.A_EXTENT_PAGE_COUNT * SEG.EXTENT_TOTAL_COUNT)/TBS.TOTAL_PAGE_COUNT)*100), '99.9') AS 'USAGE(%)'    -- 테이블스페이스의 최대 크기를 기준으로 한 사용률
+ FROM  X$SEGMENT SEG
+     , V$INDEX I
+     , SYSTEM_.SYS_INDICES_ IDX
+     , SYSTEM_.SYS_TABLES_ TBL
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+ WHERE SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_DESC = I.INDEX_SEG_DESC
+   AND I.INDEX_ID = IDX.INDEX_ID
+   AND IDX.TABLE_ID = TBL.TABLE_ID
+   AND SEG.SPACE_ID = IDX.TBS_ID
+   AND SEG.SPACE_ID = TBS.ID
+   AND IDX.USER_ID = U.USER_ID
+   AND TBL.TABLE_TYPE = 'T'
+   AND SEG.SEGMENT_TYPE = 5
+ ORDER BY U.USER_NAME, TBL.TABLE_NAME, IDX.INDEX_NAME
+   ;
+
+
+
+
+-- 디스크 테이블 수 조회 쿼리
+
+set linesize 1024
+set colsize 30
+SELECT 'TABLE CNT : '||COUNT(*) TABLE_COUNT
+  FROM V$DISKTBL_INFO D
+     , SYSTEM_.SYS_TABLES_ T
+ WHERE D.TABLE_OID = T.TABLE_OID ;
+
+
+-- 디스크 인덱스 수 조회 쿼리
+
+set linesize 1024;
+set colsize 30;
+SELECT 'INDEX CNT : '||COUNT(*) INDEX_COUNT
+  FROM SYSTEM_.SYS_INDICES_
+ WHERE TABLE_ID IN (SELECT TABLE_ID
+                      FROM SYSTEM_.SYS_TABLES_ T
+                         , V$DISKTBL_INFO D
+                     WHERE T.TABLE_OID = D.TABLE_OID);
+
+

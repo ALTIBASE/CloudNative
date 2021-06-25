@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-5102E ( 331822) Invalid cursor state.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-5102E ( 331822) Invalid cursor state.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055230 {padding: 0px;}
+div.rbtoc1624409055230 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055230 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055230'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-개요'>개요</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-버전'>버전</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-현상'>현상</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-원인및조치'>원인 및 조치</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-1.FETCH완료후커서CLOSE하지않고같은이름의커서를재사용한경우'>1. FETCH 완료 후 커서 CLOSE 하지 않고 같은 이름의 커서를 재사용한 경우</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-2.FETCH완료후커서CLOSE실패시예외처리를누락한경우'>2. FETCH 완료 후 커서 CLOSE 실패 시 예외 처리를 누락한 경우</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-3.FETCH할데이터가결과가남아있는상태에서커서를재사용한경우'>3. FETCH 할 데이터가 결과가 남아 있는 상태에서 커서를 재사용한 경우 </a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-개요"><strong>개요</strong></h1><hr /><p>애플리케이션에서 statement 를 핸들링할 때 이미 open 되어 있는 커서를 다시 재사용할 때 발생하는 에러입니다. </p><p> </p><p> </p><p><span class="Apple-style-span"><strong><br /></strong></span></p><h1 id="ERR-5102E(331822)Invalidcursorstate.-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 4 이상</p><p>HDB 4.3.9 Error Message 매뉴얼이나 altierr 유틸리티로 Invalid cursor state. 에 대한 설명을 확인할 수는 없지만 HDB 4.3.9 에서도 이 에러가 발생할 수 있습니다. </p><p><span class="Apple-style-span"><br /></span></p><p><span class="Apple-style-span"><br /></span></p><p><span class="Apple-style-span"><br /></span></p><h1 id="ERR-5102E(331822)Invalidcursorstate.-현상"><strong>현상</strong></h1><hr /><ul><li>APRE(또는 SESC)에서 CURSOR FETCH 중 CURSOR DECLARE 또는 CURSOR OPEN 수행 시 Invalid cursor state 발생.</li><li>APRE(또는 SESC)에서 CURSOR FETCH 후 CURSOR DECLARE 또는 CURSOR OPEN 수행 시 Invalid cursor state 발생.</li><li>SQLCLI 또는 ODBC에서 SQLFetch() 수행 중 SQLExecute(), <span style="color: rgb(0,0,0);">SQLPrepare(), SQLExecDirect() 중 한 가지 </span>수행 시 Invalid cursor state 발생.</li><li>SQLCLI 또는 ODBC에서 SQLFetch() 수행 후 SQLExecute(), <span style="color: rgb(0,0,0);">SQLPrepare(), SQLExecDirect() 중 한 가지 </span>수행 시 Invalid cursor state 발생.</li></ul><p> </p><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-원인및조치"><strong>원인 및 조치</strong></h1><hr /><h4 id="ERR-5102E(331822)Invalidcursorstate.-1.FETCH완료후커서CLOSE하지않고같은이름의커서를재사용한경우">1. FETCH 완료 후 커서 CLOSE 하지 않고 같은 이름의 커서를 재사용한 경우</h4><ul><li><p>HDB 5 이상 버전에 해당하는 내용입니다. HDB 4 버전에서는 이와 같은 경우 에러가 발생하지 않습니다. </p></li><li>간혹 커서 CLOSE 를 수행하지 않고 같은 이름의 커서를 재사용하여 에러가 발생하는 경우도 있습니다. </li><li><p>예제 코드</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">declare cursor A;
+open cursor A;
+fetch cursor A;       // fetch 완료! 
+// close cursor A;    // 커서 close 처리를 안 함! 
+declare cursor A;     // 같은 이름의 커서 재사용! </pre>
+</div></div></li><li><strong>이 원인에 해당하는 경우 커서 CLOSE 구문을 추가합니다. </strong><br /><strong><br /></strong></li></ul><h4 id="ERR-5102E(331822)Invalidcursorstate.-2.FETCH완료후커서CLOSE실패시예외처리를누락한경우">2. FETCH 완료 후 커서 CLOSE 실패 시 예외 처리를 누락한 경우</h4><ul><li>커서 CLOSE  가 실패했는데 예외 처리를 하지 않아서 커서 CLOSE 실패 사실을 모르고 같은 이름의 커서를 재사용하는 경우입니다. </li><li>HDB 5 이상 버전에 해당하는 내용입니다. HDB 4 버전에서는 이와 같은 경우 에러가 발생하지 않습니다. </li><li><p>예제 코드 </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">declare cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   예외처리; 
+} 
+open cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   예외처리; 
+}
+fetch cursor A;                                          // fetch 완료! 
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   예외처리; 
+}                                                               
+ 
+close cursor A;                                          //  예외처리 없음. 
+/* close cursor A 실패!! */ 
+                      
+declare cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   예외처리; 
+}</pre>
+</div></div></li><li><strong>이 원인에 해당하는 경우 커서 CLOSE 구문에 예외 처리를 추가하고 커서 CLOSE 가 실패한 원인이 무엇인지 파악합니다. </strong><br /><strong><br /></strong></li></ul><h4 id="ERR-5102E(331822)Invalidcursorstate.-3.FETCH할데이터가결과가남아있는상태에서커서를재사용한경우">3. <span style="color: rgb(255,0,0);">FETCH 할 데이터가 결과가 남아 있는 상태에서</span> 커서를 재사용한 경우 </h4><ul><li>DB 서버에 FETCH 할 데이터가 남아있는 경우 커서 CLOSE 할 때 그 결과가  삭제해버립니다.<br />다시 말하면 FETCH 할 데이터가 삭제되기 전까지는 같은 이름의 커서를 재사용할 수 없습니다. 재사용하려 한다면 커서를 OPEN 후에 FETCH 해야 함.<strong><br /></strong></li><li><p>예제 코드</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">while(1)
+{   
+   fetch cursor A             // FETCH 할 데이터가 남아있는 상태
+   open cursor A             // FETCH 할 데이터가 남아있는 상태에서 같은 이름의 커서를 재사용한 경우 에러 발생!
+}</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>예제2</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">while(1)
+{
+   SQLFetch(stmt)          // FETCH 할 데이터가 남아있는 상태
+   SQLExecute(stmt)      // FETCH 할 데이터가 남아있는 상태에서 같은 이름의 커서를 재사용한 경우 에러 발생!
+}</pre>
+</div></div></li><li><strong>이 원인에 해당하는 경우 커서 CLOSE 구문을 추가 후 커서를 재사용하도록 합니다. </strong></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Directory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Object-Conversion_2986517.html">3. Object Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Directory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 15, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409345352 {padding: 0px;}
+div.rbtoc1624409345352 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409345352 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409345352'>
+<ul class='toc-indentation'>
+<li><a href='#Directory-Overview'>Overview</a></li>
+<li><a href='#Directory-Notices'>Notices</a></li>
+<li><a href='#Directory-RestrictionontheDirectoryname'>Restriction on the Directory name</a></li>
+<li><a href='#Directory-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Directory-Overview">Overview</h2>
+
+<p>ALTIBASE HDB's directory object is almost identical to ORACLE.</p>
+
+<h2 id="Directory-Notices">Notices</h2>
+
+<p>There are some notices to bear in mind prior to handling DIRECTORY object.</p>
+<ul>
+	<li>To use a DIRECTORY, the creation of the DIRECTORY object should be in advance.</li>
+	<li>READ/WRITE Privilege for corresponding directory should be granted to user.</li>
+	<li>The directory parameter must be specified in upper-case letters.<br />
+v1 := fopen(‘MYDIR’, ‘data1.dat’, ‘w’);</li>
+	<li>File open mode should be in the lower case, duplicate use is prohibited.<br />
+ 
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+<h2 id="Directory-RestrictionontheDirectoryname">Restriction on the Directory name</h2>
+
+<p>Even if the name of the directory object was specified in lower-case letters, the names of all objects are stored in upper-case letters in the database.</p>
+
+<p>Therefore when specifying the name of a directory object as a parameter for a system procedure or function, it is necessary to use upper-case letters.</p>
+
+<h2 id="Directory-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB <br class="atl-forced-newline" /> </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE [OR REPLACE] DIRECTORY mydir AS '/dir/file_data'; <br class="atl-forced-newline" />
+DROP DIRECTORY mydir; </p></td>
+<td class="confluenceTd"><p> CREATE [OR REPLACE] DIRECTORY mydir AS '/dir/file_data' ; <br class="atl-forced-newline" />
+DROP DIRECTORY mydir; </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE DIRECTORY ALTI AS ‘/altibase’; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE bulk_insert <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+  vFile UTL_FILE.FILE_TYPE; <br class="atl-forced-newline" />
+  c1 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+  vFile := UTL_FILE.FOPEN(‘ALTI’, ‘data1.dat’, ‘w’); <br class="atl-forced-newline" />
+  FOR c1 IN 1 .. 5000000 LOOP <br class="atl-forced-newline" />
+    UTL_FILE.PUT_LINE(vFile, c1||','||c1||','||LPAD(c1,10,'0')||','|| <br class="atl-forced-newline" />
+LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','|| <br class="atl-forced-newline" />
+LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','|| <br class="atl-forced-newline" />
+TO_CHAR(sysdate,'YYYYMMDDHHMISS')); <br class="atl-forced-newline" />
+  END LOOP; <br class="atl-forced-newline" />
+  UTL_FILE.FFLUSH(vFile); <br class="atl-forced-newline" />
+  UTL_FILE.FCLOSE(vFile); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE DIRECTORY alti AS ‘/altibase’; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE bulk_insert <br class="atl-forced-newline" />
+AS  v1 FILE_TYPE; <br class="atl-forced-newline" />
+c1 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+v1 := fopen(‘ALTI’, ‘data1.dat’, ‘w’); <br class="atl-forced-newline" />
+FOR c1 IN 1 .. 5000000 LOOP <br class="atl-forced-newline" />
+PUT_LINE(v1, c1||','||c1||','||LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','|| <br class="atl-forced-newline" />
+LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','||LPAD(c1,10,'0')||','||LPAD(c1,10,'0')|| <br class="atl-forced-newline" />
+','||TO_CHAR(sysdate,'YYYYMMDDHHMISS')); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+FFLUSH(v1); <br class="atl-forced-newline" />
+FCLOSE(v1); <br class="atl-forced-newline" />
+END;/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

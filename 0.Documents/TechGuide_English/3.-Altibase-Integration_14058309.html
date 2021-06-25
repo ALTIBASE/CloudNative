@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Altibase Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iBatis-Integration-Guide-for-Altibase_14058303.html">iBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Altibase Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 22, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">To connect Altibase in iBatis, the user can set the Altibase JDBC Driver and specify the dataSource for Altibase in the SqlMapConfig file. This chapter section describes how to get the Altibase JDBC driver, how to set the JDBC Driver, and how to set the dataSource in SqlMapConfig. In addition, this section explains how to use the FailOver function, how to work with multiple versions of Altibase, and how to call the Stored Procedure/Function.</span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-HowtoGetAltibaseJDBCDriver"><span class="md-plain">How to Get Altibase JDBC Driver</span></h3><p class="md-end-block md-p"><span class="md-plain">The JDBC driver provided by Altibase is Altibase.jar file. This file is located in the $ALTIBASE_HOME/lib directory of the server where Altibase  is installed.</span></p><p class="md-end-block md-p"><span class="md-plain">As of ALTIBASE 5, Altibase.jar and Altibase5.jar files exist in the </span><span>$</span><span class="md-plain">ALTIBASE_HOME/lib directory. Altibase.jar is a generic JDBC driver file. JDBC driver file used. Therefore, when interlocking with one Altibase DB or multiple Altibases with the same version, use the $ALTIBASE_HOME/lib/ Altibase.jar file.</span></p><p class="md-end-block md-p"><span class="md-plain">It is necessary to check the Altibase JDBC Driver version to verify that the Altibase DB Server to be interlocked with the Altibase JDBC Driver is compatible.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">To check the Altibase JDBC Driver version, execute the following command.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ java –jar Altibase.jar
+JDBC Driver Info :  Altibase Ver = 5.3.3.13 for JavaVM v1.4, CMP:5.6.1, $Revision: 14502 $ Jan 13 2010 14:35:28</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>At this time, if the cm protocol version of the Altibase DB server and the CMP of the Altibase JDBC Driver are the same, they are compatible.</span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ altibase -v
+version 5.3.3.13 XEON_LINUX_redhat_Enterprise_AS4-64bit-5.3.3.13-release-GCC3.4.6 
+(xeon-redhat-linux-gnu) Jan 13 2010 14:35:30, binary db version 5.4.1, meta version 5.6.1, 
+cm protocol version 5.6.1, replication protocol version 5.4.1</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>It is recommended that the user uses the Altibase JDBC Driver file, which is the same as or higher than the version of Altibase DB Server, because JDBC related bugs may have been fixed as the version was upgraded.</span></span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-HowtoSetUpinJDBCDriver"><span class="md-plain">How to Set Up in JDBC Driver</span></h3><p class="md-end-block md-p"><span class="md-plain">The downloaded JDBC driver, Altibase.jar, can be added to the classpath or placed in an appropriate directory on the web server.</span></p><p class="md-end-block md-p"><span class="md-plain">If the user is developing using Eclipse, the user can add the Altibase JDBC Driver to the project as follows.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Project – JRE System Library [DOCKI: J2SE-1.5]-Properties – Installed JREs – Click jre among the items – Click Edit – Add External JARs to add Altibase.jar, Altibase JDBC Driver.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><img class="confluence-embedded-image" width="700" src="attachments/14058309/15335425.png" data-image-src="attachments/14058309/15335425.png"><br /></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><img class="confluence-embedded-image" width="700" src="attachments/14058309/15335426.png" data-image-src="attachments/14058309/15335426.png"><br /></span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-SettingupdataSourceinSqlMapConfigfiletolinkwithAltibase"><span class="md-plain">Setting up dataSource in SqlMapConfig file to link with Altibase<br /></span></h3><p class="md-end-block md-p"><span class="md-plain">The user can connect to Altibase by specifying the property for Altibase in the </span><span>&lt;</span><span class="md-plain">transactionManager&gt; tag of the SqlMapConfig file. At this time, the user can directly enter the property values in the SqlMapConfig file, or the user can create a separate properties file and load the property values written in this file for use.</span></p><p class="md-end-block md-p"><span class="md-plain">The following is an example of defining properties for Altibase in a properties file called db.properties, and reading these properties and using them in the SqlMapConfig file.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) SimpleConnection db.properties file</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.1.35:21129/mydb
+username=sys
+password=manager</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">The description of each value set in this file is as follows.</span></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Property</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">driver</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Altibase JDBC driver class name</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">url</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Connection string information for connection with Altibase is </span><span class="md-plain">&quot;jdbc:<a href="Altibase://IPport_no" rel="nofollow">Altibase://IP:port_no/db_name</a>&quot;</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">username</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Database account</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">password</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Database password</span></span></td></tr></tbody></table></div><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) SimpleConnection's SqlMapConfigExample.xml file</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMapConfig&gt;
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+ 
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+&lt;dataSource type=&quot;SIMPLE&quot;&gt; -- SIMPLE is the built-in transaction manager name
+    &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+    &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+    &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+    &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+ 
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+     
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">The driver, url, username, and password properties specified in db.properties are read and set in the JDBC.Driver, JDBC.ConnectionURL, JDBC.Username, and JDBC.password properties of the dataSource.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">To execute the example SimpleConnection project above, Altibase.jar and ibatis-2.3.4.x.jar files are required.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><img class="confluence-embedded-image" width="500" src="attachments/14058309/15335429.png" data-image-src="attachments/14058309/15335429.png"><br /></span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-ConnectionUsingFailOver"><span class="md-plain">Connection Using FailOver</span></h3><p class="md-end-block md-p"><span class="md-plain">FailOver is supported as of Altibase 5.3.3. To use the FailOver function, the user can put FailOver-related properties in the part where the user writes the connection url of the dataSource.</span><span class="md-softbreak"> </span><span class="md-plain">The following is an example of connecting to Altibase using FailOver. Connection url part is defined in db.properties file.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) FailOverSample's db.properties file</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.6.224:21129/mydb?
+AlternateServers=(192.168.1.35:21129)&amp;amp;
+ConnectionRetryCount=1&amp;amp;ConnectionRetryDelay=1&amp;amp;
+SessionFailOver=on&amp;amp;LoadBalance=off
+username=sys
+password=manager</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>FailOver related properties that can be defined in the connection url specified in the above file are as follows.</span></span></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Property</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">AlternateServer</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Indicates the available servers to be connected when a failure occurs (IP Address1:Port1, IP Address2:Port2,...) and describes them.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ConnectionRetryCount</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">If there is a failure to connect to the available server, the number of attempts to connect is repeated</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ConnectionRetryDelay</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Time to wait before attempting to connect again when the available server connection fails (in seconds)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LoadBalance</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">If set to on, random selection is made including the default server and available servers when the first connection is attempted.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">If set to off, it connects to the default server when it tries to connect for the first time, and if it fails, it connects to the server described by AlternateServer.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SessionFailOver</span></span></td><td class="confluenceTd"><p><span class="td-span"><span class="md-plain">Indicates whether to perform STF (Service Time Fail-Over).</span></span></p><p><span class="td-span"><span class="md-plain">on: STF, off: CTF</span></span></p><p><span class="td-span"><span class="md-plain">CTF(Connection Time Fail-Over) refer to recognizing a failure at the time of DBMS connection and retrying the connection to another normal Server.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-plain">STF(Service Time Fail-Over) means that it detects a failure during service, reconnects to the DBMS of another available node, restores the properties of the session, and allows the user application to perform the business logic again. (STF performs Fail-Over only for DB access, and failed transactions must be reprocessed by the user.)</span></span></p></td></tr></tbody></table></div><p class="md-end-block md-p md-focus"><span class="md-plain">In order to execute the above example FailOverSample project, Altibase.jar and ibatis-2.3.4.x.jar files are needed as in “Set dataSource in SqlMapConfig file to link with Altibase”.</span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-ConnectingAltibase5andPreviousVersionsattheSameTime"><span class="md-plain">Connecting Altibase 5 and Previous Versions at the Same Time</span></h3><p class="md-end-block md-p"><span class="md-plain">Starting with Altibase 5, the ALTIBASE 5 version-specific JDBC Driver (Altibase5.jar) is provided so that one application can connect to Altibase 5 and Altibase 4 or Altibase 3 simultaneously. By using this driver, the user can access two versions of Altibase between Altibase 5-Altibase 4, or Altibase 5-Altibase 3, Altibase 5.1.5-Altibase 5.3.3.</span></p><p class="md-end-block md-p"><span class="md-plain">In order to distinguish it from the existing Altibase.jar, Altibase5.jar for Altibase 5 is required separately. In addition, in the part that is specified in the dataSource, the JDBC Driver class name should also specify Altibase5.jdbc.driver.AltibaseDriver for Altibase 5 instead of the existing Altibase.jdbc.driver.AltibaseDriver.</span></p><p class="md-end-block md-p"><span class="md-plain">In order to integrate with other versions of Altibase in iBATIS, you need to create a separate SqlMapConfig file for each version and read each SqlMapConfig file in the application.</span></p><p class="md-end-block md-p"><span class="md-plain">Please note that in this case, the program should load Altibase5.jdbc.driver.AltibaseDriver first and then Altibase.jdbc.driver.AltibaseDriver.</span></p><p class="md-end-block md-p"><span class="md-plain">The following is an example of loading the drivers of two versions of ALTIBASE using Altibase.jar and Altibase5.jar files.</span></p><p class="md-end-block md-p"><span class="md-plain">Ex) db.properties1 file of MultiVersionConneciton</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Settings for Altibase 5 version</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">driver=Altibase5.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.6.224:21129/mydb
+username=sys
+password=manager</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Ex) db.properties2 file of MultiVersionConnection</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Settings for Altibase 5 and earlier</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">driver=Altibase.jdbc.driver.AltibaseDriver
+url=jdbc:Altibase://192.168.1.35:21129/mydb
+username=sys
+password=manager</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Ex) MultiVersionConneciton's SqlMapConfigExample1.xml file</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Settings for Altibase 5 version</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMapConfig&gt;
+&lt;properties resource=&quot;db.properties1&quot; /&gt;
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+   &lt;dataSource type=&quot;SIMPLE&quot;&gt;
+      &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+      &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+      &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+      &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Ex) MultiVersionConneciton's SqlMapConfigExample2.xml file</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Setting for ALTIBASE 5 and earlier</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMapConfig&gt;
+&lt;properties resource=&quot;db.properties2&quot; /&gt;
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+   &lt;dataSource type=&quot;SIMPLE&quot;&gt;
+      &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+      &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+      &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+      &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><p class="md-end-block md-p md-focus"><span class="md-plain"><span>Ex) PersonApp.java file of MultiVersionConnection</span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…  
+String resource1 =&quot;SqlMapConfigExample1.xml&quot;;
+Reader reader1 = Resources.getResourceAsReader(resource1);
+SqlMapClient sqlMap1 = SqlMapClientBuilder.buildSqlMapClient(reader1);
+         
+String resource2 =&quot;SqlMapConfigExample2.xml&quot;;
+Reader reader2 = Resources.getResourceAsReader(resource2);
+SqlMapClient sqlMap2 = SqlMapClientBuilder.buildSqlMapClient(reader2);
+…</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">In the PersonApp.java example above, to load Altibase5.jdbc.driver.AltibaseDriver before Altibase.jdbc.driver.AltibaseDriver, read the SqlMapConfigExample1.xml file using Altibase5.jdbc.driver.AltibaseDriver as JDBC.Driver first. have. The driver for Altibase 5 must be loaded first.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In order to execute the MultiVersionConnection project included in the example, not only the ibatis-2.3.4.x.jar file used previously, but also Altibase.jar and Altibase5.jar files are needed. These files exist in the lib directory of the directory where ALTIBASE is installed ($ALTIBASE_HOME). The user can use the Altibase5.jar file of the Altibase 5 version and the Altibase.jar file of the previous version.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><img class="confluence-embedded-image" width="500" src="attachments/14058309/15335430.png" data-image-src="attachments/14058309/15335430.png"><br /></span></p><h3 class="md-end-block md-heading" id="id-3.AltibaseIntegration-CallingProcedure/Function"><span class="md-plain">Calling Procedure/Function</span></h3><p class="md-end-block md-p"><span class="md-plain">When calling the Stored Procedure/Function created in DB in iBATIS, set the information on the parameter defined in the Stored Procedure/Function in the SqlMap file, and in the </span><span class="md-tag md-raw-inline" style="color: rgb(167,167,167);">&lt;procedure&gt;</span><span class="md-plain"> tag, call the Stored Procedure/Function applied to CallableStatement applied to the tag. Just define it.</span></p><p class="md-end-block md-p"><span class="md-plain">The following is an example of calling the Stored Procedure/Function.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) ProcedureSample Procedure/Function creation statement</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE sum_proc
+(
+    p_num1 IN NUMBER,
+    p_num2 IN NUMBER,
+    p_num3 OUT NUMBER
+)
+AS
+BEGIN
+    p_num3 := p_num1 + p_num2;
+END;
+/
+ 
+CREATE OR REPLACE FUNCTION sum_func
+(
+    p_num1 IN NUMBER,
+    p_num2 IN NUMBER
+)
+RETURN NUMBER
+AS
+    v_num NUMBER;
+BEGIN
+    v_num := p_num1 + p_num2;
+    RETURN v_num;
+END;
+/</pre>
+</div></div><p><span>Ex) Procedure.xml(SqlMap) file of Procedure</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;sqlMap namespace=&quot;Procedure&quot;&gt;
+   
+  &lt;parameterMap id=&quot;ProcedureParam&quot; class=&quot;java.util.Map&quot;&gt;
+&lt;parameter property=&quot;p_num1&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;IN&quot;  /&gt;
+&lt;parameter property=&quot;p_num2&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;IN&quot;  /&gt;
+    &lt;parameter property=&quot;p_num3&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;OUT&quot;/&gt;
+&lt;/parameterMap&gt;
+     
+ 
+&lt;parameterMap id=&quot;FunctionParam&quot; class=&quot;java.util.Map&quot;&gt;
+     &lt;parameter property=&quot;p_num3&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;OUT&quot;/&gt;
+&lt;parameter property=&quot;p_num1&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;IN&quot; /&gt;
+&lt;parameter property=&quot;p_num2&quot; jdbcType=&quot;NUMERIC&quot;
+javaType=&quot;int&quot; mode=&quot;IN&quot; /&gt;
+&lt;/parameterMap&gt;
+     
+&lt;procedure id=&quot;sumProc&quot; parameterMap=&quot;ProcedureParam&quot; &gt;
+{call sum_proc(?,?,?)}
+&lt;/procedure&gt;
+     
+&lt;procedure id=&quot;sumFunc&quot; parameterMap=&quot;FunctionParam&quot;  &gt;
+{call ? := sum_func(?,?)}
+&lt;/procedure&gt;
+ 
+&lt;/sqlMap&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Define the type and IN/OUT settings for the parameters of the Stored Procedure/Function in the </span><span>&lt;</span><span class="md-plain">paramaterMap&gt; tag, and specify the id value of the </span><span>&lt;</span><span class="md-plain">paramaterMap&gt; tag in the parameterMap attribute in the </span><span>&lt;</span><span class="md-plain">procedure&gt; tag. Then, in the </span><span>&lt;</span><span class="md-plain">procedure&gt; tag, write a statement that calls Stored Procedure/Function.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">To execute the ProcedureSample example, the Altibase.jar and ibatis-2.3.4.x.jar files are required, as in “Configuring a dataSource in the SqlMapConfig file to link with Altibase”.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/14221513.png">eclipse_jdbc.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/14221514.png">eclipse_jdbc2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/14221515.png">eclipse_jdbc3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/14221516.png">eclipse_jdbc4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335425.png">Capture_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335426.png">Capture_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335427.png">capture_7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335428.png">capture_8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335429.png">capture3-1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058309/15335430.png">capture3-2.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

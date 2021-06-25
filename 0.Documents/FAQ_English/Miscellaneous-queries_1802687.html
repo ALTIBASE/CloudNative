@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Miscellaneous queries</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Miscellaneous queries
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153120 {padding: 0px;}
+div.rbtoc1624409153120 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153120 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153120'>
+<ul class='toc-indentation'>
+<li><a href='#Miscellaneousqueries-Stateofaservicethread'>State of a service thread</a>
+<ul class='toc-indentation'>
+<li><a href='#Miscellaneousqueries-ALTIBASEHDBV4'>ALTIBASE HDB V4</a></li>
+<li><a href='#Miscellaneousqueries-ALTIBASEHDBV5'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#Miscellaneousqueries-Lock&amp;TransactionInformation'>Lock &amp; Transaction Information</a>
+<ul class='toc-indentation'>
+<li><a href='#Miscellaneousqueries-ALTIBASEHDBV4.1'>ALTIBASE HDB V4</a></li>
+<li><a href='#Miscellaneousqueries-ALTIBASEHDBV5.1'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#Miscellaneousqueries-Redologfiles'>Redo log files</a></li>
+<li><a href='#Miscellaneousqueries-Cumulativecountoftotaltransactionwaitsduetologging'>Cumulative count of total transaction waits due to logging</a></li>
+<li><a href='#Miscellaneousqueries-MemoryAgerGAP'>Memory Ager GAP</a></li>
+<li><a href='#Miscellaneousqueries-Findingaquerywhichblocksagerfromaging.'>Finding a query which blocks ager from aging.</a></li>
+<li><a href='#Miscellaneousqueries-Memorystatus'>Memory status</a></li>
+<li><a href='#Miscellaneousqueries-TotalmemoryusageofALTIBASE'>Total memory usage of ALTIBASE</a></li>
+</ul>
+</div>
+
+<h1 id="Miscellaneousqueries-Stateofaservicethread">State of a service thread</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the state of  a service thread.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RUN_MODE </p></td>
+<td class="confluenceTd"><p> the type of service thread. (dedicated or shared) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATE </p></td>
+<td class="confluenceTd"><p> currenly working state (executing / pool) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CNT </p></td>
+<td class="confluenceTd"><p> the number of threads in the run_mode and state </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="Miscellaneousqueries-ALTIBASEHDBV4">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	TYPE RUN_MODE,
+        STATE,
+        COUNT(*) CNT
+FROM    V$SERVICE_THREAD
+GROUP BY RUN_MODE, STATE
+</pre>
+</div></div>
+
+<h2 id="Miscellaneousqueries-ALTIBASEHDBV5">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	RUN_MODE,
+        STATE,
+        COUNT(*) CNT
+FROM    V$SERVICE_THREAD
+GROUP BY RUN_MODE, STATE
+</pre>
+</div></div>
+
+<h1 id="Miscellaneousqueries-Lock&amp;TransactionInformation">Lock &amp; Transaction Information</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the lock &amp; transaction information including replication transactions.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TX_ID </p></td>
+<td class="confluenceTd"><p> current transaction id </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BLOCKED_TX_ID </p></td>
+<td class="confluenceTd"><p> the transaction id which current transaction is waiting for </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATUS </p></td>
+<td class="confluenceTd"><p> current transaction's status </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USER_NAME </p></td>
+<td class="confluenceTd"><p> the user name who has issued the current transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSION_ID </p></td>
+<td class="confluenceTd"><p> the session id which has issued the current transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_IP </p></td>
+<td class="confluenceTd"><p> client IP address </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOCOMMIT </p></td>
+<td class="confluenceTd"><p> autocommit </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOCK_DESC </p></td>
+<td class="confluenceTd"><p> Lock description </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FIRST_UPDATE_TIME </p></td>
+<td class="confluenceTd"><p> the first update time of current transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TABLE_NAME </p></td>
+<td class="confluenceTd"><p> table_name </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_QUERY </p></td>
+<td class="confluenceTd"><p> current query in the current transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DDL </p></td>
+<td class="confluenceTd"><p> DDL or not </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOGFILE# </p></td>
+<td class="confluenceTd"><p> logfile number </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="Miscellaneousqueries-ALTIBASEHDBV4.1">ALTIBASE HDB V4</h2>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>ALTIBASE HDB V4 does not support this features.</p>
+                    </div>
+    </div>
+
+
+<h2 id="Miscellaneousqueries-ALTIBASEHDBV5.1">ALTIBASE HDB V5</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	TX.ID TX_ID,
+        WAIT_FOR_TRANS_ID BLOCKED_TX_ID,
+        DECODE(TX.STATUS, 0, &#39;BEGIN&#39;, 1, &#39;PRECOMMIT&#39;, 2, &#39;COMMIT_IN_MEMORY&#39;, 3, &#39;COMMIT&#39;, 4, &#39;ABORT&#39;, 5, &#39;BLOCKED&#39;, 6, &#39;END&#39;) STATUS,
+        DECODE(TX.LOG_TYPE, 0, U1.USER_NAME, &#39;REPLICATION&#39;) USER_NAME,
+        DECODE(TX.LOG_TYPE, 0, TX.SESSION_ID, RT.REP_NAME) SESSION_ID,
+        DECODE(TX.LOG_TYPE, 0, ST.COMM_NAME, RR.PEER_IP) CLIENT_IP,
+        DECODE(ST.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT,
+        L.LOCK_DESC,
+        DECODE(TX.FIRST_UPDATE_TIME, 0, &#39;0&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;,&#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;MM/DD HH:MI:SS&#39;)) FIRST_UPDATE_TIME,
+        U2.USER_NAME||&#39;.&#39;||T.TABLE_NAME TABLE_NAME,
+        DECODE(TX.LOG_TYPE, 0, SUBSTR(ST.QUERY, 1, 10), &#39;REMOTE TX_ID &#39;||REMOTE_TID) CURRENT_QUERY,
+        DECODE(TX.DDL_FLAG,0, &#39;NON-DDL&#39;, &#39;DDL&#39;) DDL,
+        DECODE(TX.FIRST_UNDO_NEXT_LSN_FILENO, -1, &#39;-&#39;, TX.FIRST_UNDO_NEXT_LSN_FILENO) &#39;LOGFILE#&#39;
+FROM 	  V$TRANSACTION TX,
+        V$LOCK L LEFT OUTER JOIN
+        (
+          SELECT ST.*,
+                 SS.AUTOCOMMIT_FLAG,
+                 SS.DB_USERID,
+                 SS.COMM_NAME
+          FROM 	 V$STATEMENT ST,
+                 V$SESSION SS
+          WHERE  SS.ID = ST.SESSION_ID
+                 AND SS.CURRENT_STMT_ID = ST.ID
+         ) ST ON L.TRANS_ID = ST.TX_ID LEFT OUTER JOIN
+         V$REPRECEIVER_TRANSTBL RT ON L.TRANS_ID = RT.LOCAL_TID LEFT OUTER JOIN
+         V$REPRECEIVER RR ON RT.REP_NAME = RR.REP_NAME LEFT OUTER JOIN
+         V$LOCK_WAIT LW ON L.TRANS_ID = LW.TRANS_ID LEFT OUTER JOIN
+         SYSTEM_.SYS_USERS_ U1 ON ST.DB_USERID = U1.USER_ID,
+         SYSTEM_.SYS_TABLES_ T LEFT OUTER JOIN
+         SYSTEM_.SYS_USERS_ U2 ON T.USER_ID = U2.USER_ID
+WHERE 	 TX.ID = L.TRANS_ID AND T.TABLE_OID = L.TABLE_OID AND TX.STATUS != 6 -- 6:END
+ORDER BY TX.ID, ST.ID, TX.FIRST_UPDATE_TIME DESC ;
+</pre>
+</div></div>
+
+
+<h1 id="Miscellaneousqueries-Redologfiles">Redo log files</h1>
+
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the information of  transaction log files</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OLDEST_LOG_FILE </p></td>
+<td class="confluenceTd"><p> the oldest log file in LOG_DIR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CURRENT_LOG_FILE </p></td>
+<td class="confluenceTd"><p> the current log file number which service  thread is writing to. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LOG_FILE_GAP </p></td>
+<td class="confluenceTd"><p> the interval between CURRENT_LOG_FILE and OLDEST_LOG_FILE </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	OLDEST_ACTIVE_LOGFILE OLDEST_LOGFILE,
+        CURRENT_LOGFILE CURRENT_LOGFILE,
+        CURRENT_LOGFILE-OLDEST_ACTIVE_LOGFILE LOGFILE_GAP
+FROM V$ARCHIVE ;
+</pre>
+</div></div>
+
+<h1 id="Miscellaneousqueries-Cumulativecountoftotaltransactionwaitsduetologging">Cumulative count of total transaction waits due to logging</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the number of total waits due to lack of the log space exhaustion for logging. If the value returns non-zero value, you'd better increase PREPARE_LOG_FILE_COUNT in altibase.properties.</p>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	LF_PREPARE_WAIT_COUNT
+FROM V$LFG;
+</pre>
+</div></div>
+
+
+<h1 id="Miscellaneousqueries-MemoryAgerGAP">Memory Ager GAP</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the memory ager thread's information.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GC_NAME </p></td>
+<td class="confluenceTd"><p> the Ager name. (LOGICAL_AGER for index aging , DELTHRD for data aging) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SCNOFTAIL </p></td>
+<td class="confluenceTd"><p> The commit SCN of the tail in garbage collection OID list </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MINMEMSCNINTXS </p></td>
+<td class="confluenceTd"><p> The lowest of the view SCNs for memory-related transactions </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GC_GAP </p></td>
+<td class="confluenceTd"><p> the OID count which ager has to proceed </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	GC_NAME,
+        SCNOFTAIL,
+        MINMEMSCNINTXS,
+        ADD_OID_CNT-GC_OID_CNT GC_GAP
+FROM V$MEMGC ;
+</pre>
+</div></div>
+
+<h1 id="Miscellaneousqueries-Findingaquerywhichblocksagerfromaging.">Finding a query which blocks ager from aging.</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Aging process will be blocked if there's a transaction which refers the aging target. This query shows the query which blocks from aging.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSION_ID </p></td>
+<td class="confluenceTd"><p> the session identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the elapsed time for query execution </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TX_ID </p></td>
+<td class="confluenceTd"><p> transaction identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	SESSION_ID,
+        TOTAL_TIME,
+        EXECUTE_TIME,
+        TX_ID,
+        QUERY
+FROM 		V$STATEMENT
+WHERE TX_ID IN  (
+									SELECT ID
+									FROM V$TRANSACTION
+									WHERE MEMORY_VIEW_SCN = (
+									       SELECT MINMEMSCNINTXS
+									       FROM V$MEMGC
+									       LIMIT 1
+									        )
+								) AND EXECUTE_FLAG = 1
+ORDER BY 2 DESC ;
+</pre>
+</div></div>
+
+
+<h1 id="Miscellaneousqueries-Memorystatus">Memory status</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the memory state arranged by ALTIBASE module.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> NAME </p></td>
+<td class="confluenceTd"><p> the name of ALTIBASE module </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC_MAX(M) </p></td>
+<td class="confluenceTd"><p> max alloc size of memory </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> current size of memory </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	NAME,
+	      ROUND(MAX_TOTAL_SIZE/1024/1024) &#39;ALLOC_MAX(M)&#39;,
+	      ROUND(ALLOC_SIZE/1024/1024) &#39;ALLOC(M)&#39;
+FROM 	  V$MEMSTAT
+ORDER BY 3 DESC ;
+</pre>
+</div></div>
+
+<h1 id="Miscellaneousqueries-TotalmemoryusageofALTIBASE">Total memory usage of ALTIBASE</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the total memory state.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC_MAX(M) </p></td>
+<td class="confluenceTd"><p> max alloc size of memory </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> current size of memory </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	ROUND(SUM(MAX_TOTAL_SIZE)/1024/1024) &#39;ALLOC_MAX(M)&#39;,
+        ROUND(SUM(ALLOC_SIZE)/1024/1024) &#39;ALLOC(M)&#39;
+FROM V$MEMSTAT ;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

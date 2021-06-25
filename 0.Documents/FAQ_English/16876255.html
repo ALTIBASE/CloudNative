@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB 5.5.1, 6.1.1, 6.3.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-tablespace-usage_16876245.html">Disk tablespace usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB 5.5.1, 6.1.1, 6.3.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147150 {padding: 0px;}
+div.rbtoc1624409147150 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147150 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147150'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-Overview'>Overview</a></li>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-Disktablespaceusagequery'>Disk tablespace usage query</a></li>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-Relatedbug'>Related bug</a>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-BUG-39985V$DISK_UNDO_USAGEcalculationerrorcorrection'>BUG-39985 V$DISK_UNDO_USAGE calculation error correction</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-Overview">Overview</h1><hr /><ul><li>V$DISK_UNDO_USAGE was added in ALTIBASE HDB 5.5.1.</li><li>This performance view allows users to check the usage of the undo tablespace.</li></ul><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-Disktablespaceusagequery">Disk tablespace usage query</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk tablespace usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT DECODE(TYPE, 3, &#39;SYSTEM TABLESPACE&#39;, 4, &#39;USER DATA TABLESPACE&#39;, 5, &#39;SYSTEM TABLESPACE&#39;, 6, &#39;USER TEMP TABLESPACE&#39;, 7, &#39;SYSTEM TABLESPACE&#39;) TBS_TYPE
+     , NAME TBS_NAME                                                                                                                                    -- TBS_NAME : Tablespace name
+     , TO_CHAR((D.MAX * PAGE_SIZE / 1024 /1024), &#39;999,999,999&#39;) &#39;MAX(M)&#39;                                                                                -- MAX(M)   : Maximum size of tablespace
+     , TO_CHAR((TOTAL_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;                                                                      -- TOTAL(M) : Total number of pages allocated so far
+     , DECODE(TYPE, 7, TO_CHAR((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;)) &#39;ALLOC(M)&#39;                                                 -- ALLOC(M) : Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far.
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;), 
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;),
+                    7, TO_CHAR(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , LPAD(&#39;-&#39;, 12))&#39;USED(M)&#39;                                                                                                          -- USED(M)  : Size of the pages in which the data is loaded
+     , DECODE(TYPE, 7, TO_CHAR((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, &#39;99.99&#39;),
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;),
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT/D.MAX) * 100, &#39;99.99&#39;)) &#39;USAGE(%)&#39;                                                                 -- USAGE(%) : Usage (USED versus MAX)
+     , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE                             -- STATE    : Tablespace state
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                         FROM X$SEGMENT
+                                        GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE
+          FROM V$PROPERTY
+         WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID ;</pre>
+</div></div><p> </p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_TYPE              TBS_NAME                        MAX(M)           TOTAL(M)         ALLOC(M)         USED(M)                   USAGE(%)         STATE           AUTOEXTEND  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYSTEM TABLESPACE     SYS_TBS_DISK_DATA                      2,048              952              952              952               46.46           ONLINE          ON   
+SYSTEM TABLESPACE     SYS_TBS_DISK_UNDO                      2,048              704                8                8                 .39           ONLINE          ON   
+SYSTEM TABLESPACE     SYS_TBS_DISK_TEMP                      2,048              100                1                -                 .02           ONLINE          ON   
+USER DATA TABLESPACE  PART_DATA                              1,024            1,024              177              176               17.19           ONLINE          OFF  
+USER DATA TABLESPACE  PART_DATA_DEF                          1,024            1,024               12               11                1.07           ONLINE          OFF  
+USER DATA TABLESPACE  PART_IDX                               3,072            3,072              416              415               13.49           ONLINE          OFF  
+6 rows selected.</pre>
+</div></div><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-Relatedbug">Related bug</h1><hr /><h3 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-BUG-39985V$DISK_UNDO_USAGEcalculationerrorcorrection">BUG-39985 V$DISK_UNDO_USAGE calculation error correction</h3><p>The REUSABLE_EXT_CNT column of V$DISK_UNDO_USAGE defines the reusable size within the undo tablespace.</p><p>An undo tablespace pool phenomenon occurred, but the REUSABLE_EXT_CNT column has an error indicating that there is reusable space, so it has been improved.</p><p>This bug is reflected in the version below.</p><ul><li>ALTIBASE HDB version 6.1.1.4.9</li><li>ALTIBASE HDB version 6.3.1</li></ul><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT DECODE(TYPE, 3, &#39;SYSTEM TABLESPACE&#39;, 4, &#39;USER DATA TABLESPACE&#39;, 5, &#39;SYSTEM TABLESPACE&#39;, 6, &#39;USER TEMP TABLESPACE&#39;, 7, &#39;SYSTEM TABLESPACE&#39;) TBS_TYPE
+     , NAME TBS_NAME                                                                                                                                    -- TBS_NAME : Tablespace name
+     , TO_CHAR((D.MAX * PAGE_SIZE / 1024 /1024), &#39;999,999,999&#39;) &#39;MAX(M)&#39;                                                                                -- MAX(M)   : Max size of tablespace
+     , TO_CHAR((TOTAL_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;                                                                      -- TOTAL(M) : Total number of pages allocated so far.
+     , DECODE(TYPE, 7, TO_CHAR((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;)) &#39;ALLOC(M)&#39;                                                 -- ALLOC(M) : Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far.
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;), 
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;),
+                    7, TO_CHAR(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , LPAD(&#39;-&#39;, 12))&#39;USED(M)&#39;                                                                                                          -- USED(M)  : Size of the pages in which the data is loaded
+     , DECODE(TYPE, 7, TO_CHAR((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, &#39;99.99&#39;),
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;),
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT/D.MAX) * 100, &#39;99.99&#39;)) &#39;USAGE(%)&#39;                                                                 -- USAGE(%) : 사용량(MAX 대비 USED)
+     , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE                             -- STATE    : Tablespace state
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                         FROM X$SEGMENT
+                                        GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE
+          FROM V$PROPERTY
+         WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID ;</pre>
+</div></div><p> </p><p> </p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SET LINESIZE 1024;
+SET COLSIZE 30;
+SELECT DECODE(TYPE, 3, &#39;SYSTEM TABLESPACE&#39;, 4, &#39;USER DATA TABLESPACE&#39;, 5, &#39;SYSTEM TABLESPACE&#39;, 6, &#39;USER TEMP TABLESPACE&#39;, 7, &#39;SYSTEM TABLESPACE&#39;) TBS_TYPE
+     , NAME TBS_NAME                                                                                                                                    -- TBS_NAME : Tablespace name
+     , TO_CHAR((D.MAX * PAGE_SIZE / 1024 /1024), &#39;999,999,999&#39;) &#39;MAX(M)&#39;                                                                                -- MAX(M)   : Max size of tablespace
+     , TO_CHAR((TOTAL_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39;TOTAL(M)&#39;                                                                      -- TOTAL(M) : Total number of pages allocated so far.
+     , DECODE(TYPE, 7, TO_CHAR((U.TOTAL_EXT_CNT*PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT * PAGE_SIZE)/1024/1024, &#39;999,999,999&#39;)) &#39;ALLOC(M)&#39;                                                 -- ALLOC(M) : Total of only &#39;used pages&#39; excluding &#39;blank pages&#39; among the allocated pages so far.
+     , DECODE(TYPE, 3, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;), 
+                    4, TO_CHAR(NVL(DS.USED, 0)/1024/1024, &#39;999,999,999&#39;),
+                    7, TO_CHAR(((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/1024/1024, &#39;999,999,999&#39;)
+                     , LPAD(&#39;-&#39;, 12))&#39;USED(M)&#39;                                                                                                          -- USED(M)  : Size of the pages in which the data is loaded
+     , DECODE(TYPE, 7, TO_CHAR((((U.TX_EXT_CNT+U.USED_EXT_CNT+U.UNSTEALABLE_EXT_CNT) * PROP.EXTENT_SIZE)/(D.MAX*PAGE_SIZE))*100, &#39;99.99&#39;),
+                    3, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;),
+                    4, TO_CHAR(NVL(DS.USED, 0)/(D.MAX*PAGE_SIZE)* 100, &#39;99.99&#39;)
+                     , TO_CHAR((ALLOCATED_PAGE_COUNT/D.MAX) * 100, &#39;99.99&#39;)) &#39;USAGE(%)&#39;                                                                 -- USAGE(%) : 사용량(MAX 대비 USED)
+     , DECODE(STATE, 1, &#39;OFFLINE&#39;, 2, &#39;ONLINE&#39;, 5, &#39;OFFLINE BACKUP&#39;, 6, &#39;ONLINE BACKUP&#39;, 128, &#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE                             -- STATE    : Tablespace state
+     , D.AUTOEXTEND
+  FROM V$TABLESPACES T LEFT OUTER JOIN(SELECT SPACE_ID , SUM(TOTAL_USED_SIZE) USED
+                                         FROM X$SEGMENT
+                                        GROUP BY SPACE_ID) DS ON DS.SPACE_ID = T.ID
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND), 1, &#39;ON&#39;, &#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID ) D
+     , V$DISK_UNDO_USAGE U
+     , (SELECT VALUE1 EXTENT_SIZE
+          FROM V$PROPERTY
+         WHERE NAME = &#39;SYS_UNDO_TBS_EXTENT_SIZE&#39;) PROP
+ WHERE T.ID = D.SPACEID ;</pre>
+</div></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

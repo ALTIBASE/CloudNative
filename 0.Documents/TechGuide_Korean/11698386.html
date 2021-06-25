@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : ALTIBASE 개발을 위한 기본 고려 사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698385.html">Altibase Precompiler 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : ALTIBASE 개발을 위한 기본 고려 사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409852767 {padding: 0px;}
+div.rbtoc1624409852767 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409852767 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409852767'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASE개발을위한기본고려사항-성능을고려한사항'>성능을 고려한 사항</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-쓰레드를고려한사항'>쓰레드를 고려한 사항</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-호스트변수의고려사항'>호스트 변수의 고려사항</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-에러체크확인'>에러체크확인</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-Commitmode'>Commit mode</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-Systemsignal핸들링'>System signal 핸들링</a></li>
+<li><a href='#ALTIBASE개발을위한기본고려사항-기타지원되지않는사항들'>기타 지원되지 않는 사항들</a></li>
+</ul>
+</div></p><p> </p><hr /><p>ALTIBASE Precompiler를 통해 개발할 경우 사전에 고려할 사항을 설명한다. 이 부분에서는 성능, 쓰레드 및 지원되지 않는 사항을 먼저 언급함으로써 프로그램을 개발하는데 참고하도록 한다.</p><p> </p><h1 id="ALTIBASE개발을위한기본고려사항-성능을고려한사항">성능을 고려한 사항</h1><p>개발자는 최소한 다음 2가지를 성능과 관련해 고려하도록 해야 한다. </p><ol><li><h3 id="ALTIBASE개발을위한기본고려사항-매번Prepare/Execute또는Direct-Execute방식의최소화">매번 Prepare/Execute 또는 Direct-Execute방식의 최소화</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>수행</strong><strong> </strong><strong>형태 </strong></p></th><th class="confluenceTh"><p><strong>단순</strong><strong> Insert </strong><strong>성능</strong><strong> (2.4GHz / 8EA) </strong></p></th></tr><tr><td class="confluenceTd"><p>매번 Prepare/Execute</p></td><td class="confluenceTd"><p>0.0008.43sec (1건당 처리 시간)</p></td></tr><tr><td class="confluenceTd"><p>1회 Prepare/매번 Execute</p></td><td class="confluenceTd"><p>0.0005.55sec (1건당 처리 시간)</p></td></tr></tbody></table></div><p>위의 성능 비교는 매우 단순한 Insert를 대상으로 한 성능임으로 실제로 적용 시점에서는 쿼리의 복잡도나 부하 및 장비마다 성능 개선 효과는 다를 수 있음을 전제해야 한다. 하지만, 매번 DBMS와 Prepare로 인한 통신 비용을 줄일 경우 어플리케이션 서버가 DBMS서버와 별도로 분리된 구조에서는 매우 큰 효과를 볼 수 있다. 즉, prepare 1번과 execute 1번의 통신 비용에서 1번의 prepare통신 비용을 줄이는 효과를 기대하는 것이다.</p></li><li><h3 id="ALTIBASE개발을위한기본고려사항-SQL문의실행계획(PLAN)확인"><span style="color: rgb(0,0,0);">SQL문의 실행계획(PLAN) 확인</span></h3><div>ALTIBASE는 다음 명령으로 실행계획을 확인할 수 있다.</div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET EXPLAIN PLAN = on;</pre>
+</div></div><p>&quot;iSQL&quot; 란 프롬프트는 ALTIBASE가 제공하는 SQL문 실행 유틸리티에서 수행되는 것을 의미하며 이 유틸리티는 $ALTIBASE_HOME/bin/isql 로 제공된다. (이 외에도 윈도우 환경에서는 ALTIBASE가 제공하는 웨어밸리사의 &quot;Orange for Altibase&quot;를 사용할 수 있다.)<br />위와 같은 명령을 수행한 후 질의 처리기에서 질의를 수행하게 되면 해당 질의의 실행계획이 표시된다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">QL&gt; select * from t1 where a = 1;
+------------------------------------------------------------
+PROJECT (COLUMN_COUNT: 2, TUPLE_SIZE: 8 )
+SCAN ( TABLE: T1,INDEX: __SYS_IDX_ID_102, ACCESS: 1, SELF_ID: 2 )</pre>
+</div></div><p>개발자는 최소한 테이블이 어떤 인덱스(INDEX)를 접근하게 되고 해당 인덱스에서 몇 번의 접근(ACCESS)을 통해 데이터를 가져오는지 확인하여 접근 횟수의 비용을 줄이는 형태로 SQL문을 튜닝 할 필요가 있다. ALTIBASE의 메모리DB는 디스크I/O를 거의 하지 않기 때문에 풀스캔을 하더라도 일정 부분 빠른 성능을 낼 수 있으나 반대로 불필요하게 빈번한 메모리의 접근은 잦은 시스템 콜을 유발하여 상대적으로 CPU 부하를 일으키게 된다. 즉, CPU가 연산할 수 있는 공간인 캐쉬에 메모리의 공간을 적재하는 과정이 빈번하게 발생하는 만큼의 CPU비용을 감당해야 한다는 것이다. 따라서, 적절한 인덱스 스캔을 통해 이러한 비용을 줄이면 성능의 최대화 및 CPU 부하의 최소화라는 효과를 거둘 수 있음을 고려해야 한다.</p></li></ol><p style="margin-left: 30.0px;"> </p><p style="margin-left: 30.0px;"> </p><h1 id="ALTIBASE개발을위한기본고려사항-쓰레드를고려한사항"><span style="color: rgb(0,0,0);">쓰레드를 고려한 사항</span></h1><p>ALTIBASE는 연결 객체에 대해 쓰레드간 보호를 보장하지 않는다. 즉, 하나의 커넥션을 가지고 동시에 접근하여 질의를 수행하는 경우 알 수 없는 오류가 발생하게 된다. 따라서, 개별 쓰레드 별로 연결 객체를 가져가는 형태로 개발을 하거나 또는 하나의 연결을 다수의 쓰레드가 접근해야 한다면 반드시 사용자가 연결 객체에 대한 동시성 제어를 수행해야 한다. 이와 같은 동시성 제어를 하지 않을 경우 다음과 같은 오류들이 발생할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">- Invalid request to process the SQL statement 
+- Communication link failure (EXEC-&gt;PREP)  
+- Communication link failure (PREP-&gt;EXEC) 
+- Communication link failure (EXEC-&gt;INVL) 
+- Connection does not exist</pre>
+</div></div><p> </p><h1 id="ALTIBASE개발을위한기본고려사항-호스트변수의고려사항">호스트 변수의 고려사항</h1><p>ALTIBASE의 호스트 변수 선언 시 char형 호스트 변수 크기를 지정할 때에는 반드시 null-padding을 고려한 &quot;+1byte&quot;를 추가해야 한다. Precompiler의 옵션에서는 &quot;-n&quot; 옵션을 통해 +1byte를 생략할 수 있으나 이 경우 사용자가 char형 호스트 변수에 대한 명확한 길이를 제어해야 한다</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Table (C1 char(10)) 으로 선언된 테이블이 존재한다고 가정하면 호스트 변수의 크기는 char C1 [10 <strong style="line-height: 1.4285;">+ 1</strong>]; 형태로 선언한다.</p>
+                    </div>
+    </div>
+<p>NULL 값이 리턴 되는 경우 발생하는 Indicator와 관련된 부분도 자주 발생하는 문제의 경우이다. 이 부분은 문서의 마지막 부분인 &quot;자주 발생하는 오류 메시지&quot; 에서 설명한다. ALTIBASE의 모든 Precompiler를 통한 호스트 변수의 파라미터 마커는 &quot;?&quot;를 사용한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">sprintf(&quot;delete from sample_table where column1 = ?&quot;);</pre>
+</div></div><p>또한, 소스 내에서의 호스트 변수 앞에는 반드시 콜론(:)을 사용해야 한다. </p><p> </p><h1 id="ALTIBASE개발을위한기본고려사항-에러체크확인">에러체크확인</h1><p>ALTIBASE의 SQLCA객체는 별도의 선언 없이 사용이 가능하다. 개발자는 EXEC SQL 구문을 사용하는 모든 단계에서는 반드시 에러 체크를 수행하는 코드를 삽입할 것을 권고한다. ALTIBASE의 경우 Cursor를 사용할 경우에 Cursor Prepare/Declare 단계에서 에러를 체크하지 않을 경우 Cursor Open 시점에 단순히 Cursor가 define 되지 않았다는 오류만 확인되기 때문에 실제 어떤 구문상의 오류 등을 알 수 없을 경우가 있음으로 일반적으로 누락하는 Cursor Prepare/Declare 단계에서도 에러 체크를 반드시 하도록 한다. Open 또는 Fetch단계에서 다음과 같은 오류가 발생할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">The statement does not exist
+
+The cursor must be opened for fetch.
+
+The cursor does not exist.</pre>
+</div></div><p>ALTIBASE가 에러 체크를 위해 제공하는 변수들은 다음과 같다. 에러 체크는 어떤 변수를 선택해도 상관 없으나 일반적으로 에러의 체크는 sqlca.sqlcode를 이용하고 상세한 오류의 확인을 위해 디버깅 로그를 출력할 때에는 SQLCODE를 출력하는 것을 권장한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>SQLCODE</p></td><td class="confluenceTd"><p>ALTIBASE가 내부적으로 정의한 상세한 에러 코드 (ex. -69720)</p></td></tr><tr><td class="confluenceTd"><p>sqlca.sqlcode</p></td><td class="confluenceTd"><p>SQL의 성공/실패 여부 정도를 판단할 수 있는 에러 코드</p></td></tr><tr><td class="confluenceTd"><p>SQLSTATE</p></td><td class="confluenceTd"><p>CLI표준에 따른 char*형의 에러 코드 (ex. 08S01)</p></td></tr></tbody></table></div><ul><li>활용 예</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">/* open cursor */
+EXEC SQL OPEN DEPT_CUR;
+if (sqlca.sqlcode  != SQL_SUCCESS)
+{
+     fprintf (stdout, &quot;DB_ERR: %d, %s\n&quot;, SQLCODE,  sqlca.sqlerrm.sqlerrmc);
+}</pre>
+</div></div><p><br class="_mce_tagged_br" />SQLCODE는 $ALTIBASE_HOME/msg/manual.txt에 모두 정의가 되어 있음으로 해당 파일을 참조할 수 있으며 아래와 같이 사전 정의된 일부 값들을 사용할 수 도 있다. 만일, 타DBMS에서 변환할 경우나 사용자가 별도로 재정의 한 경우가 있다면 적절하게 변환해야 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>에러</strong><strong> </strong><strong>정의</strong></p></th><th class="confluenceTh"><p><strong>코드</strong><strong> </strong><strong>값</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>SQL_ERROR</p></td><td class="confluenceTd"><p align="right">-1</p></td><td class="confluenceTd"><p>처리에 오류가 발생한 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS</p></td><td class="confluenceTd"><p align="right">0</p></td><td class="confluenceTd"><p>처리가 성공한 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_SUCCESS_WITH_INFO</p></td><td class="confluenceTd"><p align="right">1</p></td><td class="confluenceTd"><p>처리는 성공이나 결과에 오류가 있는 경우</p></td></tr><tr><td class="confluenceTd"><p>SES_DUPKEY_ERR</p></td><td class="confluenceTd"><p align="right">-69720</p></td><td class="confluenceTd"><p>인덱스 중복이 발생한 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_NO_DATA</p></td><td class="confluenceTd"><p align="right">100</p></td><td class="confluenceTd"><p>데이터가 없는 경우</p></td></tr><tr><td class="confluenceTd"><p>SQL_INVALID_HANDLE</p></td><td class="confluenceTd"><p align="right">-2</p></td><td class="confluenceTd"><p>SQL처리에 필요한 내부 객체가 오류인 경우</p></td></tr></tbody></table></div><h1 id="ALTIBASE개발을위한기본고려사항-Commitmode">Commit mode</h1><p>ALTIBASE는 기본적으로 설정을 변경하지 않는 한 Auto-Commit mode로 동작한다. 즉, 변경 트랜잭션이 발생하면 해당 수행 결과가 정상이면 자동으로 DB에 반영되는 형태이다. 사용자가 이 설정을 NonAuto-Commit mode로 변경하고자 할 경우 $ALTIBASE_HOME/conf/altibase.properties 에 정의된 &quot;AUTO_COMMIT = 1&quot;을  &quot;0&quot;으로 변경하거나 프로그램 상에서 다음과 같은 명령을 수행해야 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">EXEC SQL AUTOCOMMIT OFF;</pre>
+</div></div><p>NonAuto-Commit mode로 변경한 이후에는 모든 트랜잭션의 수행 이후 반드시 명시적인 Commit/Rollback을 수행해야 한다.</p><p>ALTIBASE 버전 5부터는 SELECT문에 대한 명시적인 Commit/Rollback은 수행하지 않아도 되지만 LOB를 핸들링 하는 경우에는 반드시 NonAuto-Commit mode로 접근해야 하며 명시적인 Commit/Rollback도 수행 해야 한다. Auto-Commit으로 접근하는 경우 아래와 같은 오류가 발생한다.</p><ul><li><p>변경트랜잭션에서의 오류(INSERT, UPDATE, DELETE)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on</pre>
+</div></div></li><li><p> 조회 트랜잭션에서의 오류(SELECT)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">LobLocator can not span the transaction 34734145 // 이 숫자는 임의의 숫자로 표기됨</pre>
+</div></div><p> <span>또한</span><span>, LOB</span><span>에</span><span> </span><span>대한</span><span> </span><span>접근</span><span> </span><span>이후</span><span> </span><span>명시적인</span><span> Commit/Rollback</span><span>을</span><span> </span><span>하지</span><span> </span><span>않으면</span><span> </span><span>해당</span><span> </span><span>트랜잭션에</span><span> </span><span>의해</span><span> Lock</span><span>이</span><span> </span><span>유지되게</span><span> </span><span>되어</span><span> </span><span>리소스</span><span> </span><span>측면에</span><span> </span><span>장애를</span><span> </span><span>유발할</span><span> </span><span>수</span><span> </span><span>있음으로</span><span> </span><span>주의하도록</span><span> </span><span>해야</span><span> </span><span>한다</span>.</p></li></ul><p> </p><h1 id="ALTIBASE개발을위한기본고려사항-Systemsignal핸들링">System signal 핸들링</h1><p>Altibase 클라이언트 라이브러는 system signal 발생에 대해서 안전하지 않다.  예를 들어서 외부 원인에 의해 네트워크 접속이 종료된 경우 , SIGPIPE 신호를 받아 진행중인 응용 프로그램이 강제로 종료될 수도 있다. 이러한 강제 종료를 막기 위해서는 SIGPIPE 신호를 사용자 애플리케이션에서 처리해야 한다. 그러나 SIGPIPE 신호 처리를 하던 중에 Altibase 클라이언트 라이브러리의 함수를 호출하면 프로그램이 멈출 수 있기 때문에 호출하면 안된다.</p><p>하지만 신호 처리가 끝난 후에는 Altibase 클라이언트 라이브러리의 함수를 호출하면 가능하다</p><ul><li><p>signal 핸들링 예제</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">int  main()
+{
+.......
+signal(SIGPIPE, SIG_IGN );
+....
+EXEC SQL CONNECT :user identified by :pwd;
+.....
+EXEC SQL DISCONNECT;
+....
+}</pre>
+</div></div></li></ul><p> </p><h1 id="ALTIBASE개발을위한기본고려사항-기타지원되지않는사항들">기타 지원되지 않는 사항들</h1><p>타 DBMS와 비교하여 지원되지 않는 사항을 설명한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<ol><li>Dynamic Method4 방식은 지원하지 않는다</li><li>Context 구문은 지원하지 않는다 ( 쓰레드를 고려한 사항 참조)</li><li>Precompiler를 통해서는 Procedure의 typeset, Ref-Cursor, 배열 형태의 결과 셋을 받아 올 수 없다.</li><li>system signal 발생에 대해서 안전하지 않다. system signal 처리는 사용자 코드에 의해서 처리되어야 한다.</li></ol>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

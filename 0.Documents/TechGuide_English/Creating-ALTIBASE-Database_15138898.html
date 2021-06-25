@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Creating ALTIBASE Database</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Creating ALTIBASE Database
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409365152 {padding: 0px;}
+div.rbtoc1624409365152 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409365152 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409365152'>
+<ul class='toc-indentation'>
+<li><a href='#CreatingALTIBASEDatabase-Overview'>Overview</a></li>
+<li><a href='#CreatingALTIBASEDatabase-Howtocreateadatabase'>How to create a database</a></li>
+<li><a href='#CreatingALTIBASEDatabase-Considerationswhencreatingadatabase'>Considerations when creating a database</a>
+<ul class='toc-indentation'>
+<li><a href='#CreatingALTIBASEDatabase-Archivelogmode'>Archive log mode</a></li>
+<li><a href='#CreatingALTIBASEDatabase-DB_NAME'>DB_NAME</a></li>
+</ul>
+</li>
+<li><a href='#CreatingALTIBASEDatabase-Howtodropadatabase'>How to drop a database</a>
+<ul class='toc-indentation'>
+<li><a href='#CreatingALTIBASEDatabase-Checkthefilestobedropped'>Check the files to be dropped</a></li>
+<li><a href='#CreatingALTIBASEDatabase-Droppingadatabase'>Dropping a database</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><h1 id="CreatingALTIBASEDatabase-Overview">Overview</h1><hr /><p>This document provides a guide on how to create an Altibase database.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center.</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<p> </p><h1 id="CreatingALTIBASEDatabase-Howtocreateadatabase">How to create a database</h1><hr /><p>This section describes how to create a database of versions supported according to Altibase's End of Service (EOS) policy. As for this document, the latest Altibase version is 'Altibase ver. 7' and 'Altibase ver 6 or below' are for EOS. Altibase cannot be operated until the database is created, so the database must be created as follows before starting the Altibase.</p><ul><li>Check DB_NAME in altibase.properties</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ cat $ALTIBASE_HOME/conf/altibase.properties | grep DB_NAME
+DB_NAME       =  mydb</pre>
+</div></div><ul><li>If DB_NAME is not mydb (default), the server file must be changed. <br />(Change mydb in create database mydb command to DB_NAME)</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/bin/server
+...
+startup process;
+create database mydb INITSIZE=10M noarchivelog character set $2 national character set $3;
+quit
+EOF
+...</pre>
+</div></div><ul><li>Create a database.<br />(server create 'database charset' 'national charset')</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server create MS949 UTF16
+-----------------------------------------------------------------
+Altibase Client Query utility.
+Release Version 6.1.1.3.1
+Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost, PORT_NO = 20300
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+DB Info (Page Size = 32768)
+(Page Count = 257)
+(Total DB Size = 8421376)
+(DB File Size = 1073741824)
+...</pre>
+</div></div><ul><li>Or, the user can create a database as follows.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -sysdba...
+iSQL(sysdba)&gt; startup process
+...
+iSQL(sysdba)&gt; create database mydb INITSIZE=10M noarchivelog character set MS949 national character set UTF16;
+...
+iSQL(sysdba)&gt; exit</pre>
+</div></div><p>The meaning of each character set is as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th style="text-align: center;" class="confluenceTh"><div class="tablesorter-header-inner">Item</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Description</div></th></tr></thead><tbody><tr><td style="text-align: center;" class="confluenceTd">Database character set</td><td class="confluenceTd"><p>This means a character set stored in the database.</p><p>(US7ASCII, KO16KSC5601, MS949, BIG5, GB231280, UTF8, SHIFTJIS, EUCJP)</p></td></tr><tr><td style="text-align: center;" class="confluenceTd">National character set</td><td class="confluenceTd"><p>This means a Unicode-based character set stored in NVARCHAR and NVARCHAR2.</p><p>(UTF8, UTF16)</p></td></tr></tbody></table></div><h1 id="CreatingALTIBASEDatabase-Considerationswhencreatingadatabase">Considerations when creating a database</h1><hr /><p>Things to be considered when creating a database are as follows.</p><h2 id="CreatingALTIBASEDatabase-Archivelogmode">Archive log mode</h2><hr /><ul><li>The archive log mode can be set at the control stage.</li><li>Therefore, in order to change from No Archive log mode to Archive log mode, the user must shut down Altibase and enter the control stage during the startup process.</li><li>In the archive log mode, the archive log file requires user management because Altibase only replicates the log file to the designated archive log file directory and does not delete it arbitrarily.</li><li>It is necessary to secure the archive log file directory space in consideration of the backup cycle and the number of log files created within that cycle.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server stop 
+$ isql -u sys -p manager -sysdba
+...
+iSQL(sysdba)&gt; startup control;
+...
+iSQL(sysdba)&gt; alter database archivelog;
+Alter success.
+iSQL(sysdba)&gt; startup service;
+...
+Command executed successfully.
+iSQL(sysdba)&gt; exit</pre>
+</div></div><h2 id="CreatingALTIBASEDatabase-DB_NAME"><span style="color: rgb(0,0,0);">DB_NAME</span></h2><hr /><ul><li>In the case of DB_NAME, it is determined when the database is created.</li><li>In order to change, the database must be recreated, so migration must be performed.</li><li>Therefore, be cautious when creating a database for the first time.</li></ul><h1 id="CreatingALTIBASEDatabase-Howtodropadatabase">How to drop a database</h1><hr /><p>The user can drop the database by deleting all Altiabse configuration files.</p><h2 id="CreatingALTIBASEDatabase-Checkthefilestobedropped">Check the files to be dropped</h2><hr /><ul><li>To check whether the database is dropped normally, check before dropping the data files and log files to be deleted.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; select name, checkpoint_path from v$tablespaces a, v$mem_tablespace_checkpoint_paths b where a.id = b.space_id; 
+iSQL&gt; select a.name, b.name from v$tablespaces a, v$datafiles b where a.id = b.spaceid;
+ 
+$ cat $ALTIBASE_HOME/conf/altibase.properties | grep ^LOG | grep DIR</pre>
+</div></div><h2 id="CreatingALTIBASEDatabase-Droppingadatabase">Dropping a database</h2><hr /><ul><li>After Altibase is shut down, the database is dropped in the process stage.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -sysdba...
+iSQL(sysdba)&gt; startup process;
+Connecting to the DB server.... Connected.
+ 
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+ 
+ 
+iSQL(sysdba)&gt; drop database mydb;
+Checking Log Anchor files
+[Ok] /home/altibase/altibase_home/logs/loganchor0 Exist.
+[Ok] /home/altibase/altibase_home/logs/loganchor1 Exist.
+[Ok] /home/altibase/altibase_home/logs/loganchor2 Exist.
+Removing DB files
+Removing Log files
+Removing Log Anchor files
+Drop success.
+ 
+iSQL(sysdba)&gt; exit </pre>
+</div></div><p><br /><br class="_mce_tagged_br" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

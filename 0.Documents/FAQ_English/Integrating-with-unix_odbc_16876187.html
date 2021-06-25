@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Integrating with unix_odbc</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ODBC_16876179.html">ODBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Integrating with unix_odbc
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146759 {padding: 0px;}
+div.rbtoc1624409146759 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146759 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146759'>
+<ul class='toc-indentation'>
+<li><a href='#Integratingwithunix_odbc-Overview'>Overview</a></li>
+<li><a href='#Integratingwithunix_odbc-Version'>Version</a></li>
+<li><a href='#Integratingwithunix_odbc-UNIXODBCtypeandURL'>UNIX ODBC type and URL</a></li>
+<li><a href='#Integratingwithunix_odbc-INSTALL'>INSTALL</a></li>
+<li><a href='#Integratingwithunix_odbc-PHP,PERLIntegration'>PHP, PERL Integration</a></li>
+<li><a href='#Integratingwithunix_odbc-PHPIntegrationGuide'>PHP Integration Guide</a></li>
+</ul>
+</div></p><h1 id="Integratingwithunix_odbc-Overview">Overview</h1><hr /><p>This document is for integrating Altibase with UNIX_ODBC.</p><p> </p><h1 id="Integratingwithunix_odbc-Version">Version</h1><hr /><p>All the versions of ALTIBASE HDB</p><p> </p><h1 id="Integratingwithunix_odbc-UNIXODBCtypeandURL">UNIX ODBC type and URL</h1><hr /><p>unix_odbc is an open source project, and unixODBC is mainly used.</p><ol><li>unixODBC can be downloaded from the link below:<br />- <a href="http://unixodbc.org/" class="external-link" rel="nofollow">http://unixodbc.org/</a></li></ol><p> </p><h1 id="Integratingwithunix_odbc-INSTALL">INSTALL</h1><hr /><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ mkdir $HOME/ODBC_HOME</p><p>$ gzip -d unixODBC-2.3.2.tar.gz</p><p>$ tar -xvf unixODBC-2.3.2.tar</p><p> $ cd unixODBC-2.3.2</p><p> $ cd $ALTIBASE_HOME/lib</p><div> $ file <a class="external-link" href="http://libaltibase_odbc-64bit-ul64.so/" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div><div><a class="external-link" href="http://libaltibase_odbc-64bit-ul64.so/" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: ELF 64-bit LSB shared object, AMD x86-64, version 1 (SYSV), not stripped</div><div> </div><div>  </div><div>$ ./configure -prefix=/home/wonsik/ODBC_HOME --enable-gui=no --enable-threads=yes</div></div>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>prefix: The path to install unixODBC<br />enable-gui: Whether to build GUI ODBC Administrator<br />enable-threads: The default is &quot;yes&quot; if thread-support is found on the machine. All modern Linuxes will have pthreads support in glibc so it is probably best to leave this to default.</p><p>If the enable-threads option is set to no, the following error may occur when testing the connection with isql.</p><div><div>$ ./isql Altiodbc</div><div>./isql: symbol lookup error: /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: undefined symbol: pthread_sigmask</div></div><div><div>$ ./isql Altiodbc</div><div>./isql: symbol lookup error: /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a>: undefined symbol: <strong>pthread_sigmask</strong></div></div>
+                    </div>
+    </div>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<div>$ make</div><div> </div><div>$ make install</div><div> </div><div><div>$ cd ODBC_HOME</div><div> </div></div><div><div>$ dltest $ALTIBASE_HOME/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div>SUCCESS: Loaded /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div></div><div><div>  </div><div><div>$ cat odbc.ini</div><div>[ODBC Data Sources] </div><div>Altiodbc = Altibase ODBC Driver </div><div> </div><div>[Altiodbc] </div><div>Driver = /home/wonsik/altibase_home/lib/<a href="http://libaltibase_odbc-64bit-ul64.so/" class="external-link" rel="nofollow">libaltibase_odbc-64bit-ul64.so</a></div><div>Description = Sample Altibase DSN </div><div>UserName = SYS </div><div>Password = MANAGER </div><div>ServerType = Altibase </div><div>Server = 127.0.0.1 </div><div>User = SYS </div><div>Port = 40501</div><div>Database = mydb </div><div>FetchBufferSize = 64 </div><div>ReadOnly = no </div><div>TraceFile = /home/wonsik/ODBC_HOME/odbc.trace</div><div>Trace = 0</div><div> Trace option means 1 (debug), 0 (normal)</div><div> </div><div>$ export ODBCINI=/home/wonsik/odbc.ini</div><div>  </div><div><div>$ cd $HOME/ODBC_HOME/bin</div><div>  </div></div><div><div>$ odbc_config --ulen</div><div>-DSIZEOF_SQLULEN=8</div><div>  </div></div><div> </div><div><div>$ ./isql Altiodbc</div><div>+---------------------------------------+</div><div>| Connected!                             |</div><div>|                                       |</div><div>| sql-statement                         |</div><div>| help [tablename]                     |</div><div>| quit                                   |</div><div>|                                       |</div><div>+---------------------------------------+</div><div>SQL&gt; </div></div></div></div><p> </p>
+</div></div><p> </p><h1 id="Integratingwithunix_odbc-PHP,PERLIntegration">PHP, PERL Integration</h1><hr /><p>PHP, PERL, etc. support unix_odbc, so it can be integrated with Altibase in the above way.</p><p> </p><h1 id="Integratingwithunix_odbc-PHPIntegrationGuide">PHP Integration Guide</h1><hr /><ol><li><p>Setting related environment variables</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Be sure to set the following variables in advance.</p><p>export CFLAGS=-DBUILD_LEGACY_64_BIT_MODE=1</p><p>export ODBCINI=odbc.ini File location path</p><p>export LD_LIBRARY_PATH=$APACHE_HOME/<a href="http://modules/user/web/odbc/lib:/user/web/php2/lib" class="external-link" rel="nofollow">modules:unixODBC설치경로/lib:PHPinstallationpath/lib</a></p>
+</div></div></li><li><p>Check SQLLEN, SQLULEN</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Move to the bin directory of the nixODBC installation path and use the odbcinst command to check whether SQLLEN size and SQLULEN size are 4.</p><p>In case of 4, it is set to 32bit, and in case of 8, it is set to 64bit.</p><p>$ ./odbcinst -j</p><p>unixODBC 2.3.2</p><p>DRIVERS............: /home/altibase/phptest/unixodbc/etc/odbcinst.ini</p><p>SYSTEM DATA SOURCES: /home/altibase/phptest/unixodbc/etc/odbc.ini</p><p>FILE DATA SOURCES..: /home/altibase/phptest/unixodbc/etc/ODBCDataSources</p><p>USER DATA SOURCES..: /home/altibase/phptest/unixodbc/etc/odbc.ini</p><p>SQLULEN Size.......: 4</p><p>SQLLEN Size........: 4   &lt;—If 4, 32 bit. If 8, 64bit.</p><p>SQLSETPOSIROW Size.: 2</p>
+</div></div></li><li><p>Modify unixODBC's odbc.ini file</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>It can be set to process lob data by adding LongDataCompat=ON to the odbc.ini file.</p>
+</div></div></li><li><p>PHP compilation and installation operation</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$&gt; ./configure \<br />--prefix=/user/web/php \<br />--with-config-file-path=/user/web/php/conf \<br />--with-apxs2=/user/web/apache2/bin/apxs \<br />--with-unixODBC=/user/web/odbc \<br />--with-mcrypt \<br />--with-mhash \<br />--with-openssl \<br />--with-kerberos \<br />--with-curl \<br />--enable-dom \<br />--with-iconv=/usr/local \<br />--with-xmlrpc \<br />--enable-libxml \<br />--with-libxml-dir=/usr/lib64 \<br />--with-gd \<br />--with-freetype-dir=/usr \<br />--with-jpeg-dir=/usr/lib64 \<br />--with-png-dir=/usr/lib64 \<br />--with-zlib-dir=/usr/lib64 \<br />--enable-mbstring \<br />--enable-shmop \<br />--enable-sockets \<br />--enable-sigchild \<br />--enable-soap \<br />--enable-zip \<br />--enable-ftp \<br />--enable-sysvmsg \<br />--enable-sysvsem \<br />--enable-sysvshm \<br />--with-regex=php \<br />--with-pcre-regex \<br />--enable-mbregex \<br />--enable-dba=shared \<br />--enable-mod-charset \<br />--with-xml \<br />--with-pcre \<br />--with-gdbm \<br />--with-dbm</p><p> </p><p>$&gt; make</p><p><br />$&gt; make install</p>
+</div></div><p><br /><br /></p></li><li><p>php.ini settings</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>memory_limit=-1</p><p>odbc.defaultbinmode=1</p><p>odbc.defaultlrl=1048576</p>
+</div></div></li></ol>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

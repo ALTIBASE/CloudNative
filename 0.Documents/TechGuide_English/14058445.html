@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 7. Considerations/Notes for Spring Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 7. Considerations/Notes for Spring Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358771 {padding: 0px;}
+div.rbtoc1624409358771 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358771 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358771'>
+<ul class='toc-indentation'>
+<li><a href='#id-7.Considerations/NotesforSpringIntegration-LOBDataProcessing'>LOB Data Processing</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes considerations when integrating Altibase in Spring.</p><h2 id="id-7.Considerations/NotesforSpringIntegration-LOBDataProcessing">LOB Data Processing</h2><p>In order to process LOB data in ALTIBASE, the user must explicitly manage the transaction after changing the autocommit mode to false. Therefore, in order to process LOB in Spring, TransactionManager bean must be specified. In addition, when using a declarative transaction, propagation must be specified as one of PROPAGATION_REQUIRED, PROPAGATION_REQUIRES_NEW, and PROPAGATION_NESTED. </p><p>If TrnasactionManager is not specified or propagation is set to a value other than above described when using the declarative transaction, a null value is returned when querying LOB data, or &quot;java.sql.SQLException:0:LobLocator can not span the transaction 101858625.&quot; error will occur. In addition, when entering LOB data, &quot;java.sql.SQLException0:LobLocator ca not span the transaction 101858625&quot; error will occur.</p><p>Ex) applicationContext.xml file of LobConnection</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;transactionManager&quot;
+class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;txProxyTemplate&quot; abstract=&quot;true&quot;
+class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;&gt;
+    &lt;property name=&quot;transactionManager&quot;  ref=&quot;transactionManager&quot; /&gt;       
+    &lt;property name=&quot;transactionAttributes&quot;&gt;
+    &lt;props&gt;
+        &lt;prop key=&quot;get*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;
+        &lt;prop key=&quot;add*&quot;&gt;PROPAGATION_ REQUIRED &lt;/prop&gt;
+    &lt;/props&gt;
+    &lt;/property&gt;
+         
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;lobSampleService&quot; parent=&quot;txProxyTemplate&quot;&gt;
+&lt;property name=&quot;target&quot;&gt;
+         &lt;bean class=&quot;com.altibase.lob.LobSampleService&quot;&gt;
+              &lt;property name=&quot;lobSampleDao&quot; ref=&quot;lobSampleDao&quot;/&gt;
+         &lt;/bean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

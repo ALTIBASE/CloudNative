@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : [Warning] Memory allocation failed.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : [Warning] Memory allocation failed.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Dec 02, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054854 {padding: 0px;}
+div.rbtoc1624409054854 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054854 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054854'>
+<ul class='toc-indentation'>
+<li><a href='#id-[Warning]Memoryallocationfailed.-개요'>개요</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-버전'>버전</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-현상'>현상</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-원인및조치'>원인 및 조치</a>
+<ul class='toc-indentation'>
+<li><a href='#id-[Warning]Memoryallocationfailed.-커널파라미터에의해메모리사용이제한된경우'>커널 파라미터에 의해 메모리 사용이 제한된 경우</a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-32비트OS에서알티베이스서버를운용하는경우'>32비트 OS에서 알티베이스 서버를 운용하는 경우 </a></li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-물리메모리가부족한경우'>물리 메모리가 부족한 경우 </a></li>
+</ul>
+</li>
+<li><a href='#id-[Warning]Memoryallocationfailed.-참고'>참고</a></li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-개요"><strong>개요</strong></h1><hr /><p>[Warning] Memory allocation failed. 에 대해 설명합니다. 이 메시지는 OS 환경으로 인해 메모리 할당이 실패한 경우 발생하는 메시지입니다. </p><p><strong><br /></strong></p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 모든 버전<strong> </strong></p><p> </p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-현상"><strong>현상</strong></h1><hr /><ul><li>$ALTIBASE_HOME/trc/altibase_boot.log 에 [Warning] Memory allocation failed. 에러가 발생합니다. </li><li>[ERR-01051 : Memory allocation failed.] 와 같이 에러가 남을 수도 있습니다. </li><li>이 에러는 트랜잭션 수행 중 또는 알티베이스 서버 STARTUP/SHUTDOWN 시에도 발생할 수 있습니다. </li><li>이 에러가 발생하면 신규 접속도 실패할 수 있습니다. </li><li>주로 HP-UX 에서 발생합니다. </li></ul><p> </p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-원인및조치"><strong>원인 및 조치</strong></h1><hr /><h3 id="id-[Warning]Memoryallocationfailed.-커널파라미터에의해메모리사용이제한된경우"><strong>커널 파라미터에 의해 메모리 사용이 제한된 경우</strong></h3><p>가장 많이 발생하는 원인입니다. <br />HP-UX 의 경우 커널 파라미터에 의해 프로세스가 사용할 수 있는 메모리 크기를 제한할 수 있습니다. 알티베이스 서버 프로세스의 메모리 사용이 이 파라미터의 설정값을 초과할 경우 [Warning] Memory allocation failed. 메시지가 발생합니다. <br />해당 커널 파라미터는 아래와 같습니다.  </p><ul><li>maxdsiz           (32bit 프로세스의 경우)</li><li>maxdsiz_64bit (64bit 프로세스의 경우)</li></ul><p> </p><p>커널 파라미터 확인 방법은 아래와 같습니다. 단위는 바이트 단위이며 물리 메모리 크기를 고려하여 충분히 크게 설정해야 합니다. 필요하면 시스템 엔지니어에게 요청하여 변경해주세요. </p><p style="margin-left: 30.0px;">$ /usr/sbin/kctune | grep maxdsiz</p><h3 id="id-[Warning]Memoryallocationfailed.-32비트OS에서알티베이스서버를운용하는경우"><strong>32비트 OS에서 알티베이스 서버를 운용하는 경우 </strong></h3><p>32비트 OS는 하나의 프로세스가 사용할 수 있는 메모리 크기가 2G로 제한되어 있어 이를 고려하지 않고 알티베이스 서버를 운용할 경우 이 메시지가 발생할 수 있습니다.<br /> </p><h3 id="id-[Warning]Memoryallocationfailed.-물리메모리가부족한경우"><strong>물리 메모리가 부족한 경우 </strong></h3><p>실제 물리 메모리가 부족한 경우도 이 메시지가 발생합니다. top, glance 등 시스템 자원 모니터링 툴을 이용하여 물리 메모리 사용률을 확인하세요. </p><p> </p><p> </p><h1 id="id-[Warning]Memoryallocationfailed.-참고"><strong>참고</strong></h1><hr /><ul><li>ALTIBASE HDB 서버의 기본 테이블스페이스는 SYS_TBS_MEM_DATA 입니다. 그래서 CREATE TABLE 수행 시 테이블스페이스를 따로 지정하지 않으면 이 테이블스페이스가 기본으로 지정됩니다. <br />이 테이블스페이스는 시스템 메모리 테이블스페이스로 테이블의 데이터는 메모리를 사용합니다. 때문에 사용자 의도와 다르게 메모리 사용이 커질 수 있으니 이 점도 확인해보아야 합니다. </li><li><a href="attachments/9109748/9404423.pdf">ALTIBASE_&#50868;&#50689;&#51012;_&#50948;&#54620;_HPUX_&#49444;&#51221;_&#44032;&#51060;&#46300;.pdf</a><strong><br class="_mce_tagged_br" /></strong></li></ul><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/9109748/9404423.pdf">ALTIBASE_운영을_위한_HPUX_설정_가이드.pdf</a> (application/pdf)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

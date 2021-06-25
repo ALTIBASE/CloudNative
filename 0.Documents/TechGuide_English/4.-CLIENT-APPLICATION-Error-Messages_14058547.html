@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. CLIENT APPLICATION Error Messages</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Development-Guide_14058519.html">Altibase Development Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. CLIENT APPLICATION Error Messages
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409360271 {padding: 0px;}
+div.rbtoc1624409360271 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409360271 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409360271'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Connectiondoesnotexist'>Connection does not exist</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Communicationlinkfailure'>Communication link failure</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Calculatestackoverflow'>Calculate stack overflow</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Conversionnotapplicable'>Conversion not applicable</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Invalidcursorstate'>Invalid cursor state</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Notdefinedcursor'>Not defined cursor</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-InvalidrequesttoprocesstheSQLstatement'>Invalid request to process the SQL statement</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Invalidliteral'>Invalid literal</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Invalidlengthofdatatype'>Invalid length of data type</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Indicatorvariablerequiredbutnotsuppliederror'>Indicator variable required but not supplied error</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-IncompatibleNLSbetweentheclientandtheserver'>Incompatible NLS between the client and the server</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-InvalidsizeofdatatobindtohostvariableDataSize…'>Invalid size of data to bind to host variable Data Size …</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Invalidcharacterinuse'>Invalid character in use</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Toomanypagesareallocated'>Too many pages are allocated</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-TheTablespacedoesnothaveenoughfreespace'>The Tablespace does not have enough free space</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Thetransactionexceedslocktimeoutspecifiedbyuser'>The transaction exceeds lock timeout specified by user</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Theupdatelogsize‘…’isbiggerthanTRX_UPDATE_MAX_LOGSIZE‘…’'>The update log size ‘…’ is bigger than TRX_UPDATE_MAX_LOGSIZE ‘…’</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Stringdatarighttruncated'>String data right truncated</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Valueoverflow'>Value overflow</a></li>
+<li><a href='#id-4.CLIENTAPPLICATIONErrorMessages-Severalstatementstillopened'>Several statement still opened</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes the types of errors that occur frequently in the environment in which an application program using ALTIBASE, and also explains what users have to check for each type.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Connectiondoesnotexist"><strong>Connection does not exist</strong></h2><div>This error occurs when attempting to process a query in the state that the DBMS is not connected or disconnected. This can occur in the following cases:</div><div><ol><li>When executing a query after disconnection by the TIMEOUT policy described previously</li><li>In the case of a thread program, a connection unique name that does not exist is used</li></ol><p>Check the above details and take appropriate action for the related matters. For example, if it is caused by the TIMEOUT policy, it is necessary to take measures such as increasing the TIMEOUT setting value of the session or performing query tuning.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Communicationlinkfailure"><strong>Communication link failure</strong></h2><div>Generally, the above &quot;Connection does not exist&quot; occurs after this error. This error means that the session was disconnected while executing the query. The cause of this is generally released by the TIMEOUT policy as described previously. Occasionally, the connection may be disconnected due to a network problem.</div><div>Because this problem is a communication socket problem and can be caused by various reasons, it is recommended to check the following:</div><div><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <ol><li>Check whether there is a log in altibase_boot.log where the session was disconnected.</li><li>In the case of a threaded program, check whether the precautions to be followed are not properly observed.</li><li>Check if there was any temporary problem on the network.</li></ol>
+                    </div>
+    </div>
+<h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Calculatestackoverflow"><strong>Calculate stack overflow</strong></h2><div>This error occurs when the stack required by the query executed as an object used in ALTIBASE internally processing a query is insufficient. The user can process the query normally by executing the query as follows before executing the query and then executing the query with an error.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET STACK SIZE = 8192;</pre>
+</div></div><p>Because this value causes an increase in memory, it is recommended to change and use only the relevant session rather than reflecting it on the entire system.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Conversionnotapplicable"><strong>Conversion not applicable</strong></h2><div>This error occurs in the following cases.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE t2 (a BYTE (2));
+INSERT INTO t2 VALUES  (CLOB’1’);</pre>
+</div></div><p>As in the example above, when CLOB data is put in the BYTE column, an error occurs because the type conversion cannot be converted from CLOB to BYTE. That is, there is a matrix compatible with each column type, but this error occurs when such incompatible queries are executed.</p><p>For compatibility between column types, please refer to the ALTIBASE ODBC User Manual.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Invalidcursorstate"><strong>Invalid cursor state</strong></h2><p>This occurs when attempting to open CURSOR again without normally closing CURSOR. Or, it occurs when attempting to fetch a CURSOR that has already been fetched again.</p><p>Occasionally, if the user program is a thread, it may not properly control concurrency for the connection object and thus handle a cursor that is not valid in its own thread. The user must resolve the problem by using it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DECLARE CURSOR
+OPEN CURSOR
+FETCH CURSOR
+/** CLOSE CURSOR **/ -- Omission cases</pre>
+</div></div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Notdefinedcursor"><strong>Not defined cursor</strong></h2><div>This error occurs when using CURSOR and the CURSOR NAME is specified, but this CURSOR NAME does not exist. Or, this error occurs in the process of executing DECLARE (PREPARE) CURSOR. The user must develop as follows.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">DECLARE CURSOR1 FOR :statement;
+If (SQLCODE != 0)              -- Error must be checked even in the PREPARE stage
+    Error_process();
+OPEN CURSOR1 USING :variable;</pre>
+</div></div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-InvalidrequesttoprocesstheSQLstatement"><strong><br />Invalid request to process the SQL statement</strong></h2><p>Generally, this error occurs frequently in thread-structured programs, and also occurs when the order of protocols exchanged between the ALTIBASE server and the client-server is different when the concurrency control for the thread-structured connection object is incorrect as described above.</p><p>If it is in the thread-structure program, the user needs to make sure that this concurrency control is correct. Alternatively, the user should check whether the order in which queries should be executed, such as PREPARE-&gt;BINGING-&gt;EXECUTE, is not properly followed.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Invalidliteral"><strong>Invalid literal</strong></h2><div>This error occurs when an error such as entering a character into a numeric type.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE t1 (a INTEGER);
+INSERT INTO t1 VALUES (‘AAAA’);</pre>
+</div></div><p>This occurs when an attempt is made to insert data as a string even though the column type is numeric, as in the example above.</p><p>Conversely, if the user tries to insert a string into a numeric variable, an error occurs as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">Invalid character value for cast specification.</pre>
+</div></div><p> </p></div><div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Invalidlengthofdatatype"><strong>Invalid length of data type</strong></h2><div>This error occurs when data is input with a larger value than the column type.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE t1 (a CHAR(2));
+INSERT INTO t1 VALUES (&#39;aaaa&#39;);
+[ERR-2100D : Invalid length of the data type]</pre>
+</div></div><p>As in the example above, the column type can store up to 2 bytes. If the user tries to input 4 bytes, an error occurs because the data value is larger than the specified column size.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Indicatorvariablerequiredbutnotsuppliederror"><strong>Indicator variable required but not supplied error</strong></h2><div>This error occurs in the development environment using the precompiler. If the return value of the column is returned as NULL in the SELECT result, this error message occurs along with SQL_SUCCESS_WITH_INFO if the INDICATOR variable is not specified.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">int IND_C1;
+int IND_C2;
+EXEC SELECT C1, C2
+INTO :H_C1 INDICATOR :IND_C1 , :H_C2 INDICATOR :IND_C2;</pre>
+</div></div>As in the above case, you can explicitly use the INDICATOR variable or use the -unsafe_null option in the Precompiler option to prevent an error from occurring.<h2 id="id-4.CLIENTAPPLICATIONErrorMessages-IncompatibleNLSbetweentheclientandtheserver"><strong>Incompatible NLS between the client and the server</strong></h2><div><strong><br /></strong>This error occurs when an attempt is made to connect to the ALTIBASE server with a character set different from the character set in the server. For example, the server is set to MS949, but this error occurs when the client tries to connect with the US7ASCII value.</div><div>The method to query the character set in the server is as follows.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>SELECT * FROM V$NLS_PARAMETERS; (Version 5.3 or later) <s>SELECT name, value1 FROM V$PROPERTY WHERE name = ‘NLS_USE’;</s> --(Version 5.1 or lower)</p>
+</div></div><p> </p></div><div><p> </p>This error only occurs in versions prior to 5.3. From version 5.3, the connection is possible with US7ASCII even if the character set is different. However, if the user tries to store characters such as Hangul due to the difference in character set between the server and the client, it may be stored as incorrect data.<h2 id="id-4.CLIENTAPPLICATIONErrorMessages-InvalidsizeofdatatobindtohostvariableDataSize…"><strong>Invalid size of data to bind to host variable</strong> <strong>Data Size …</strong></h2><div>This error occurs when a query is processed by inserting data larger than the size of the host variable. For example, it occurs when a string larger than 20 is inserted into a host variable declared as CHAR (20). Generally, it can occur when the user fails to initialize a variable or garbage value comes in. Alternatively, it may occur when the binding of statement B is executed after the PREPARE of statement A because of a concurrency control failure in a thread environment program. (Statement A needs to bind 20 bytes, but is handled incorrectly and binds 100 bytes of Statement B)</div><div>First, the user must output the host variable value to check that it does not exceed the length, and check that there is no problem in the concurrency part in the handling of the thread part.</div><div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Invalidcharacterinuse"><strong>Invalid character in use</strong></h2><div>Generally, this error occurs when searching LIKE for Korean. For example, when the character set value of the ALTIBASE server is set to KO16KSC5601 but stored and mixed characters that exceed the expression range of KO16KSC5601.</div><div>If the above error occurs, it is recommended to resolve as follows.</div><div><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <ol><li>Download table data with iLoader</li><li>Stop the ALTIBASE operation</li><li>Change the NLS_USE value of $ALTIBASE_HOME/conf/altibase.properties to MS949</li><li>Start the ALTIBASE operation</li><li>Truncate the target table which has a problem</li><li>Re-upload the data received in (1) with iLoader</li></ol>
+                    </div>
+    </div>
+In other words, when using Korean, it is recommended to use the same character set as MS949 / UTF8 than KSC5601, and to access and process the character set matching the server.<h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Toomanypagesareallocated"><strong>Too many pages are allocated</strong></h2><div><strong><br /></strong>For ALTIBASE memory tablespaces, the sum of all memory tablespaces cannot exceed MEM_MAX_DB_SIZE in $ALTIBASE_HOME/conf/altibase.properties. This error message occurs because all space is full.</div><div>Therefore, it is necessary to delete unnecessary tables or increase MEM_MAX_DB_SIZE to a larger value and restart ALTIBASE. After these temporary measures, it is necessary to resolve it by checking for some reason the increase in the usage of the memory tablespace and whether there has been a query or mass change of the usage for each table.</div><div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-TheTablespacedoesnothaveenoughfreespace"><strong>The Tablespace does not have enough free space</strong></h2><div>This error occurs when there is insufficient free space in the tablespace. In the case of a disk tablespaces, it is necessary to add data files.</div><div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Thetransactionexceedslocktimeoutspecifiedbyuser"><strong>The transaction exceeds lock timeout specified by user</strong></h2><div>DML waits for a lock and operates according to the TIMEOUT policy set in the server, but this error occurs immediately when DDL waits due to a lock held by DML.</div></div></div><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Time</strong></p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Session A</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Session B</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>T1</p></td><td class="confluenceTd"><p>INSERT INTO x1 VALUES … (Lock획득)</p></td><td class="confluenceTd"><p> </p></td></tr><tr><td class="confluenceTd"><p>T2</p></td><td class="confluenceTd"><p> </p></td><td class="confluenceTd"><p>ALTER TABLE x1 ADD COLUMN …(Error)</p></td></tr></tbody></table></div><p>As shown in the table above, if session B attempts to execute DDL while session A acquires the lock with DML first, this error occurs. Therefore, check if a lock exists in the table and resolve it before proceeding.</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Theupdatelogsize‘…’isbiggerthanTRX_UPDATE_MAX_LOGSIZE‘…’"><strong>The update log size ‘…’ is bigger than TRX_UPDATE_MAX_LOGSIZE ‘…’</strong></h2><div><strong><br /></strong></div></div><div>In ALTIBASE, this error occurs when the amount of redo log created by a change transaction is greater than the value specified in TRX_UPDATE_MAX_LOGSIZE in $ALTIBASE_HOME/trc/altibase.properties to prevent subsequent failures caused by the bulk change operation.</div><div>If the transaction must be executed as a single query, the user must change this property value at the session-level and process it as follows.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 0;  (Settings that remove the restriction)</pre>
+</div></div><p>Please be cautious when processing such changes, as more redo log files are created and a situation such as a disk pool failure may occur. Additionally, ALTIBASE attempts to acquire the X-Lock on the table to prevent the increase of resources due to MVCC when making bulk changes, so users need to be aware that queries and changes to the table will be queued due to the X-Lock.</p></div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Stringdatarighttruncated"><strong>String data right truncated</strong></h2><p>This error occurs when the value of the character type returned from the SELECT statement is larger than the size of the declared host variable. Check the column size of the table to be accessed by accessing the DB, and declare the size of the used host variable as (column size + 1 byte).</p><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Valueoverflow"><strong>Value overflow</strong></h2><div>This error occurs when a value larger than the expression range of the numeric column is input.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE TABLE x2 (a NUMERIC(10, 5));
+insert into x2 values (123444.5678);
+[ERR-21010 : Value overflow]</pre>
+</div></div><h2 id="id-4.CLIENTAPPLICATIONErrorMessages-Severalstatementstillopened"><strong>Several statement still opened</strong></h2><div>This error occurs when a query such as CREATE TABLE is executed while the fetch protocol is in progress. Therefore, DDL must be executed after CURSOR-FETCH is completed in all the same sessions, or DDL queries must be executed after closing the open CURSOR. Alternatively, it is necessary to change the code so that the DDL query is executed in a separate session.</div><p> </p></div></div></div></div></div></div></div></div></div></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

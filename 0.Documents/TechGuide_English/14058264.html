@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. Transaction &amp; Lock</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. Transaction &amp; Lock
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p md-focus"><span class="md-plain">The query corresponding to each monitoring element to check transaction and lock information is as follows.</span></p><div><h3 class="md-end-block md-heading md-focus" id="id-4.Transaction&amp;Lock-"><span class="md-plain md-expand"><br /></span></h3><h3 class="md-end-block md-heading md-focus" id="id-4.Transaction&amp;Lock-TransactionandLockInformation"><span class="md-plain md-expand">Transaction and Lock Information</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT TX.ID TX_ID
+     , WAIT_FOR_TRANS_ID BLOCKED_TX_ID
+     , DECODE(TX.STATUS,
+                 0, &#39;BEGIN&#39;,
+                 1, &#39;PRECOMMIT&#39;,
+                 2, &#39;COMMIT_IN_MEMORY&#39;,
+                 3, &#39;COMMIT&#39;,
+                 4, &#39;ABORT&#39;,
+                 5, &#39;BLOCKED&#39;,
+                 6, &#39;END&#39;) STATUS
+     , DECODE(TX.LOG_TYPE, 0, U1.USER_NAME, &#39;REPLICATION&#39;) USER_NAME
+     , DECODE(TX.LOG_TYPE, 0, TX.SESSION_ID, RT.REP_NAME) SESSION_ID
+     , DECODE(TX.LOG_TYPE, 0, ST.COMM_NAME, RR.PEER_IP) CLIENT_IP
+     , DECODE(ST.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , L.LOCK_DESC
+     , DECODE(TX.FIRST_UPDATE_TIME,
+                 0, &#39;0&#39;,
+                 TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;MM/DD HH:MI:SS&#39;)) FIRST_UPDATE_TIME
+     , U2.USER_NAME||&#39;.&#39;||T.TABLE_NAME TABLE_NAME
+     , DECODE(TX.LOG_TYPE, 0, SUBSTR(ST.QUERY, 1, 10), &#39;REMOTE TX_ID &#39;||REMOTE_TID) CURRENT_QUERY
+     , DECODE(TX.DDL_FLAG, 0, &#39;NON-DDL&#39;, &#39;DDL&#39;) DDL
+     , DECODE(TX.FIRST_UNDO_NEXT_LSN_FILENO, -1, &#39;-&#39;, TX.FIRST_UNDO_NEXT_LSN_FILENO) &#39;LOGFILE#&#39;
+  FROM V$TRANSACTION TX,
+       V$LOCK L
+       LEFT OUTER JOIN (SELECT ST.*, SS.AUTOCOMMIT_FLAG, SS.DB_USERID, SS.COMM_NAME
+                          FROM V$STATEMENT ST, V$SESSION SS
+                         WHERE SS.ID = ST.SESSION_ID
+                           AND SS.CURRENT_STMT_ID = ST.ID) ST ON L.TRANS_ID = ST.TX_ID
+       LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL RT ON L.TRANS_ID = RT.LOCAL_TID
+       LEFT OUTER JOIN V$REPRECEIVER RR ON RT.REP_NAME = RR.REP_NAME
+       LEFT OUTER JOIN V$LOCK_WAIT LW ON L.TRANS_ID = LW.TRANS_ID
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U1 ON ST.DB_USERID = U1.USER_ID,
+       SYSTEM_.SYS_TABLES_ T
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U2 ON T.USER_ID = U2.USER_ID
+ WHERE TX.ID = L.TRANS_ID
+   AND T.TABLE_OID = L.TABLE_OID
+   AND TX.STATUS != 6
+ORDER BY TX.ID, ST.ID, TX.FIRST_UPDATE_TIME DESC ; </pre>
+</div></div><ul><li><h4 class="md-end-block md-p md-focus" id="id-4.Transaction&amp;Lock-MainColumnDescription"><span class="md-expand"><strong>Main Column Description</strong></span></h4></li></ul><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TX_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Transaction ID</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">BLOCKED_TX_ID</span></span></td><td class="confluenceTd">The transaction ID that caused the wait to acquire the lock. Blank if none.</td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">STATUS</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">A number from 0 to 6 indicating the status of the transaction is displayed as a string.</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">BEGIN (0), PRECOMMIT (1), COMMIT_IN_MEMORY (2), COMMIT (3), ABORT (4), BLOCKED (5), END (6)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">USER_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the user executing the transaction, and is displayed as 'REPLICATION' in the case of a replication transaction.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">SESSION_ID</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">ID of the session in which the transaction is being executed. In the case of a replication transaction, the replication object name is displayed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CLIENT_IP</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The IP address of the client application related to the session. In the case of a replication transaction, it is the IP of the remote server.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">FIRST_UPDATE_TIME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The time when the transaction first started changing operations. The transaction that only execute SELECT are 0.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LOCK_DESC</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">If the lock is set by the transaction, lock information is output. There are IX_LOCK, IS_LOCK, X_LOCK</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">TABLE_NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The table to acquire the lock. This is displayed in the form of 'username.tablename'.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">CURRENT_QUERY</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The query last executed or currently being executed in a transaction. In the case of a replication transaction, it shows the IP address and transaction ID of the other server.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">DDL</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Whether the transaction is DDL. / DDL (0) non-DDL (1)</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LOGFILE#</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The redo log file number associated with the transaction. A transaction that only performs SELECT is '-'.</span></span></td></tr></tbody></table></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 데이터베이스 생성 가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 데이터베이스 생성 가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 2 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409865259 {padding: 0px;}
+div.rbtoc1624409865259 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409865259 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409865259'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase데이터베이스생성가이드-개요'>개요</a></li>
+<li><a href='#Altibase데이터베이스생성가이드-데이터베이스생성방법'>데이터베이스 생성 방법</a></li>
+<li><a href='#Altibase데이터베이스생성가이드-데이터베이스생성시주의사항'>데이터베이스 생성 시 주의 사항</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase데이터베이스생성가이드-아카이브로그모드'>아카이브 로그 모드</a></li>
+<li><a href='#Altibase데이터베이스생성가이드-DB_NAME'>DB_NAME</a></li>
+</ul>
+</li>
+<li><a href='#Altibase데이터베이스생성가이드-데이터베이스제거방법'>데이터베이스 제거 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase데이터베이스생성가이드-제거대상파일확인'>제거 대상 파일 확인</a></li>
+<li><a href='#Altibase데이터베이스생성가이드-데이터베이스제거'>데이터베이스 제거</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="Altibase데이터베이스생성가이드-개요">개요</h1><hr /><p class="0cm">본 문서는 Altibase 제품의 데이터베이스 생성 방법에 대한 가이드를 제공한다.</p><p class="0cm"> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><h1 id="Altibase데이터베이스생성가이드-데이터베이스생성방법">데이터베이스 생성 방법</h1><hr /><p>Altibase의 EOS(End of Service) 정책에 따라 지원되는 버전들의 데이터베이스 생성 방법을 설명한다. 이 문서의 작성 시점 기준으로 최신 Altibase 버전은 'Altibase ver. 7' 이며 'Altibase ver. 6' 미만의 버전들은 EOS 대상이다. Altibase 제품은 데이터베이스 생성을 하기 전까지는 구동할 수 없기에 구동 전 아래와 같이 데이터베이스 생성을 진행해야 한다.<br /><br /></p><ul style="list-style-type: square;"><li><p>altibase.properties에서 DB_NAME을 확인한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ cat $ALTIBASE_HOME/conf/altibase.properties | grep DB_NAME
+DB_NAME       =  mydb</pre>
+</div></div></li><li><p>DB_NAME이 mydb(기본 값)이 아닐 경우 server 파일을 수정해야 한다.<br />(create database mydb 구문의 mydb를 DB_NAME에 맞게 변경)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ vi $ALTIBASE_HOME/bin/server
+...
+startup process;
+create database mydb INITSIZE=10M noarchivelog character set $2 national character set $3;
+quit
+EOF
+... </pre>
+</div></div></li><li><p>데이터베이스를 생성한다.<br />(server create '데이터베이스 캐릭터셋' '내셔널 캐릭터셋')</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server create MS949 UTF16
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.1.1.3.1
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost, PORT_NO = 20300
+[ERR-910FB : Connected to idle instance]
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+...</pre>
+</div></div><p><br />또는 아래와 같이 데이터베이스를 생성할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -sysdba
+...
+iSQL(sysdba)&gt; startup process
+...
+iSQL(sysdba)&gt; create database mydb INITSIZE=10M noarchivelog character set MS949 national character set UTF16;
+...
+iSQL(sysdba)&gt; exit</pre>
+</div></div><p><br />각 캐릭터셋의 의미는 아래와 같다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th style="text-align: center;" class="confluenceTh">항 목</th><th class="confluenceTh">설 명</th></tr><tr><td style="text-align: center;" class="confluenceTd">데이터베이스 캐릭터셋</td><td class="confluenceTd">데이터베이스에 저장되는 캐릭터셋을 의미한다. <br />(US7ASCII, KO16KSC5601, MS949, BIG5, GB231280, UTF8, SHIFTJIS, EUCJP)</td></tr><tr><td style="text-align: center;" class="confluenceTd">내셔널 캐릭터셋</td><td class="confluenceTd">NVARCHAR, NVARCHAR2에 저장되는 유니코드 기반의 캐릭터셋을 의미한다.<br />(UTF8, UTF16)</td></tr></tbody></table></div></li></ul><h1 id="Altibase데이터베이스생성가이드-데이터베이스생성시주의사항">데이터베이스 생성 시 주의 사항</h1><hr /><p>데이터베이스 생성 시 주의해야 할 항목들은 아래와 같다.<br /><br /></p><h2 id="Altibase데이터베이스생성가이드-아카이브로그모드">아카이브 로그 모드</h2><hr /><ul><li>아카이브 로그 모드는 control 단계에서 설정할 수 있다.</li><li>따라서, 노아카이브 로그 모드에서 아카이브 로그 모드로 변경하기 위해서는 Altibase를 종료 후 시작 과정 중 control 단계로 진입해야 한다.</li><li>아카이브 로그 모드에서 아카이브 로그파일은 Altibase가 지정된 아카이브 로그파일 디렉토리로 로그파일을 복제만 할 뿐 임의로 삭제하지 않기 때문에 사용자의 관리가 필요하다.</li><li><p>백업 주기와 그 주기 안에 생성되는 로그파일 개수를 고려하여 아카이브 로그파일 디렉토리 공간 확보가 필요하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ server stop
+ 
+$ isql -u sys -p manager -sysdba
+...
+iSQL(sysdba)&gt; startup control;
+...
+iSQL(sysdba)&gt; alter database archivelog;
+Alter success.
+iSQL(sysdba)&gt; startup service;
+...
+Command executed successfully.
+iSQL(sysdba)&gt; exit</pre>
+</div></div></li></ul><h2 id="Altibase데이터베이스생성가이드-DB_NAME">DB_NAME</h2><hr /><ul><li>DB_NAME의 경우 데이터베이스 생성 시 결정된다.</li><li>변경하기 위해서는 데이터베이스 재생성을 해야 하기에 마이그레이션을 진행해야 한다.</li><li>따라서, 처음 데이터베이스 생성 시 주의해야 한다.</li></ul><p><br /><br /></p><h1 id="Altibase데이터베이스생성가이드-데이터베이스제거방법">데이터베이스 제거 방법</h1><hr /><p>Altibase 구성 파일들을 전부 삭제함으로써 데이터베이스를 제거할 수 있다. <br /><br /></p><h2 id="Altibase데이터베이스생성가이드-제거대상파일확인">제거 대상 파일 확인</h2><hr /><ul><li><p>정상적인 데이터베이스 제거 여부를 확인하기 위해, 삭제할 데이터 파일과 로그파일을 제거 전 확인한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">iSQL&gt; select name, checkpoint_path from v$tablespaces a, v$mem_tablespace_checkpoint_paths b where a.id = b.space_id;
+ 
+iSQL&gt; select a.name, b.name from v$tablespaces a, v$datafiles b where a.id = b.spaceid;
+ 
+$ cat $ALTIBASE_HOME/conf/altibase.properties | grep ^LOG | grep DIR</pre>
+</div></div></li></ul><h2 id="Altibase데이터베이스생성가이드-데이터베이스제거">데이터베이스 제거</h2><hr /><ul><li><p>Altibase 종료 후 process 단계에서 데이터베이스 제거를 진행한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -u sys -p manager -sysdba
+...
+iSQL(sysdba)&gt; startup process;
+Connecting to the DB server.... Connected.
+
+TRANSITION TO PHASE : PROCESS
+Command executed successfully.
+
+
+iSQL(sysdba)&gt; drop database mydb;
+Checking Log Anchor files
+[Ok] /home/altibase/altibase_home/logs/loganchor0 Exist. 
+[Ok] /home/altibase/altibase_home/logs/loganchor1 Exist. 
+[Ok] /home/altibase/altibase_home/logs/loganchor2 Exist. 
+Removing DB files
+Removing Log files
+Removing Log Anchor files
+Drop success.
+
+iSQL(sysdba)&gt; exit</pre>
+</div></div></li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

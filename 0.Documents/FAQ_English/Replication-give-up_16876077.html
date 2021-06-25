@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Replication give-up</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Replication give-up
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145952 {padding: 0px;}
+div.rbtoc1624409145952 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145952 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145952'>
+<ul class='toc-indentation'>
+<li><a href='#Replicationgive-up-Overview'>Overview</a></li>
+<li><a href='#Replicationgive-up-Version'>Version</a></li>
+<li><a href='#Replicationgive-up-Replicationandlogfiles'>Replication and log files</a></li>
+<li><a href='#Replicationgive-up-Replicationgive-up'>Replication give-up</a></li>
+<li><a href='#Replicationgive-up-Effectofgive-upoccurrence'>Effect of give-up occurrence</a></li>
+<li><a href='#Replicationgive-up-Howtopreventgive-up'>How to prevent give-up</a></li>
+<li><a href='#Replicationgive-up-Setwhethertoproceedwithreplicationwhengive-upoccurs(automatic)'>Set whether to proceed with replication when give-up occurs (automatic)</a></li>
+<li><a href='#Replicationgive-up-Cycle'>Cycle</a></li>
+<li><a href='#Replicationgive-up-Checkwhethergive-uphasoccurred'>Check whether give-up has occurred</a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="Replicationgive-up-Overview">Overview</h1><hr /><p>This document explains the effects of give-up, which is a symptom that can occur when using replication.</p><p> </p><h1 id="Replicationgive-up-Version">Version</h1><hr /><ul><li>This document is written based on Altibase HDB version 6.3.1</li><li>For more detailed information or updates, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or in the comment section on this page.</li></ul><p> </p><h1 id="Replicationgive-up-Replicationandlogfiles">Replication and log files</h1><hr /><p>Altibase replication uses the log_based replication method. In other words, this is a method to ensure data consistency between both servers by transferring logs created on the active side to the standby side.</p><p>In Altibase, log files are not circularly recreated by creating only a certain number of log files, but log files are automatically created continuously as long as the log is created. Therefore, unnecessary log files must be deleted periodically to prevent disk full.</p><p>Log files are deleted when the checkpoint is executed, and log files under the following conditions cannot be deleted.</p><p>(1) Log file referenced by the transaction currently in progress</p><p>(2) Log file that needs to be referenced in replication because replication transmission is not possible</p><p>(3) Log file referenced by the CLR log (Abbreviation for Compensation Log Record, the type of log record created when a transaction is rolled back)</p><p>Therefore, if the replication data transmission is slow for some reason, the log file cannot be deleted and disk full may occur.</p><p> </p><h1 id="Replicationgive-up-Replicationgive-up">Replication give-up</h1><hr /><p>If log files are not deleted due to a replication problem, the user can specify the maximum number of log files that can be kept in replication to prevent disk full.</p><p>If the number of log files that have not been deleted exceeds this number, even if the replication data has not been transmitted, the replication data is abandoned and the log file is deleted to prevent the disk to be full.</p><p>In this way, the phenomenon of deleting log files necessary for replication even though replication data is not transmitted is called replication give-up.</p><h1 id="Replicationgive-up-Effectofgive-upoccurrence">Effect of give-up occurrence</h1><hr /><p>When replication give-up occurs, data inconsistency between both active and standby servers may occur, resulting in serious problems.</p><h1 id="Replicationgive-up-Howtopreventgive-up">How to prevent give-up</h1><hr /><p>To prevent replication give-up, the user must ensure that network speeds that can affect replication performance are always stable.</p><p>In addition, in order to avoid give-up even in abnormal conditions such as power failure or network disconnection, consider the worst-case and increase the value of the property so that give-up does not occur.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>REPLICATION_MAX_LOGFILE = 400</pre>
+</div></div><p>The unit of this property means the number of log files, and if it is set to 400 as in the example above, if the number of log files that have not been deleted currently is 400 or more, a replication give-up occurs.</p><h1 id="Replicationgive-up-Setwhethertoproceedwithreplicationwhengive-upoccurs(automatic)">Set whether to proceed with replication when give-up occurs (automatic)</h1><hr /><p>The user can set how to restart the replication after a brief pause after exceeding the value set by the REPLICATION_MAX_LOGFILE property.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>REPLICATION_SENDER_START_AFTER_GIVING_UP = 1  (default)</pre>
+</div></div><p>If set to 0, the replication &quot;restart SN&quot; (that is, the value of the XSN column of the SYS_REPLICATIONS_ meta table) is initialized to -1, and the replication is stopped. Then, the value of the IS_STARTED column of the SYS_REPLICATIONS_ meta table is changed to 0.</p><p>When set to 1, the value of &quot;Restart SN&quot; for replication is changed to the last (largest) SN of the current log file, and replication is performed again from this &quot;Restart SN&quot;.</p><h1 id="Replicationgive-up-Cycle">Cycle</h1><hr /><p>A check of whether a give-up needs to be performed is made when the checkpoint is performed.</p><p>This is because the log file is deleted at a checkpoint.</p><h1 id="Replicationgive-up-Checkwhethergive-uphasoccurred">Check whether give-up has occurred</h1><hr /><p>When give-up occurs, the give-up time is recorded in the replication meta table.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; set vertical on;
+iSQL&gt; select replication_name, is_started, give_up_time from SYSTEM_.SYS_REPLICATIONS_;
+REPLICATION_NAME         : REP1                                      
+IS_STARTED               : 1           
+GIVE_UP_TIME             :              
+1 row selected.</pre>
+</div></div><pre>REPLICATION_NAME : Replication name</pre><pre>IS_STARTED       : Whether the replication has started (start 1, stop 0)</pre><pre>GIVE_UP_TIME     : The date and time that the replicated was most recently given up.</pre><pre> </pre><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

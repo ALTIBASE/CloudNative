@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Integrating unixODBC Manager</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-and-unixODBC-Integration-Guide_14647413.html">Altibase and unixODBC Integration Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Integrating unixODBC Manager
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter describes how to integrate with Altibase's Unix ODBC Driver.</p><h1 id="id-2.IntegratingunixODBCManager-SettingODBC.INI">Setting ODBC.INI</h1><p>Set the following in the environment variable of the user account.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export ODBCINI=/home/unixODBC/etc/odbc.ini</pre>
+</div></div><p>This setting refers to the configuration file that records the connection information of the odbc driver will be used as the specified file.</p><p>Write the following in /home/unixODBC/etc/odbc.ini and save.</p><ul><li>Example of odbc.ini</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC Data Sources]
+Altiodbc = Altibase ODBC Driver
+[Altiodbc]
+Driver = /altibase_home/lib/libaltibase_odbc-64bit-ul32.so
+Description = Sample Altibase DSN
+UserName = SYS
+Password = MANAGER
+ServerType = Altibase
+Server = 127.0.0.1
+User = SYS
+Port = 20300
+Database = mydb
+FetchBufferSize = 64
+ReadOnly = no
+LongDataCompat=ON
+TraceFile = /tmp/odbc.trace
+Trace = 1</pre>
+</div></div><ul><li>Main setting values</li></ul><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="1" class="confluenceTh">Setting Item</th><th class="confluenceTh">Setting Value</th><th class="confluenceTh">Description</th></tr><tr><td rowspan="3" class="confluenceTd"><p>Driver</p></td><td class="confluenceTd"><a class="external-link" href="http://libaltibase_odbc-64bit-ul64.so/" rel="nofollow">libaltibase_odbc-64bit-ul<strong><span style="color: rgb(255,0,0);">64</span></strong>.so</a></td><td rowspan="2" class="confluenceTd"><p>It is provided according to the bit and the important thing is the confirmation of ul64/32. In the compilation state of some ODBC Managers, the definition of SQLLEN is different from 4 bytes/8 bytes, so an error may occur from the connection stage.</p><p>As there is, it is necessary to check how SQLLEN is defined when compiling the ODBC Manager. (Not a 32/64bit distinction)</p></td></tr><tr><td class="confluenceTd"><a class="external-link" href="http://libaltibase_odbc-64bit-ul32.so/" rel="nofollow">libaltibase_odbc-64bit-ul<strong><span style="color: rgb(255,0,0);">32</span></strong>.so</a></td></tr><tr><td class="confluenceTd"><a class="external-link" href="http://libaltibase_odbc.so/" rel="nofollow">libaltibase_odbc.so</a></td><td class="confluenceTd"><p><a href="http://libaltibase_odbc.so" class="external-link" rel="nofollow">libaltibase_odbc.so</a> is an odbc driver used with a 32bit unixodbc driver. This file is included in the Altibase 32bit client package.</p><p>To be precise, the user must check and write the bits in the file. (Confirm with file &lt;FileName&gt;)</p><p>If unixodbc is compiled with 32bit and used, this driver must be specified and used.</p></td></tr><tr><td colspan="1" class="confluenceTd">LongDataCompat</td><td colspan="1" class="confluenceTd">ON</td><td colspan="1" class="confluenceTd">When using lob data, set to ON.</td></tr></tbody></table></div><p> </p><p>Check the SQLLEN length information above as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>shell&gt; /home/unixODBC/bin] ./<strong>odbcinst -j</strong> unixODBC 2.3.2 DRIVERS............: /home/unixODBC/etc/odbcinst.ini .................... <strong>SQLULEN Size.......: 4 ( 8, if 64bit ) SQLLEN Size........: 4 ( 8, if 64bit )</strong> SQLSETPOSIROW Size.: 2</p>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p><span>The odbc driver to be used must be different according to the SQLLEN size defined in unixODBC. In the case of SQLLEN = (4byte/32bit), <span style="color: rgb(0,51,102);"><strong><span style="color: rgb(0,51,102);"><span style="color: rgb(0,0,0);">libaltibase_odbc-64bit-ul</span><span style="color: rgb(255,0,0);">32</span><span style="color: rgb(0,0,0);">.so</span><a href="http://libaltibase_odbc-64bit-ul32.so" class="external-link" rel="nofollow"></a></span></strong></span> should be used for the odbc driver. When SQLLEN = (8byte/64bit), use <strong>libaltibase_odbc-64bit-ul<span style="color: rgb(255,0,0);">64</span>.so</strong>.</span></p>
+                    </div>
+    </div>
+<h1 id="id-2.IntegratingunixODBCManager-TestingODBCConnection"><br />Testing ODBC Connection</h1><div>When the setting is completed as above, perform the following in the directory where the unixODBC Manager is installed.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; cd /home/unixODBC/bin
+Shell&gt; ./isql Altiodbc
++---------------------------------------+
+| Connected!                            |
+|                                       |
+| sql-statement                         |
+| help [tablename]                      |
+| quit                                  |
+|                                       |
++---------------------------------------+
+SQL&gt;</pre>
+</div></div><p>If the normal connection prompt is shown as above, it can be seen that the connection to the DB is normally performed. In the case of AIX, sometimes the file of <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a> cannot be found in LIBRARY_PATH, or connection is not possible even though it was installed normally for a specific reason.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; ls unixODBC-2.../odbcinst/.libs/libodbcinst.so.1</pre>
+</div></div>Check if the <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a>.1 file exists in the compiled source directory, and if <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a> for this does not exist, it can be solved by placing a symbolic link to <a href="http://libodbcinst.so" class="external-link" rel="nofollow">libodbcinst.so</a>.1 and placing it in LD_LIBRARY_PATH.<p>In the case of SUN, the connection is possible only when the lib path of unixODBC Manager is set in LD_LIBRARY_PATH_64.</p><h1 id="id-2.IntegratingunixODBCManager-SettingODBCtracelogs">Setting ODBC trace logs</h1><p>By logging the ODBC function called from unixODBC as a file, it can be usefully used when analyzing the cause of a problem.</p><p>The following is how to configure unixODBC to record trace logs.</p><ol><li><p>Setting ODBCINST.INI file</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC]
+TraceFile = /home/unixODBC/bin/trace.log 
+Trace = Yes</pre>
+</div></div><p>Set as above in odbcinst.ini in the same directory path as the path where the odbc.ini file is located. DSN name must use [ODBC]. TraceFIle setting value is the location and file name of the file to which the contents to be logged will be recorded. Trace = Yes/No Logging can be selected.</p></li><li><p>Example of unixODBC Trace output</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[ODBC][19094][1473224991.140071][__handles.c][460]
+                Exit:[SQL_SUCCESS]
+                        Environment = 0x1b3a760
+[ODBC][19094][1473224991.140170][SQLAllocHandle.c][375]
+                Entry:
+                        Handle Type = 2
+                        Input Handle = 0x1b3a760
+[ODBC][19094][1473224991.140216][SQLAllocHandle.c][493]
+                Exit:[SQL_SUCCESS]
+                        Output Handle = 0x1b3b090
+..................................</pre>
+</div></div><p>If the trace.log is opened, the contents of the files can be checked as above.</p></li></ol><p> </p></div><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

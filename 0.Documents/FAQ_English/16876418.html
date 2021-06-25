@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11184 (  70020) Insufficient free space in work area</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11184 (  70020) Insufficient free space in work area
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148534 {padding: 0px;}
+div.rbtoc1624409148534 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148534 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148534'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Overview'>Overview</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Version'>Version</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Symptom'>Symptom</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Cause'>Cause</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Howtochecktheworkareasettingvalue'>How to check the work area setting value</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Howtochangetheworkareasettingvalue'>How to change the work area setting value</a></li>
+<li><a href='#ERR-11184(70020)Insufficientfreespaceinworkarea-Precautionswhenchangingtheworkareasettingvalue'>Precautions when changing the work area setting value</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Overview">Overview</h1><hr /><p>This document describes the cause of the ERR-11184 (70020) Insufficient free space in work area error that occurs when executing a query and how to fix it.</p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Version">Version</h1><hr /><p>Altibase server 6.3.1 or later</p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Symptom">Symptom</h1><hr /><p>This can occur when a disk table is used in a query statement and a query statement that requires SORT or HASH operation processing is executed.</p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Cause">Cause</h1><hr /><p>This error occurs due to insufficient memory space called Work Area.</p><p>Work Area refers to a memory space of a certain size reserved by the OS when the Altibase server is running for better performance when performing SORT/HASH operations on disk table data.</p><p>When SORT or HASH operation is required when executing a query, it is allocated and used in the work area as much as a predetermined size. If SORT operation is required, it is allocated as much as SORT_AREA_SIZE in the work area and used. If the HASH operation is required, it is allocated as much as HASH_AREA_SIZE in the work area and used.</p><p>Multiple transactions requiring SORT/HASH operations can be executed at the same time. At this time, if trying to get SORT_AREA_SIZE or HASH_AREA_SIZE from the work area, but there is no free memory to allocate in the work area, this error occurs.</p><p> </p><h1 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Solution">Solution</h1><hr /><p>It is caused by insufficient work area, so the size of the work area must be increased larger than the current value.</p><p>The size of the work area can be set with the Altibase server property TOTAL_WA_SIZE.</p><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Howtochecktheworkareasettingvalue">How to check the work area setting value</h3><ul><li><p>Check the current setting value with the sentence below.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TOTAL_WA_SIZE&#39;;</pre>
+</div></div></li></ul><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Howtochangetheworkareasettingvalue">How to change the work area setting value</h3><ul><li><p>Change with ALTER SYSTEM statement.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TOTAL_WA_SIZE = value ; -- value is in bytes.</pre>
+</div></div></li><li><p>The Altibase server configuration file is also changed so that the value changed to ALTER SYSTEM is reflected even after restarting the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">shell&gt; cd $ALTIBASE_HOME/conf
+shell&gt; vi altibase.properties        # Find and change the TOTAL_WA_SIZE property in the altibase.properties file. 
+TOTAL_WA_SIZE                        = 134217728 # default = 134217728   </pre>
+</div></div></li></ul><h3 id="ERR-11184(70020)Insufficientfreespaceinworkarea-Precautionswhenchangingtheworkareasettingvalue">Precautions when changing the work area setting value</h3><ul><li><p>If TOTAL_WA_SIZE is changed larger than the current setting value, the size of V$MEMSTAT increases, and Altibase server process memory usage and VSZ also increase.</p></li><li><p>For Altibase 7 or higher, the Temp_Memory area of V$MEMSTAT increases and</p></li><li><p>In the case of Altibase 6.3.1 and 6.5.1, the Storage_Disk_Buffer area of V$MEMSTAT increases.</p></li><li><p>If the ALTER SYSTEM SET TOTAL_WA_SIZE statement is executed while a query statement that requires a disk SORT/HASH operation is executed (transaction using a work area), this statement waits until the previously executed transaction is terminated.</p></li><li><p>ALTER SYSTEM SET TOTAL_WA_SIZE = ... If a query statement that requires a disk SORT/HASH operation is executed while the statement is being executed, the transaction waits until the ALTER SYSTEM statement is finished.</p></li></ul><p> </p><hr />
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

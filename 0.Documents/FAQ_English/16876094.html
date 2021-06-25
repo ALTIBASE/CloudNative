@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to add/delete replication target table</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to add/delete replication target table
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145716 {padding: 0px;}
+div.rbtoc1624409145716 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145716 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145716'>
+<ul class='toc-indentation'>
+<li><a href='#Howtoadd/deletereplicationtargettable-Overview'>Overview</a></li>
+<li><a href='#Howtoadd/deletereplicationtargettable-Version'>Version</a></li>
+<li><a href='#Howtoadd/deletereplicationtargettable-Addingreplicationtargettable'>Adding replication target table</a></li>
+<li><a href='#Howtoadd/deletereplicationtargettable-Deletingreplicationtargettable'>Deleting replication target table</a></li>
+<li><a href='#Howtoadd/deletereplicationtargettable-Referencedocuments'>Reference documents</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtoadd/deletereplicationtargettable-Overview">Overview</h1><hr /><p>This document describes how to add or delete replication target tables in the replication object.</p><p> </p><h1 id="Howtoadd/deletereplicationtargettable-Version">Version</h1><hr /><p>Altibase version 4.3.9 or later</p><p> </p><h1 id="Howtoadd/deletereplicationtargettable-Addingreplicationtargettable">Adding replication target table</h1><hr /><ul><li>This is the procedure for adding tables to be replicated in the replication object.</li></ul><ol><li><p><strong>Stop the replication</strong><br />Execute in the server where the replication sending thread is running.<br />With the statement below, the replication sender of the local server and the receive thread of the remote server are stopped.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- Check the replication running status
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li><li><p><strong>Add the replication target table</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;</pre>
+</div></div></li><li><p><strong>SYNC the replication</strong><br />If the data on both servers do not match, TRUNCATE one server table and then perform a SYNC statement on the server where the data exists to match the data.<br />If the data matches on both servers 4, start the replication.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name SYNC ONLY TABLE user_name.table_name;</pre>
+</div></div></li><li><p><strong>Start the replication</strong><br />If the data on both servers match each other, execute the replication start statement.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name START;
+
+-- Chcek the replication running status.
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li></ol><h1 id="Howtoadd/deletereplicationtargettable-Deletingreplicationtargettable"><span style="color: rgb(0,0,0);">Deleting replication target table</span></h1><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);"> </span></p><ul><li>This is the procedure for deleting tables to be replicated in the replication object.</li></ul><ol><li><p><span style="color: rgb(0,0,0);"><strong>Stop the replication</strong></span><br /><span style="color: rgb(0,0,0);">Execute in the server where the replication sending thread is running.</span><br /><span style="color: rgb(0,0,0);">With the statement below, the replication sender of the local server and the receive thread of the remote server are stopped.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- Chcek the replication running status.
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p></li><li><p><span style="color: rgb(0,0,0);">Delete the replication target table</span></p><p><span style="color: rgb(0,0,0);">This is the statement for deleting the replication target table in the replication object in each of the replication target servers.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name DROP TABLE user_name.table_name TO user_name.table_name;
+
+-- Statement for checking the replication target table.
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;</pre>
+</div></div></li><li><p>Start the replication</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name START;
+
+-- Check the replication running status
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li></ol><h1 id="Howtoadd/deletereplicationtargettable-Referencedocuments">Reference documents</h1><hr /><ul><li>For syntax explanation and additional options of the ALTER REPLICATION statement, refer to SQL Reference Manual -&gt; 3. Data Definition Language -&gt; ALTER REPLICATION.</li><li>Manual download page: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a></li><li>Github: <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

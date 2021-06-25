@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 요약</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698415.html">Altibase 운영을 위한 Solaris 설정 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 요약
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p class="0cm">솔라리스 운영체제에서 Altibase의 안정적인 운영을 위해서는 커널파라미터 설정 및 사용자 환경 설정을 사전에 수행해야만 한다. 설정을 올바르게 수행하지 않은 경우, 시스템의 리소스가 충분함에도 불구하고 각각의 제한 값들에 의해 문제가 발생 할 수 있으므로 주의해야 한다.</p><h1 class="0cm" id="id-요약-설정예제">설정예제</h1><h2 id="id-요약-커널파라미터">커널파라미터</h2><p>아래 표를 참조, 적절한 커널파라미터를 설정하도록 한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p>분류</p></th><th class="confluenceTh"><p>커널파라미터</p></th><th class="confluenceTh"><p>권장 값</p></th><th class="confluenceTh"><p>비고</p></th></tr><tr><td rowspan="3" class="confluenceTd"><p>공유메모리</p></td><td class="confluenceTd"><p>shmmax</p></td><td class="confluenceTd"><p>2G+1</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>shmmni</p></td><td class="confluenceTd"><p>500</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>shmseg</p></td><td class="confluenceTd"><p>200</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td rowspan="8" class="confluenceTd"><p>세마포어</p></td><td class="confluenceTd"><p>semmns</p></td><td class="confluenceTd"><p>8192</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semmni</p></td><td class="confluenceTd"><p>5029</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semmsl</p></td><td class="confluenceTd"><p>2000</p></td><td class="confluenceTd"><p>너무 큰 값을 설정하지 않도록 주의.</p></td></tr><tr><td class="confluenceTd"><p>semmap</p></td><td class="confluenceTd"><p>5024</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semmnu</p></td><td class="confluenceTd"><p>1024</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semopm</p></td><td class="confluenceTd"><p>512</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semume</p></td><td class="confluenceTd"><p>512</p></td><td class="confluenceTd"><p>-</p></td></tr><tr><td class="confluenceTd"><p>semvmx</p></td><td class="confluenceTd"><p>32767</p></td><td class="confluenceTd"><p>일반적으로 32767을 초과하지 않음.</p></td></tr></tbody></table></div><p>메모리DB를 공유메모리에 적재할 경우 추가 고려되어야 하는 요소는 [공유메모리] 섹션을 참조하도록 한다.</p><h2 id="id-요약-사용자리소스제한"><strong>사용자 리소스 제한</strong></h2><p>sh, bash, ksh의 경우, 환경설정파일을 이용한 필수 환경변수 설정예제는 아래와 같다. csh의 경우는 export 대신 setenv 와 같은 쉘 명령어를 통해 선언한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">  #For ALTIBASE
+  ALTIBASE_HOME=/ALTIBASE;  export ALTIBASE_HOME;
+  PATH=$ALTIBASE_HOME/bin:$PATH;  export PATH;
+  ALTIBASE_NLS_USE=MS949;  export ALTIBASE_NLS_USE;
+  LD_LIBRARY_PATH=$ALTIBASE_HOME/lib:$LD_LIBRARY_PATH;
+  export LD_LIBRARY_PATH;
+
+  LD_LIBRARY_PATH_64=$ALTIBASE_HOME/lib:$LD_LIBRARY_PATH_64;
+  export LD_LIBRARY_PATH_64;
+
+  
+  #For Resource Limitation
+  ulimit –d unlimited  #data segment size,  data
+  ulimit –f unlimited  #file size, fsize
+  ulimit –n unlimited  #file descriptor(open files), nofiles
+  ulimit –v unlimited  #virtual memory, memory</pre>
+</div></div><p>참고로 ksh의 경우, 환경변수가 미리 정의되지 않은 상태에서 환경변수를 사용하여 또 다른 환경변수를 정의 시 오류가 발생할 수 있다.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

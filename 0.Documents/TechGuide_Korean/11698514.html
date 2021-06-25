@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : ADO.NET 설정사항</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698513.html">Altibase window ADO.NET 개발 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : ADO.NET 설정사항
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>본문서는  WINDOWS ADO.NET 환경의 ALTIBASE 응용 프로그램 개발을 위한 Altibase.Data.AltibaseClient.dll을 다운로드 받고 설치하는 방법에 관해서 설명한다.  ADO.NET 에  관한  더 자세한 내용은 &quot;Application program Interface User's Manual&quot; 을 참고한다.</p><h1 id="ADO.NET설정사항-ADO.NET"><a name="_Toc273085966" rel="nofollow"></a><span>ADO.NET</span><span> </span></h1><p>ADO.NET은 OLEDB, ODBC를 통해 연결되는 데이터소스뿐 아니라 XML과 같은 데이터소스에 대한 일관성 있는 접근을 제공하기 위해 고안된 방법을 의미한다. ADO.NET의 구성요소는 크게 .NET Framework Data Provider와 DataSet으로 나눌수 있으며 ALTIBASE는 이중 .NET Frmaework Data Provider와 관련된 것을 제공하는 것이라 보면 된다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>구성요소</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>.NET Framework Data Provider</p></td><td class="confluenceTd"><p>데이터의 조작 및 고속 데이터 접근을 위해 디자인된 구성요소</p></td></tr><tr><td class="confluenceTd"><p>DataSet</p></td><td class="confluenceTd"><p>데이터소스에 상관없이 데이터에 접근할 수 있게 디자인된 구성요소</p></td></tr></tbody></table></div><p><span>.NET Framework Data Provider의 세부적인 구성요소는 아래와 같다</span></p><p><span>
+
+<map id="gliffy-map-11665713-9289" name="gliffy-map-11665713-9289"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 520px;" usemap="#gliffy-map-11665713-9289" src="attachments/11698514/11665714.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>클래스</strong></p></th><th class="confluenceTh"><p><strong>설명</strong></p></th></tr><tr><td class="confluenceTd"><p>Connection</p></td><td class="confluenceTd"><p>데이터소스에 대한 연결을 제공하는 역할</p></td></tr><tr><td class="confluenceTd"><p>Command</p></td><td class="confluenceTd"><p>연결된 DB에 질의를 수행하는 역할</p></td></tr><tr><td class="confluenceTd"><p>DataReader</p></td><td class="confluenceTd"><p>연결된 DB에서 레코드를 읽어들이는 역할</p></td></tr><tr><td class="confluenceTd"><p>DataAdapter</p></td><td class="confluenceTd"><p>DataSet객체에 데이터를 채우는 역할</p></td></tr></tbody></table></div><p>뒤에 소개 할 소스 예제에서는 ALTIBASE에서 제공하는 Connection, Command, DataReader, DataAdapter등에 대한 간략한 사용 예를 설명하고 있다.</p><h1 id="ADO.NET설정사항-요구사항">요구사항</h1><p>Altibase ADO.NET provider 를 사용하기 위해서 필요한 환경은 아래와 같다.</p><ul><li>.NET Framework<br />알티베이스 HDB 패키지에 포함된 .NET Data Provider는 .NET Framework 2.0 이상, Entity FrameWork는 .NET Framework 3.5 SP1이상에서 사용하기를 권장한다.</li><li>ADO.NET 버전에 따라서 다른 .NET Data Provider<br />ADO.NET 버전에 따라서 다른 라이브러리 파일을 제공하므로, 사용하려는 ADO.NET 버전에 적합한 라이브러리를 사용해야 한다</li><li>Altibase CLI 라이브러리<br />ALTIBASE HDB .NET Data Provider는 Altibase CLI 라이브러리를 이용하여 데이타베이스 서버에 접속하므로 Altibase CLI 라이브러리를 설치해야 한다. 알티베이스 HDB (서버 또는 클라이언트) 패키지에 기본으로 제공된다.</li><li>DTC 시스템 서비스<br />분산 트랜잭션을 수행하기 위해서는 DTC 시스템 서비스가 설치되어 있어야 한다. 또한 ALTIBASE HDB .NET Data Provider는 XA 트랜잭션과 연동시켜 분산 트랜잭션을 수행하기 때문에 DTC 설정시 'XA 트랜잭션 사용' 옵션을 반드시 활성화시켜야 한다.  </li></ul><p> </p><h1 id="ADO.NET설정사항-ADO.NETDLL다운로드">ADO.NET DLL 다운로드</h1><p><a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a>에 접속하여  &quot;다운로드&quot; --&gt; &quot;제품&quot;  부분으로 이동한후 LIBRARY Section 에서  altiadonetX.X.X_32/64bit.zip 파일을  받은 후 압축을 풀면  ADO.NET DLL 이 들이있다.  만일, 서버패키지와 동일한 버전을 얻고자 할 경우는 “CLIENT” Section 부분에서 동일한 버전을 사용하면 된다.</p><p>(웹 사이트에 없는 이전 버전인 경우 <a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a> 의 QnA 게시판으로  문의하도록 한다.)</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><img class="confluence-embedded-image" width="600" src="attachments/11698514/11665716.png" data-image-src="attachments/11698514/11665716.png"></th><th class="confluenceTh"><img class="confluence-embedded-image" width="600" src="attachments/11698514/11665717.png" data-image-src="attachments/11698514/11665717.png"></th></tr></tbody></table></div><p>( 본 문서의 작성 시점에는 altiadonet6.5.1.2_64/32.zip 파일이 최신으로 업로드 되어 있다 )</p><h1 id="ADO.NET설정사항-ADO.NETDLL설치">ADO.NET DLL 설치</h1><p>처음 설치할 경우라면 WINDOWS CLIENT패키지를 다운로드 받아 설치하도록 한다. 설치파일에서는 별도의 복잡한 진행과정이 없어 본 문서에서는 별도로 설명하지 않는다. 일반적으로 패키지를 설치했거나 또는, 압축파일 해제 후 &quot;Altibase.Data.AltibaseClient.dll&quot; 과 &quot;odbccli_sl.dll&quot; 이라는 파일을 확인할 수 있다. (설치 시 %ALTIBASE_HOME%/lib 에 위치)</p><p> </p><h1 id="ADO.NET설정사항-ADO.NET응용프로그램컴파일하기">ADO.NET 응용프로그램 컴파일 하기</h1><p>Visual Studio IDE환경에서 Altibase ADO.NET Data Provider 를 사용하여 어플리케이션을 컴파일하는 과정을 설명한다.</p><h3 id="ADO.NET설정사항-1.새프로젝트를연다.">1.  새프로젝트를 연다.</h3><p>파일-&gt;새로만들기-&gt;프로젝트 메뉴를 열어서 아래와 같이 새프로젝트를 생성한다.</p><p><img class="confluence-embedded-image" width="700" src="attachments/11698514/11665719.png" data-image-src="attachments/11698514/11665719.png"></p><p> </p><h3 id="ADO.NET설정사항-2.참조추가하기를통해서AltibaseADO.NETDataProvider를등록한다.">2. 참조 추가하기를 통해서 Altibase ADO.NET Data Provider를 등록한다.  </h3><p>아래와 같이  좌측  프로젝트 탐색기 트리에서  &quot;References(참조)&quot; 에서 마우스 오른쪽을 클릭해서 참조 추가를 통해서 &quot;Altibase.Data.AltibaseClient.dll&quot; 을 추가한다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">1) 참조에서 마우스 오른쪽 버튼 클릭해서 &quot;참조 추가&quot; 클릭</th><th class="confluenceTh">2) 대화창에서 Altibase.Data.AltibaseClient.dll 경로로 이동해서 설정완료함</th></tr><tr><td class="confluenceTd"><img class="confluence-embedded-image" width="480" src="attachments/11698514/11665720.png" data-image-src="attachments/11698514/11665720.png"></td><td class="confluenceTd"><img class="confluence-embedded-image" width="550" src="attachments/11698514/11665721.png" data-image-src="attachments/11698514/11665721.png"></td></tr></tbody></table></div><p> </p><p>참조 추가가 완료되면 아래와 같이  솔루션탐색기의 참조 트리에  &quot;Altibase.Data.AltibaseClient&quot;  Altibase ADO.NET provider가 추가된다.</p><p><img class="confluence-embedded-image" width="560" src="attachments/11698514/11665722.png" data-image-src="attachments/11698514/11665722.png"></p><p> </p><h3 id="ADO.NET설정사항-3.odbccli_sl.dll은동적라이브러리경로에포함되도록한다.">3.  odbccli_sl.dll은 동적라이브러리 경로에 포함되도록 한다.  </h3><p>ALTIBASE의 ADO.NET 라이브러리는 반드시 odbccli_sl.dll파일을 필요로 한다. 따라서 odbccli_sl.dll 을 참조할 수 있는 경로에 위치시켜야 한다.   odbccli_sl.dll 을 참조할 수 있도록 하는 방법에는 아래의 2가지 방식이 있다.</p><h4 id="ADO.NET설정사항-3.1실행파일이위치한폴더에배치하는방법">3.1 실행파일이 위치한 폴더에 배치하는 방법</h4><p>odbccli_sl.dll 을 실행파일이 위치한 폴더와 동일에 폴더에 배치하면  실행파일의 현재 경로에서 참조한다.</p><h4 id="ADO.NET설정사항-3.2환경변수PATH에odbccli_sl.dll라이브러리가위치한경로를추가하는방법">3.2 환경변수 PATH에 odbccli_sl.dll 라이브러리가 위치한 경로를 추가하는 방법</h4><p><span>환경변수 PATH 에 odbccli_sl.dll 이 위치한 경로를 추가하는 방식이다. odbccli_sl.dll 이 C:\altibase_client32\lib 에 있을 경우 아래와 같이 PATH에 추가한다.  Visual Studio 를 재실행해야 변경된 PATH 환경변수 내용을  Visual Studio 가 인식할 수 있다.</span></p><p><img class="confluence-embedded-image" src="attachments/11698514/11665723.png" data-image-src="attachments/11698514/11665723.png"></p><p><span><br /></span></p><h1 id="ADO.NET설정사항-주의점"><span style="color: rgb(0,0,0);">주의점</span></h1><h3 id="ADO.NET설정사항-VisualStudio의컴파일Bit타입에맞는라이브러리를사용해야한다"><span style="color: rgb(0,0,0);">Visual Studio 의 컴파일 Bit 타입에 맞는 라이브러리를 사용해야 한다</span></h3><p><span style="color: rgb(0,0,0);">Visual Studio는  옵션을 통해서 어플리케이션의 컴파일 비트를  64bit 또는 32bit로 선택할 수 있다.   </span></p><p><img class="confluence-embedded-image" src="attachments/11698514/11665718.png" data-image-src="attachments/11698514/11665718.png"></p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>반드시 Visual Studio 의 컴파일 bit 타입에 맞는 Altibase ADO.NET library를 사용하여야 한다. Visual Studio 가 32bit 로 컴파일 되도록 설정되어 있은 경우 support.altibase.com 에서 다운로드시 &quot;altiadonetX.X.X.X_<span style="color: rgb(255,0,0);">32bit</span>.zip&quot; 를 받아서 사용해야 하고 64bit 컴파일 모드로 설정된 경우는 &quot;altiadonetX.X.X.X_<span style="color: rgb(255,0,0);">64bit</span>.zip&quot;를 받아서 사용해야 한다. 만일 Visual studio의 Bit 설정과 다른 타입의 DLL을 사용할 경우 run time 오류가 발생한다.</p>
+                    </div>
+    </div>
+<p> </p><p><span><br /></span></p><h1 id="ADO.NET설정사항-준비완료"><span>준비 완료</span></h1><p>위와 같이  두 파일의 설치가 끝나면 ADO.NET provider를 사용하기 위한 환경준비가 완료된다.</p><p><span><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665713">DataProvider 세부구조</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665714.png">DataProvider 세부구조.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665715.png">odbccli_sl위치.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665716.png">support_download.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665717.png">support_downloadadonet.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665718.png">비트선택.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665719.png">새프로젝트열기.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665720.png">참조추가.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665721.png">참조추가2.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665722.png">참조추가완료.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665723.png">패스추가하기.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11698514/11665724.png">환경변수설정.PNG</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

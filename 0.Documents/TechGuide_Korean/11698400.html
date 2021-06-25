@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 4. 기타 사례를 통한 CPU문제들</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698396.html">Altibase CPU과부하 현상에 대한 분석가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 4. 기타 사례를 통한 CPU문제들
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>성능이 원하는 수준은 아니지만 CPU도 예상 수치만큼 사용하지 않는 경우들이 발생할 수 있다. 이러한 현상들은 다음과 같은 경우들을 고려해야 한다.</p><h1 id="id-4.기타사례를통한CPU문제들-4.1DB와응용프로그램Characterset불일치">4.1 DB와 응용프로그램 Character set 불일치</h1><p>문자 셋(NLS_USE)의 설정이 DB와 응용프로그램이 다른 경우 내부적인 문자 셋의 변환작업(Encoding)으로 인해 ALTIBASE 성능이 저하되고 CPU사용량이 높아지는 현상이 보고된 사례가 있다.  이 경우 DB서버와 응용프로그램간의 문자 셋을 일치시켜 문제를 해결한다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># client 의 NLS_USE 확인하는 쿼리</p><p>iSQL&gt; select id, comm_name, client_nls from v$session;</p><p> </p><p>#  DB의 문자셋을 확인하는 쿼리</p><p>iSQL&gt; select * from v$nls_parameters;<br />SESSION_ID : 1 <br />NLS_USE : US7ASCII &lt;---- 현재 client 의 character set<br />NLS_CHARACTERSET : MS949 &lt;--- DB server의 character set<br />NLS_NCHAR_CHARACTERSET : UTF8 <br />NLS_COMP : BINARY <br />NLS_NCHAR_CONV_EXCP : FALSE <br />NLS_NCHAR_LITERAL_REPLACE : FALSE</p><p>1 row selected.</p>
+</div></div><p> </p><h1 id="id-4.기타사례를통한CPU문제들-4.2서비스쓰레드증가"><span style="color: rgb(0,0,0);">4.2 서비스쓰레드 증가</span></h1><p>Altibase 4.3.x버전대는 'Dedicated Thread'의 증가로 인한 'Select-Poll' system-call에 의한 CPU사용량이 증가하는 경우가 보고된 사례가 있다.<br />Altibase는 세션의 접속을 'Service Thread'가 담당하여 트랜잭션을 처리하는데 Long-run질의가 발생하거나 모든 'Service Thread'가 실행(Executing)상태가 되면 새로운 접속이나 대기하는 트랜잭션들을 처리하기 때문에 별도의 새로운 'Dedicated Thread'를 실시간으로 생성하게 된다.<br />새롭게 생성된 'Dedicated Thread'들이 자신이 처리할 트랜잭션이 존재하는지 주기적으로 체크하게 되는데 이 과정에서 ALTIBASE는 'Select-Poll' system-call이 많아지고 CPU사용량 중 sys(%)사용량이 증가하는 패턴을 보인다.</p><p>아래의 쿼리로 DB의 서비스쓰레드 상태를 조회할  수 있다.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>iSQL&gt; select type,state, run_mode, count(*)
+    2 from v$service_thread
+    3 group by type,state, run_mode;
+TYPE                  STATE       RUN_MODE   COUNT(*)             
+-----------------------------------------------------------------------
+IPC                   POLL        DEDICATED  1                    
+SOCKET(MULTIPLEXING)  EXECUTE     SHARED     1                    
+SOCKET(MULTIPLEXING)  POLL        SHARED     31                   
+3 rows selected.</pre>
+</div></div><p><br /><br />이런 유형에 대비하여 'MULTIPLEXING_POLL_TIMEOUT'이란 속성값을 증가시키는 방안이 있는데 이것은 'Select-Poll' system-call의 수행주기를 증가시켜 system-call의 횟수를 감소시키는 것이다.<br />근본적으로 사용자는 'Dedicated Thread'가 발생하는 이유가 세션의 증가, 트랜잭션의 부하증가, 다수의 Long-Run질의, 락 경합 등에 의한 경우임으로 이런 상황들을 원천적으로 해소할 개선방안에 대해 고민해야 한다.</p><h1 id="id-4.기타사례를통한CPU문제들-4.3OS환경변수설정의영향"><span style="color: rgb(0,0,0);">4.3 OS환경변수 설정의 영향</span><span style="color: rgb(0,0,0);"> </span></h1><p>OS 환경변수 설정에 따른 CPU사용량의 변화가 있을 수 있는데 ALTIBASE는 멀티쓰레드 구조를 채택하기 때문에 OS의 설정에 대해 이와 관련된 설정을 적절하게 할 필요가 있다.  해당 설정은 CPU사용량의 감소측면이 아니라 CPU를 사용하는 만큼의 성능을 나타내지 못하는 경우들에 대한 설정으로 이해하면 된다.</p><p>자세한 사항들은 OS별로 제공되는 'Altibase 설치가이드'를 참고한다.</p><p> </p><h1 id="id-4.기타사례를통한CPU문제들-4.4빈번한DBconnection시도">4.4 빈번한 DB connection 시도</h1><p>Altibase의 v$statement에는 현재 접속된 세션이 수행한 질의에 대한 실행정보를 가지고 있다. 따라서, Connect/Disconnect의 반복적 수행이 발생하는 구조에서는 이 정보에서 악성질의를 탐색하기가 매우 어렵다.</p><h2 id="id-4.기타사례를통한CPU문제들-4.4.1빈번한DB접속이발생하는지여부의확인">4.4.1 빈번한 DB 접속이 발생하는지 여부의 확인</h2><p>아래의 쿼리로 확인할 수 있다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 빈번한 connect/disconnect을 수행하는지에 파악 (빈번한 connect/disconnect은 성능감소 유발)
+SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME LIKE ‘%logon cum%’;
+ 
+-- 반복적인 PREPARE과정을 수행함으로 CPU를 비효율적으로 사용하는지 파악
+SELECT NAME, VALUE FROM V$SYSSTAT WHERE NAME LIKE ‘%prepare%count%’;</pre>
+</div></div><h2 id="id-4.기타사례를통한CPU문제들-4.4.2프로파일링을통한튜닝대상쿼리의선정"><br />4.4.2 프로파일링을 통한 튜닝 대상 쿼리의 선정</h2><p>더더욱, 매번 Connect/Disconnect의 비용만큼 응용프로그램의 성능도 저하될 수 밖에 없다. 따라서, 사용자는 이와 같은 응용프로그램의 구조를 DB에 연결된 상태에서 처리되도록 변경하는 것이 바람직하며 이것이 불가능할 경우 DB의 성능저하를 감수하더라도 다음과 같이 프로파일링 기능을 통해 악성질의를 탐색해야 한다.<br /><br /></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SYSTEM SET TIMED_STATISTICS=1;
+ALTER SYSTEM SET QUERY_PROF_FLAG=1;  -- 기능 실행
+ALTER SYSTEM SET QUERY_PROF_FLAG=0;  /* 기능 종료 */</pre>
+</div></div><p><br />위 기능을 수행한 이후 수행된 모든 질의는 $ALTIBASE_HOME/trc/xxxxx.prof라는 확장자가 '*.prof'라는 파일명으로 기록이 된다. 이 파일은 바이너리 파일로 만들어져 사용자가 바로 확인할 수 없으며 다음과 같이 일반 텍스트형태로 변환을 해야 한다.<br /><br /></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">shell&gt;  altiProfile alti-13109987-0.prof &gt; log1.txt</pre>
+</div></div><p>'altiProfile'은 ALTIBASE에서 제공되는 분석유틸리티이며 이를 이용해 분석용 파일을 만들 수 있다. 해당 파일에는 실행된 '질의문', '수행시각의 상세정보' 등이 기록되어 있기 때문에 해당 내역을 기반으로 수행시각이 오래 걸린 악성질의를 찾을 수 있다.</p><p>altiProfile 의 자세한 사용법은  AID의 FAQ 에서 참조할 수 있다. (  Altibase에서 수행된 쿼리 로그로 남기는 법에 관한 AID 설명 페이지 : <a href="http://aid.altibase.com/x/ygSL" class="external-link" rel="nofollow">http://aid.altibase.com/x/ygSL</a> )</p>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>※ 프로파일링 기능은 DB의 성능저하 및 로그기록으로 인한 디스크부족을 유발할 수 있음으로 사용에 신중한 주의가 필요함.</p>
+                    </div>
+    </div>
+<p><br /><br /></p><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

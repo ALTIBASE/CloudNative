@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Product Installation using the Package Installer</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Installation-Guide_14647632.html">Altibase Installation Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Product Installation using the Package Installer
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409363269 {padding: 0px;}
+div.rbtoc1624409363269 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409363269 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409363269'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-SystemRequirements'>System Requirements</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-Memory'>Memory</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-CPU'>CPU</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-HardDisk'>Hard Disk</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-Network'>Network</a></li>
+</ul>
+</li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-AltibasePackageInstaller'>Altibase Package Installer</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-1.Pre-checktheinstallationenvironment'>1. Pre-check the installation environment</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-2.DownloadthePackageInstaller'>2. Download the Package Installer</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-3.RuntheAltibasePackageInstaller'>3. Run the Altibase Package Installer</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-4.Enterinstallationdirectoryandselectinstallationtype'>4. Enter installation directory and select installation type</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-5.SetAltibaseProperties'>5. Set Altibase Properties</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-Step1:BasicDatabaseOperationProperties'>Step 1: Basic Database Operation Properties</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-Step2:DatabaseCreationProperties'>Step 2: Database Creation Properties</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-Step3:SetDatabaseDirectories'>Step 3: Set Database Directories</a></li>
+</ul>
+</li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-6.CheckAltibaseproperties'>6. Check Altibase properties</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-7.InstallAltibaseProduct'>7. Install Altibase Product</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-7.EnterAltibaseLicenseKey'>7. Enter Altibase License Key</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-8.PreviewAltibaseQuickSetupGuide'>8. Preview Altibase Quick Setup Guide</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-10.CompletetheInstallation'>10. Complete the Installation</a></li>
+<li><a href='#id-2.ProductInstallationusingthePackageInstaller-11.Post-installation'>11. Post-installation</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><h1 id="id-2.ProductInstallationusingthePackageInstaller-SystemRequirements"><strong>System Requirements</strong></h1><p>The requirements and recommendations mentioned in this chapter are based on a general-purpose of using the database. Therefore, it may vary depending on the user's database system or the purpose of using the database. For more information on system requirements, contact the Altiabse customer service portal (<a href="http://support.altibase.com/en/)." class="external-link" rel="nofollow">http://support.altibase.com/en/).</a></p><p>The following description is based on how to install Altibase products on Unix/Linux.</p><h2 id="id-2.ProductInstallationusingthePackageInstaller-Memory"><strong>Memory</strong></h2><p>64-bit OS: at least 1GB (recommended: 2GB or more, no maximum limit)</p><h2 id="id-2.ProductInstallationusingthePackageInstaller-CPU"><strong>CPU</strong></h2><p>1 CPU or more (recommended: 2 CPUs or more)</p><h2 id="id-2.ProductInstallationusingthePackageInstaller-HardDisk"><strong>Hard Disk</strong></h2><p>When installing the patch, the Altibase package installer creates a backup of the file to which the patch is applied and saved it in the $ALTIBASE_HOME/APatch directory. In this directory, separate backup directories are created for each patch are located. These backup files will be used later to roll back the patch.</p><p>In addition, executable files used when uninstalling or rolling back a patch are installed in the $ALTIBASE_HOME/APatch directory when installing the product or applying a patch.</p><p>* Note 1: On the HP platform, automatic backup and rollback are not supported when patching the installer. The user must manually back up data and log files.</p><p>* Note 2: Only files installed through the package installer are backed up to this backup directory, and files created after product installation, such as data files and log files, are not backed up.</p><div><strong><br /></strong></div><div><h2 class="ALTIBASE4" id="id-2.ProductInstallationusingthePackageInstaller-Network"><strong>Network</strong></h2><p>When using the replication function, it is recommended to use a dedicated line.</p><h1 id="id-2.ProductInstallationusingthePackageInstaller-AltibasePackageInstaller">Altibase Package Installer</h1><p>Altibase installation procedure</p><p>To install the Altibase product, follow the steps below. The detailed description of each process is described in Product installation according to the OS.</p><ol><li>Pre-check the installation environment</li><li>Download Altibase Package Installer</li><li>Run the Altibase Package Installer</li><li>Enter installation directory and select installation type</li><li>Set Altibase properties</li><li>Check Altibase properties</li><li>Install Altibase Product</li><li>Enter Altibase License Key</li><li>Preview Altibase Quick Setup Guide</li><li>Complete the installation</li><li>Post-installation</li></ol><h2 id="id-2.ProductInstallationusingthePackageInstaller-1.Pre-checktheinstallationenvironment">1. Pre-check the installation environment</h2><p>Before installing the product, the Altibase Package Installer first checks the environment to see if the environment of the equipment to be installed satisfies the requirements.</p><p>This process is performed without showing the graphical user interface. During this process, the Altibase Package Installer checks the following information about the server equipment to be installed.</p><ul><li>OS name and version</li><li>Mode of OS (64-bit or 32-bit)</li></ul><p>If the information checked by the Altibase Package Installer does not match, an error message will be returned and the installation will be stopped. This is because finding problems with system configuration at an earlier stage reduces the likelihood of encountering problems during the installation.</p><h2 id="id-2.ProductInstallationusingthePackageInstaller-2.DownloadthePackageInstaller">2. Download the Package Installer</h2><p>Visit the Altibase Customer Support Service Portal (<a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a>) to download the installer suitable for the OS.</p><p>The name of the Altibase Package Installer follows the rules shown in the example below.</p><p>Ex) Altibase server package installer</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<div class="message-content"><p>altibase-server-7.1.0.0.0-LINUX-X86-64bit-release.run</p></div>
+</div></div><p>Ex) Altibase client package installer</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<div class="message-content"><p>altibase-client-7.1.0.0.0-LINUX-X86-64bit-release.run</p></div>
+</div></div><p>The Altibase server package and the client package are separated into different packages. However, the Altibase server package includes the client package.</p><p>The Altibase Package Installer is provided for each OS below. Before the installation, check the OS related information with the command below and select an appropriate package installer.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ uname -a Linux
+rhel6-x64 2.6.32-71.el6.x86_64 #1 SMP Wed Sep 1 01:33:01 EDT 2010 x86_64 x86_64 x86_64 GNU/Linux</pre>
+</div></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">OS</th><th class="confluenceTh">CPU</th><th class="confluenceTh">Version</th><th class="confluenceTh">Bit (Server)</th><th class="confluenceTh">Bit (Client)</th></tr><tr><td class="confluenceTd">AIX</td><td class="confluenceTd">PowerPC</td><td class="confluenceTd">6.1 tl03 or later</td><td class="confluenceTd">64-bit</td><td class="confluenceTd">64 bit, 32-bit</td></tr><tr><td class="confluenceTd">HP-UX</td><td class="confluenceTd">IA64</td><td class="confluenceTd">11.31 or later</td><td class="confluenceTd"><span>64-bit</span></td><td class="confluenceTd">64 bit, 32-bit</td></tr><tr><td class="confluenceTd">SUN</td><td class="confluenceTd">SPARC</td><td class="confluenceTd">2.8 or later</td><td class="confluenceTd"><span>64-bit</span></td><td class="confluenceTd">64 bit, 32-bit</td></tr><tr><td class="confluenceTd">LINUX</td><td class="confluenceTd">x82, x86-64 (GNU glibc 2.21 or later)</td><td class="confluenceTd">redhat 6.0 or later</td><td class="confluenceTd"><span>64-bit</span></td><td class="confluenceTd">64 bit, 32-bit</td></tr><tr><td class="confluenceTd">Windows</td><td class="confluenceTd">x86, x86-64</td><td class="confluenceTd"><p>Windows 2008</p><p>Windows 2012</p><p>Window 7, 8</p></td><td class="confluenceTd"><span>64-bit</span></td><td class="confluenceTd">64 bit, 32-bit</td></tr></tbody></table></div>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>(SUN and Windows packages are not supported from Altibase 7.1 or later.)</p>
+                    </div>
+    </div>
+<h2 id="id-2.ProductInstallationusingthePackageInstaller-3.RuntheAltibasePackageInstaller"><br />3. Run the Altibase Package Installer</h2><p>To install the product, the Altibase Package Installer can be started in two modes:</p><ul><li>Interactive command-line mode: Run in this mode when the DISPLAY environment variable is not set.</li><li>GUI (Graphical User Interface): Run in this mode when the DISPLAY environment variable is set.</li></ul><div><p> </p>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Although the DISPLAY environment variable is declared, if the wrong IP and PORT are set, a hang-like phenomenon may occur</p><p>It can be solved in the following way.</p><ol><li>Unset the DISPLAY environment variable and run the .run file.</li><li>Use &quot;-mode text&quot; as an option when executing .run file</li></ol>
+                    </div>
+    </div>
+<p>Unix users must download the Altibase Package Installer and change the file permission with chmod to execute it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ chmod +x altibase-server-7.1.0.0.0-LINUX-X86-64bit-release.run</pre>
+</div></div><p>Run the Altibase Package Installer.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$./altibase-server-7.1.0.0.0-LINUX-X86-64bit-release.run</pre>
+</div></div><p>If the installation mode is set to GUI mode, the following start panel is displayed.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778415.png" data-image-src="attachments/14647653/14778415.png"></p><h2 id="id-2.ProductInstallationusingthePackageInstaller-4.Enterinstallationdirectoryandselectinstallationtype">4. Enter installation directory and select installation type</h2><p>In the installation directory panel below, select the Altibase home directory, that is, the directory where Altibase will be installed and select the package installation type.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778416.png" data-image-src="attachments/14647653/14778416.png"></p><p>Select &quot;Full Installation&quot; to install the Altibase product, or select &quot;Patch Installation&quot; to patch an existing version.</p><p>If the Altibase product is already installed in the directory entered by the user, a warning message is displayed in the dialog box.</p><p>In this case, the user must either select a different directory or uninstall the product installed in that directory first.</p><p><img class="confluence-embedded-image" src="attachments/14647653/14778418.png" data-image-src="attachments/14647653/14778418.png"></p><h2 id="id-2.ProductInstallationusingthePackageInstaller-5.SetAltibaseProperties">5. Set Altibase Properties</h2><p>Step 1: Basic Database Operation Properties</p><p>Step 2: Database Creation Properties</p><p>Step 3: Set Database Directories</p><p> </p><h3 id="id-2.ProductInstallationusingthePackageInstaller-Step1:BasicDatabaseOperationProperties">Step 1: Basic Database Operation Properties</h3><ul><li>Database name</li><li>Connection port number</li><li>Maximum size of the memory database</li><li>Buffer size</li><li><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><span lang="en">Specify whether to generate the SQL script to create a new database (ie, whether to perform step 2). </span></pre><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><span lang="en">If YES is selected, step 2 is performed, otherwise step 2 is skipped. </span></pre><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><span lang="en">Regardless of whether an SQL script is created using this process, a new database can be created using the following statement: server create [DB Character-set] [National Character-set].</span></pre></li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778419.png" data-image-src="attachments/14647653/14778419.png"></p><h3 id="id-2.ProductInstallationusingthePackageInstaller-Step2:DatabaseCreationProperties">Step 2: Database Creation Properties</h3><p>The SQL script created in step 2 is saved in the $ALTIBASE_HOME/install/post_install.sh file.</p><ul><li>Initial database size</li><li>Database archive logging mode<ul><li>Nonarchievelog</li><li>Archievelog</li></ul></li><li>Database character set<ul><li>MS949</li><li>US7ASCII</li><li>KO16KSC5601</li><li>BIG5</li><li>GB231280</li><li>MS936</li><li>UTF-8</li><li>SHIFT-JIS</li><li>MS932</li><li>EUC-JP</li></ul></li><li>National character set<ul><li>UTF-16</li><li>UTF-8</li></ul></li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778420.png" data-image-src="attachments/14647653/14778420.png"></p><h3 id="id-2.ProductInstallationusingthePackageInstaller-Step3:SetDatabaseDirectories">Step 3: Set Database Directories</h3><div><ul><li>Default disk database directory</li><li>Memory database directory</li><li>Archive log directory</li><li>Transaction log directory</li><li>Log anchor file directory</li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778421.png" data-image-src="attachments/14647653/14778421.png"></p><p>In order to set the value of a property not included in this step or change the property value set in Step 1 or Step 3 later, $ALTIBASE_HOME/conf/altibase.properties file can be edited.</p><h2 id="id-2.ProductInstallationusingthePackageInstaller-6.CheckAltibaseproperties">6. Check Altibase properties</h2><p>The next panel shows the property values set in the previous process.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778422.png" data-image-src="attachments/14647653/14778422.png"></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">To change these properties after installation is complete, please modify the following file: /home/hdb71_p/pkg_test/altibase-server-7.1/conf/altibase.properties. 
+1. Altibase Property Settings: Step 1: Basic Database Operation Properties 
+1) Database name: [mydb] 
+2) Altibase connection port number (1024-65535): [20300] 
+3) Maximum size of memory database: [2G] 
+4) Buffer area size for caching disk-based database pages: [128M] 
+2. Altibase Property Settings: Step 2: Database Creation Properties 
+1) Initial database size [10M] 
+2) Database archive logging mode [noarchivelog] 
+3) Database character set [UTF8] 
+4) National character set [UTF8] 
+3. Altibase Property Settings: Step 3: Set Database Directories The database will not operate properly if any of these directories are removed. 
+1) Disk database directory: [/home/hdb71_p/pkg_test/altibase-server-7.1/dbs] 
+2) Memory database directory: [/home/hdb71_p/pkg_test/altibase-server-7.1/dbs] 
+3) Archive log directory: [/home/hdb71_p/pkg_test/altibase-server-7.1/arch_logs] 
+4) Transaction log directory: [/home/hdb71_p/pkg_test/altibase-server-7.1/logs] 
+5) Log Anchor file directories: 
+Directory 1: [/ home/hdb71_p/pkg_test/altibase-server-7.1/logs] 
+Directory 2: [/home/hdb71_p/pkg_test/altibase-server-7.1/logs] 
+Directory 3: [/home/hdb71_p/pkg_test/altibase-server-7.1/ logs]</pre>
+</div></div><p> </p></div><div>After checking these values, click &quot;Forward&quot; and the &quot;Ready to Install&quot; panel will appear as below.</div></div><div><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778423.png" data-image-src="attachments/14647653/14778423.png"></div><div>Click &quot;Forward&quot; to continue the installation.</div></div><div><h2 id="id-2.ProductInstallationusingthePackageInstaller-7.InstallAltibaseProduct">7. Install Altibase Product</h2><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778424.png" data-image-src="attachments/14647653/14778424.png"></p><p>When the installation is completed, the installer performs the following tasks without a GUI screen.</p><ul><li>The set properties are updated in the altibase.properties file.</li><li>The altibase_user.env file, which contains the basic environment for running the Altibase server, is created in the $ALTIBASE_HOME/conf directory. In addition, the command to execute this file is added to the environment configuration file (.bashrc, .bash_profile, or .profile, etc.) of the user account.</li></ul><h2 id="id-2.ProductInstallationusingthePackageInstaller-7.EnterAltibaseLicenseKey">7. Enter Altibase License Key</h2><p>Below is a screen to enter the license key of Altibase. The Altibase Package Installer offers three ways to enter the license key.</p><ul><li>Manually enter the license key</li><li>Select the file where the license key is stored.</li><li>Post license registration: If a license key has not obtained yet, the license key can be obtained later and copy the new license file to $ALTIBASE_HOME/conf file directory. However, if a license is not registered during this process, Altibase will not ask whether or not to create a database in the next step.<br />$ cp license $ALTIBASE_HOME/conf/</li></ul><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778425.png" data-image-src="attachments/14647653/14778425.png"></p><h2 id="id-2.ProductInstallationusingthePackageInstaller-8.PreviewAltibaseQuickSetupGuide">8. Preview Altibase Quick Setup Guide</h2><p>The Altibase Quick Setup Guide panel guides users to run Altibase after successful installation.</p><p>The Altibase Package Installer provides the following two shell scripts to make it easier for users to set system kernel parameters and environment variables.</p><ul><li>ALTIBASE_HOME/install/pre_install.sh : This script contains a minimum set of essential system kernel parameters, and explains their recommended values and how to set them.</li><li>$ALTIBASE_HOME/install/post_install.sh : This script contains the SQL script to create a new database if step 2 was properly performed in the Altibase property setting process.</li><li>$ALTIBASE_HOME/packages/catproc.sql : This script contains the SQL script for using the PSM.</li></ul><p>If the checkbox is selected in the next panel, the Altibase package installer will create a new database and run the script to use PSM, which will take a little longer to install.</p><p>If the checkbox is not selected, the user must manually create the database and execute the PSM script after installing the product.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778427.png" data-image-src="attachments/14647653/14778427.png"></p><p>The window below is a screen that appears during database creation.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778428.png" data-image-src="attachments/14647653/14778428.png"></p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778429.png" data-image-src="attachments/14647653/14778429.png"></p><h2 id="id-2.ProductInstallationusingthePackageInstaller-10.CompletetheInstallation">10. Complete the Installation</h2><p>After the successful installation, the following panel appears.</p><p><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778430.png" data-image-src="attachments/14647653/14778430.png"></p><p>After clicking the Finish button, the environment setting guide screen appears as follows.</p><div><img class="confluence-embedded-image" width="500" src="attachments/14647653/14778431.png" data-image-src="attachments/14647653/14778431.png"></div><div><h2 id="id-2.ProductInstallationusingthePackageInstaller-11.Post-installation">11. Post-installation</h2><p>After the successful installation, do the following operations:</p><ol><li>If the system kernel parameters were not set during the installation process, set them manually. Refer to the $ALTIBASE_HOME/install/pre_install.sh file.</li><li>To run the login shell script, do one of the following:</li></ol><ul><li>Log out and log back in</li><li>Execute ~/.bash_profile</li><li>Execute source ~/.bash_profile<br /><br />3. If the database was not created in the installation step, create it as follows.</li><li>if the properties were entered for creating a database during the installation, run the $ALTIBASE_HOME/install/post_install.sh script.<br />$ sh post_install.sh dbcreate</li><li>If the properties were not entered for creating a database during the installation, run the server script.<br />$ server create utf8 utf8</li><li>If the properties were not entered for using PSM during the installation, run catproc.sql.<br />$ isql -s 127.0.0.1 -u sys -p manager -silent -f ${ALTIBASE_HOME}/packages/catproc.sql</li></ul></div></div><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778415.png">image2016-11-7 11_29_16.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778417.png">image2016-11-7 11_30_22.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778416.png">image2016-11-7 11_30_22.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778418.png">image2016-11-7 11_31_23.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778419.png">image2016-12-2 11_15_57.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778420.png">image2016-12-2 11_18_45.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778421.png">image2016-12-2 11_19_51.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778422.png">image2016-12-2 11_23_55.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778423.png">image2016-12-2 16_9_49.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778424.png">image2016-12-2 16_24_39.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778425.png">image2016-12-2 16_29_42.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778426.png">image2016-12-2 16_31_58.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778427.png">image2016-12-2 16_31_58 (1).png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778428.png">image2016-12-2 16_32_47.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778429.png">image2016-12-2 16_33_16.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778430.png">image2016-12-2 16_34_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647653/14778431.png">image2016-12-2 16_34_28.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

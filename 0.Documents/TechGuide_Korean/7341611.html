@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 3. 변환 절차</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341605.html">Altibase Oracle 변환가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 3. 변환 절차
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Dec 04, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409850806 {padding: 0px;}
+div.rbtoc1624409850806 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409850806 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409850806'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.변환절차-DATA전환및APPLICATION작업절차'>DATA 전환 및 APPLICATION 작업 절차</a></li>
+<li><a href='#id-3.변환절차-DATA정합성확인'>DATA 정합성 확인</a></li>
+<li><a href='#id-3.변환절차-DATA전환장애대처방안'>DATA 전환 장애 대처 방안</a></li>
+<li><a href='#id-3.변환절차-전환도구'>전환 도구</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.변환절차-MIGRATIONCENTER'>MIGRATION CENTER</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<hr />
+
+<p>데이터의 전환 작업을 위해 자동화된 Migration Center라는 도구를 사용합니다.<br />
+전환 작업이 진행되기 이전에 맵핑 작업을 위하여 이전 DBMS에서 사용하는 환경에 맞게 user생성 과 Tablespace 생성이 필요합니다.<br />
+특정 DB 종속적인 기능이 적용된 경우에는 수동 변환 작업을 수행합니다.</p>
+
+<p><br class="atl-forced-newline" /></p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7341611/7766174.png" data-image-src="attachments/7341611/7766174.png"></p>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="id-3.변환절차-DATA전환및APPLICATION작업절차"><strong>DATA 전환 및 APPLICATION 작업 절차</strong></h2>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766176.png" data-image-src="attachments/7341611/7766176.png"><br class="atl-forced-newline" /></p>
+
+<h2 id="id-3.변환절차-DATA정합성확인"><strong>DATA 정합성 확인</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> APPLICATION 검증 </p></th>
+<td class="confluenceTd"><p> <strong>검증</strong> <strong>방안</strong> <strong>도출</strong> <br class="atl-forced-newline" />
+- 고객과의 사전 협의를 통하여 검증 방안 도출 <br class="atl-forced-newline" />
+예) 온라인 화면   Capture 또는 장표 비교, 배치   Report 비교 등 </p></td>
+</tr>
+<tr>
+<th class="confluenceTh"><p> DATA검증 </p></th>
+<td class="confluenceTd"><p> <strong>Migration Center Report</strong> <br class="atl-forced-newline" />
+- Migration 결과 레포트를 통한 원본 DBMS와   ALTIBASE의 테이블 데이터 총 건수 비교 <br class="atl-forced-newline" />  <br class="atl-forced-newline" />
+<strong>검증</strong> <strong>방안</strong> <strong>도출</strong> <br class="atl-forced-newline" />
+- 고객과의 사전 협의를 통하여 검증 방안 도출 <br class="atl-forced-newline" />
+예) 데이터 총 건수 확인, 특정 칼럼 데이터 합산 값 비교, 특정 쿼리 수행 결과 비교 등 </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="id-3.변환절차-DATA전환장애대처방안"><strong>DATA 전환 장애 대처 방안</strong></h2>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766177.png" data-image-src="attachments/7341611/7766177.png"></p>
+
+
+<h2 id="id-3.변환절차-전환도구"><strong>전환 도구</strong></h2>
+
+<h3 id="id-3.변환절차-MIGRATIONCENTER">MIGRATION CENTER</h3>
+
+<p>1) Migration Center 이점</p>
+
+<p> GUI기반의 툴로 손쉽게 사용이 가능<br />
+ CLI 모드 지원으로 이관작업의 손쉬운 실행과 높은 성능<br />
+ 스키마와 함께 데이터도 모두 한 번의 조작으로 이관수행<br />
+ 서로 다른 데이터 형식에 대한 매핑작업을 통해 이관작업 수행<br />
+ 유연한 데이터 이관을 지원하기 위하여 사용자 정의 형식 지원<br />
+ 전환 결과에 대한 단계별 요약 보고서 제공</p>
+
+<p>2) 사용법</p>
+
+<p>(1) Add Database Connection</p>
+
+<p>Source/Target DBMS의 정보를 입력합니다.<br />
+ Connection Name : 임의 지정 가능<br />
+ IP : DBMS Server IP<br />
+ Port : DBMS Server Port<br />
+ User : 연결 사용자 계정<br />
+ Password : 연결 사용자 비밀번호<br />
+ SID : 서비스 명<br />
+ IP Version : IPv4/IPv6</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766178.png" data-image-src="attachments/7341611/7766178.png"></p>
+
+<p>데이터베이스 접속을 위해 JDBC 드라이버를 사용하므로, 원본 데이터베이스와 대상 데이터베이스에 알맞은 JDBC 드라이버를 준비하는 것이 중요합니다. 사용자 편의를 위해 지원되는 데이터베이스에 적합한 몇 가지 JDBC 드라이버를 Migration Center와 함께 제공합니다.</p>
+
+<p>(2) Create Project</p>
+
+<p>데이터 이관에 대한 프로젝트를 생성합니다.<br />
+ Project Name : 임의 지정 가능<br />
+ Project Path : 자동 생성<br />
+ Source Database : Oracle<br />
+ Destination Database : Altibase</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766183.png" data-image-src="attachments/7341611/7766183.png"></p>
+
+
+<p>(3) Build Project</p>
+
+<p>Source Database에서 테이블의 레코드 개수를 가져오는 방식(Fast/Slow)을 선택하고 진행합니다.</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766182.png" data-image-src="attachments/7341611/7766182.png"></p>
+
+
+<p>(4) Reconcile Project</p>
+
+<p>마이그레이션 수행 방법을 정의하는 단계로 마이그레이션 과정에서 가장 중요한 단계입니다.</p>
+
+<p> User Mode : Source Database 생성시 정의한 사용자 계정이 접근할 수 있는 모든 Table과 모든 데이터를 마이그레이션 대상으로 정의<br />
+ Table Mode : Source Database 생성시 정의한 사용자 계정이 접근할 수 있는 모든 Table 중에서 데이터를 마이그레이션 대상 Table을 선택 정의</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766181.png" data-image-src="attachments/7341611/7766181.png"></p>
+
+
+<p> Data Type Mapping : Oracle과 Altibase의 데이터타입 매핑<br />
+ PSM Data Type Mapping : Oracle PL/SQL과 Altibase PSM 의 데이터타입 매핑<br />
+ Tablespace to Tablespace Mapping : Oracle과 Altibase의 테이블스페이스 매핑<br />
+ Table to Tablespace Mapping : Altibase의 테이블을 저장할 테이블스페이스 지정<br />
+ Select Editing : Oracle 데이터 조회 조건 추가/수정<br />
+ DDL Editing : Altibase의 최종 DDL 수정</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766180.png" data-image-src="attachments/7341611/7766180.png"></p>
+
+
+<p>(5) Run Project</p>
+
+<p>데이터 마이그레이션을 수행합니다.</p>
+
+
+<p><img class="confluence-embedded-image" width="300" src="attachments/7341611/7766179.png" data-image-src="attachments/7341611/7766179.png"></p>
+
+
+<p>(6) PL/SQL Converter Tool</p>
+
+<p>파일로 저장된 Oralce PL/SQL을 Migration Center를 이용하여 데이터 타입에 대한 sytax를 변경합니다.<br />
+비즈니스 로직에 대한 변경은 자동 변환되지 않으므로, 비즈니스 로직을 구현한 개발자가 수동으로 변환해야 합니다.</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>다운로드<br />
+Support.altibase.com의 다운로드 페이지를 통하여 다운로드 가능 합니다.</p>
+
+<p><a href="http://support.altibase.com/kr/product" class="external-link" rel="nofollow">http://support.altibase.com/kr/product</a></p>
+
+<p>문의사항<a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a><br />
+<strong></strong> 02-2082-1114</p>
+                    </div>
+    </div>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7341611/7766186.png" data-image-src="attachments/7341611/7766186.png"></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766175.png">trans1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766174.png">trans1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766176.png">trans2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766177.png">trans3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766178.png">trans4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766179.png">trans9.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766180.png">trans8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766181.png">trans7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766182.png">trans6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766183.png">trans5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766185.png">intro1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341611/7766186.png">intro2.PNG</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

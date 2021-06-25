@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Altibase Docker Image</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Docker-Guide_14647741.html">Altibase Docker Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Altibase Docker Image
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>Altibase Docker can use images provided by Altibase or can be created and used by users.</p><h1 id="id-3.AltibaseDockerImage-AltibaseDockerImageDownload"><span style="color: rgb(0,0,0);">Altibase Docker Image Download</span> </h1><hr /><p><span style="color: rgb(0,0,0);">Docker images provided by Altibase can be downloaded from <a href="https://hub.docker.com/r/altibase/altibase" class="external-link" rel="nofollow">Docker Hub</a> or by using the docker pull command.</span></p><p><span style="color: rgb(0,0,0);">The following is how to download the Altibase docker image with the docker pull command.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker pull altibase/altibaseUsing default tag: latest
+latest: Pulling from altibase/altibase
+aeb7866da422: Pull complete
+749a3f8d8b66: Pull complete
+...
+f061f1a62f9a: Pull complete
+Digest: sha256:089a461f2b033d2c63c04d75cba78fe8e2ca9a75352e195f0199a17532305d17
+Status: Downloaded newer image for altibase/altibase:latest
+docker.io/altibase/altibase:latest
+ 
+# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              18.04               cf0f3ca922e0        4 days ago          64.2MB
+...
+altibase/altibase   latest              3f217948f26d        10 months ago       1.06GB</pre>
+</div></div><h1 id="id-3.AltibaseDockerImage-CreatingAltibaseDockerImage">Creating Altibase Docker Image</h1><hr /><p>Here's how the user can create an Altibase Docker Image.</p><h3 id="id-3.AltibaseDockerImage-1.Altibaseinstallation">1. Altibase installation</h3><p>To create an Altibase Docker image, Altibase has to be installed first.</p><p>For a guide on installing Altibase, refer to the <a href="https://aid.altibase.com/display/arch/Altibase+Installation+Guide" class="external-link" rel="nofollow">Altibase Installation Manual</a>.</p><h3 id="id-3.AltibaseDockerImage-2.Dockerfileconfiguration">2. Docker file configuration</h3><p>Docker files are a set of commands that contain how to add packages or data to an image.</p><p>The name of the Docker file is Dockerfile, and the path of Dockerfile must be designated at the time of build.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">FROM ubuntu:18.04MAINTAINER ALTIBASE
+  
+RUN sed -e &#39;56 i\root\t\t soft\t nofile\t\t 1048576 \nroot\t\t hard\t nofile\t\t 1048576 \nroot\t\t soft\t nproc\t\t unlimited \nroot\t\t hard\t nproc\t\t unlimited \n&#39; -i /etc/security/limits.conf; \
+echo &quot;vm.swappiness = 1&quot; &gt;&gt; /etc/sysctl.conf; \
+echo &quot;kernel.sem = 20000 32000 512 5029&quot; &gt;&gt; /etc/sysctl.conf;
+ 
+WORKDIR /home/altibase
+  
+COPY set_altibase.env /home/altibase
+COPY docker-entrypoint.sh /home/altibase
+COPY ./altibase_home /home/altibase/altibase_home
+  
+EXPOSE 20300 30300 30310
+ENTRYPOINT [&quot;/bin/bash&quot;, &quot;/home/altibase/docker-entrypoint.sh&quot;]</pre>
+</div></div><h3 id="id-3.AltibaseDockerImage-3.Writingtheinitializationscript">3. Writing the initialization script</h3><p>The ENTRYPOINT defined in the docker file is a script or command to be executed when the container is started.</p><p>The scripts used in the docker files in this document are set_altibase.env for configuration and docker-entrypoint.sh, which is an execution script.</p><ol><li><p>example of docker-entrypoint.sh</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">#!/bin/bash. ./set_altibase.env
+#export ALTIBASE_MEM_MAX_DB_SIZE=${MEM_MAX_DB_SIZE}
+export FILE=${FILE}
+if [[ &quot;${USER_ID}&quot; == &quot;&quot; ]]
+then
+   USER_ID=sys
+   USER_PASSWD=manager
+fi
+function db_create()
+{
+ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p MANAGER -sysdba -noprompt&quot;
+        ${ADMIN} &lt;&lt; EOF
+startup process;
+CREATE DATABASE mydb INITSIZE=${DB_SIZE}M NOARCHIVELOG CHARACTER SET ${DB_CHARSET} NATIONAL CHARACTER SET ${NATIONAL_CHARSET};
+shutdown abort;
+quit
+EOF
+}
+function db_start_daemon()
+{
+altibase -n
+}
+function set_replication_port_no()
+{
+    if [[ &quot;${MODE}&quot; == &quot;replication&quot; ]]
+    then
+        cd $ALTIBASE_HOME/conf
+        sed -e &quot;s/REPLICATION_PORT_NO                   = 0/REPLICATION_PORT_NO                   = $SLAVE_REP_PORT/g&quot; altibase.properties &gt; temp.file
+        mv temp.file altibase.properties
+        cd $HOME
+    else
+        if [[ &quot;${MASTER_REP_PORT}&quot; != &quot;&quot; ]]
+        then
+            cd $ALTIBASE_HOME/conf
+            sed -e &quot;s/REPLICATION_PORT_NO                   = 0/REPLICATION_PORT_NO                   = $MASTER_REP_PORT/g&quot; altibase.properties &gt; temp.file
+            mv temp.file altibase.properties
+            cd $HOME
+        fi
+    fi
+}
+if [[ &quot;${MODE}&quot; == &quot;daemon&quot; ]]
+then
+    if [[ ! -f &quot;${ALTIBASE_HOME}/dbs/system001.dbf&quot; ]]
+    then
+        set_replication_port_no
+        echo &quot;run altibase with db create&quot;
+        db_create
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            echo &quot;run altibase without script&quot;
+        else
+            echo &quot;run altibase with create object&quot;
+            is -silent -u ${USER_ID} -p ${USER_PASSWD} -f ${FILE}
+           server stop
+        fi
+        db_start_daemon
+    else
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            echo &quot;run altibase without script&quot;
+        else
+            echo &quot;run altibase with create object&quot;
+            is -silent -u ${USER_ID} -p ${USER_PASSWD} -f ${FILE}
+            server stop
+        fi
+        echo &quot;run altibase without db create&quot;
+        db_start_daemon
+    fi
+elif [[ &quot;${MODE}&quot; == &quot;isql&quot; ]]
+then
+    set_replication_port_no
+    if [[ ! -f &quot;${ALTIBASE_HOME}/dbs/system001.dbf&quot; ]]
+    then
+        db_create
+        server start
+        isql -u ${USER_ID} -p ${USER_PASSWD} -s localhost
+    else
+        server start
+        isql -u ${USER_ID} -p ${USER_PASSWD} -s localhost
+    fi
+elif [[ &quot;${MODE}&quot; == &quot;shell&quot; ]]
+then
+    set_replication_port_no
+    if [[ ! -f &quot;${ALTIBASE_HOME}/dbs/system001.dbf&quot; ]]
+    then
+        db_create
+        server start
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            /bin/bash
+        else
+            is -silent -f ${FILE}
+            /bin/bash
+        fi
+    else
+        server start
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            /bin/bash
+        else
+            isql -silent -u ${USER_ID} -p ${USER_PASSWD} -s localhost -f ${FILE}
+            /bin/bash
+        fi
+    fi
+elif [[ &quot;${MODE}&quot; == &quot;replication&quot; ]]
+then
+     set_replication_port_no
+    if [[ ! -f &quot;${ALTIBASE_HOME}/dbs/system001.dbf&quot; ]]
+    then
+        db_create
+        server start
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            /bin/bash
+        else
+            is -silent -f ${FILE}
+            /bin/bash
+        fi
+    else
+        server start
+        if [[ ! -f &quot;${FILE}&quot; ]]
+        then
+            /bin/bash
+        else
+            isql -silent -u ${USER_ID} -p ${USER_PASSWD} -s localhost -f ${FILE}
+            /bin/bash
+        fi
+    fi
+fi</pre>
+</div></div><p><br /><br /></p></li><li><p>Example of set_altibase.env</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">set +u    ## if unbound variable error is occured.export HOSTNAME=`hostname`
+export LOGNAME=$LOGNAME
+
+WHOAMI=&quot;who am i&quot;
+export JAVA_HOME=
+
+#############
+# BASE PATHs
+#############
+if [ &quot;$BASE_PATH&quot; == &quot;&quot; ]; then export BASE_PATH=$PATH; fi
+if [ &quot;$BASE_LIB_PATH&quot; == &quot;&quot; ]; then export BASE_LIB_PATH=$LD_LIBRARY_PATH; fi
+if [ &quot;$BASE_CLASSPATH&quot; == &quot;&quot; ]; then export BASE_CLASSPATH=$CLASSPATH; fi
+export PATH=$BASE_PATH
+export LD_LIBRARY_PATH=$BASE_LIB_PATH
+export CLASSPATH=$BASE_CLASSPATH
+
+#############
+# BASIC
+#############
+export HOSTNAME=`hostname`
+export OS=`uname`
+#########################################################
+# PROMPT
+#########################################################
+export PS1=&quot;\[\033[31m\]\u@\h:\w\$ \[\033[0m\]&quot;
+umask 0000
+export LANG=C
+
+################################
+# OS: LINUX ES60+
+################################
+export OS_NAME=linux
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:$PATH
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/lib:$LD_LIBRARY_PATH
+
+## JAVA ##
+export PATH=${JAVA_HOME}/bin:${PATH}
+export CLASSPATH=${JAVA_HOME}/lib:${JAVA_HOME}/jre/lib:$CLASSPATH
+
+#############
+# ALTIBASE
+#############
+
+export MALOC_ARENA_MAX=4
+
+export ALTIBASE_HOME=/home/altibase/altibase_home
+export ALTIBASE_NLS_USE=MS949
+export ALTIBASE_PORT_NO=20300  #20300,41001
+export ALTIBASE_MSG=${HOME}/altimsg
+
+export ALTIBASE_LINKER_SQLLEN_SIZE=4 # SET 8 for rp5470
+
+export DB_SIZE=10 #init Memory DB Size (Mbyte)
+#export MEM_MAX_DB_SIZE=4G
+export DB_CHARSET=MS949
+export NATIONAL_CHARSET=UTF8
+
+#############
+# PATHS
+#############
+#aPath=.:$HOME/app/scripts/bin
+aPath=.:$HOME/app/bin
+aPath=$aPath:${ALTIBASE_HOME}/bin
+export PATH=$aPath:$UNIXODBC_HOME/bin:${PATH}
+
+aLibPath=.
+aLibPath=$aLibPath:${ALTIBASE_HOME}/lib
+export LD_LIBRARY_PATH=$aLibPath:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH_64=${LD_LIBRARY_PATH}
+export SHLIB_PATH=${LD_LIBRARY_PATH}
+export CLASSPATH=.:${ALTIBASE_HOME}/lib/Altibase.jar:${CLASSPATH}
+
+alias ls=&#39;ls -CF&#39;
+alias ll=&#39;ls -l&#39;
+alias lsd=&#39;ls -d */&#39;
+alias plist=&#39;ps -ef | grep $LOGNAME&#39;</pre>
+</div></div></li></ol><h3 id="id-3.AltibaseDockerImage-4.CreatingDockerimage">4. Creating Docker image</h3><p>Docker image is created by using the Docker build.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">docker build [OPTIONS] PATH | URL | -OPTIONIS :
+         --force-rm        Always remove intermediate containers
+         --no-cache        Do not use cache when building the image
+         --pull            Always attempt to pull a newer version of the image
+         -q, --quiet       Suppress the build output and print image ID on success
+         --rm              Remove intermediate containers after a successful build (default true)
+         -t, --tag list    Name and optionally a tag in the &#39;name:tag&#39; format</pre>
+</div></div><p>More information about OPTIONS can be found <a href="https://docs.docker.com/engine/reference/commandline/build/" class="external-link" rel="nofollow">here</a>.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;"># docker build -t altitest:0.0 ./Sending build context to Docker daemon  721.7MB
+Step 1/12 : FROM  ubuntu:18.04
+ ---&gt; cf0f3ca922e0
+Step 2/12 : MAINTAINER JEONG
+ ---&gt; Running in 20b8a511ef81
+Removing intermediate container 20b8a511ef81
+ ---&gt; f7b43fc90f83
+Step 3/12 : RUN useradd -d /home/altibase -s /bin/bash -m altibase; sed -e &#39;56 i\altibase\t\t soft\t nofile\t\t 1048576 \naltibase\t\t hard\t nofile\t\t 1048576 \naltibase\t\t soft\t nproc\t\t unlimited \naltibase\t\t hard\t nproc\t\t unlimited \n&#39; -i /etc/security/limits.conf; echo &quot;vm.swappiness = 1&quot; &gt;&gt; /etc/sysctl.conf; echo &quot;kernel.sem = 20000        32000   512     5029&quot; &gt;&gt; /etc/sysctl.conf;
+ ---&gt; Running in 88b3e8fa9508
+Removing intermediate container 88b3e8fa9508
+ ---&gt; dc1994514a5f
+Step 4/12 : COPY set_altibase.env /home/altibase
+ ---&gt; a039fabb1003
+Step 5/12 : COPY docker-entrypoint.sh /home/altibase
+ ---&gt; 3ee3d3eda79b
+Step 6/12 : COPY altibase_home /home/altibase/altibase_home
+ ---&gt; bafec9edb96b
+Step 7/12 : RUN chown -R altibase:altibase /home/altibase/*
+ ---&gt; Running in f1913e2d7e32
+Removing intermediate container f1913e2d7e32
+ ---&gt; e4d56135882f
+Step 8/12 : USER altibase
+ ---&gt; Running in a1e4f2b96ee3
+Removing intermediate container a1e4f2b96ee3
+ ---&gt; aad721f27620
+Step 9/12 : WORKDIR /home/altibase
+ ---&gt; Running in 4081c1fcc20a
+Removing intermediate container 4081c1fcc20a
+ ---&gt; b8f3497fc294
+Step 10/12 : ENV MODE shell
+ ---&gt; Running in 9167fee80677
+Removing intermediate container 9167fee80677
+ ---&gt; af201a060152
+Step 11/12 : EXPOSE 20300 30300
+ ---&gt; Running in ff0db6b12515
+Removing intermediate container ff0db6b12515
+ ---&gt; 7a1727561c45
+Step 12/12 : ENTRYPOINT [&quot;/bin/bash&quot;, &quot;/home/altibase/docker-entrypoint.sh&quot;]
+ ---&gt; Running in 1eeccd7174e9
+Removing intermediate container 1eeccd7174e9
+ ---&gt; 275b96f6ba53
+Successfully built 275b96f6ba53
+Successfully tagged altitest:0.0</pre>
+</div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

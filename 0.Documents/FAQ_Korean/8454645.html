@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ALTIBASE HDB  5.5.1,  6.1.1, 6.3.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="8454640.html">메모리 테이블스페이스 사용량</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ALTIBASE HDB  5.5.1,  6.1.1, 6.3.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span>, last modified on Apr 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054032 {padding: 0px;}
+div.rbtoc1624409054032 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054032 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054032'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-개요'>개요</a></li>
+<li><a href='#ALTIBASEHDB5.5.1,6.1.1,6.3.1-참고-메모리테이블스페이스속성정보'>참고 - 메모리 테이블스페이스 속성 정보</a></li>
+</ul>
+</div></p><p> </p><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-개요">개요</h1><hr /><ul><li>ALTIBASE HDB 5.5.1 부터 Volatile 메모리 테이블스페이스의  정보를 저장하는  V$VOL_TABLESPACES 가 추가되었습니다. </li><li>이 Performance View 를 활용하여 Volatile메모리 테이블스페이스 사용량을 포함한 모든 메모리 테이블스페이스 사용량를  다음의 쿼리로 조회 가능합니다.</li></ul><p> </p><p> </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedHeader panelHeader" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 5.5.1, 6.1.1, 6.3.1 메모리 테이블스페이스 사용량 조회 쿼리</b></div><div class="preformattedContent panelContent">
+<pre>--
+--TBS_ID   : 테이블스페이스 고유 번호
+--TBS_TYPE : 메모리 테이블스페이스 유형. 
+--           0 - 시스템 메모리 테이블스페이스. 데이터베이스 시스템의 운영상 필요한 메타 데이터를 저장하기 위한 테이블스페이스.
+--           1 - 시스템 메모리 테이블스페이스. 데이터베이스 생성 시 기본으로 생성되는 데이터를 저장할 수 있는 테이블스페이스.
+--           2 - 유저 메모리 테이블스페이스. 사용자가 생성한 메모리 테이블스페이스.
+--           8 - 유저가 생성한 휘발성 테이블스페이스.
+--TBS_NAME : 메모리 테이블스페이스 이름.
+--MAX(M)   : 메모리 테이블스페이스에서 사용할 수 있는 최대 메모리 크기.
+--           테이블스페이스 생성 시 MAXSIZE 를 지정하지 않는 경우는 MEM_MAX_DB_SIZE 를 출력함.          
+--           테이블스페이스 속성이 AUTOEXTEND OFF 인 경우 TOTAL 을 출력함. 
+--TOTAL(M) : 메모리 테이블스페이스에서 할당받은 페이지 합계. 체크포인트 이미지 파일 생성 크기와 동일하다.
+--           여기에는 free page 도 포함하고 있다. free page는 알티베이스 서버 구동 시에 메모리로 로딩되지 않는다. 그래서 이 값만큼 물리 메모리를 사용하고 판단하기 어렵다. 
+--           이 값은 DROP TABLESPACE 를 수행해야만 줄어든다. 
+--ALLOC(M) : 메모리 테이블스페이스에서 사용 중인 메모리 크기.
+--USED(M)  : ALLOC 중에서 데이터를 저장하고 있는 메모리 크기.
+--USAGE(%) : MAX 대비 ALLOC 사용률.
+--STATE    : 테이블스페이스의 상태. 
+--           1 - 오프라인, 2 - 온라인, 3 - 백업 중인 오프라인 상태의 테이블스페이스, 4 - 백업 중인 온라인 상태의 테이블스페이스, 
+--           128 - 삭제된(dropped) 테이블스페이스, 1024 - 폐기된(discarded) 테이블스페이스, 1028 - 백업 중인 폐기된(discarded) 상태의 테이블스페이스
+set linesize 1024
+set colsize 20
+SELECT ID TBS_ID
+     , DECODE(TYPE, 0, &#39;MEMORY_DICTIONARY&#39;, 1, &#39;MEMORY_SYS_DATA&#39;, 2, &#39;MEMORY_USER_DATA&#39;, 8, &#39;VOLATILE_USER_DATA&#39;) TBS_TYPE
+     , NAME TBS_NAME
+     , ROUND( DECODE(M.MAXSIZE, 140737488322560, D.MEM_MAX_DB_SIZE , 0 , T.TOTAL_PAGE_COUNT * T.PAGE_SIZE, M.MAXSIZE) /1024/1024, 2 ) &#39;MAX(M)&#39;
+     , ROUND( M.ALLOC_PAGE_COUNT * T.PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;
+     , ROUND(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,T.TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024, 2) &#39;ALLOC(M)&#39;
+     , NVL(MT.USED, 0) &#39;USED(M)&#39;
+     , ROUND(DECODE(MAXSIZE, 140737488322560, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*T.PAGE_SIZE/ D.MEM_MAX_DB_SIZE ,0, (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) / T.TOTAL_PAGE_COUNT , (M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT) * T.PAGE_SIZE/ M.MAXSIZE) * 100 , 2) &#39;USAGE(%)&#39;
+     , DECODE(T.STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE
+     , DECODE(M.AUTOEXTEND_MODE,1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+  FROM V$DATABASE D
+     , V$TABLESPACES T
+     , (SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , DECODE(MAX_SIZE, 0, (SELECT VALUE1 FROM V$PROPERTY WHERE NAME = &#39;VOLATILE_MAX_DB_SIZE&#39;), MAX_SIZE) AS MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$VOL_TABLESPACES
+         UNION ALL
+        SELECT SPACE_ID
+             , SPACE_NAME
+             , ALLOC_PAGE_COUNT
+             , FREE_PAGE_COUNT
+             , MAXSIZE
+             , AUTOEXTEND_MODE
+          FROM V$MEM_TABLESPACES ) M LEFT OUTER JOIN(SELECT TABLESPACE_ID, ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM V$MEMTBL_INFO
+         GROUP BY TABLESPACE_ID ) MT ON M.SPACE_ID = MT.TABLESPACE_ID
+ WHERE T.ID = M.SPACE_ID;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>출력 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">TBS_ID      TBS_TYPE            TBS_NAME              MAX(M)      TOTAL(M)    ALLOC(M)    USED(M)     USAGE(%)    STATE           AUTOEXTEND  
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+0           MEMORY_DICTIONARY   SYS_TBS_MEM_DIC       10240       4.03        4           1.007       0.04        ONLINE          ON   
+1           MEMORY_SYS_DATA     SYS_TBS_MEM_DATA      10240       8.03        0.09        0           0           ONLINE          ON   
+5           MEMORY_USER_DATA    USER_MEM_TBS          3072.03     3072.03     712.38      686.646     23.19       ONLINE          OFF  
+6           MEMORY_USER_DATA    USER_MEM_TBS_2        10240       768.03      694.38      686.646     6.78        ONLINE          ON   
+8           MEMORY_USER_DATA    USER_MEM_TBS_3        1024        512.03      4.03        0           0.39        ONLINE          ON   </pre>
+</div></div><h1 id="ALTIBASEHDB5.5.1,6.1.1,6.3.1-참고-메모리테이블스페이스속성정보">참고 - 메모리 테이블스페이스 속성 정보</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;CURR_SIZE(MB)&#39;
+     , TO_CHAR(AUTOEXTEND_NEXTSIZE/1024/1024, &#39;999,999,999&#39;) &#39;NEXT_SIZE(MB)&#39;
+     , TO_CHAR(DECODE(MAXSIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAXSIZE)/1024/1024, &#39;999,999,999&#39;) &#39; MAXSIZE(MB)&#39;
+     , DECODE(AUTOEXTEND_MODE, 1, &#39;ON&#39;, 0, &#39;OFF&#39;) &#39;AUTOEXTEND&#39; 
+  FROM V$MEM_TABLESPACES, V$DATABASE D
+UNION ALL  
+SELECT SPACE_NAME
+     , TO_CHAR(CURRENT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;CURR_SIZE(MB)&#39;
+     , TO_CHAR(NEXT_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;NEXT_SIZE(MB)&#39;
+     , TO_CHAR(DECODE(MAX_SIZE, 0, CURRENT_SIZE, 140737488322560, D.MEM_MAX_DB_SIZE, MAX_SIZE)/1024/1024, &#39;999,999,999&#39;) &#39; MAXSIZE(MB)&#39;
+     , DECODE(AUTOEXTEND_MODE, 1, &#39;ON&#39;, 0, &#39;OFF&#39;) &#39;AUTOEXTEND&#39; 
+  FROM V$VOL_TABLESPACES, V$DATABASE D ;</pre>
+</div></div><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454645/8618059.txt">ALTIBASE_HDB_5.5.1_6.x.x_memory_tablespace_usage.txt</a> (text/plain)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454645/8618052.txt">ALTIBASE_HDB_5.5.1_6.x.x_memory_tablespace_usage.txt</a> (text/plain)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

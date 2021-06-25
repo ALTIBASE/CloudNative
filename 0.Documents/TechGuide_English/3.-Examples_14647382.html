@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Examples</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="JBOSS-Integration-Guide-for-Altibase_14647358.html">JBOSS Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Examples
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409361450 {padding: 0px;}
+div.rbtoc1624409361450 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409361450 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409361450'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.Examples-ExampleofJSP'>Example of JSP</a></li>
+<li><a href='#id-3.Examples-Howtorun'>How to run</a>
+<ul class='toc-indentation'>
+<li><a href='#id-3.Examples-UsingexistingWAR'>Using existing WAR</a></li>
+<li><a href='#id-3.Examples-CreatingWAR'>Creating WAR</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr /><p>From learning how to integrate Altibase and JBoss from previous chapters, this chapter describes how to check the connection between Altibase and JBoss by accessing querying Altibase using the above settings and configurations.</p><h1 id="id-3.Examples-ExampleofJSP">Example of JSP</h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>test.jsp</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;%@ page import=&quot;javax.naming.*&quot; %&gt;
+&lt;%@ page import=&quot;java.sql.*&quot; %&gt;
+&lt;%@ page import=&quot;javax.sql.*&quot; %&gt;
+ &lt;%
+ Connection con=null;
+ Statement st=null;
+ ResultSet rs=null;
+ try
+ {
+ InitialContext ctx = new InitialContext();
+ DataSource ds = (DataSource)ctx.lookup(&quot;java:/AltiTest&quot;);
+ con=ds.getConnection();
+ st=con.createStatement();
+ rs=st.executeQuery(&quot;select * from dual&quot;);
+ while(rs.next())
+ {
+ out.println(&quot;Result :&quot; + rs.getString(1)+&quot;&lt;br&gt;&quot;);
+ }
+ }
+ catch(Exception e)
+ {
+ out.println(&quot;Error:&quot; + e.getMessage());
+ e.printStackTrace();
+ }
+ finally
+ {
+ if(rs!=null)rs.close();
+ if(st!=null)st.close();
+ if(con!=null)con.close();
+ }
+ %&gt; </pre>
+</div></div><h1 id="id-3.Examples-Howtorun">How to run</h1><hr /><p>There are two methods to test the integration between Altibase and JBoss.</p><ul><li>Creating a JSP file to be tested in the exiting WAR.</li><li>Testing after creating the WAR directly and deploying it in JBoss.</li></ul><h2 id="id-3.Examples-UsingexistingWAR">Using existing WAR</h2><hr /><p>In the JBOSS_HOME/server/default directory, there is a WAR provide by the JBoss. After creating the JSP example file in the provided WAR, test it.</p><p>When testing gin this document, a JSP file was created and used in the default location, ROOT.war.(JBOSS_HOME/server/default/deploy/ROOT.war) After creating the JSP file, enter the server IP, port number, and JSP file name on which JBoss is running in the address bar in order.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><strong><span lang="en">http://server_ip:port number/jsp file name </span></strong></pre><pre class="tw-data-text tw-text-large XcVN5d tw-ta"><strong><span lang="en">Example) http://localhost/test.jsp</span></strong></pre></th></tr></tbody></table></div><p><img class="confluence-embedded-image" src="attachments/14647382/14778385.png" data-image-src="attachments/14647382/14778385.png"></p><h2 id="id-3.Examples-CreatingWAR">Creating WAR</h2><hr /><p>This section describes how to test using a JSP file with JBoss web console.</p><p>Deploy refers to all operations that load and control module files on JBoss to start application services.</p><p>In the sample test, how to create a WAR file using the example provided above, deploy it to the JBoss server, and execute it.</p><p>The WAR file used in the example test was created by using the Eclipse.</p><p>1.이클립스를 실행시켜서 [File] → [New] → [Project] 를 선택한 후에 다음의 Wizard 에서 [Web] → &quot;Dynamic Web Project&quot; 를 선택하여 프로젝트 이름을 설정한다.</p><p><img class="confluence-embedded-image" src="attachments/14647382/14778386.jpg" data-image-src="attachments/14647382/14778386.jpg"></p><p>2. When the project is created as follows, the example above is created as a JSP file and added under the &quot;WebContent&quot; directory, and Altibase.jar is added under the &quot;lib&quot; directory.</p><p><img class="confluence-embedded-image" src="attachments/14647382/14778387.jpg" data-image-src="attachments/14647382/14778387.jpg"></p><p>3. When JSP file and Altibase.jar file have been added, select [File] → [Export], select [Web] → &quot;War file&quot;, and specify the path to create, and the WAR is created.</p><p><img class="confluence-embedded-image" src="attachments/14647382/14778388.jpg" data-image-src="attachments/14647382/14778388.jpg"></p><p>4. When the WAR file is created, upload the WAR file by clicking &quot;Web Application&quot; → &quot;Add a new resource&quot; in the JBoss web console.</p><p><img class="confluence-embedded-image" src="attachments/14647382/14778389.jpg" data-image-src="attachments/14647382/14778389.jpg"></p><p><img class="confluence-embedded-image" src="attachments/14647382/14778390.jpg" data-image-src="attachments/14647382/14778390.jpg"></p><p>5. When the created WAR file is uploaded, it is automatically deployed, and a message indicating that the deployment was successful is displayed. The deployed WAR file can also be checked on the list.</p><p><img class="confluence-embedded-image" src="attachments/14647382/14778391.jpg" data-image-src="attachments/14647382/14778391.jpg"></p><p>6. When the deployment is complete, run the Internet window and enter the following URL to execute.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><a href="http://server_ipport" class="external-link" rel="nofollow">http://server_ip:port</a> number/WAR name/jsp file name<br />Example) <a href="http://localhost:8080/AltiTest/test.jsp" class="external-link" rel="nofollow">http://localhost:8080/AltiTest/test.jsp</a></p></th></tr></tbody></table></div><p><br /><img class="confluence-embedded-image" src="attachments/14647382/14778392.jpg" data-image-src="attachments/14647382/14778392.jpg"></p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778385.png">image2019-12-11 21_13_51.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778386.jpg">eclipse2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778387.jpg">eclipse1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778388.jpg">eclipse3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778389.jpg">admin.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778390.jpg">war1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778391.jpg">war2.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778393.jpg">war3.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14647382/14778392.jpg">war3.jpg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

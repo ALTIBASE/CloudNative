@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : How to make a basic Makefile</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="15630378.html">Altibase APRE(SES) *C/C++ Makefile</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : How to make a basic Makefile
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>To understand the structure of Makefile, let's take a look at how to make a Makefile with simple c code. As the Altibase Makefile specification complies with the GNU specification, it is recommended to use gmake. However, in this document, it is explained according to the general rules.</p><h1 id="HowtomakeabasicMakefile-BasicstructureofMakefile">Basic structure of Makefile</h1><p>A Makefile is a scripting language that defines the processes that are going on to make an executable file. In this section, we are going to compile the following source.</p><div><div class="syntaxhighlighter nogutter  java"><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">#include &lt;stdio.h&gt;
+main()
+{
+    printf (“hello, world\n”);
+}</pre>
+</div></div><p>This source can be compiled at the prompt as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; cc –o a a.c</pre>
+</div></div><p>It can be compiled with make using the simple Makefile script as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<pre>shell&gt; vi Makefile
+a:a.c # User-created protocols and dependencies
+	cc -o a a.c # Describes the actual command line to be executed</pre>
+</div></div><p> </p><ol><li>A Makefile can be described as a script that navigates through the source and describes the listed commands to create a target as described above.a:a.c finds a.c to make a (check for changes)</li><li>cc -o a.c executes this command when a.c exists</li><li>shell&gt; make -f Makefile If the file name is Makefile, -f Makefile can be omitted</li></ol><p>If there is no change to the same source, the error &quot;make: is up to date&quot; will be output because compilation does not need to be performed.</p><h1 id="HowtomakeabasicMakefile-ExampleSources">Example Sources</h1><p>The example source to proceed uses $ALTIBASE_HOME/sample?APRE?connect1.sc included in the same sources in the directory where Altibase is installed. (Based on Altibase 5.3 or later)</p><p>This example was written based on the environment compiling based on the GCC compiler in Linux. Therefore, when using other Unix environments and compilers, a part of Makefile must be written differently for the environment.</p><p>Some of the sources are as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; vi connect1.sc
+int main()
+{
+    char usr[20];
+    char pwd[20];
+    char opt [200];
+
+
+    sprintf (usr, “sys”);
+    sprintf (pwd, “manager”);
+    sprintf (opt, “DSN=127.0.0.1;CONNTYPE=1;PORT_NO=27584”);
+
+    EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :opt ;
+    if (sqlca.sqlcode != 0)
+       printf (“ConnectErr: %d-%s\n”, SQLCODE,sqlca.sqlerrm.sqlerrmc);</pre>
+</div></div><h1 id="HowtomakeabasicMakefile-RunningthePrecompile">Running the Precompile</h1><p>The APRE extension of Altibase uses &quot;*.sc&quot;. Since this file is not in a format that can be directly interpreted by the C/C++ compiler, it must be converted into C/C++ source with the precompiler provided by Altibase.</p><ol><li><h3 id="HowtomakeabasicMakefile-Makefilecontents"><span style="color: rgb(0,0,0);">Makefile contents</span></h3><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">connect1.sc:connect1.sc
+   apre -t c connect1.sc</pre>
+</div></div></div></li><li><h3 id="HowtomakeabasicMakefile-Execution"><span style="color: rgb(0,0,0);">Execution</span></h3><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Shell&gt; make -f Makefile connect1.sc</pre>
+</div></div><p>When running after creating the Makefile like this, connect1.c is newly created. (Depending on the extension option, change it to C/C++ according to the user environment.)</p></div></li></ol><p> </p><h1 id="HowtomakeabasicMakefile-Compling">Compling</h1><p>Now add a convention to the Makefile to make it the executable connect1.</p><p><img class="confluence-embedded-image" src="attachments/15630382/15859719.png" data-image-src="attachments/15630382/15859719.png"></p><p>Of course, it is okay to use pre-compilation protocols and compile conventions in the connect1 protocol. Here, it will be explained separately. In the above, because the connect1 protocol requires connect1.c in the make step, the protocol for connect1.c is found in the Makefile.</p><p>Since there is a corresponding protocol in the Makefile, it operates in the order of precompiling first and then cc compiling. However, when actually compiling, it will get the following error:</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ make -f Makefile connect1<br />apre -t c <a class="external-link" href="http://connect1.sc/" rel="nofollow">connect1.sc</a><br />-----------------------------------------------------------------<br />Altibase C/C++ Precompiler.<br />Release Version 6.5.1.3.0<br />Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br />All Rights Reserved.<br />-----------------------------------------------------------------<br />cc -o connect1 connect1.c<br /><strong>connect1.c:9:29: error: ulpLibInterface.h: No such file or directory</strong><br />connect1.c: In function 'main':<br />connect1.c:68: error: storage size of 'ulpSqlstmt' isn't known<br />..........................................................</p><p>make: *** [connect1] Error 1</p>
+</div></div><p>Refer to the line in bold, there was an error that the header file could not be found. In the Makefile, the path to the header and library that the user used on the source to compile should be specified as described in the next step.</p><h1 id="HowtomakeabasicMakefile-Specifyingtheheaderfileandlibrarypath">Specifying the header file and library path</h1><p>Modify Makefile as follows to refer to Header file and Library.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>Shell&gt; vi Makefile</p><p><strong>ALTI_INCLUDE=${ALTIBASE_HOME}/include</strong></p><p><strong>ALTI_LIBRARY=${ALTIBASE_HOME}/lib</strong></p><p>connect1.c: <a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;">    apre –t c <a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p>connect1 : connect1.c</p><p style="margin-left: 30.0px;">    cc –o connect1 connect1.c <strong>–I$(ALTI_INCLUDE) –L$(ALTI_LIBRARY)</strong></p>
+</div></div><p>The above error occurs when trying to refer to the library in which the functions used in the source are defined, but cannot be found at the compile stage. In the case of headers, it is no necessary to specify all individual head files, but in the case of a library, it must be specified.</p><h1 id="HowtomakeabasicMakefile-SpecifyingthebasiclibraryforAPREcompilation">Specifying the basic library for APRE compilation</h1><p>Modify the Makefile as follows.</p><h2 id="HowtomakeabasicMakefile-AddbasiclibraryfoAPRE"><strong>Add basic library fo APRE</strong></h2></div></div><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<div><p>$ vi Makefile<br />ALTI_INCLUDE=${ALTIBASE_HOME}/include<br />ALTI_LIBRARY=${ALTIBASE_HOME}/lib <span style="color: rgb(0,0,0);"><strong>-lapre -lodbccli</strong></span></p><p>connect1.c:<a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc/" class="external-link" rel="nofollow"> apre -t c </a><a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY)</p></div>
+</div></div><div><strong style="color: rgb(0,0,0);font-size: 20.0px;"><br /></strong>Altibase requires two libraries (apre, odbccli) when generating binaries with precompilation. These are located in ($ATLIBASE_HOME/lib). The notation for the library in the Makefile is specified with the &quot;<strong>-l</strong>&quot; option. When looking at the file, it exists in the form of <strong>&quot;libapre.a&quot;</strong> or <strong>&quot;libapre_sl.so&quot;</strong>. In the library name, the name can be specified without <strong>&quot;lib&quot;</strong> and extension (.a or .so).</div><div><h1 id="HowtomakeabasicMakefile-Addingthesystemlibrary">Adding the system library</h1><p>When checking the executed result after recompiling with only the basic library added, an error still occurs as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ make connect1<br />apre -t c <a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a><br /><br />cc -o connect1 connect1.c -I/ssd/altibase_home/include -L/ssd/altibase_home/lib -lapre -lodbccli <br />/ssd/altibase_home/lib/libapre.a(ulpLibInterface.o): In function `ulpLibInit':<br /><strong>ulpLibInterface.c:(.text+0x77): undefined reference to `<span style="color: rgb(0,0,0);">pthread_rwlock_init'</span></strong><br />/ssd/altibase_home/lib/libapre.a(ulpLibInterface.o): In function `ulpDoEmsql':<br />ulpLibInterface.c:(.text+0x1e6): undefined reference to `pthread_rwlock_wrlock'</p><p>...........................................</p><p>...........................................</p>
+</div></div><p>The above error occurs because the thread library for the POSIX thread function used in the APRE library is not found. As with the previously added library, other libraries must be added referenced by APRE to Makefile as the next step.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ vi Makefile<br />ALTI_INCLUDE=${ALTIBASE_HOME}/include<br />ALTI_LIBRARY=${ALTIBASE_HOME}/lib <span style="color: rgb(0,0,0);">-lapre -lodbccli<strong> -lpthread</strong></span></p><p>connect1.c:<a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p style="margin-left: 30.0px;"><a href="http://connect1.sc/" class="external-link" rel="nofollow"> apre -t c </a><a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a></p><p><a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1:connect1.c</a></p><p style="margin-left: 30.0px;">cc -o connect1 connect1.c -I$(ALTI_INCLUDE) -L$(ALTI_LIBRARY)</p>
+</div></div><p>Additional system libraries required for compilation and each compilation option differ depending on the OS environment and the type of compiler. For more detailed information, please refer to the description of each compiler in this document.</p><div>After checking the list of system libraries required when compiling apre by using the method below, the library can be added to Makefile.</div><div><ol><li>How to refer to Altibase's sample Makefile</li><li>How to use the ldd command</li><li>How to use the nm command</li><li>How to refer to the man page</li></ol><h2 id="HowtomakeabasicMakefile-ReferringtoAltibasesampleMakefile">Referring to Altibase sample Makefile</h2>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>The list of libraries required for APRE compilation is listed in $ALTIBASE_HOME/install/altibase_env.mk. After referring to it, each library and option can be specified in the user's Makefile.</p>
+                    </div>
+    </div>
+<h2 id="HowtomakeabasicMakefile-Usingthelddcommand">Using the ldd command</h2><p>The use of the ldd command is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ ldd $ALTIBASE_HOME/bin/apre
+        linux-vdso.so.1 =&gt;  (0x00007fff977ff000)
+        libdl.so.2 =&gt; /lib64/libdl.so.2 (0x000000369c200000)
+        libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x000000369ca00000)
+        libcrypt.so.1 =&gt; /lib64/libcrypt.so.1 (0x00000036a9600000)
+        librt.so.1 =&gt; /lib64/librt.so.1 (0x000000369d600000)
+        libstdc++.so.6 =&gt; /usr/lib64/libstdc++.so.6 (0x00000036a1600000)
+        libm.so.6 =&gt; /lib64/libm.so.6 (0x000000369ce00000)
+        libgcc_s.so.1 =&gt; /lib64/libgcc_s.so.1 (0x000000369fe00000)
+        libc.so.6 =&gt; /lib64/libc.so.6 (0x000000369c600000)
+        /lib64/ld-linux-x86-64.so.2 (0x000000369be00000)
+        libfreebl3.so =&gt; /lib64/libfreebl3.so (0x00000036a9a00000)</pre>
+</div></div><p>Since libm.so is referenced as above, add &quot;-lm&quot; to Makefile.</p><h2 id="HowtomakeabasicMakefile-Usingthemanpage">Using the man page</h2><p>Using the UNIX man command, some symbols can be found using the following method for the purpose of the symbol and the library referenced by this symbol.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><strong>$ man 3 cos</strong> ( cos는 undefined symbol name )</p><p><br />COS(3) Linux Programmer Manual COS(3)</p><p>NAME<br /> cos, cosf, cosl - cosine function</p><p>SYNOPSIS<br /> #include &lt;math.h&gt;</p><p><strong>double cos(double x);</strong><br /> float cosf(float x);<br /> long double cosl(long double x);</p><p><strong>Link with -lm.</strong></p>
+</div></div><p>the man page explains that the cos function is included in the mat related library, and that library &quot;-lm&quot; is added when linking.</p><h1 id="HowtomakeabasicMakefile-Causesandsolutionsforbiterrorsduringcompilation">Causes and solutions for bit errors during compilation</h1><h2 id="HowtomakeabasicMakefile-UsingtheAPRElibrarysuitableforcompilationmode">Using the APRE library suitable for compilation mode</h2><p>To make a 64bit program using the APRE, a 64bit APRE compiler, a 64bit APRE file, and a compilation option are needed to compile the program for each compiler for 64bit.</p><p>Similarly, to make a 32bit program for the APRE, a 32bit APRE compiler, a 32bit APRE library, header file, and a 32bit option must be specified to compile for 32bit.</p><h3 id="HowtomakeabasicMakefile-Downloading32bitclientdevelopmenttool(LibraryandPrecompiler)">Downloading 32bit client development tool (Library and Precompiler)</h3><p>Download and install the 32bit client install package for the platform you want to install from the client selection at <a href="http://support.altibase.com/kr/product" class="external-link" rel="nofollow">http://support.altibase.com/en/product</a>.</p><div><strong><img class="confluence-embedded-image" src="attachments/15630382/15859720.png" data-image-src="attachments/15630382/15859720.png"><br /></strong></div><div><h2 id="HowtomakeabasicMakefile-Biterrorwhencompiling"><strong>Bit error when compiling</strong></h2><div><h3 id="HowtomakeabasicMakefile-Howtocheckthebitinthelibrary">How to check the bit in the library</h3><p>If the compile bit and the bit of the linked APRE library do not match, an error occurs during compilation. In this case, check whether the corresponding library bit is 32bit or 64bit. Then, check the bit of the library in the following method.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>shell&gt; cd $ALTIBASE_HOME/lib # directory where altibase apre library is installed</p><p>shell&gt; <strong><span style="color: rgb(0,51,102);">file l<a href="http://ibapre_sl.so/" class="external-link" rel="nofollow"><span style="color: rgb(0,51,102);">ibapre_sl.so</span></a> </span></strong></p><p><strong><a href="http://libapre_sl.so/" class="external-link" rel="nofollow">libapre_sl.so</a>: <span style="color: rgb(255,0,0);">ELF 32-bit</span> LSB shared object, Intel 80386, version 1 (GNU/Linux), dynamically linked, not stripped # If APRE library for 32bit is installed in Linux</strong></p><p><strong><a href="http://libapre_sl.so/" class="external-link" rel="nofollow">libapre_sl.so</a>: <span style="color: rgb(255,0,0);">ELF 64-bit</span> LSB shared object, x86-64, version 1 (GNU/Linux), dynamically linked, not stripped # <strong>If APRE library for 64bit is installed in Linux</strong></strong></p>
+</div></div><p>As above, the bit of library can be checked with the &quot;file&quot; command, which is a Unix command, and the messages may be slightly different for each OS, but the bit can be changed with the same message.</p><p><strong>Bit options when compiling</strong></p><p>Bit-related compilation options must be specified for each compiler. The table below shows the 32bit and 64bit compilation options for each compiler. Options may differ depending on the type of CPU supported by the compiler. For other detailed options, please refer to the manual for each compiler.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">OS</th><th class="confluenceTh">SUN</th><th class="confluenceTh">HP</th><th class="confluenceTh">AIX</th><th class="confluenceTh">Linux</th></tr><tr><td class="confluenceTd">cc compiler 64bit option</td><td class="confluenceTd"><p>-xarch=v9 or &quot;-m64 -xarch=sparc&quot;</p><p>(when using the SUN Sparc)</p></td><td class="confluenceTd">+DD64</td><td class="confluenceTd">-q64</td><td class="confluenceTd">-m64</td></tr><tr><td colspan="1" class="confluenceTd">cc compiler 32bit option</td><td colspan="1" class="confluenceTd">-xarch=v8plusa (when using the SUN Sparc)</td><td colspan="1" class="confluenceTd"><span style="color: rgb(0,0,0);">+DD32</span></td><td colspan="1" class="confluenceTd"><span style="color: rgb(0,0,0);">-q32</span></td><td colspan="1" class="confluenceTd">-m32</td></tr></tbody></table></div><p> </p><h1 id="HowtomakeabasicMakefile-AddingC++library"><strong>Adding C++ library</strong></h1><div><strong><br /></strong></div><div>Up to Altibase version 5.3.3, sesc precompiler is used, and a part of sesc library is built in C++ format. Therefore, in order to compile with a C compiler rather than a C++ compiler, several compatible system libraries are needed in order to refer to them in an interpretable form.</div><div>If the C++ related library is not included, an error that cannot find the C++ operator occurs as shown below.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#Error message generated during makefile</p><p>sesc -t c <a href="http://connect1.sc/" class="external-link" rel="nofollow">connect1.sc</a><br />-----------------------------------------------------------------<br /> Altibase C/C++ Precompiler. <br /> Release Version 5.3.3.38<br /> Copyright 2000, ALTIBASE Corporation or its subsidiaries.<br /> All Rights Reserved.<br />-----------------------------------------------------------------</p><p>gcc -o connect1 connect1.c -I/ssd/altibase_home/include -L/ssd/altibase_home/lib -lsesc -lodbccli -lpthread -lm -ldl -lcrypt -lrt</p><p>/ssd/altibase_home/lib/libodbccli.a(idvHandlerTimer_aoc.o): In function `idvTimerThread::~idvTimerThread()':<br />idvHandlerTimer.cpp:(.gnu.linkonce.t._ZN14idvTimerThreadD0Ev+0xc): undefined reference to `<span style="color: rgb(0,0,0);"><strong>operator delete(void*)</strong></span>'<br />/ssd/altibase_home/lib/libodbccli.a(idvHandlerTimer_aoc.o):(.gnu.linkonce.r._ZTI14idvTimerThread+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'</p><p><strong>...............................</strong></p><div><strong><br /></strong></div>
+</div></div><div><span style="color: rgb(0,0,0);">To solve the error, add </span>&quot;<strong>-lstdc++</strong>&quot; to the Makefile as follows in the case of gcc compiler to add C++ standard library.</div><div><p> </p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ vi Makefile<br />ALTI_INCLUDE=${ALTIBASE_HOME}/include<br />ALTI_LIBRARY=${ALTIBASE_HOME}/lib <span style="color: rgb(0,0,0);">-lapre -lodbccli -lpthread </span><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">-lm</span></span><span style="color: rgb(0,0,0);"><strong> -lstdc++</strong></span></p><p><span style="color: rgb(0,0,0);"><strong>...............................</strong></span></p><div><span style="color: rgb(0,0,0);"><strong><br /></strong></span></div>
+</div></div><p>When using the C compiler, the C++ library required for each platform is as follows. Please refer to the table below and add them to Makefil for each compiler.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Platform</th><th class="confluenceTh"><strong>Library</strong></th></tr><tr><th class="confluenceTh">SUN</th><td class="confluenceTd">-lCrun</td></tr><tr><th class="confluenceTh">HP</th><td class="confluenceTd">-lstd –lstream –lCsup -lc</td></tr><tr><th class="confluenceTh">AIX</th><td class="confluenceTd">-lC</td></tr><tr><th class="confluenceTh">LINUX</th><td class="confluenceTd">-lstdc++ -lc</td></tr></tbody></table></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Starting from Altibase version 5.5.1, the APRE library was rewritten as C source code. Therefore, when compiling with a C compiler, it is not necessary to add a separate C++ library to Makefile.</p>
+                    </div>
+    </div>
+<h3 id="HowtomakeabasicMakefile-UsingtheC++compiler">Using the C++ compiler</h3><p>In the case of using the C++ compiler, most of the problems listed above can be avoided, so it will be not be explained separately. However, the C++ compiler has a separate 64bit option, so be aware of this for each compiler.</p></div></div></div></div></div></div><div><strong style="color: rgb(0,0,0);font-size: 20.0px;"><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15630382/15859719.png">Makefile flow.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/15630382/15859720.png">32bitclient_package.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Backup Types</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Considerations-for-Altibase-Backup-Policy_14647709.html">Considerations for Altibase Backup Policy</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Backup Types
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>The simple classification of backup types provided by Altibase is as follows. The classification criteria follow the Administrator Manual.</p><ul><li>Logical backup</li><li>Physical backup<ul><li>Online backup</li><li>Offline backup</li></ul></li><li>Incremental backup (supported starting from Altibase 6.3.1)</li></ul><h1 id="id-1.BackupTypes-LogicalBackup">Logical Backup</h1><hr /><p>Logical backup is to back up database objects and data in the form of a text file that can be checked by a user using the aexport and iLoader utilities.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh"><p>Backup type</p></th><th class="confluenceTh"><p>Description</p></th><th colspan="1" class="confluenceTh">Example of backup result</th></tr><tr><th rowspan="2" class="confluenceTh"><p>Logical Backup</p></th><th class="confluenceTh"><p>aexport            </p></th><td class="confluenceTd"><p>aexport is a tool to support data migration between Altibase servers, but can be used for backup purposes.</p><p>This creates all the database object creation statements created on the Altibase server as a file named .sql.</p><br /><p>It provides three methods to perform according to the purpose</p><ul><li>All database objects</li><li>By database user</li><li>By object</li></ul></td><td colspan="1" class="confluenceTd"><p><strong>Example of aexport execution result and file contents.</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l | head
+Total 60
+-rw-rw-rw- 1 eheejung eheejung  303 2019-07-12 13:15 ALL_ALT_TBL.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_DIR.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_FK.sql
+-rw-rw-rw- 1 eheejung eheejung 1539 2019-07-12 13:15 ALL_CRT_INDEX.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_JOB.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_LIB.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_LINK.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_REP.sql
+-rw-rw-rw- 1 eheejung eheejung    0 2019-07-12 13:15 ALL_CRT_SEQ.sql
+...omitted...
+ 
+$ cat ALL_CRT_TBL.sql | head
+connect &quot;ALTITEST&quot; / &quot;ALTITEST&quot;
+--############################
+--  &quot;ALTITEST&quot;.&quot;ORDERS&quot; 
+--############################
+create table &quot;ORDERS&quot;
+(
+    &quot;ONO&quot; BIGINT,
+    &quot;ORDER_DATE&quot; DATE,</pre>
+</div></div><p> </p><p> </p></td></tr><tr><th colspan="1" class="confluenceTh">iloader</th><td colspan="1" class="confluenceTd"><p>Like aexport, this is a tool to support data migration, but it can be used for backup purposes.</p><p>In table units, data is backed up in a text file that can be read by users.</p><br /><p> </p></td><td colspan="1" class="confluenceTd"><p><strong>Example of DEPARTMENT sample table iloader execution</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ cat SYS_DEPARTMENTS.dat
+1001,&quot;RESEARCH DEVELOPMENT DEPT 1   &quot;,&quot;New York       &quot;,16
+1002,&quot;RESEARCH DEVELOPMENT DEPT 2   &quot;,&quot;Sydney         &quot;,13
+1003,&quot;SOLUTION DEVELOPMENT DEPT     &quot;,&quot;Osaka          &quot;,14
+2001,&quot;QUALITY ASSURANCE DEPT        &quot;,&quot;Seoul          &quot;,17
+3001,&quot;CUSTOMERS SUPPORT DEPT        &quot;,&quot;London         &quot;,4
+3002,&quot;PRESALES DEPT                 &quot;,&quot;Peking         &quot;,5
+4001,&quot;MARKETING DEPT                &quot;,&quot;Brasilia       &quot;,8
+4002,&quot;BUSINESS DEPT                 &quot;,&quot;Palo Alto      &quot;,7</pre>
+</div></div></td></tr></tbody></table></div><p> </p><h1 id="id-1.BackupTypes-PhysicalBackup"><span style="color: rgb(0,0,0);">Physical Backup</span></h1><hr /><p>Physical backup is to copy files such as data files and log anchor files that make up the Altibase server and backing them up to a different physical location.</p><p>Physical backup classified into online backup and offline backup according to the Altibase server operation status.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="2" class="confluenceTh"><p>Backup type</p></th><th class="confluenceTh"><strong>Description</strong></th><th colspan="1" class="confluenceTh">Example of backup result</th></tr><tr><th rowspan="2" class="confluenceTh"><p>Physical Backup</p><p> </p></th><th class="confluenceTh">Online backup</th><td class="confluenceTd"><p>Performing physical backup while the Altibase server is running.</p><ul><li>There are two methods:</li><li>All databases</li><li>Tablespace-level</li></ul></td><td class="confluenceTd"><p>Online backup only backs up one stable memory checkpoint image file.</p><p>Data files in the disk temporary tablespace are not backed up.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l
+Total 2811920
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-0-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-0-0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 system001.dbf
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 undo001.dbf</pre>
+</div></div></div></td></tr><tr><th colspan="1" class="confluenceTh">Offline backup</th><td colspan="1" class="confluenceTd"><p>Physical backup while the Altibase server has stopped.</p><p>Only full database backup is possible.</p><p> </p></td><td class="confluenceTd"><p>Offline backup backs up all data files.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[tech2@bd5 online_backup]$ ls -l
+Total 3629032
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-0-0
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:12 SYS_TBS_MEM_DATA-1-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-0-0
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:12 SYS_TBS_MEM_DIC-1-0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:12 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 system001.dbf
+-rw-r----- 1 tech2 tech2  104865792 2019-07-12 15:09 temp001.dbf
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:13 undo001.dbf</pre>
+</div></div><p> </p><div><p> </p></div></td></tr></tbody></table></div><p> </p><h1 id="id-1.BackupTypes-IncrementalBackup"><span style="color: rgb(0,0,0);font-size: 20.0px;">Incremental Backup</span></h1><hr /><p>Incremental backup is to back up only data pages that have changed since the last incremental backup and the 'page change tracking' must be activated.</p><p>The entire database or tablespace-level can be backed up.</p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="3" class="confluenceTh">Backup type</th><th class="confluenceTh">Description</th><th class="confluenceTh">Example of backup result</th></tr><tr><th rowspan="3" class="confluenceTh"><p>Incremental Backup</p></th><th colspan="2" class="confluenceTh">Level 0 incremental backup</th><td class="confluenceTd">Level 0 is incremental backup is similar to physical backup, but is a backup that is used for determining whether data pages have been changed.</td><td rowspan="3" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ls -l TAG_20190712_141610/
+Total 2811924
+-rw-r----- 1 tech2 tech2  727556096 2019-07-12 14:16 SYS_TBS_MEM_DATA-0-0_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2    4300800 2019-07-12 14:16 SYS_TBS_MEM_DIC-0-0_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2       3296 2019-07-12 14:16 backupinfo
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor0
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor1
+-rw-r----- 1 tech2 tech2       9632 2019-07-12 14:16 loganchor2
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:16 system001.dbf_TAG_20190712_141610.ibak
+-rw-r----- 1 tech2 tech2 1073750016 2019-07-12 14:16 undo001.dbf_TAG_20190712_141610.ibak</pre>
+</div></div><p> </p><p> </p></td></tr><tr><th rowspan="2" class="confluenceTh">Level 1 incremental backup</th><th class="confluenceTh"><p>Differential incremental backup</p></th><td class="confluenceTd">This backs up pages that have changed since the most recently performed level 0 or level 1 incremental backup.</td></tr><tr><th class="confluenceTh"><p>Cumulative incremental backup</p></th><td class="confluenceTd">This backs up pages that have changed since the most recently performed level 0.</td></tr></tbody></table></div><p> </p></div></div></div></div><h1 id="id-1.BackupTypes-"><span style="color: rgb(0,0,0);font-size: 20.0px;"> </span></h1>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

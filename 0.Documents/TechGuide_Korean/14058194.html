@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase GeoServer 연동가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase GeoServer 연동가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 1 Team</span>, last modified on Apr 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409835187 {padding: 0px;}
+div.rbtoc1624409835187 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409835187 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409835187'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseGeoServer연동가이드-개요'>개요 </a></li>
+<li><a href='#AltibaseGeoServer연동가이드-GeoServer'>GeoServer </a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseGeoServer연동가이드-GeoServer설치및구동'>GeoServer 설치 및 구동 </a></li>
+<li><a href='#AltibaseGeoServer연동가이드-GeoServer와Altibase연동'>GeoServer와 Altibase 연동</a></li>
+<li><a href='#AltibaseGeoServer연동가이드-공간정보Import'>공간정보 Import </a></li>
+<li><a href='#AltibaseGeoServer연동가이드-등록된레이어확인'>등록된 레이어 확인</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseGeoServer연동가이드-참고자료'>참고자료</a></li>
+</ul>
+</div></p><p><span style="color: rgb(0,0,255);"><br /></span></p><p><span style="color: rgb(0,0,255);"><br /></span></p><h1 id="AltibaseGeoServer연동가이드-개요">개요<span style="color: rgb(0,0,255);"> </span></h1><hr /><p class="0cm">이 문서는 GeoServer와 Altibase Database를 연동하기 위한 가이드를 제시한다.</p><p class="0cm">이 문서는 아래 버전을 기준으로 작성되었다.</p><ul><li>Altibase 7.1.0 이상</li><li>GeoServer 2.16.2 이상</li></ul><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul style="text-decoration: none;text-align: left;margin-left: 0.0px;"><li>기술지원포털 : <a href="http://support.altibase.com/" style="text-decoration: none;" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p><span style="color: rgb(0,0,255);"><br /></span></p><p><span style="color: rgb(0,0,255);"><br /></span></p><h1 id="AltibaseGeoServer연동가이드-GeoServer">GeoServer<span style="color: rgb(0,0,255);"> </span></h1><hr /><p>GeoServer는 지리공간 데이터를 공유하고 편집할 수 있는 Java로 개발된 오픈 소스 GIS 소프트웨어 서버이다.</p><p>GeoServer는 커뮤니티 기반 프로젝트이기 때문에, 전 세계의 개인과 기관의 다양한 그룹에 의해 개발, 테스트 및 지원된다.</p><p>GeoServer는 웹 맵 서비스(WMS) 뿐만 아니라 Open Geospatial Consortium(OGC) Web Feature Service(WFS), Web Coverage Service(WCS) 그리고 Web Processing Service(WPS) 표준에 대한 참조 구현이기도 하다.</p><p>GeoServer는 지리공간 웹(GeoSpatial Web)의 핵심 컴포넌트를 구성한다.</p><p><span style="color: rgb(0,0,255);"><br /></span></p><h2 id="AltibaseGeoServer연동가이드-GeoServer설치및구동">GeoServer 설치 및 구동<span style="color: rgb(0,0,255);"> </span></h2><hr /><p>이 문서에서는 Windows 10에 GeoServer를 설치하는 것을 기준으로 한다.</p><ol><li>GeoServer를 설치하기 위해서는 JRE(Java Runtime Environment)가 설치되어 있어야 한다. <br />- JRE 버전은 8이상을 권장한다. <br />- <a href="https://adoptopenjdk.net/" class="external-link" rel="nofollow">OpenJDK </a>또는 <a href="https://www.oracle.com/java/technologies/javase-downloads.html" class="external-link" rel="nofollow">Oracle JRE</a>에서 다운로드하여 설치한다. <br />- 설치 후 JAVA 환경 설정을 확인한다. <br /><br /></li><li>GeoServer를 설치한다. <br />- <a href="http://geoserver.org/download/" class="external-link" rel="nofollow">GeoServer 다운로드 사이트</a>에서 Stable한 버전을 다운로드 한다. <br />  이 문서에서는 2.16.2 버전을 기준으로 한다. <br />- 다운로드한 Zip 파일을 설치 경로에 압축을 풀고 환경을 설정한다. <br />   여기에서는 C:\Program Files\GeoServer에 설치 하였다. <br />   환경은 다음과 같이 설정한다.<br />   GEOSERVER_HOME = C:\Program Files\GeoServer<br />   GEOSERVER_DATA_DIR= C:\Program Files\GeoServer\data_dir <br /><br /></li><li>Altibase와 연동을 위하여 추가 Library들을 설치한다.<br />필요한 라이브러리들을 C:\Program Files\GeoServer\webapps\geoserver\WEB-INF\lib로 복사한다.<br />- Altibase용 국내 공간 DBMS 드라이버<br />   <a href="https://sourceforge.net/projects/gt-jdbc-korean/files/Altibase/" class="external-link" rel="nofollow">gt-jdbc-altibase-21-SNAPSHOT.jar</a>  <br />- JTS Topology Suite<br />   <a href="https://sourceforge.net/projects/jts-topo-suite/files/jts/" class="external-link" rel="nofollow">jts-1.14.jar</a><br />- Altibase JDBC 드라이버<br />  Altibase.jar 파일은 Altibase가 설치되어 있는 디렉토리의 lib 디렉토리내에 있다. <br /><br /></li><li><p>Altibase spatial 모듈 설치 및 좌표계 정보 입력<br />- Altibase 기본 설치 시 spatial 모듈은 설치되지 않는다. 다음의 명령어를 이용하여 spatial 모듈을 설치한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ is -f $ALTIBASE_HOME/thirdparty/ArcGIS/geometry_columns.sql</pre>
+</div></div><p> </p><p>- 레이어 생성시 사용될 좌표계를 spatial_ref_sys 테이블에 입력한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">$isql
+iSQL&gt; INSERT into spatial_ref_sys (srid, auth_name, auth_srid, proj4text, srtext) values ( 4326, &#39;EPSG&#39;, 4326, &#39;+proj=longlat +datum=WGS84 +no_defs &#39;, &#39;GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]&#39;);</pre>
+</div></div><p> * 더 많은 좌표계 정보는 <a href="https://github.com/mangosystem/geotools-jdbc-korean/blob/master/jdbc-altibase/altibase_spatial_ref_sys.sql" class="external-link" rel="nofollow">여기</a>에서 확인 가능하다.<br /><br /></p></li><li>GeoServer 구동 <br />- GEOSERVER_HOME 경로의 startup.bat 파일을 실행하여 GeoServer를 구동한다. <span style="color: rgb(0,0,255);">1</span></li></ol><h2 id="AltibaseGeoServer연동가이드-GeoServer와Altibase연동">GeoServer와 Altibase 연동</h2><hr /><ol><li>GeoServer 접속 <br />- http://localhost:8080/geoserver로 접속한다. <br />- username : admin  password : geoserver <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221454.jpg" data-image-src="attachments/14058194/14221454.jpg"><br /><br /></li><li><p>저장소 추가 <br />- Altibase를 저장소로 추가한다. <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221454.jpg" data-image-src="attachments/14058194/14221454.jpg"><br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221455.jpg" data-image-src="attachments/14058194/14221455.jpg"><br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221457.jpg" data-image-src="attachments/14058194/14221457.jpg"><br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221458.jpg" data-image-src="attachments/14058194/14221458.jpg"><br /><br />- 필수 입력 항목은 다음과 같다</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">작업공간</td><td class="confluenceTd">레이어를 발행하거나 등록하려면 작업공간을 추가하여야 한다.  여기에서는 기본 작업 공간인 cite를 선택하였다.</td></tr><tr><td class="confluenceTd">데이터 저장소 이름</td><td class="confluenceTd">데이터 저장소의 이름을 입력한다.</td></tr><tr><td class="confluenceTd">dbtype</td><td class="confluenceTd">altibase가 설정된다.</td></tr><tr><td class="confluenceTd">host</td><td class="confluenceTd">Altibase 서버의 주소를 입력한다.</td></tr><tr><td class="confluenceTd">port</td><td class="confluenceTd">Altibase에서 설정한 서비스 포트를 입력한다. 기본값은 20300이다.</td></tr><tr><td colspan="1" class="confluenceTd">database</td><td colspan="1" class="confluenceTd">Altibase에서 설정한 데이터베이스명을 입력한다.기본값은 mydb 이다.</td></tr><tr><td colspan="1" class="confluenceTd">schema</td><td colspan="1" class="confluenceTd">Altibase에서는 schema를 관리하지 않는다.</td></tr><tr><td colspan="1" class="confluenceTd">user</td><td colspan="1" class="confluenceTd">Altibase DB 계정명을 입력한다.</td></tr><tr><td colspan="1" class="confluenceTd">password</td><td colspan="1" class="confluenceTd">Altibase DB 계정 암호를 입력한다.</td></tr><tr><td colspan="1" class="confluenceTd"><span style="color: rgb(34,34,34);text-decoration: none;">preparedStatements</span></td><td colspan="1" class="confluenceTd">선택항목이다. Altibase에서는 체크하지 않는다.</td></tr></tbody></table></div><p><br /><br /></p></li><li>레이어 등록하기<br />- 저장소에 레이어를 등록한다. <br />- 등록된 레이어는 Altibase에서 Table로 관리된다. <br />- 좌측 트리의 레이어를 선택하고 새로운 레이어 추가하기를 클릭한다. <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221459.jpg" data-image-src="attachments/14058194/14221459.jpg"><br /><br />- 레이어를 생성할 저장소를 선택한다. 여기에서는 작업공간 cite의 ALTIBASE_SPATIAL 이라는 저장소를 선택하였다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221460.jpg" data-image-src="attachments/14058194/14221460.jpg"><br /><br />- 새로운 피처 타입 생성하기를 클릭하여 레이어를 생성한다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221461.jpg" data-image-src="attachments/14058194/14221461.jpg"><br /><br />- 타입 이름을 입력한다. 이 이름이 Table 명이 된다.<br />- 새로운 속성필드 추가하기를 눌러 속성필드를 추가한다. 이 속성 필드는 Column으로 정의된다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221462.jpg" data-image-src="attachments/14058194/14221462.jpg"><br /><br />- 이름을 입력한다. 이 이름이 Column 명이 된다. <br />- 유형을 입력한다. Column의 data type이 된다. <br />- Length가 필요한 data type인 경우 크기를 지정한다. <br />- geometry type 인 경우는 좌표체계를 지정하고 저장버튼을 클릭한다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221464.jpg" data-image-src="attachments/14058194/14221464.jpg"><br /><br />- 속성정보를 확인하고 레이어 최소경계 영역을 입력한다. <br />   데이터로부터 계산하기, SRS 범위로 계산, 원본 영역으로부터 계산하기를 클릭하면 자동적으로 입력된다.<br />- 저장하기를 클릭하여 저장한다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221465.jpg" data-image-src="attachments/14058194/14221465.jpg"></li></ol><p><span style="color: rgb(0,0,255);"><br /></span></p><h2 id="AltibaseGeoServer연동가이드-공간정보Import">공간정보 Import<span style="color: rgb(0,0,255);"> </span></h2><hr /><p>Shape file을 이용하여 레이어를 Import 할 수 있다</p><ol><li>확장 plug-in 설치 <br /><a href="https://sourceforge.net/projects/geoserver/files/GeoServer/2.16.2/extensions/geoserver-2.16.2-importer-plugin.zip/download" class="external-link" rel="nofollow">importer 플러그인을 다운로드</a>하여 압축을 푼 뒤 C:\Program Files\GeoServer\webapps\geoserver\WEB-INF\lib에 복사한다<br />GeoServer를 재기동 하여야 적용된다<br /><br /></li><li>GeoServer에 접속하면 데이터 가져오기 항목이 추가된다<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221467.jpg" data-image-src="attachments/14058194/14221467.jpg"><br /><br /></li><li>가져올 데이터 원본에서 공간파일을 선택한다.<br />현재 Altibase에서는 공간 파일 Import만 선택이 가능하다. <br />탐색버튼을 클릭하여 공간 파일을 선택한다. <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221486.jpg" data-image-src="attachments/14058194/14221486.jpg"><br /><br /></li><li>공간파일이 위치한 디렉토리를 선택한다. <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221487.jpg" data-image-src="attachments/14058194/14221487.jpg"><br /><br />- 작업공간 및 저장소를 선택하고 Next 버튼을 클릭한다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221488.jpg" data-image-src="attachments/14058194/14221488.jpg"><br /><br />- 가져올 공간정보 파일을 선택하고  가져오기 버튼을 클릭하여 Import를 완료한다. <br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221490.jpg" data-image-src="attachments/14058194/14221490.jpg"><br /><br /></li></ol><h2 id="AltibaseGeoServer연동가이드-등록된레이어확인">등록된 레이어 확인<span style="color: rgb(0,0,255);"><br /></span></h2><hr /><p>등록된 레이어는 레이어 미리보기에서 확인할 수 있다.</p><ul><li>레이어 미리보기를 클릭하여 확인할 레이어에서 OpenLayers를 클릭한다.<br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221491.jpg" data-image-src="attachments/14058194/14221491.jpg"><br /><img class="confluence-embedded-image" width="500" src="attachments/14058194/14221492.jpg" data-image-src="attachments/14058194/14221492.jpg"><br /><br /></li><li><p>Altibase에서는 다음과 같이 확인 가능하다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">$isql
+iSQL&gt; SELECT &quot;fid&quot;, &quot;emd_cd&quot;, &quot;emd_eng_nm&quot;, ASTEXT(&quot;the_geom&quot;) FROM &quot;SEOUL_43260&quot; LIMIT 3;
+fid         emd_cd                          emd_eng_nm                      ASTEXT(&quot;THE_GEOM&quot;)              
+-----------------------------------------------------------------------------------------------------------------
+1           11110152                        Bongik-dong                     MULTIPOLYGON(((126.9925 37.573  
+                                                                            85, 126.9941 37.57206, 126.994  
+                                                                            3 37.571, 126.9929 37.57085, 1  
+                                                                            26.9923 37.57203, 126.9916 37.  
+                                                                            57389, 126.9925 37.57385)))     
+2           11110153                        Donui-dong                      MULTIPOLYGON(((126.991 37.5733  
+                                                                            6, 126.9918 37.5708, 126.9905   
+                                                                            37.5707, 126.9902 37.57189, 12  
+                                                                            6.9899 37.5729, 126.991 37.573  
+                                                                            36)))                           
+3           11560123                        Mullae-dong 5(o)-ga             MULTIPOLYGON( ... )             
+3 rows selected.</pre>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <ul><li><span style="color: rgb(0,0,255);"> </span>Atlibase에서는 Table 명 및 Column 명에 대하여 대소문자를 구분한다. <br />소문자가 포함되어 있는 Table 및 Column 명을 조회시에는 &quot;&quot;를 사용한다.</li></ul>
+                    </div>
+    </div>
+<p><br /><br /></p></li></ul><h1 id="AltibaseGeoServer연동가이드-참고자료">참고자료</h1><hr /><h3 id="AltibaseGeoServer연동가이드-AltibaseManual">Altibase Manual</h3><ul style="list-style-type: square;"><li><a href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/kor/GettingStarted.md" class="external-link" rel="nofollow">Altibase 7.1 Getting Started Guide manuals</a></li><li><a href="https://github.com/ALTIBASE/Documents/blob/master/Manuals/Altibase_7.1/kor/SpatialSQL.md" class="external-link" rel="nofollow">Altibase 7.1 Spatial SQL manuals</a></li></ul><h3 id="AltibaseGeoServer연동가이드-GeoServer.1">GeoServer</h3><ul style="list-style-type: square;"><li><a class="external-link" href="https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/power_management_guide/cpufreq_governors" rel="nofollow">GeoServer Documentation</a></li></ul><h3 id="AltibaseGeoServer연동가이드-OpenGeospatial">Open Geospatial</h3><ul style="list-style-type: square;"><li><a href="https://www.ogc.org/" class="external-link" rel="nofollow">Open Geospatial Consortium (OGC)</a></li><li><a href="https://www.osgeo.org/" class="external-link" rel="nofollow">Open Source Geospatial Foundation (OSGeo)</a></li><li><a href="https://www.osgeo.kr/" class="external-link" rel="nofollow">Open Source Geospatial Foundation Korean chapter</a></li></ul><p><br /><br /></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221452.pdf">ALTIBASE_운영을_위한_Linux_설정가이드.pdf</a> (application/pdf)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221473.jpg">1.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221456.jpg">2.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221474.jpg">2.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221470.jpg">3.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221471.jpg">4.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221472.jpg">5.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221479.jpg">6.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221480.jpg">7.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221463.jpg">8.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221481.jpg">8.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221482.jpg">9.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221466.jpg">10.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221483.jpg">10.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221485.jpg">11.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221468.jpg">21.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221469.jpg">2-1.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221475.jpg">3.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221476.jpg">4.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221478.jpg">5.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221454.jpg">1.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221455.jpg">2.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221477.jpg">3.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221458.jpg">4.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221457.jpg">3.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221459.jpg">5.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221460.jpg">6.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221461.jpg">7.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221484.jpg">8.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221464.jpg">9.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221465.jpg">10.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221462.jpg">8.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221467.jpg">11.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221486.jpg">12.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221487.jpg">13.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221489.jpg">14.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221488.jpg">14.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221490.jpg">15.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221491.jpg">17.JPG</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058194/14221492.jpg">18.JPG</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

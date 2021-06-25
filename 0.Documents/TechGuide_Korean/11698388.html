@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : APRE 예제 프로그램</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11698385.html">Altibase Precompiler 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : APRE 예제 프로그램
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span> on Mar 29, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409852928 {padding: 0px;}
+div.rbtoc1624409852928 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409852928 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409852928'>
+<ul class='toc-indentation'>
+<li><a href='#APRE예제프로그램-예제프로그램'>예제프로그램</a></li>
+</ul>
+</div></p><hr /><p>ALTIBASE 설치 파일에 포함되어 있는 예제(Sample)  프로그램에 대해서 간략히 설명한다.</p><h1 id="APRE예제프로그램-예제프로그램">예제프로그램</h1><p>$ALTIBASE_HOME/sample/APRE 에 각종 예제들을 참고할 수 있다. 해당 디렉토리의 소스는 다음과 같이 참고할 수 있다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><strong>분류</strong></p></th><th class="confluenceTh"><p><strong>샘플</strong><strong> </strong><strong>예제</strong><strong> </strong><strong>소스</strong><strong> </strong><strong>명</strong></p></th></tr><tr><td class="confluenceTd"><p>DB 연결 예제</p></td><td class="confluenceTd"><p>connect1.sc connect2.sc</p></td></tr><tr><td class="confluenceTd"><p>호스트 변수 예제</p></td><td class="confluenceTd"><p>arrays1.sc arrays2.sc pointer.sc date.sc varchar.sc binary.sc</p></td></tr><tr><td class="confluenceTd"><p>Cursor 활용 예제</p></td><td class="confluenceTd"><p>cursor1.sc cursor2.sc</p></td></tr><tr><td class="confluenceTd"><p>Dynamic SQL 활용 예제</p></td><td class="confluenceTd"><p>dynamic1.sc dynamic2.sc dynamic3.sc</p></td></tr><tr><td class="confluenceTd"><p>Multi Connection 예제</p></td><td class="confluenceTd"><p>mc1.sc mc2.sc</p></td></tr><tr><td class="confluenceTd"><p>Thread 개발 환경의 예제</p></td><td class="confluenceTd"><p>mt1.sc mt2.sc</p></td></tr><tr><td class="confluenceTd"><p>DML별 사용 예제</p></td><td class="confluenceTd"><p>select.sc insert.sc delete.sc update.sc</p></td></tr><tr><td class="confluenceTd"><p>LOB 활용 예제</p></td><td class="confluenceTd"><p>BLOB/blobSample.sc  CLOB/clobSample.sc</p></td></tr><tr><td class="confluenceTd"><p>PSM/Function 예제</p></td><td class="confluenceTd"><p>ps1m.sc psm2.sc</p></td></tr><tr><td class="confluenceTd"><p>FailOver 예제</p></td><td class="confluenceTd"><p>Fail-Over/FailOverSample.sc</p></td></tr></tbody></table></div><p> </p><p>본 문서에서는 예제 소스들을 복합적으로 응용하여 2개의 연결을 맺어 Cursor-fetch과정에서 별도의 테이블에 update를 수행하는 예를 기술한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Testsample.sc
+--------------------------------------------------------------------------
+EXEC SQL BEGIN DECLARE SECTION;
+ char   usr [20];
+ char   pwd [20];
+ char   opt [200];
+ char   conn2 [20];
+ int    H_C1;
+ int    H_C2;
+ int     i;
+EXEC SQL END DECLARE SECTION;
+
+void error_do(const char*step)
+{
+
+    if (sqlca.sqlcode != 0)
+    {
+        printf (&quot;Error: &lt;%s&gt; %d, %s\n&quot;, step,  SQLCODE, sqlca.sqlerrm.sqlerrmc);
+        exit(-1);
+    } else {
+        printf (&quot;%s success\n&quot;, step);
+    }
+}
+
+main()
+{
+    // 연결을 위한 접속정보
+    sprintf (usr, &quot;sys&quot;);
+    sprintf (pwd, &quot;manager&quot;);
+    sprintf (opt, &quot;DSN=192.168.1.35;PORT_NO=27584;CONNTYPE=1&quot;);
+
+    // DB연결을 수행
+    EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+    error_do(&quot;conn&quot;);
+
+    // cursor내에서 update수행을 위한 별도의 연결을 수행
+    sprintf (conn2, &quot;update_con&quot;);
+    EXC SQL AT :conn2 CONNECT :usr IDENTIFIED BY :pwd USING :opt;
+    error_do(&quot;conn2&quot;);
+
+    // NonAutoCommit모드로 변경
+    EXEC SQL AT :conn2 ALTER SESSION SET AUTOCOMMIT = FALSE:
+    error_do (&quot;alter session&quot;);
+
+    // 테스트를 위한 2개의 테이블을 만들고 데이터를 입력한다.
+    EXEC SQL CREATE TABLE TABLE_A (C1 INTEGER, C2 INTEGER);
+    EXEC SQL CREATE TABLE TABLE_B (C1 INTEGE, C2 INTEGER);
+
+    for (i=0; i&lt;10; i++)
+   {
+       EXEC SQL INSERT INTO TABLE_A VALUES (:i, :i);
+       Error_do (&quot;insert_table_a&quot;);
+       
+       EXEC SQL INSERT INTO TABLE_B VALUES (:i, :i);
+       Error_do(&quot;insert_table_b&quot;);
+    }
+
+    EXEC SQL AT :conn2 COMMIT;
+
+    // cursor 선언
+    EXEC SQL DECLARE CURSOR1 CURSOR FOR   SELECT C1, C2 FROM TABLE_A;
+    error_do(&quot;declare&quot;);
+
+    // cursor 열기
+    EXEC SQL OPEN CURSOR1;
+    error_do(&quot;open&quot;);
+
+    while (1)
+    {
+         // fetch하면서 update를 수행.
+        EXEC SQL FETCH CURSOR1 INTO :H_C1, :H_C2;
+        error_do(&quot;fetch&quot;);
+
+        // update 수행
+        EXEC SQL AT :conn2  UPDATE TABLE_B SET C2 = C2 + :H_C2  WHERE C1 = :H_C1;
+        error_do(&quot;update&quot;);
+    }
+
+    // 사용한 cursor를 닫는다.
+    EXEC SQL CLOSE CURSOR1;
+
+    // 연결 해제
+    EXEC SQL DISCONNECT;
+
+    // update를 수행한 세션을 commit하고 연결을 해제
+    EXEC SQL AT :conn2 COMMIT;
+    EXEC SQL AT :conn2 DISCONNECT;
+}</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

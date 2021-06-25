@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 3. MyBatis를 이용한 SAMPLE작성</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340818.html">Altibase MyBatis 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 3. MyBatis를 이용한 SAMPLE작성
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Nov 28, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409843495 {padding: 0px;}
+div.rbtoc1624409843495 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409843495 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409843495'>
+<ul class='toc-indentation'>
+<li><a href='#id-3.MyBatis를이용한SAMPLE작성-Mapper파일작성'>Mapper 파일 작성</a></li>
+<li><a href='#id-3.MyBatis를이용한SAMPLE작성-Configuration파일작성'>Configuration 파일 작성</a></li>
+<li><a href='#id-3.MyBatis를이용한SAMPLE작성-Application작성'>Application 작성</a></li>
+</ul>
+</div>
+<hr />
+<p>MyBatis를 이용하여 SQL문을 처리하기 위해서는 Configuration XML 파일과 Mapper XML 파일을 작성해야 한다.  이 파일들은 프로그래머에게 JavaBean을 PreparedStatement의 파라미터와 ResultSet으로 쉽게 mapping 할 수 있도록 해준다. 본 장에서는 Configuration XML 파일, Mapper XML 파일을 작성하는 방법과 application에서 이 파일을 이용하여 실제로 SQL을 처리하는 방법에 대해 설명한다. Sample 프로그램을 작성하는 보다 자세한 내용은 부록 부분을 참고하면 된다.</p>
+
+<h2 id="id-3.MyBatis를이용한SAMPLE작성-Mapper파일작성"><strong>Mapper 파일 작성</strong></h2>
+
+<p>Mapper XML 파일은 DB로 전송할 SQL 구문, PreparedStatement로 binding될 parameter의 mapping, ResultSet의 result의 mapping들을 명시하는 파일이다. <br />
+다음은 person 테이블에 CRUD를 처리하는 Mapper XML 파일을 작성한 예제이다. (UserMapper.xml)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; 
+&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;mapper namespace=&quot;com.altibase.sidu.mapper.UserMapper&quot;&gt;
+	&lt;select id=&quot;selectUserData&quot; parameterType=&quot;Integer&quot; resultType=&quot;User&quot;&gt;
+		SELECT user_no as userNo,
+		user_name as userName,
+		user_content as userContent,
+		reg_date as regDate
+		FROM users
+		WHERE user_no = #{userNo}
+	&lt;/select&gt;
+
+	&lt;select id=&quot;selectAllUserData&quot; resultType=&quot;User&quot;&gt;
+		SELECT user_no as userNo,
+		user_name as userName,
+		user_content as userContent,
+		reg_date as regDate
+		FROM users
+	&lt;/select&gt;
+
+	&lt;insert id=&quot;insertUserData&quot; parameterType=&quot;User&quot;&gt;
+		insert into
+		users(user_no, user_name, user_content, reg_date)
+		values(#{userNo}, #{userName}, #{userContent}, #{regDate})
+	&lt;/insert&gt;
+
+	&lt;update id=&quot;updateUserData&quot; parameterType=&quot;User&quot;&gt;
+		update users
+		set user_name = #{userName},
+		user_content = #{userContent},
+		reg_date = #{regDate}
+		where user_no = #{userNo}
+	&lt;/update&gt;
+
+	&lt;delete id=&quot;deleteUserData&quot; parameterType=&quot;User&quot;&gt;
+		delete from users
+		where user_no = #{userNo}
+	&lt;/delete&gt;
+&lt;/mapper&gt;
+
+</pre>
+</div></div>
+
+<p>&lt;insert&gt;, &lt;update&gt;, &lt;delete&gt;, &lt;select&gt; 태그에는 CRUD의 작업에 대한 각각의 SQL문을 정의한다.<br />
+각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://mybatis.github.io/mybatis-3/ko/" rel="nofollow">http://mybatis.github.io/mybatis-3/ko/</a> 사이트를 참고하거나 <br />
+첨부된 문서 MyBatis-3-User-Guide_ko.pdf 파일을 참고하면 된다.</p>
+
+<h2 id="id-3.MyBatis를이용한SAMPLE작성-Configuration파일작성"><strong>Configuration 파일 작성</strong></h2>
+
+<p>Configuration 파일은 DB 연결을 위한 dataSource, Mapper 파일의 경로, typeAliases의 설정 외 SqlMapClient를 제어할 property들을 작성하는 SQL Maps 설정파일이다. <br />
+다음은 Configuration 파일(mybatis-config.xml) 예제이다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+
+&lt;typeAliases&gt;
+	&lt;typeAlias type=&quot;com.altibase.sidu.model.UserVo&quot; alias=&quot;User&quot; /&gt;
+&lt;/typeAliases&gt;
+
+&lt;!--  DB 연결 옵션 : UNPOOLED/POOLED/JNDI --&gt;
+&lt;!--  transanctionManager 옵션 : JDBC/MANAGED --&gt;
+&lt;environments default=&quot;development&quot;&gt;
+	&lt;environment id=&quot;development&quot;&gt;
+	&lt;transactionManager type=&quot;JDBC&quot; /&gt;
+	&lt;dataSource type=&quot;POOLED&quot;&gt;
+		&lt;property name=&quot;driver&quot; value=&quot;${jdbc.driver}&quot; /&gt;
+		&lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot; /&gt;
+		&lt;property name=&quot;username&quot; value=&quot;${jdbc.username}&quot; /&gt;
+		&lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot; /&gt;
+		&lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+    		&lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+    		&lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+    		&lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+	&lt;/dataSource&gt;
+	&lt;/environment&gt;
+&lt;/environments&gt;
+	
+&lt;mappers&gt;
+	&lt;mapper resource=&quot;com/altibase/sidu/mapper/UserMapper.xml&quot; /&gt;
+&lt;/mappers&gt;
+
+&lt;/configuration&gt;
+
+</pre>
+</div></div>
+
+<p>&lt;properties&gt; 태그에는 name=value 형태로 정의된 property들을 작성한 properties 파일의 경로 및 이름을 명시해주고, &lt;settings&gt; 태그에는 Configuration을 제어할 property들을, &lt;transactionManager&gt; 와&lt;dataSource&gt;에는 연결할 DB정보를 작성한다.<br />
+또, &lt;mappers&gt; 태그에는 미리 작성한 Mapper 파일들의 경로 및 이름을 작성한다.<br />
+다만 이전 iBatis와 다른 점은 iBatis에서 DB 설정을 한 개만 할 수 있었던 것에 비해서 MyBatis는 설정 파일에 여러 개의 DB를 설정하고 SqlSessionFactory 객체를 생성하는 시점에서 특정 DB를 설정할 수 있다.<br />
+각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://mybatis.github.io/mybatis-3/ko/" rel="nofollow">http://mybatis.github.io/mybatis-3/ko/</a> 사이트를 참고하거나 첨부된 문서 MyBatis-3-User-Guide_ko.pdf 파일을 참고하면 된다.</p>
+
+<h2 id="id-3.MyBatis를이용한SAMPLE작성-Application작성"><strong>Application 작성</strong></h2>
+
+<p>Application에서 MyBatis에서 제공하는 SqlSession 객체의 instance를 이용하여 DB 테이블에 Mapping된 객체와 연동하여 CRUD 작업을 처리할 수 있다.<br />
+MyBatis를 이용하여 DB와 연동하기 위해서는 먼저 DB 연결에 대한 설정이 있는 Configuration 파일을 읽어 SqlSessionFactory 객체를 생성하고 해당 객체에서 SqlSession 객체를 얻어 Mapper에 매핑되는 쿼리를 처리하게 된다.<br />
+다음은 DB의 users 테이블에 데이터를 삽입, 변경, 삭제, 조회하는 application이다.<br />
+Application에서 연결을 얻어오는 부분은 별도의 Class로 분류 하였다.</p>
+
+<p>예) altibase_mybatis_sidu의 SiduMain.java</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+// Configuration DB Connection
+MybatisUtil.java
+…
+inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);
+sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+sqlSession = sqlSessionFactory.openSession(false);
+…
+UserVo userVo = new UserVo();
+…
+
+//select User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.selectUserData&quot;;
+userVo = MybatisUtil.getSqlSessionFactory().selectOne(statement, user_no);
+…
+
+// select all User
+List&lt;UserVo&gt; userVos = MybatisUtil.getSqlSessionFactory().selectList(statement);
+…
+
+// update User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.updateUserData&quot;;
+			res_count = MybatisUtil.getSqlSessionFactory().update(statement, userVo);
+…
+
+// insert User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.insertUserData&quot;;
+res_count = MybatisUtil.getSqlSessionFactory().insert(statement, userVo);
+…
+
+// delete User
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.deleteUserData&quot;;
+res_count = MybatisUtil.getSqlSessionFactory().insert(statement, user_no);
+
+</pre>
+</div></div>
+
+<p>먼저 Mapper 파일을 읽어 들여 SqlSessionFactory 객체를 생성하며 생성된  SqlSessionFactory 객체에서 SqlSession 객체를 생성 하며,<br />
+Sample에서 SqlSession을 가져온 메소드는 다음과 같다. sqlSessionFactory.openSession(boolean arg0); <br />
+	해당 메소드의 Boolean 인자는 autocommit 모드를 결정하는 값이다.(<br />
+	inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);<br />
+	sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);<br />
+	sqlSession = sqlSessionFactory.openSession(false);<br />
+)<br />
+이후 SqlSession 객체와 Mapper에 명명되어 있는 id를 가지고 CRUD 클래스의 각각의 메소드를 호출한다. (<br />
+String statement = &quot;com.altibase.sidu.mapper.UserMapper.updateUserData&quot;;<br />
+sqlSession.update(statement, update)<img class="emoticon emoticon-wink" src="images/icons/emoticons/wink.png" data-emoticon-name="wink" alt="(wink)"/></p>
+
+<p>각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://mybatis.github.io/mybatis-3/ko/" rel="nofollow">http://mybatis.github.io/mybatis-3/ko/</a> 사이트를 참고하거나 첨부된 문서 MyBatis-3-User-Guide_ko.pdf 파일을 참고하면 된다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

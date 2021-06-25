@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-11049 (  69705) Too many pages are allocated ( Maximum Number of Pages= 숫자).</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-11049 (  69705) Too many pages are allocated ( Maximum Number of Pages= 숫자).
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055424 {padding: 0px;}
+div.rbtoc1624409055424 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055424 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055424'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-버전'>버전</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-원인'>원인</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-MEM_MAX_DB_SIZE란?'>MEM_MAX_DB_SIZE란?</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-메모리사용율조회방법'>메모리 사용율 조회 방법</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-조치방법'>조치 방법</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-변경방법'>변경 방법</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-변경시유의사항'>변경시 유의사항</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-사용자환경설정(Linux/Unix)'>사용자 환경 설정 (Linux/Unix)</a></li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-커널파라미터(AIX,HP-UX)'>커널 파라미터(AIX, HP-UX)</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-참고자료'>참고자료</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-버전"><strong>버전</strong></h1><hr /><p>ALTIBASE HDB 모든 버전</p><p> </p><p> </p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-원인"><strong>원인<br /></strong></h1><hr /><p>ALTIBASE 메모리 테이블스페이스의 경우는 모든 메모리 테이블스페이스의 합산이 $ALTIBASE_HOME/conf/altibase.properties 에서 MEM_MAX_DB_SIZE를 초과할 수 없습니다. 이 에러메시지는 모든 공간이 소진되어 발생합니다.</p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-MEM_MAX_DB_SIZE란?"><strong>MEM_MAX_DB_SIZE란?</strong></h1><hr /><ul><li>물리 메모리에 저장되는 <strong>메모리 테이블스페이스(메모리 테이블 또는 메모리 데이터)로 사용할 수 있는 최대 메모리 크기</strong>를 의미합니다.</li><li><u><span style="color: rgb(0,51,102);">모든 메모리 테이블스페이스를 합한 전체 사용량에 대한 제약</span></u>입니다.</li><li>메모리 테이블스페이스 각각이 사용할 수 있는 최대 크기가 아닙니다.</li><li>메모리 테이블에 생성한 <strong><u>인덱스 크기는 포함되지 않습니다.</u></strong></li><li><u><strong><u>변경 트랜잭션 수행 시 발생하는 과거 데이터도 포함</u></strong>됩니다. <br /></u>변경 트랜잭션이 수행될 경우 트랜잭션이 종료되기 전까지 과거 데이터를 유지하는데(MVCC기법), 메모리 테이블의 경우 메모리 테이블 내에 레코드의 복제본을 생성합니다.<u><span style="color: rgb(0,51,102);"> </span></u></li><li>메모리 테이블스페이스 생성 시 최대값을 지정하지 않으면 MEM_MAX_DB_SIZE 설정 값만큼 자동 확장됩니다.</li></ul><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-메모리사용율조회방법"><strong>메모리 사용율 조회 방법<br /></strong></h1><hr /><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">set linesize 1024
+set colsize 20
+SELECT TO_CHAR(MEM_MAX_DB_SIZE/1024/1024, &#39;999,999,999&#39;) &#39;       MAX(M)&#39;,                                       -- MAX(M)   : MEM_MAX_DB_SIZE 설정 값
+       TO_CHAR(MEM_ALLOC_PAGE_COUNT*32/1024, &#39;999,999,999&#39;) &#39;     TOTAL(M)&#39;,                                    -- TOTAL(M) : 메모리 테이블스페이스로 할당 된 전체 페이지 크기. 체크포인트 이미지 파일 크기를 의미하기도 함. 
+       TO_CHAR((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, &#39;999,999,999&#39;) &#39;     ALLOC(M)&#39;,              -- ALLOC(M) : 메모리 테이블스페이스에서 사용하는 메모리 크기
+       (SELECT TO_CHAR(SUM((FIXED_USED_MEM + VAR_USED_MEM))/1024/1024, &#39;999,999,999&#39;)
+          FROM V$MEMTBL_INFO) &#39;      USED(M)&#39;,                                                                  -- USED(M)  : ALLOC 중에서 데이터가 저장된 메모리 크기
+       TO_CHAR((((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE)*100, &#39;99.99&#39;) &#39;USAGE(%)&#39;  -- USAGE(%) : MAX 대비 ALLOC 사용률
+  FROM V$DATABASE ;
+       MAX(M)         TOTAL(M)         ALLOC(M)         USED(M)     USAGE(%)         
+-------------------------------------------------------------------------------------------
+       5,120              920              621              142      12.13           
+1 row selected.
+                                                                           </pre>
+</div></div><p>위의 조회 결과  ALLOC_SIZE가 MEM_MAX_DB_SIZE까지 도달하였을 때 'Too many pages are allocated' 에러가 발생 합니다.</p><p> </p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-조치방법"><strong><strong>조치</strong> 방법</strong></h1><hr /><p>아래 에러가 발생하지 않게 하기 위해서는 $ALTIBASE_HOME/conf/altibase.properties 에서 MEM_MAX_DB_SIZE 프로퍼티값을 늘려주셔야 합니다.</p><p>이 값을 늘려주면 알티베이스 DB Size는 최대 이 사이즈까지 증가할 수 있습니다. 프로퍼티 수정 후 알티베이스를 재구동 해주셔야 적용됩니다.</p><p>조치 이후에는 어떤 이유로 메모리 테이블스페이스의 사용량이 증가 하였는지 각 테이블 별 사용량의 조회나 대량 변경작업등이 발생하지 않았는지 확인하여 조치할 필요가 있습니다.</p><h2 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-변경방법"><strong>변경 방법<br /></strong></h2><ol><li><p><strong>알티베이스 서버 중지</strong></p><div><div class="syntaxhighlighter nogutter  bash"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ server stop</code></div></div></td></tr></tbody></table></div></div></div></li><li><p><strong>altibase.properties 파일 변경</strong></p><p>알티베이스 서버 프로퍼티 파일($ALTIBASE_HOME/conf/altibase.properties) 에서 MEM_MAX_DB_SIZE 를 변경 후 저장합니다.</p><div><div class="syntaxhighlighter nogutter  bash"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ </code><code class="bash functions">vi</code> <code class="bash plain">$ALTIBASE_HOME</code><code class="bash plain">/conf/altibase</code><code class="bash plain">.properties</code></div><div class="line number2 index1 alt1"><code class="bash plain">MEM_MAX_DB_SIZE        = 2G </code><code class="bash comments"># MEM_MAX_DB_SIZE</code></div></div></td></tr></tbody></table></div></div></div></li><li><p><strong>알티베이스 서버 구동</strong></p><div><div class="syntaxhighlighter nogutter  bash"><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><div class="container" title="Hint: double-click to select code"><div class="line number1 index0 alt2"><code class="bash plain">$ server start</code></div></div></td></tr></tbody></table></div></div></div></li></ol><p> </p><p> </p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-변경시유의사항"><strong>변경시 유의사항</strong></h1><hr /><p><strong><br /></strong></p><p><strong>디스크 공간</strong></p><p>메모리 테이블스페이스는 백업 용도로 두 벌의 '메모리 체크포인트 이미지 파일'을 디스크에 저장합니다. 그래서 <strong><span style="color: rgb(0,51,102);"><span style="color: rgb(255,0,0);">메모리 데이터 사용량보다 보다 두 배의 디스크 공간이 필요</span></span></strong>합니다.</p><p>MEM_MAX_DB_SIZE 를 크게 설정하면 디스크 사용량도 증가하므로 MEM_MAX_DB_SIZE 변경 전에 디스크 공간을 여유있게 확보해야 합니다. </p><p>예) MEM_MAX_DB_SIZE 가 60G 일 경우, 120G 의 디스크 공간이 필요. </p><p> </p><h3 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-사용자환경설정(Linux/Unix)">사용자 환경 설정 (Linux/Unix)</h3><p>ulimit -a 로 수행하여 아래 설정들이 <strong><span style="color: rgb(255,0,0);">OS 에서 허용하는 최대 값으로 설정되어 있는 지 확인</span></strong>해야 합니다.</p><p>max memory size<br />virtual memory</p><p> </p><h3 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-커널파라미터(AIX,HP-UX)">커널 파라미터(AIX, HP-UX)</h3><p>AIX 경우 /etc/security/limits 파일 내용에서 data, rss, fsize등에 대해서 -1로 설정이 되어 있는지 확인합니다. <br />HP의 경우 kctune을 통해 maxdsiz_64bit 값이 충분히 크게 설정 되어 있는지 확인합니다. maxdsiz_64bit 값이 ALTIBASE의 property의 MEM_MAX_DB_SIZE값보다 작을 시에도 'Too many pages are allocated' 에러가 발생할 수 있으므로 root 계정으로 ALTIBASE의 property의 MEM_MAX_DB_SIZE보다 크게 설정해야 합니다.<br />Linux, SunOS 는 해당 없습니다.</p><p> </p><p> </p><h1 id="ERR-11049(69705)Toomanypagesareallocated(MaximumNumberofPages=숫자).-참고자료">참고자료</h1><hr /><ul><li><a href="http://aid.altibase.com/x/6wKB" class="external-link" rel="nofollow">MEM_MAX_DB_SIZE 란 ?</a></li></ul><p> </p><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/9110685/9404456.gif">transparent_itsmap[1].gif</a> (image/gif)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to modify column</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to modify column
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145189 {padding: 0px;}
+div.rbtoc1624409145189 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145189 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145189'>
+<ul class='toc-indentation'>
+<li><a href='#Howtomodifycolumn-Version'>Version</a></li>
+<li><a href='#Howtomodifycolumn-Statement'>Statement</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtomodifycolumn-TOLERATEDATALOSSOption'>TOLERATE DATA LOSS Option</a></li>
+<li><a href='#Howtomodifycolumn-ConversionofDATEtype'>Conversion of DATE type</a></li>
+</ul>
+</li>
+<li><a href='#Howtomodifycolumn-Precaution'>Precaution</a></li>
+<li><a href='#Howtomodifycolumn-Example'>Example</a></li>
+<li><a href='#Howtomodifycolumn-Reference'>Reference</a></li>
+</ul>
+</div></p><h1 id="Howtomodifycolumn-Version">Version</h1><hr /><p>Starting from Altibase HDB version 5.3.3 or later, the column type and length of a table can be modified by using the ALTER TALBE ~ MODIFY COLUMN ~ statements.</p><h1 id="Howtomodifycolumn-Statement">Statement</h1><hr /><p>ALTER TABLE <em>table_name </em>MODIFY COLUMN ( <em>column_name  column_type(length) </em>)</p><p><img class="confluence-embedded-image" src="attachments/16875952/17039366.png" data-image-src="attachments/16875952/17039366.png"></p><h2 id="Howtomodifycolumn-TOLERATEDATALOSSOption">TOLERATE DATA LOSS Option</h2><hr /><p>If the table data is not NULL, data loss may occur depending on the conversion type. In order to change the data type at the expense of this data loss, TOLERATE DATA LOSS option can be used.</p><h2 id="Howtomodifycolumn-ConversionofDATEtype">Conversion of DATE type</h2><hr /><p>When the DATE type is changed, the column data is converted according to the DEFAULT_DATE_FORMATE property.</p><h1 id="Howtomodifycolumn-Precaution">Precaution</h1><hr /><p>If used incorrectly, the column modify command may cause a load on the DB depending on data loss and the amount of data in the target table, so it should be used with precaution.</p><ol><li><strong>Cannot reduce the column size below the original size</strong></li><li><strong>If the data type of a column is changed, data loss may occur depending on the data type. If the user wants to change the data type at the expense of this data loss, the TOLERATE DATA LOSS option can be used.</strong></li><li><strong>When operating with the target table for replication, it must follow the DDL operation procedure in a replication environment. Please refer to the DDL procedure for the Altibase replication target table.</strong></li><li><strong>If there are many rows in the target table, there may be a delay in operating time and an increase in usage of the logs area.</strong></li></ol>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>When modifying columns, if the table to be changed is a memory table and the current ALTIBASE version is 5.3.3, it is created in the memory table as a copy table for restoration.</p><p>In order words, there must be room for memory tablespaces. (For reference, in version 6.1.1, the copy table is saved as a disk tablespace, so if there are only a tablespace and a disk space, it is operatable.)</p><p>As recommended by ALTIBASE, if the target table is a memory table, backup is performed with an iloader operation, then a new target table is created and data is imported.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="Howtomodifycolumn-Example">Example</h1><hr /><p>&lt;Query&gt; Change the isbn column of the table book to CHAR(20) type and the edition column to BIGINT type.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>iSQL&gt; ALTER TABLE book MODIFY COLUMN (isbn CHAR(20), edition BIGINT); <br class="atl-forced-newline" /> Alter success.</p></td></tr></tbody></table></div><p><br />&lt;Example&gt;  Below is an example of executing the above query.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>iSQL&gt; create table t1(c1 integer); <br class="atl-forced-newline" /> Create success. <br class="atl-forced-newline" /> iSQL&gt; desc t1; <br class="atl-forced-newline" /> [ TABLESPACE : SYS_TBS_MEM_DATA ] <br class="atl-forced-newline" /> [ ATTRIBUTE ]  <br class="atl-forced-newline" /> ------------------------------------------------------------------------------ <br class="atl-forced-newline" /> NAME TYPE IS NULL  <br class="atl-forced-newline" /> ------------------------------------------------------------------------------ <br class="atl-forced-newline" /> C1 INTEGER FIXED  <br class="atl-forced-newline" /> T1 has no index <br class="atl-forced-newline" /> T1 has no primary key <br class="atl-forced-newline" /> iSQL&gt; insert into t1 values(1111111111); <br class="atl-forced-newline" /> 1 row inserted. <br class="atl-forced-newline" /> iSQL&gt; select * from t1; <br class="atl-forced-newline" /> C1  <br class="atl-forced-newline" /> -------------- <br class="atl-forced-newline" /> 1111111111  <br class="atl-forced-newline" /> 1 rows selected. <br class="atl-forced-newline" /> iSQL&gt; alter table t1 modify(c1 numeric(10)); <br class="atl-forced-newline" /> [ERR-312EE : Invalid length for the data type  <br class="atl-forced-newline" /> 0001 : alter table T1 modify(C1 NUMERIC(10)) <br class="atl-forced-newline" /> ^ ^ <br class="atl-forced-newline" /> ] <br class="atl-forced-newline" /> iSQL&gt; alter table t1 modify(c1 numeric(10) tolerate data loss); <br class="atl-forced-newline" /> Alter success. <br class="atl-forced-newline" /> iSQL&gt; desc t1; <br class="atl-forced-newline" /> [ TABLESPACE : SYS_TBS_MEM_DATA ] <br class="atl-forced-newline" /> [ ATTRIBUTE ]  <br class="atl-forced-newline" /> ------------------------------------------------------------------------------ <br class="atl-forced-newline" /> NAME TYPE IS NULL  <br class="atl-forced-newline" /> ------------------------------------------------------------------------------ <br class="atl-forced-newline" /> C1 NUMERIC(10) FIXED  <br class="atl-forced-newline" /> T1 has no index <br class="atl-forced-newline" /> T1 has no primary key</p></td></tr></tbody></table></div><h1 id="Howtomodifycolumn-Reference"><br />Reference</h1><hr /><p>For more detailed information on how to use it, refer to how to use modify columns in the SQL Reference Manual.</p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16875952/17039366.png">modify_column.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

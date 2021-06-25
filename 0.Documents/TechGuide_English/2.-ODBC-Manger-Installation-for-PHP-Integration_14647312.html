@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. ODBC Manger Installation for PHP Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="PHP-Integration-Guide-for-Altibase_14647305.html">PHP Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. ODBC Manger Installation for PHP Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409360541 {padding: 0px;}
+div.rbtoc1624409360541 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409360541 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409360541'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.ODBCMangerInstallationforPHPIntegration-UnixandLinux'>Unix and Linux</a></li>
+<li><a href='#id-2.ODBCMangerInstallationforPHPIntegration-Windows'>Windows</a></li>
+</ul>
+</div></p><hr /><p>To integrate ALTIBASE HDB with PHP in Unix or Windows environment. The ODBC manager must be installed first. This section describes how to install the OBDC manager and configure the environment for Unix, Linux, and Windows.</p><h2 id="id-2.ODBCMangerInstallationforPHPIntegration-UnixandLinux"><strong>Unix and Linux</strong></h2><p>Install the ODBC manager in the Linux or Unix environment using the following procedure.</p><p>1. Download unixODBC.</p><p>This can be downloaded from the unixODBC website (<a href="http://www.unixodbc.org" class="external-link" rel="nofollow">http://www.unixodbc.org</a>).</p><p>2. Install unixODBC.</p><p>The user needs to compile the downloaded unixODBC source file. To install the compiled library in a specific location, enter the path with the -prefix option when configuring.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">./configure -prefix=Installation path -enable-gui=no -–enable-drivers=no
+make
+make install</pre>
+</div></div><p>3. Configure the unixODBC environment.</p><p>Set the value of the ODBCSYSINI environment variable to the home directory path of the ALTIBASE HDB installation account.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export ODBCSYSINI=~</pre>
+</div></div><p>4. Add the path where the unixODBC Driver Manager is installed to the environment variable as follows. The environment variable for setting the library path may be one of LD_LIBRARY_PATH, LD_LIBRARY_PATH_64, and SHLIB_PATH depending on the platform and operating system bit.</p><p>The following is an example of installing unixODBC in /usr/local/odbcDriverManager32 or /usr/local/odbcDriverManager64.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">export LD_LIBRARY_PATH= /usr/local/odbcDriverManager32/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH_64= /usr/local/odbcDriverManager64/lib:$LD_LIBRARY_PATH_64</pre>
+</div></div><p>5. Create the following 2 files in the path of the ODBCSYSINI environment variable.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">odbc.ini
+odbcinst.ini</pre>
+</div></div><p>6. odbcinst.ini is a 0-byte file with no actual contents.</p><p>7. In odbc.ini, set the DSN name, the location of the ALTIBASE HDB ODBC driver file, the server's IP address, and the connection port number as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[Altibase]
+Driver = /home/altibase/altibase_home/lib/libaltibase_odbc.so
+Server = 127.0.0.1
+Port = 20300</pre>
+</div></div><h2 id="id-2.ODBCMangerInstallationforPHPIntegration-Windows"><strong>Windows</strong></h2><p>In the Windows environment, the ODBC manager is installed by default. When ALTIBASE HDB is installed, the ALTIBASE HDB ODBC driver is automatically registered in the ODBC manager.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

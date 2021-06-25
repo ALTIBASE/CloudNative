@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Additional Connection</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Additional Connection
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358651 {padding: 0px;}
+div.rbtoc1624409358651 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358651 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358651'>
+<ul class='toc-indentation'>
+<li><a href='#id-5.AdditionalConnection-ConnectionusingFailOver'>Connection using FailOver</a></li>
+<li><a href='#id-5.AdditionalConnection-SimultaneouslyconnectingALTIBASEandthepreviousversion'>Simultaneously connecting ALTIBASE and the previous version</a></li>
+</ul>
+</div></p><hr /><p>This chapter describes how to integrate FailOver and Altibase Multi-version provided by Altibase.</p><h2 id="id-5.AdditionalConnection-ConnectionusingFailOver"><strong>Connection using FailOver</strong></h2><p>FailOver is supported starting from ALTIBASE 5.3.3. To use FailOver, FailOver-related properties must be placed in the Connection URL section.</p><p>The following is an example of connecting to ALTIBASE using the FailOver. DataSource used DBCP among the methods described above.</p><p>Ex) applicationContext.xml file of FailOverConnection</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;&gt;
+&lt;!-- JDBC Driver class name setting --&gt;
+&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+&lt;property name=&quot;URL&quot;
+  value=&quot;jdbc:Altibase://192.168.1.62:21020/mydb?AlternateServers=(192.168.1.146:21020)
+&amp;amp;ConnectionRetryCount=1&amp;amp;ConnectionRetryDelay=1&amp;amp;SessionFailOver=on
+&amp;amp;LoadBalance=off”/&gt;
+&quot; /&gt;
+&lt;property name=&quot;username&quot; value=&quot;test&quot; /&gt;
+&lt;property name=&quot;password&quot; value=&quot;test&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>FailOver related properties that can be defined in the Connection URL section are as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Property</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>AlternateServer</p></td><td class="confluenceTd">Alternative servers to be connected in the event of a failure (IP Address1:Port1, IP Address2:Port2,...)<p> </p></td></tr><tr><td class="confluenceTd"><p>ConnectionRetryCount</p></td><td class="confluenceTd">The number of retries of connection attempts when an available server connection fails<p> </p></td></tr><tr><td class="confluenceTd"><p>TConnectionRetryDelay</p></td><td class="confluenceTd"><p>The time to wait before attempting to connect again when the available server connection fails (in seconds)</p></td></tr><tr><td class="confluenceTd"><p>LoadBalance</p></td><td class="confluenceTd"><p>If set to on, random selection is made including the default server and available servers when the first connection is attempted. If set to off, it connects to the default server when it tries to connect for the first time, and if it fails, it connects to the server described ay AlternateServer.</p></td></tr><tr><td class="confluenceTd"><p>SessionFailOver</p></td><td class="confluenceTd"><p>This indicates whether to perform STF (Service Time Fail-Over).<br class="atl-forced-newline" />on : STF, off : CTF</p><p>CTF(Connection Time Fail-Over) recognizes a failure at the time of DBMS connection, and other available Service Time Fail-Over (STF) instead of the failed DBMS successfully connects to the DBMS of the node, and proceeds to service.</p><p>A failure occurs during the service which means that the user's application logic is performed again after the session properties are restored by reconning to the DBMS of another available node. This is necessary to perform the operation in the DBMS where the failure occurred once again.</p></td></tr></tbody></table></div><p>Please refer to the FailOverConnection project among the attached examples.</p><p>To run the FailOverConnection project, Altibase.jar, spring-jdbc.jar, and common-logging.jar files are required in addition to the Spring configuration library file.</p><h2 id="id-5.AdditionalConnection-SimultaneouslyconnectingALTIBASEandthepreviousversion"><strong>Simultaneously connecting ALTIBASE and the previous version</strong></h2><p>ALTIBASE can connection to lower version at the same time in an application.</p><p>In order to distinguish it from the existing Altibase.jar, the ALTIBASE version 5 of JDBC Altibase5.jar, which has been renamed separately, is required.</p><p>The following is an example of loading the drivers of two versions of ALTIBASE by using Altibase.jar and Altibase5.jar files.</p><p>Ex) applicationContext.xml file of MultiVersionConneciton</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;!— DataSource setting for ALTIBASE version 6 --&gt;
+&lt;bean id=&quot;dataSource1&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+&lt;!--  JDBC Driver class name setting --&gt;
+   &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+   &lt;!-- Connection URL uppercase note --&gt;
+   &lt;property name=&quot;URL&quot; value=&quot;jdbc:Altibase://127.0.0.1:20300/mydb&quot;/&gt;
+   &lt;!-- DB user account setting --&gt;
+   &lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+   &lt;!-- DB user password setting --&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+     
+&lt;!—DataSource setting for ALTIBASE version 6 --&gt;
+&lt;bean id=&quot;dataSource2&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+&lt;!--  JDBC Driver class name setting --&gt;
+&lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+   &lt;!-- Connection URL uppercase note --&gt;
+   &lt;property name=&quot;URL&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+   &lt;!-- DB user account setting --&gt;
+   &lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+   &lt;!-- DB user password setting --&gt;
+   &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+     
+&lt;!-- bean setting of DAO class --&gt;
+&lt;bean id=&quot;accountDao1&quot; class=&quot;com.altibase.banking.AccountDao&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource1&quot;/&gt;
+&lt;/bean&gt;
+     
+&lt;!-- bean setting of DAO class --&gt;
+&lt;bean id=&quot;accountDao2&quot; class=&quot;com.altibase.banking.AccountDao&quot;&gt;
+   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource2&quot;/&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>AccountApp.java file of MultiVersionConnection</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…  
+Resource resource = new ClassPathResource(&quot;applicationContext.xml&quot;);
+BeanFactory factory = new XmlBeanFactory(resource);
+     
+AccountDao accountDao1 = (AccountDao)factory.getBean(&quot;accountDao1&quot;);
+AccountDao accountDao2 = (AccountDao)factory.getBean(&quot;accountDao2&quot;);
+…</pre>
+</div></div><p>To run the MultiVersionConnection project included in the example, Altibase.jar and Altibase5.jar files are required as well as the existing jar file. These files are located in the lib directory where ALTIBASE is installed (ALTIBASE_HOME). The user can use the Altibase5.jar file of the ALTIBASE version 5 and the Altibase.jar file of the previous version.</p><p><img class="confluence-embedded-image" src="attachments/14058433/14221652.png" data-image-src="attachments/14058433/14221652.png"></p><p><strong><br /></strong></p><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058433/14221652.png">additional_conn_1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

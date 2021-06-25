@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Lock 관련 정보 조회</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520890.html">08. 모니터링</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Lock 관련 정보 조회
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Yohan Choi</span>, last modified by <span class='editor'> Shin beum-su</span> on Dec 17, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053374 {padding: 0px;}
+div.rbtoc1624409053374 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053374 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053374'>
+<ul class='toc-indentation'>
+<li><a href='#Lock관련정보조회-개요'>개요</a></li>
+<li><a href='#Lock관련정보조회-적용버전'>적용버전</a></li>
+<li><a href='#Lock관련정보조회-조회방법'>조회 방법</a></li>
+</ul>
+</div></strong></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409053386 {padding: 0px;}
+div.rbtoc1624409053386 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409053386 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409053386'>
+<ul class='toc-indentation'>
+<li><a href='#Lock관련정보조회-개요'>개요</a></li>
+<li><a href='#Lock관련정보조회-적용버전'>적용버전</a></li>
+<li><a href='#Lock관련정보조회-조회방법'>조회 방법</a></li>
+</ul>
+</div></p><p> </p><h1 id="Lock관련정보조회-개요"><strong>개요</strong></h1><hr /><p>트랜잭션 lock으로 인한 성능저하를 모니터링할수 있습니다.</p><p> </p><h1 id="Lock관련정보조회-적용버전"><strong>적용버전</strong></h1><hr /><ul><li>ALTIBASE HDB 6.3.1 을 기준으로 작성 되었습니다.</li><li>ALTIBASE HDB 5, ALTIBASE HDB 6 모두 사용할 수 있으나 일부 모니터링 항목에서 결과 오류가 발생할 수 있습니다.</li><li>필요한 경우 <a class="external-link" href="http://support.altibase.com/kr/" rel="nofollow">http://support.altibase.com/kr/</a> 또는 이 페이지에 댓글로 요청 글 남겨주세요.<br /><br /></li></ul><h1 id="Lock관련정보조회-조회방법"><strong style="color: rgb(0,0,0);line-height: 1.25;font-size: 24.0px;">조회 방법</strong></h1><hr /><p>먼저 알티베이스의 lock 정보는 크게 두 performance view 를 조회해 보시면 됩니다.</p><p>v$lock, v$lock_statement 입니다.</p><p>먼저 v$lock 에서는 어떤 테이블에 대해 어떤 종류의 lock 이 걸려 있는지를 조회해 볼 수 있는데 <br />select문의경우 IS_LOCK, insert나 update, delete 등의 변경 작업 이라면 IX_LOCK 이 걸리게 됩니다.<br />이 뷰와 system_.sys_tables_ 메타 테이블을 조인 해서 테이블 이름과 lock 정보를 조회해 보실 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select table_name , lock_desc 
+from system_.sys_tables_ a, v$lock b
+where a.table_oid = b.table_oid;</pre>
+</div></div><p><br />또한 v$lock_statement 를 통해 lock 을 잡고 있는 쿼리를 확인할 수 있습니다.<br />v$lock 의 trans_id 와 v$lock_statement 의 tx_id 를 조인해서 lock 을 잡고 있는 쿼리를 조회해 보실 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select query 
+from v$lock a, v$lock_statement b 
+where a.trans_id = b.tx_id;</pre>
+</div></div><p> </p><p>여러 조인을 이용해서 현재 lock 을 잡고 있는 쿼리의 session id 를 확인 하실 수 있습니다.<br />desc v$lock;<br />desc v$lock_statement; 를 통해 어떤 컬럼을 가지고 있는지 확인해 보시기 바랍니다.<br />이렇게 얻어낸 session_id 를 가지고 해당 session 을 kill 할 수도 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER DATABASE database_name SESSION CLOSE session_id;</pre>
+</div></div><p> </p><p>위 명령은 sysdba 로 들어가셔서 수행할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">connect sys/manager as sysdba;</pre>
+</div></div><p> </p><p>++ Lock wait query</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select query, tx_id 
+from v$statement 
+where tx_id in ( select trans_id from v$lock_wait);</pre>
+</div></div><p> </p><p>++ v$lock_wait 뷰를 기반으로 waiting 하는 tx_id, lock 부여 시간, 관련 REDO logfile 위치 등 조회.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select
+id tx_id,
+lw.wait_for_trans_id wait_tx_id,
+decode (status,0,&#39;BEGIN&#39;,
+1,&#39;PRECOMMIT&#39;,
+2,&#39;COMMIT_IN_MEMORY&#39;,
+3,&#39;COMMIT&#39;,
+4,&#39;ABORT&#39;,
+5,&#39;BLOCKED&#39;,
+6,&#39;END&#39;, &#39;UNKNOWN&#39;) status,
+decode(update_status,0,&#39;READ&#39;,1,&#39;UPDATING&#39;,&#39;UNKNOWN&#39;) TTYPE,
+decode(first_undo_next_lsn_fileno,-1,&#39;READ_TRN&#39;,first_undo_next_lsn_fileno) firstlog,
+base_time - decode(first_update_time, 0, base_time, first_update_time) time
+from
+v$transaction tx
+left outer join v$lock_wait lw
+on tx.id = lw.trans_id, 
+(select base_time from v$sessionmgr) base
+where status != 6
+order by time desc;</pre>
+</div></div><p> </p><p>++ lock을 잡고 있는 client_pid 및 session_id를 확인</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select a.table_oid, a.lock_desc, c.client_pid , b.session_id
+from v$lock a, v$statement b, v$session c 
+where a.trans_id = b.tx_id 
+and b.session_id = c.id;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

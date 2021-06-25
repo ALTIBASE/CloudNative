@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : LOBs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : LOBs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 15, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348171 {padding: 0px;}
+div.rbtoc1624409348171 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348171 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348171'>
+<ul class='toc-indentation'>
+<li><a href='#LOBs-LOBs'>LOBs</a></li>
+<li><a href='#LOBs-BLOB'>BLOB</a></li>
+<li><a href='#LOBs-CLOB'>CLOB</a></li>
+</ul>
+</div>
+
+<h1 id="LOBs-LOBs">LOBs</h1>
+
+<p>You can handle LOBs on Non-AutoCommit Mode in ALTIBASE HDB.<br />
+Therefore, Before you try to handle LOBs objects, you have to change commit-mode to Non-AutoCommit-Mode in your application.<br />
+If you handle LOB objects in auto-commit mode, you can see an error message as follows.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = -332076
+sqlca.sqlerrm.sqlerrmc = Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on.
+</pre>
+</div></div>
+
+<h1 id="LOBs-BLOB">BLOB</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+    int          sI1;
+    char         sI2FName[32];
+    unsigned int sI2FOpt;
+    SQLLEN       sI2Ind;
+EXEC SQL END DECLARE SECTION;
+
+    sI1 = 1;
+    strcpy(sI2FName,aInputFileName);
+    sI2FOpt = APRE_FILE_READ;
+    EXEC SQL INSERT INTO T_LOB VALUES(:sI1, BLOB_FILE :sI2FName OPTION :sI2FOpt INDICATOR :sI2Ind);
+
+
+    strcpy(sI2FName, aOutFileName);
+    sI2FOpt = APRE_FILE_CREATE;
+    EXEC SQL SELECT * INTO :sI1, BLOB_FILE :sI2FName OPTION :sI2FOpt   INDICATOR :sI2Ind FROM T_LOB;
+</pre>
+</div></div>
+
+<p>Sample Code occurred after insertion of text using host-variable, select it.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+APRE_BLOB *blob;
+int n;
+
+...
+blob = (APRE_BLOB*)malloc(3000000);
+if (blob == NULL)
+    printf(&quot;error malloc\n&quot;);
+
+...
+fp  = fopen(&quot;mt1&quot;, &quot;rb&quot;);
+fseek(fp, 0, SEEK_END);
+n = ftell(fp);
+fseek(fp, 0, SEEK_SET);
+fread(blob, n, 1 , fp);
+fclose(fp);
+
+EXEC SQL autocommit off;
+// &quot;n&quot; indicator-variable used for length of blob-variable.
+EXEC SQL INSERT INTO t3 values (:blob :n);
+...
+
+//
+EXEC SQL SELECT c1 INTO :blob :n FROM t3 LIMIT 1;
+</pre>
+</div></div>
+
+<h1 id="LOBs-CLOB">CLOB</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL BEGIN DECLARE SECTION;
+    int          sI1;
+    char         sI2FName[32];
+    unsigned int sI2FOpt;
+    SQLLEN       sI2Ind;
+EXEC SQL END DECLARE SECTION;
+
+    sI1 = 1;
+    strcpy(sI2FName,aInputFileName);
+    sI2FOpt = APRE_FILE_READ;
+    EXEC SQL INSERT INTO T_LOB VALUES(:sI1, CLOB_FILE :sI2FName OPTION :sI2FOpt INDICATOR :sI2Ind);
+
+
+    strcpy(sI2FName, aOutFileName);
+    sI2FOpt = APRE_FILE_CREATE;
+    EXEC SQL SELECT * INTO :sI1, CLOB_FILE :sI2FName OPTION :sI2FOpt   INDICATOR :sI2Ind FROM T_LOB;
+</pre>
+</div></div>
+
+<p>Sample Code occurred after insertion of text using host-variable, select it.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+FILE *fp;
+
+APRE_CLOB clob[32000];
+int n;
+...
+fp  = fopen(&quot;connect1.sc&quot;, &quot;r&quot;);
+fread(clob, sizeof(clob)-1, 1, fp);
+fclose(fp);
+n = strlen(clob);
+
+EXEC SQL AUTOCOMMIT OFF;
+EXEC SQL INSERT INTO t3 values (:clob :n);
+...
+
+EXEC SQL SELECT c1 INTO :clob :n FROM t3 LIMIT 1;
+EXEC SQL COMMIT;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

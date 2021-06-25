@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to change the path of log anchor, online log file, archive log file, and double write file</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to change the path of log anchor, online log file, archive log file, and double write file
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144927 {padding: 0px;}
+div.rbtoc1624409144927 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144927 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144927'>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Overview'>Overview</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Summaryofchangeprocedure'>Summary of change procedure</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Detailedprocedure'>Detailed procedure</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-1.Checkthecurrentpathsetting1.CurrPath'>1. Check the current path setting</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-2.StoptheAltibaseserver'>2. Stop the Altibase server</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-3.Copythefilesandchangeproperties'>3. Copy the files and change properties</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Loganchor'>Log anchor</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Onlinelogfile'>Online log file</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Archivelogfile'>Archive log file</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-DoubleWritefile'>Double Write file</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Filetypepropertiesandfilenameformattable'>File type properties and file name format table</a></li>
+</ul>
+</li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-3.StarttheAltibaseserver'>3. Start the Altibase server</a></li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-4.Checkthechangepath'>4. Check the change path</a></li>
+</ul>
+</li>
+<li><a href='#Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Overview">Overview</h1><hr /><p>This section describes how to change the path of log anchor, online log file, archive log file, and double write file.</p><p>In order to change the paths of these files, the Altibase server must be restarted, so be sure to perform it after securing service downtime.</p><p> </p><h1 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Summaryofchangeprocedure">Summary of change procedure</h1><hr /><ol><li>Check the current path setting.</li><li>Stop the Altibase server.</li><li>Copy files and change properties.</li><li>Start the Altibase server.</li><li>Check the change path.</li></ol><p> </p><h1 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Detailedprocedure">Detailed procedure</h1><hr /><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-1.Checkthecurrentpathsetting1.CurrPath">1. Check the current path setting<span class="confluence-anchor-link" id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-1.CurrPath"></span></h2><hr /><p>Refer to the sentence below to check the current path of each property and make a note of it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;LOGANCHOR_DIR&#39;, &#39;LOG_DIR&#39;, &#39;DOUBLE_WRITE_DIRECTORY&#39;, &#39;ARCHIVE_DIR&#39;);
+
+Example) 
+iSQL(sysdba)&gt; set linesize 1024
+iSQL(sysdba)&gt; set colsize 60
+iSQL(sysdba)&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;LOGANCHOR_DIR&#39;, &#39;LOG_DIR&#39;, &#39;DOUBLE_WRITE_DIRECTORY&#39;, &#39;ARCHIVE_DIR&#39;);
+NAME                                                          VALUE1                                                        
+-------------------------------------------------------------------------------------------------------------------------------
+LOG_DIR                                                       /data/eheejung/65166/logs         # Online log file path
+LOGANCHOR_DIR                                                 /data/eheejung/65166/logs         # Log anchor file path
+ARCHIVE_DIR                                                   /data/eheejung/65166/arch_logs    # Archive log file path
+DOUBLE_WRITE_DIRECTORY                                        /data/eheejung/65166/dbs          # Double Write file path
+4 rows selected.</pre>
+</div></div><p> </p><h2 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-2.StoptheAltibaseserver">2. Stop the Altibase server</h2><hr /><p>Stop the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">$ server stop</pre>
+</div></div><p> </p><h2 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-3.Copythefilesandchangeproperties">3. Copy the files and change properties</h2><hr /><p>Copy the file which path you want to change to the new path and change the properties of each.</p><ul><li><h3 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Loganchor">Log anchor</h3>There are three log anchor files: loganchor0, loganchor1, and loganchor2.<br />Copy all three files from the path located in the LOGANCHOR_DIR property to the new path.<br />Find the LOGANCHOR_DIR property in the $ALTIBASE_HOME/conf/altibase.properties file and change it to a new path.<br /><br /></li><li><h3 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Onlinelogfile">Online log file</h3><p>The online log file name format is logfile#.<em><br /></em>Copy all files starting with logfile from the path located in the LOG_DIR property to the new path.</p><p>Find the LOGANCHOR_DIR property in the $ALTIBASE_HOME/conf/altibase.properties file and change it to a new path.</p></li><li><h3 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Archivelogfile">Archive log file</h3>The Archive log file name format is logfile#.<em> <br /></em>Copy all files starting with logfile from the path located in the ARCHIVE_DIR property to the new path.<br />Find the LOGANCHOR_DIR property in the $ALTIBASE_HOME/conf/altibase.properties file and change it to a new path.<br /><br /></li><li><h3 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-DoubleWritefile">Double Write file</h3>The Double Lite file name format is *.dwf.<em><br /></em>Copy all files ending in *.dwf from the path located in the DOUBLE_WRITE_DIRECTORY property to the new path.<br />Find the DOUBLE_WRITE_DIRECTORY property in the $ALTIBASE_HOME/conf/altibase.properties file and change it to a new path.</li><li><h3 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Filetypepropertiesandfilenameformattable">File type properties and file name format table</h3><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">파일 종류</th><th class="confluenceTh">Property</th><th class="confluenceTh">File name format</th></tr><tr><th class="confluenceTh">Log anchor</th><td class="confluenceTd">LOGANCHOR_DIR</td><td class="confluenceTd"><p>loganchor0</p><p>loganchor1</p><p>loganchor2</p></td></tr><tr><th class="confluenceTh">Online log file</th><td class="confluenceTd">LOG_DIR</td><td class="confluenceTd">logfile<em>#</em></td></tr><tr><th class="confluenceTh">Archive log file</th><td class="confluenceTd">ARCHIVE_DIR</td><td class="confluenceTd">logfile<em>#</em></td></tr><tr><th class="confluenceTh">Double Write file</th><td class="confluenceTd">DOUBLE_WRITE_DIRECTORY</td><td class="confluenceTd">*.dwf</td></tr></tbody></table></div><p> </p><p><br /><br /></p></li></ul><h2 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-3.StarttheAltibaseserver">3. Start the Altibase server</h2><hr /><p>Start the Altibase server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">$ server start</pre>
+</div></div><p> </p><h2 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-4.Checkthechangepath">4. Check the change path</h2><hr /><p>1. Check the change path with the SQL statement executed in Check the current path settings.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;LOGANCHOR_DIR&#39;, &#39;LOG_DIR&#39;, &#39;DOUBLE_WRITE_DIRECTORY&#39;, &#39;ARCHIVE_DIR&#39;);</pre>
+</div></div></div></div></div></div><h1 id="Howtochangethepathofloganchor,onlinelogfile,archivelogfile,anddoublewritefile-Reference">Reference</h1><hr /><ul><li><a href="https://aid.altibase.com/display/FAQE/How+to+change+the+tablespace+data+file+path" class="external-link" rel="nofollow">How to change the tablespace data file path</a></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

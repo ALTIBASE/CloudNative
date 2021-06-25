@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : What is a Replication Conflict?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Replication_2555989.html">ALTIBASE HDB Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : What is a Replication Conflict?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 06, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409155808 {padding: 0px;}
+div.rbtoc1624409155808 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409155808 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409155808'>
+<ul class='toc-indentation'>
+<li><a href='#WhatisaReplicationConflict?-Whatisareplicationconflict?'>What is a replication conflict?</a>
+<ul class='toc-indentation'>
+<li><a href='#WhatisaReplicationConflict?-Simplecase'>Simple case</a></li>
+<li><a href='#WhatisaReplicationConflict?-'></a></li>
+<li><a href='#WhatisaReplicationConflict?-TypesofConflict'>Types of Conflict</a></li>
+</ul>
+</li>
+<li><a href='#WhatisaReplicationConflict?-Summary'>Summary</a></li>
+</ul>
+</div>
+
+<h1><a name="WhatisaReplicationConflict?-Whatisareplicationconflict?"></a>What is a replication conflict?</h1>
+
+
+<h2><a name="WhatisaReplicationConflict?-Simplecase"></a>Simple case</h2>
+
+
+<map id="gliffy-map-1769575-4303" name="gliffy-map-1769575-4303"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 672px;" usemap="#gliffy-map-1769575-4303" src="attachments/1802533/1769576.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>In a nutshell, let's assume that the Sender in node B processes transactions faster than the Sender in node A.<br/>
+After steps (#1, #2) are completed as illustrated in the diagram above, the Receiver in node A cannot update the records since the before-value("10") in XLog is different from the current value("20")<br/>
+We call this situation as a Replication Conflict.</p>
+
+<h2><a name="WhatisaReplicationConflict?-"></a></h2>
+
+<h2><a name="WhatisaReplicationConflict?-TypesofConflict"></a>Types of Conflict</h2>
+
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Types </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Insert-conflict </p></td>
+<td class="confluenceTd"><p> The record in XLog already had been inserted </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Update-conflict </p></td>
+<td class="confluenceTd"><p> Before value of the record in XLog is different from the current value of the target column </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Delete-conflict </p></td>
+<td class="confluenceTd"><p> Record in XLog already had been deleted </p></td>
+</tr>
+</tbody></table>
+
+<p>Conflict error message is written on $ALTIBASE_HOME/trc/altibase_rp.log.<br/>
+for example,</p>
+<table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Types </p></th>
+<th class="confluenceTh"><p> message </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Insert-conflict </p></td>
+<td class="confluenceTd"><p> ERR-11058(errno=0) The row already exists in a unique index. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Update-conflict </p></td>
+<td class="confluenceTd"><p> ERR-61001(errno=0) A conflict has been occurred while executing the received statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> Delete-conflict </p></td>
+<td class="confluenceTd"><p> ERR-61000(errno=0) The received record is not found in the database. </p></td>
+</tr>
+</tbody></table>
+
+<p>altibase_rp.log also contains information about the SQL statement which causes the conflict in the remote server.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[Thread-280|Thread-280] [Level-2|Level-2]
+ERR-61035(errno=0) [Receiver] An update conflict encountered.
+
+[Thread-280|Thread-280] [Level-2|Level-2]
+ERR-61001(errno=0) A conflict has been occurred while executing the received statement.
+
+[Thread-280|Thread-280] [Level-3|Level-3]
+UPDATE SYS.REP_TEST2 SET C2 = ccc WHERE C1 = 1;
+</pre>
+</div></div>
+
+<h1><a name="WhatisaReplicationConflict?-Summary"></a>Summary</h1>
+
+<p>It is important to analyze and address “replication conflicts” when using asynchronous replication. Asynchronous replication implements “eventual consistency”; an approach that has many benefits, yet requires additional care.</p>
+
+<p>When using asynchronous replication, it is important to design the service to minimize conflicts. The way to avoid conflicts is to ensure that the same records are not updated on different systems concurrently. Designating one server as the “read-only” copy, partitioning the data based on primary key, or other approaches can be used to avoid replication conflicts.</p>
+
+<p>If you want to know more in detail, please <a href="http://aid.altibase.com/x/QoEb" class="external-link" rel="nofollow">refer to this document</a></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769577">replication_conflict_concep1_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769578.png">replication_conflict_concep1_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769579">replication_conflict_concep1_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769580.png">replication_conflict_concep1_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/2228225">replication_conflict_concep1_basic1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/2228226.png">replication_conflict_concep1_basic1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769575">replication_conflict_concep1_basic1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802533/1769576.png">replication_conflict_concep1_basic1.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

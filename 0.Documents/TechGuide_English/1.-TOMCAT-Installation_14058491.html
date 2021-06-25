@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. TOMCAT Installation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. TOMCAT Installation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409359903 {padding: 0px;}
+div.rbtoc1624409359903 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409359903 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409359903'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.TOMCATInstallation-DownloadingTOMCAT'>Downloading TOMCAT</a></li>
+<li><a href='#id-1.TOMCATInstallation-InstallingTOMCAT'>Installing TOMCAT</a></li>
+<li><a href='#id-1.TOMCATInstallation-Settingenvironmentvariables'>Setting environment variables</a></li>
+<li><a href='#id-1.TOMCATInstallation-RunningTOMCAT'>Running TOMCAT</a></li>
+<li><a href='#id-1.TOMCATInstallation-ShuttingTOMCATdown'>Shutting TOMCAT down</a></li>
+</ul>
+</div></p><hr /><p>Let's take a brief look at how to install TOMCAT. Let's install the TOMCAT 7 product.</p><p>Before installing the TOMCAT, Java Development Kit (JDK) or Java Runtime Environment (JRE) must be installed.</p><h2 id="id-1.TOMCATInstallation-DownloadingTOMCAT"><strong>Downloading TOMCAT</strong></h2><p>Go to <a href="http://tomcat.apache.org/download-70.cgi" class="external-link" rel="nofollow">http://tomcat.apache.org/download-70.cgi</a> site and download the recently released TOMCAT binary file (apache-tomcat-7.0.46.tar.gz).</p><p><img class="confluence-embedded-image" src="attachments/14058491/14221683.png" data-image-src="attachments/14058491/14221683.png"></p><h2 id="id-1.TOMCATInstallation-InstallingTOMCAT"><strong>Installing TOMCAT</strong></h2><p>Move the downloaded compressed file to FTP. (tomcat installation account)</p><p>Extract the uploaded compressed file to the appropriate directory. (tar xvzf apache-tomcat-7.0.56.tar.gz).</p><p>Because it is a binary, the installation is finished by extracting it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[tomcat@dev ~]$ tar xvzf apache-tomcat-7.0.56.tar.gz
+apache-tomcat-7.0.56/bin/catalina.sh
+apache-tomcat-7.0.56/bin/configtest.sh
+apache-tomcat-7.0.56/bin/daemon.sh
+apache-tomcat-7.0.56/bin/digest.sh
+apache-tomcat-7.0.56/bin/setclasspath.sh
+apache-tomcat-7.0.56/bin/shutdown.sh
+apache-tomcat-7.0.56/bin/startup.sh
+apache-tomcat-7.0.56/bin/tool-wrapper.sh
+apache-tomcat-7.0.56/bin/version.sh
+apache-tomcat-7.0.56/conf/
+.
+.
+.
+apache-tomcat-7.0.56/webapps/manager/images/tomcat.gif
+apache-tomcat-7.0.56/webapps/manager/images/update.gif
+apache-tomcat-7.0.56/webapps/manager/images/void.gif
+apache-tomcat-7.0.56/webapps/manager/index.jsp
+apache-tomcat-7.0.56/webapps/manager/status.xsd
+apache-tomcat-7.0.56/webapps/manager/xform.xsl
+[tomcat@dev ~]$ mv apache-tomcat-7.0.56 /app/was/tomcat7</pre>
+</div></div><p>&lt;Example of tomcat installation&gt;</p><h2 id="id-1.TOMCATInstallation-Settingenvironmentvariables"><strong>Setting environment variables</strong></h2><p>Set the following environment variables.</p><p>1. CATALINA_HOME: Specify the directory where TOMCAT is installed.</p><p>2. JAVA_HOME or JRE_HOME: Specify the directory where JDK or JRE is installed.</p><p>3. PATH: Add the $CATALINA_HOME/bin directory (the path of the bin directory under the TOMCAT installation directory set in step 1) to the PATH.</p><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[tomcat@dev ~]$ vi .bash_profile
+export CATALINA_HOME=/app/was/tomcat7
+export JAVA_HOME=/app/java/jdk1.6
+export PATH=$CATALINA_HOME/bin:$JAVA_HOME/bin:$PATH
+
+[tomcat@dev ~]$ . .bash_profile</pre>
+</div></div><p>&lt;Example of Linux configuraiton&gt;</p><h2 id="id-1.TOMCATInstallation-RunningTOMCAT"><strong>Running TOMCAT</strong></h2><p>Execute the following command to start the TOMCAT.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ catalina.sh start (windows : catalina start)
+[tomcat@dev ~]$ catalina.sh start
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+Tomcat started.
+[tomcat@dev ~]$</pre>
+</div></div><h2 id="id-1.TOMCATInstallation-ShuttingTOMCATdown"><strong>Shutting TOMCAT down</strong></h2><p>Execute the following command to shutdown TOMCAT.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ catalina.sh stop (windows : catalina stop)
+[tomcat@dev ~]$ catalina.sh stop
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+[tomcat@dev ~]$</pre>
+</div></div><p> </p><div><strong><br /></strong></div><div><strong><br /></strong></div></div><p> </p><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058491/14221683.png">download.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

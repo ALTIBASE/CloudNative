@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. User Settings</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Solaris-Setup-Guide-for-Altibase_14058290.html">Solaris Setup Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. User Settings
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 22, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">This describes resource limits, environment variables, and various environment settings of user accounts in the system for operating Altibase on the Solaris OS.</span></p><p class="md-end-block md-p"><span class="md-plain">For details related to configuration refer to the guide provided by Solaris.</span></p><h3 class="md-end-block md-heading" id="id-2.UserSettings-ResourceLimitations"><span class="md-plain md-expand">Resource Limitations</span></h3><p class="md-end-block md-p">In the UNIX operating system, logical limits are set for available resources on a user account basis. Among the resource limit items, the items that need to be expanded for stable service operation as follows.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Classification</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Recommended Value</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">data seg size(data)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of one process data area</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">file size (fsize)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of files that can be created</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">open files (nofiles)</span></span></td><td class="confluenceTd">The maximum number of files that can be accessed simultaneously by one process</td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">max memory size (rss)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of available memory</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">virtual memory (memory)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum size of available virtual memory</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">max user process</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The number of processes that can be created per user</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">unlimited</span></span></td></tr></tbody></table></div><p class="md-end-block md-p"><span class="md-plain">It is intended to remove problems that may occur due to logical limitations even when expanding the memory and data file area used by a specific user. This setting has no effect on other processes. It is recommended to set the maximum value allowed by (unlimited if possible).</span></p><p class="md-end-block md-p"><span class="md-plain">For example, the meaning of open files includes not only the files accessed by the process, but also the number of communication sockets. If Altibase is operated in an environment where this value is limited to 10, it means that more than 10 sessions can be accessed simultaneously. (Considering the file used by Altibase, there may not be an accessible session.)</span></p><p class="md-end-block md-p"><span class="md-plain">To change the method, edit the environment configuration file using the ulimit command, edit the system resource configuration file, or use the kernel-related utilities provided for each operating system.</span></p><h4 class="md-end-block md-heading" id="id-2.UserSettings-Hard-Limit&amp;Soft-Limit"><span class="md-plain">Hard-Limit &amp; Soft-Limit</span></h4><p class="md-end-block md-p"><span class="md-plain">Resource limit values are divided into the concept of hard-limit and soft-limit. The hard-limit means the maximum value of the kernel-level resource limit that cannot be changed except the system administrator account (root), and the soft-limit means that the current user account can change up to the hard-limit. (Refer to the ulimit -S / -H option for details.)</span></p><p class="md-end-block md-p"><span class="md-plain">The soft-limit is effective while the user maintains a session by accessing it, and changes are immediately reflected. However, when other sessions of the same user account are connected, the existing soft-limit is reflected, so the ulimit command is often added to the user account configuration file. </span></p><p class="md-end-block md-p"><span class="md-plain">However, this method may not be intended due to the hard-limit, so it is recommended to systematically apply it through editing system-wide resource configuration files rather than applying user account units using environment configuration files.</span></p><p class="md-end-block md-p"><span class="md-plain">For reference, Solaris does not have a system configuration file related to user resource limitation, and is described in /etc/system. There are also other way to use /etc/default/login or /etc/profile. </span></p><h3 class="md-end-block md-heading" id="id-2.UserSettings-EnvironmentVariables"><span class="md-plain">Environment Variables</span></h3><p class="md-end-block md-p"><span class="md-plain">The essential environment variables are as follows. The following environment variables must be set in the environment configuration file of the user account according to the syntax of the user's shell.</span></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Environment Variable</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALTIBASE_HOME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Specifies the path where Altibase is installed.</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">PATH</span></span></td><td class="confluenceTd"><span>Specifies the path where </span><span>Altibase's utilities and shell scripts. </span><span>Adds ALTIBASE_HOME/bin.</span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LD_LIBRARY_PATH</span></span></td><td class="confluenceTd"><span>Specifies the path where </span><span>Altibase's dynamic library. </span><span>Adds ALTIBASE_HOME/lib.</span></td></tr></tbody></table></div><p class="md-end-block md-p"><span class="md-plain">In addition, the following environment variable that exists only in Solaris must be added.</span></p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Variable</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">LD_LIBRARY_PATH_64</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">Sets when linking dynamic library to 64-bit.</span></span></td></tr></tbody></table></div><h4 class="md-end-block md-heading" id="id-2.UserSettings-CharacterSetConsideration"><span class="md-plain">Character Set Consideration</span></h4><p class="md-end-block md-p"><span class="md-plain">Prior to Altibase 5.3, a separate property existed in relation to the NLS_USE item in relation to the character set but has been replaced by an environment variable starting from Altibase 5.3.</span></p><p class="md-end-block md-p"><span class="md-plain">For this reason, if the user sets KO16KSC5601/MS949/UTF8, etc. for the DB character set in the US version of Altibase 5.3 or later, the user must set the environment variable ALTIBASE_NLS_USE. Otherwise, it is connected to the default setting of US7ASCII, and after input, it is searched in the form of an unknown string at the time of inquiry.</span></p><h3 class="md-end-block md-heading" id="id-2.UserSettings-TerminalConfiguration"><span class="md-plain">Terminal Configuration</span></h3><p class="md-end-block md-p md-focus"><span class="md-plain">In addition to the considerations regarding the use of the character set mentioned in the [Environment Variables] section, the font of the terminal to be used must also be set the same as the character set in the DB.</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

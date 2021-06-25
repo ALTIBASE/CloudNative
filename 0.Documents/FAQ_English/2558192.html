@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 3. How to avoid the problem by seperating Tablespaces ?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Troubleshooting_1802664.html">ALTIBASE HDB Troubleshooting</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cannot-insert-new-records-after-deleting-bulk-records_2557870.html">Cannot insert new records after deleting bulk records</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 3. How to avoid the problem by seperating Tablespaces ?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_TaeHun Kim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 16, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Here we show an example how ALTIBASE HDB users can avoid the problem by separating Tablespace.</p>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+iSQL&gt; create disk tablespace disk_index01 datafile &#39;disk_index01.dbf&#39; size 10M autoextend off;
+Create success.
+iSQL&gt; create disk tablespace disk_index02 datafile &#39;disk_index02.dbf&#39; size 10M autoextend off;
+Create success.
+iSQL&gt; create table temp01(
+     i1 BIGINT not null,
+     i2 VARCHAR(248) not null,
+     i3 INTEGER,
+     i4 SMALLINT not null,
+     i5 SMALLINT not null,
+     i6 NIBBLE(254),
+     i7 BLOB)
+      tablespace &quot;DISK01&quot;
+      pctfree 10
+      pctused 80 ;
+Create success.
+iSQL&gt; alter table temp01 add primary key(i1,i2) using index tablespace DISK_index01;
+Alter success.
+iSQL&gt;  create index temp01_index01 on temp01(i1,i3) tablespace DISK_index02;
+Create success.
+iSQL&gt;
+iSQL&gt;
+iSQL&gt;  select name,total_page_count,allocated_page_count from v$tablespaces;
+NAME                                      TOTAL_PAGE_COUNT     ALLOCATED_PAGE_COUNT
+----------------------------------------------------------------------------------------
+SYS_TBS_MEM_DIC                           129                  129
+SYS_TBS_MEM_DATA                          257                  257
+SYS_TBS_DISK_DATA                         12800                32
+SYS_TBS_DISK_UNDO                         32768                17056
+SYS_TBS_DISK_TEMP                         12800                32
+*DISK01                                    1280                 96*
+*DISK_INDEX01                              1280                 64*
+*DISK_INDEX02                              1280                 64*
+8 rows selected.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; exec testproc01(1000);
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt; exec testproc01(1000);
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt; select name,total_page_count,allocated_page_count from v$tablespaces;
+NAME                                      TOTAL_PAGE_COUNT     ALLOCATED_PAGE_COUNT
+----------------------------------------------------------------------------------------
+SYS_TBS_MEM_DIC                           129                  129
+SYS_TBS_MEM_DATA                          257                  257
+SYS_TBS_DISK_DATA                         12800                32
+SYS_TBS_DISK_UNDO                         32768                17056
+SYS_TBS_DISK_TEMP                         12800                32
+DISK01                                    1280                 1280
+DISK_INDEX01                              1280                 416
+DISK_INDEX02                              1280                 416
+8 rows selected.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt;
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; delete from temp01 limit 1000;
+1000 rows deleted.
+iSQL&gt; select count(*) from temp01;
+COUNT
+-----------------------
+40000
+1 row selected.
+iSQL&gt; delete from temp01 limit 10000;
+10000 rows deleted.
+iSQL&gt; delete from temp01 limit 10000;
+10000 rows deleted.
+iSQL&gt; delete from temp01 limit 10000;
+10000 rows deleted.
+iSQL&gt; delete from temp01 limit 10000;
+10000 rows deleted.
+iSQL&gt; delete from temp01 limit 10000;
+No rows deleted.
+
+iSQL&gt; select name,total_page_count,allocated_page_count from v$tablespaces;
+NAME                                      TOTAL_PAGE_COUNT     ALLOCATED_PAGE_COUNT
+----------------------------------------------------------------------------------------
+SYS_TBS_MEM_DIC                           129                  129
+SYS_TBS_MEM_DATA                          257                  257
+SYS_TBS_DISK_DATA                         12800                32
+SYS_TBS_DISK_UNDO                         32768                18336
+SYS_TBS_DISK_TEMP                         12800                32
+DISK01                                    1280                 1280
+DISK_INDEX01                              1280                 416
+DISK_INDEX02                              1280                 416
+8 rows selected.
+iSQL&gt;
+iSQL&gt;
+iSQL&gt; exec testproc01(1000);
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt; /
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+iSQL&gt; select count(*) from temp01;
+COUNT
+-----------------------
+100000
+1 row selected.
+
+iSQL&gt; select name,total_page_count,allocated_page_count from v$tablespaces;
+NAME                                      TOTAL_PAGE_COUNT     ALLOCATED_PAGE_COUNT
+----------------------------------------------------------------------------------------
+SYS_TBS_MEM_DIC                           129                  129
+SYS_TBS_MEM_DATA                          257                  257
+SYS_TBS_DISK_DATA                         12800                32
+SYS_TBS_DISK_UNDO                         32768                18336
+SYS_TBS_DISK_TEMP                         12800                32
+DISK01                                    1280                 1280
+DISK_INDEX01                              1280                 416
+DISK_INDEX02                              1280                 416
+8 rows selected.
+iSQL&gt; delete from temp01;
+100000 rows deleted.
+iSQL&gt;
+iSQL&gt;
+iSQL&gt;
+iSQL&gt;  exec testproc01(1000);
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+Execute success.
+iSQL&gt; /
+[ERR-11123 : The tablespace does not have enough free space ( TBS Name :DISK01 ).
+0008 : INSERT INTO TEMP01 ( I1, I2, I3, I4, I5, I6 )VALUES ( VOID_SER, TO_CHAR(J,&#39;00&#39;), 16642685, 0, 10, 111111111111111111111111111111100000000004341);
+      ^                                                                                                                                                ^
+]
+</pre>
+</div></div>
+
+<p>By separating Tablespaces, the problem does not occur again. Furthermore, users have the ability to monitor the status of Tablespaces seperately.<br />
+In this way, the users manage the Tablespace more efficiently and they can determine the cause of such problems easily.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:46</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : SQL about Statements</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : SQL about Statements
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153374 {padding: 0px;}
+div.rbtoc1624409153374 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153374 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153374'>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutStatements-Totalnumberofstatements'>Total number of statements</a></li>
+<li><a href='#SQLaboutStatements-Statementinformation'>Statement information</a></li>
+<li><a href='#SQLaboutStatements-Thenumberofcurrentlyrunningstatements'>The number of currently running statements</a></li>
+<li><a href='#SQLaboutStatements-Informationaboutcurrentlyrunningstatements'>Information about currently running statements</a></li>
+<li><a href='#SQLaboutStatements-Longrunningquery(over10seconds)'>Long running query ( over 10 seconds)</a></li>
+<li><a href='#SQLaboutStatements-Longrunningtransaction&#39;slaststatementinformation(over1minute)'>Long running transaction&#39;s last statement information (over 1 minute)</a></li>
+<li><a href='#SQLaboutStatements-InformationaboutaqueryrunningaFULLSCAN'>Information about a query running a FULL SCAN</a></li>
+</ul>
+</div>
+
+<h1 id="SQLaboutStatements-Totalnumberofstatements">Total number of statements</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the number of statements that currently are established.</p>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  COUNT(*) STATEMENT_CNT
+FROM    V$STATEMENT;
+</pre>
+</div></div>
+
+
+
+<h1 id="SQLaboutStatements-Statementinformation">Statement information</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about statements, sorted in descending order by the execution time .</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STMT_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the statement in the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TX_ID </p></td>
+<td class="confluenceTd"><p> the transaction identifier if the statement participates in a transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PREPARE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform preparing the statement. (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FETCH_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform a fetch operation (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to execute the statement (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> the total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_FLAG </p></td>
+<td class="confluenceTd"><p> set 1 if the statement is currently executed </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_START_TIME </p></td>
+<td class="confluenceTd"><p> the time when the statement last started </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> the query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  SESSION_ID,
+        ID STMT_ID,
+        TX_ID,
+        (PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME) PREPARE_TIME,
+        FETCH_TIME,
+        EXECUTE_TIME,
+        TOTAL_TIME,
+        EXECUTE_FLAG,
+        DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME,
+        NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+FROM    V$STATEMENT
+ORDER BY EXECUTE_TIME DESC ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutStatements-Thenumberofcurrentlyrunningstatements">The number of currently running statements</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the number of statements that are currently executing.</p>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  COUNT(*) AS ACTIVE_STATEMENT_CNT
+FROM    V$STATEMENT
+WHERE   EXECUTE_FLAG = 1 ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutStatements-Informationaboutcurrentlyrunningstatements">Information about currently running statements</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the statement information about those that are currently executing.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STMT_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of statement in the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TX_ID </p></td>
+<td class="confluenceTd"><p> the transaction identifier if the statement participate in a transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PREPARE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform preparing the statement. (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FETCH_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform a fetch operation (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to execute the statement (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> the total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_FLAG </p></td>
+<td class="confluenceTd"><p> set 1 if the statement is currently executed </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_START_TIME </p></td>
+<td class="confluenceTd"><p> the time when the statement last started </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> the query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  SESSION_ID,
+        ID STMT_ID,
+        TX_ID,
+        (PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME) PREPARE_TIME,
+        FETCH_TIME,
+        EXECUTE_TIME,
+        TOTAL_TIME,
+        DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME,
+        NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+FROM    V$STATEMENT
+WHERE   EXECUTE_FLAG = 1
+ORDER BY EXECUTE_TIME DESC ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutStatements-Longrunningquery(over10seconds)">Long running query ( over 10 seconds)</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the statement information about queries that are considered long running. (the queries with elapsed time over 10 seconds)</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STMT_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of statement in the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TX_ID </p></td>
+<td class="confluenceTd"><p> the transaction identifier if the statement participate in a transaction </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PREPARE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform preparing statement. (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FETCH_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform a fetch operation (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to execute statement (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> the total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_FLAG </p></td>
+<td class="confluenceTd"><p> set 1 if the statement is currently executed </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_START_TIME </p></td>
+<td class="confluenceTd"><p> the time when the statement last started </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> the query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT  SESSION_ID,
+        ID STMT_ID,
+        TX_ID,
+        (PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME) PREPARE_TIME,
+        FETCH_TIME,
+        EXECUTE_TIME,
+        TOTAL_TIME,
+        DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME,
+        NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+FROM    V$STATEMENT
+WHERE   EXECUTE_FLAG = 1 AND EXECUTE_TIME/1000000 &gt; 10
+ORDER BY EXECUTE_TIME DESC ;
+</pre>
+</div></div>
+
+
+
+<h1 id="SQLaboutStatements-Longrunningtransaction&#39;slaststatementinformation(over1minute)">Long running transaction's last statement information (over 1 minute)</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>In the case of long running transactions in ALTIBASE HDB, this query shows the information for the last query of a transaction with an elapsed time over 1 minute.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_IP </p></td>
+<td class="confluenceTd"><p> the client IP address <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_PID </p></td>
+<td class="confluenceTd"><p> the client process identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UTRANS_TIME </p></td>
+<td class="confluenceTd"><p> the time taken during the transaction. (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to execute statement (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> the total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_START_TIME </p></td>
+<td class="confluenceTd"><p> the time when the statement last started </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> the query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	ST.SESSION_ID,
+        SS.COMM_NAME CLIENT_IP,
+        SS.CLIENT_PID,
+        (BASE_TIME - TR.FIRST_UPDATE_TIME) AS UTRANS_TIME,
+        EXECUTE_TIME,
+        TOTAL_TIME,
+        DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME,
+        NVL(LTRIM(ST.QUERY), &#39;NONE&#39;) QUERY
+FROM 	V$TRANSACTION TR,
+        V$STATEMENT ST,
+        V$SESSIONMGR,
+        V$SESSION SS
+WHERE   TR.ID = ST.TX_ID
+        AND ST.SESSION_ID = SS.ID
+        AND TR.FIRST_UPDATE_TIME != 0 -- 0:READ ONLY TRANSACTION
+        AND (BASE_TIME - TR.FIRST_UPDATE_TIME) &gt; 60
+ORDER BY UTRANS_TIME DESC ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutStatements-InformationaboutaqueryrunningaFULLSCAN">Information about a query running a FULL SCAN</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query shows the information about a query that is running a FULL SCAN. You need to be careful and check the SQL if there is a FULL SCAN plan node in the statement.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Column Name </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> SESSSION_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the session </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_IP </p></td>
+<td class="confluenceTd"><p> the client IP address <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CLIENT_PID </p></td>
+<td class="confluenceTd"><p> the client process identifier </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LAST_START_TIME </p></td>
+<td class="confluenceTd"><p> the time when the statement last started </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> PREPARE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform preparing statement. (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FETCH_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to perform a fetch operation (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> EXECUTE_TIME </p></td>
+<td class="confluenceTd"><p> the time taken to execute statement (microsecond) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL_TIME </p></td>
+<td class="confluenceTd"><p> the total elapsed time </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> QUERY </p></td>
+<td class="confluenceTd"><p> the query string </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	SESSION_ID,
+        S.COMM_NAME CLIENT_IP,
+        S.CLIENT_PID,
+        DECODE(LAST_QUERY_START_TIME, 0, &#39;-&#39;, TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + LAST_QUERY_START_TIME / (24*60*60), &#39;MM/DD HH:MI:SS&#39;)) LAST_START_TIME,
+        (PARSE_TIME+VALIDATE_TIME+OPTIMIZE_TIME) PREPARE_TIME,
+        FETCH_TIME,
+        EXECUTE_TIME,
+        TOTAL_TIME,
+        NVL(LTRIM(QUERY), &#39;NONE&#39;) QUERY
+FROM    V$STATEMENT T,
+        V$SESSION S
+WHERE   S.ID = T.SESSION_ID
+        AND (MEM_CURSOR_FULL_SCAN &gt; 0 OR DISK_CURSOR_FULL_SCAN &gt; 0)
+        AND UPPER(QUERY) NOT LIKE &#39;%INSERT%&#39;
+ORDER BY EXECUTE_TIME DESC ;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 4. Configuring DataSource</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 4. Configuring DataSource
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358533 {padding: 0px;}
+div.rbtoc1624409358533 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358533 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358533'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.ConfiguringDataSource-UsingDriverManagerDataSource'>Using DriverManagerDataSource</a></li>
+<li><a href='#id-4.ConfiguringDataSource-UsingDBCP'>Using DBCP</a></li>
+<li><a href='#id-4.ConfiguringDataSource-UsingtheConnectionPoolofALTIBASE'>Using the ConnectionPool of ALTIBASE</a></li>
+</ul>
+</div></p><hr /><p>In order to integrate with DB in Spring, DataSource related bean must be configured in the bean configuration file.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>(In this document, the name of the bean configuration file was defined as applicationContext.xml.)</p>
+                    </div>
+    </div>
+<p>There is the method of using the DriverManagerDataSource provided by the Spring Framework, the method of using the DBCP provided by Jakarta, and the method of using the ConnectionPool provided by the DB vendor. This chapter describes how to integrate with Altibase using these methods.</p><h2 id="id-4.ConfiguringDataSource-UsingDriverManagerDataSource"><strong>Using DriverManagerDataSource</strong></h2><p>In the case of integrating with DB using DriverManagerDataSource class provided by Spring Framework, set class property value as org.springframework.jdbc.datasource.DriverManagerDataSource when setting dataSource bean in the bean configuration file.</p><p>At this time, various properties for integrating with DB can be defined in the dataSource bean. The following properties can be defined according to ALTIBASE.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Property</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>driverClassName</p></td><td class="confluenceTd"><p>ALTIBASE JDBC driver class Name</p></td></tr><tr><td class="confluenceTd"><p>URL</p></td><td class="confluenceTd">Connection string information for connecting with ALTIBASE in the form of &quot;jdbc:Altibase://IP:port_no/db_name&quot;<p> </p></td></tr><tr><td class="confluenceTd"><p>username</p></td><td class="confluenceTd">Database account<p> </p></td></tr><tr><td class="confluenceTd"><p>password</p></td><td class="confluenceTd"><p>Database password</p></td></tr></tbody></table></div><p>The following is a part of the acpplicationContext.xml file of DataManagerDataSourceConnection provided as an example. Ex) ApplicationManager.xml file of DataManageDataSourceConnection.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot;
+    class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+    &lt;!-- JDBC Driver class name setting --&gt;
+    &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+    &lt;      &lt;!-- connection url --&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot; /&gt;
+    &lt;!-- DB user account settings --&gt;
+    &lt;property name=&quot;username&quot; value=&quot;sys&quot; /&gt;
+    &lt;!-- DB user password setting --&gt;
+    &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>To run the DataManagerDataSourceConnection project included in the example, Altibase.jar, spring.jar, spring-jdbc.jar, and common-loggings.jar files are needed, so add the corresponding jar files must be added.</p><p><img class="confluence-embedded-image" src="attachments/14058429/14221649.png" data-image-src="attachments/14058429/14221649.png"></p><h2 id="id-4.ConfiguringDataSource-UsingDBCP"><strong>Using DBCP</strong></h2><p>ConnectionPool based DataSource can be configured using DBCP (Jakarta Commons Database Connection Pool) API provided by Jakarta in the Spring. The DataSource class used at this time is org.apache.commons.dbcp.BasicDataSource. To set it up, use the BasicDataSource class in the applicationContext.xml file as in the DriverManagerDataSource class described above, and create a dataSource bean.</p><p>Ex) applicationContext.xml file of DBCPConnection</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;&gt;
+    &lt;!-- JDBC Driver class name setting --&gt;
+    &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+    &lt;!-- connection url --&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot; /&gt;
+    &lt;!-- DB user account setting --&gt;
+    &lt;property name=&quot;username&quot; value=&quot;sys&quot; /&gt;
+    &lt;!-- DB user password setting --&gt;
+    &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>BasicDataSource class provides various properties to manage ConnectionPool.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Property</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>driverClassName</p></td><td class="confluenceTd"><p>ALTIBASE JDBC driver class Name</p></td></tr><tr><td class="confluenceTd"><p>url</p></td><td class="confluenceTd"><p>Connection string information for connecting with ALTIBASE in the form of &quot;jdbc:<a href="Altibase://IPport_no" rel="nofollow">Altibase://IP:port_no/db_name</a>&quot; </p></td></tr><tr><td class="confluenceTd"><p>username</p></td><td class="confluenceTd"><p>Database account</p></td></tr><tr><td class="confluenceTd"><p>password</p></td><td class="confluenceTd"><p>Database password</p></td></tr><tr><td class="confluenceTd"><p>maxActive</p></td><td class="confluenceTd"><p>The maximum number of connections. 0 is unlimited. The default is 8.</p></td></tr><tr><td class="confluenceTd"><p>initialSize</p></td><td class="confluenceTd"><p>The initial number of connections. The default is 0.</p></td></tr><tr><td class="confluenceTd"><p>maxIdle</p></td><td class="confluenceTd">The maximum number of connections that remain idle in the pool. The default is 8.<p> </p></td></tr><tr><td class="confluenceTd"><p>maxWait</p></td><td class="confluenceTd"><p>The maximum connection attempt time (unit: millisec) -1 waits infinitely. The default is infinite waiting.</p></td></tr><tr><td class="confluenceTd"><p>validationQuery</p></td><td class="confluenceTd"><p>SQL statement used to check connection validation<br />Must be specified as a select statement that returns at least one row.<br />ex) select 1 from dual</p></td></tr><tr><td class="confluenceTd"><p>defaultAutoCommit</p></td><td class="confluenceTd"><p>Set autocommit mode. The default is true.</p></td></tr><tr><td class="confluenceTd"><p>defaultTransactionIsolation</p></td><td class="confluenceTd"><p>Set Transaction Isolation level<br />The values of NONE, REPEATABLE_READ, and SERIALIZABLE can be set, and the default follows the default value of the DB server. The isolation level of ALTIBASE is READ COMMITTED by default.</p></td></tr></tbody></table></div><div><strong><br /></strong></div><div>To run the DBCPConnection project included in the example, in addition to the Spring configuration library file, the altibase,jar, common-loggin.jar, common-dbcp.jar, and common-pools.jar files are required.</div><div><img class="confluence-embedded-image" src="attachments/14058429/14221650.png" data-image-src="attachments/14058429/14221650.png"></div><div><h2 id="id-4.ConfiguringDataSource-UsingtheConnectionPoolofALTIBASE"><strong>Using the ConnectionPool of ALTIBASE</strong></h2><p>If the user uses the ABConnecitonPoolData Source class provided by ALTIBASE, the user can use the ConnectionPool of ALTIBASE. Like other DataSource described previously, the user can define dataSource bean by using the ABConnectionPoolData Source class in applicationContext.xml.</p><p>Ex) applicationContext.xml file of AltibaseConnectionPool</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot;
+class=&quot;Altibase.jdbc.driver.AltibaseConnectionPoolDataSource&quot;&gt;
+  &lt;!-- Connection URL uppercase note --&gt;
+  &lt;property name=&quot;URL&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+  &lt;!-- DB user account setting --&gt;
+  &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+  &lt;!-- DB user password setting --&gt;
+&lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p>When using the ABConnectionPoolData Source, ALTIBASE JDBC Driver class is automatically loaded from ABConnectionPoolData Source, so there is no need to specify the driverClassName property. In addition, it should be noted that the property representing the DB user account is a user, not a username.</p><div><strong><br /></strong></div></div><div>ABConnectionPoolData Source class provides various properties to manage the ConnectionPool.</div><div><p> </p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Property</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Description</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>URL</p></td><td class="confluenceTd"><p>Connection string information for connecting with ALTIBASE in the form of &quot;jdbc:<a href="altibase://IPport_no" rel="nofollow">Altibase://IP:port_no/db_name</a>&quot; </p></td></tr><tr><td class="confluenceTd"><p>user</p></td><td class="confluenceTd">Database account</td></tr><tr><td class="confluenceTd"><p>password</p></td><td class="confluenceTd"><p>Database password</p></td></tr><tr><td class="confluenceTd"><p>maxPoolSize</p></td><td class="confluenceTd">The maximum number of connections. The default is 10.<p> </p></td></tr><tr><td class="confluenceTd"><p>minPoolSize</p></td><td class="confluenceTd"><p>The minimum number of connections. The default is 0.</p></td></tr><tr><td class="confluenceTd"><p>initialPoolSize</p></td><td class="confluenceTd"><p>The initial number of connections. The default is 1.</p></td></tr><tr><td class="confluenceTd"><p>maxIdleTime</p></td><td class="confluenceTd"><p>The idle waiting time</p></td></tr><tr><td class="confluenceTd"><p>propertyCycle</p></td><td class="confluenceTd"><p>The wait time when ConnectionPool is full (millisec)</p></td></tr></tbody></table></div><p>To run AltibaseConnectionPool project included in the example, Altibase.jar, spring.jar, spring-jdbc.jar, and common-logging.jar files are required.</p><p><img class="confluence-embedded-image" src="attachments/14058429/14221651.png" data-image-src="attachments/14058429/14221651.png"></p></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058429/14221649.png">datasource_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058429/14221650.png">datasource_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058429/14221651.png">datasource_6.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

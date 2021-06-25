@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Subprograms Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Subprograms Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347160 {padding: 0px;}
+div.rbtoc1624409347160 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347160 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347160'>
+<ul class='toc-indentation'>
+<li><a href='#SubprogramsConversion-Overview'>Overview</a></li>
+<li><a href='#SubprogramsConversion-Example'>Example</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="SubprogramsConversion-Overview">Overview</h2>
+
+<p>Subprograms are named PL/SQL blocks that can be called with a set of parameters.<br />
+PL/SQL has two types of subprograms, procedures and functions.</p>
+
+<p>Generally, you use a procedure to perform an action and a function to compute a value.</p>
+
+<p>Subprograms in ORACLE can be transformed as follows in ALTIBASE HDB.</p>
+
+<h2 id="SubprogramsConversion-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE award_bonus <br class="atl-forced-newline" />
+(emp_id NUMBER, bonus NUMBER) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+commission REAL; <br class="atl-forced-newline" />
+comm_missing EXCEPTION; <br class="atl-forced-newline" />
+BEGIN -- executable part starts here <br class="atl-forced-newline" />
+SELECT commission_pct / 100 INTO commission FROM employees <br class="atl-forced-newline" />
+WHERE eno = emp_id; <br class="atl-forced-newline" />
+IF commission IS NULL THEN <br class="atl-forced-newline" />
+RAISE comm_missing; <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary + bonus*commission <br class="atl-forced-newline" />
+WHERE eno = emp_id; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+EXCEPTION -- exception-handling part starts here <br class="atl-forced-newline" />
+WHEN comm_missing THEN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('This employee does not receive a commission.'); <br class="atl-forced-newline" />
+commission := 0; <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+NULL; -- for other exceptions do nothing <br class="atl-forced-newline" />
+END award_bonus; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+CALL award_bonus(150, 400); </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE award_bonus <br class="atl-forced-newline" />
+(emp_id NUMBER, bonus NUMBER) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+commission REAL; <br class="atl-forced-newline" />
+comm_missing EXCEPTION; <br class="atl-forced-newline" />
+BEGIN -- executable part starts here <br class="atl-forced-newline" />
+SELECT commission_pct / 100 INTO commission FROM employees <br class="atl-forced-newline" />
+WHERE eno = emp_id; <br class="atl-forced-newline" />
+IF commission IS NULL THEN <br class="atl-forced-newline" />
+RAISE comm_missing; <br class="atl-forced-newline" />
+ELSE <br class="atl-forced-newline" />
+UPDATE employees SET salary = salary + bonus*commission <br class="atl-forced-newline" />
+WHERE eno = emp_id; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+EXCEPTION -- exception-handling part starts here <br class="atl-forced-newline" />
+WHEN comm_missing THEN <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('This employee does not receive a commission.'); <br class="atl-forced-newline" />
+commission := 0; <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+NULL; -- for other exceptions do nothing <br class="atl-forced-newline" />
+END award_bonus; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+EXEC award_bonus(150, 400); </p></td>
+<td class="confluenceTd"><p> Creating a Stored Subprogram </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+c1 EmpCurTyp; <br class="atl-forced-newline" />
+c2 EmpCurTyp; <br class="atl-forced-newline" />
+PROCEDURE get_emp_data (<span style="color: rgb(255,0,0);"><strong>emp_cv1 IN OUT EmpCurTyp, emp_cv2 IN OUT EmpCurTyp</strong></span>) IS <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>OPEN emp_cv1 FOR SELECT * FROM employees;</strong></span> <br class="atl-forced-newline" />
+emp_cv2 := emp_cv1; <br class="atl-forced-newline" />
+FETCH emp_cv1 INTO emp_rec; -- fetches first row <br class="atl-forced-newline" />
+FETCH emp_cv1 INTO emp_rec; -- fetches second row <br class="atl-forced-newline" />
+FETCH emp_cv2 INTO emp_rec; -- fetches third row <br class="atl-forced-newline" />
+CLOSE emp_cv1; <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,0);">DBMS_OUTPUT.put_line</span>('The following raises an invalid cursor'); -- FETCH emp_cv2 INTO emp_rec; raises invalid cursor when get_emp_data is called <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+get_emp_data(c1, c2); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> <span style="color: rgb(255,0,0);"><strong>CREATE OR REPLACE TYPESET EmpCurTypeset</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>AS</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong> TYPE EmpCurTyp IS REF CURSOR;</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>END;</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>/</strong></span> <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE get_emp_data (<span style="color: rgb(255,0,0);"><strong>emp_cv1 IN OUT EmpCurTypeset.EmpCurTyp, emp_cv2 IN OUT EmpCurTypeset.EmpCurTyp</strong></span>) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+c1 EmpCurTyp; <br class="atl-forced-newline" />
+c2 EmpCurTyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>OPEN emp_cv1 FOR 'SELECT * FROM employees';</strong></span> <br class="atl-forced-newline" />
+emp_cv2 := emp_cv1; <br class="atl-forced-newline" />
+FETCH emp_cv1 INTO emp_rec; -- fetches first row <br class="atl-forced-newline" />
+FETCH emp_cv1 INTO emp_rec; -- fetches second row <br class="atl-forced-newline" />
+FETCH emp_cv2 INTO emp_rec; -- fetches third row <br class="atl-forced-newline" />
+CLOSE emp_cv1; <br class="atl-forced-newline" />
+SYSTEM_.println('The following raises an invalid cursor'); <br class="atl-forced-newline" />
+--FETCH emp_cv2 INTO emp_rec; --raises invalid cursor when get_emp_data is called <br class="atl-forced-newline" />
+--END; <br class="atl-forced-newline" />
+--BEGIN <br class="atl-forced-newline" />
+get_emp_data(c1, c2); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Subprogram Parameter Aliasing <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+In the ALTIBASE HDB, A typeset creation and procedure creation using REF CURSOR should be separated. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

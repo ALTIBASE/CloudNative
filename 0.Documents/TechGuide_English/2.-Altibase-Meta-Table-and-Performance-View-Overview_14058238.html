@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Altibase Meta Table and Performance View Overview</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Altibase Meta Table and Performance View Overview
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 class="md-end-block md-heading" id="id-2.AltibaseMetaTableandPerformanceViewOverview-OverviewThiswillbeexplainedbeforehand."><strong><span class="md-plain">OverviewThis will be explained beforehand.</span></strong></h2><hr /><p>For internal monitoring of Altibase, it is necessary to understand meta table, and performance view, <span style="color: rgb(0,0,0);">called the data dictionary.</span> In this document, the relationship between the meta table and the performance view is expressed using the entity-relationship diagram (ERD) in consideration of user understanding and convenience. We will explain what needs to be know prior to this.</p><p> </p><h3 class="md-end-block md-heading" id="id-2.AltibaseMetaTableandPerformanceViewOverview-AboutERDNotation"><span class="md-plain">About ERD Notation</span></h3><p>In consideration of the user's understanding and convenience, the performance view characteristics that do not have a base table are ignored, and the performance view is expressed as a table as shown below, and the key to be referenced when joining is express in FK form. To avoid confusion caused by this notation, the meta table has a yellow background and the performance view has a white background.</p><p class="md-end-block md-p" style="margin-left: 30.0px;"><span class="md-image md-img-error"> <img class="confluence-embedded-image" src="attachments/14058238/14221506.png" data-image-src="attachments/14058238/14221506.png"></span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In addition, in the above ERD, a column of the same attribute, such as the ID columns of the meta table and the META_ID column of the performance view, may have different name according to the meta table and the performance view. In this case, the same color is given to the column to indicate the same attribute.</span></p><h3 class="md-end-block md-heading" id="id-2.AltibaseMetaTableandPerformanceViewOverview-Note"><span class="md-plain">Note</span></h3><p class="md-end-block md-p"><span class="md-plain">It should be noted that Altibase meta table and performance view have the following characteristics.</span></p><ol class="ol-list"><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Column of the same attribute may have different name according to meta table and performance views.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Depending on the Altibase server version, the column name of meta table and performance view can be changed or deleted.</span></p></li><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-plain">Meta table and performance view may be added or deleted depending on the Altibase server version.</span></p></li></ol><div><h3 class="md-end-block md-heading" id="id-2.AltibaseMetaTableandPerformanceViewOverview-Terms"><span class="md-plain">Terms</span></h3><p class="md-end-block md-p"><span class="md-plain">This is a definition of some of the terms that may cause confusion prior to explanation.</span></p><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Session</span></p><p class="md-end-block md-p"><span class="md-plain">This refers to the user's access unit connected to the Altibase server. One user can have multiple sessions at the same time</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Statement</span></p><p class="md-end-block md-p"><span class="md-plain">As a term that means each SQL executed in a transaction, 'SQL statement', 'Query', 'Query statement,' often has the same meaning depending on the context. In this document, it is unified as 'query'.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span class="md-plain">Memory DB GC (Garbage Collector) or GC</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">When the user executes commit, the record before the change maintained by the MVCC (Multi Versioning Concurrency Control) technique should be deleted. Altibase operates separate threads to delete records before changes, which are called memory DB GC and disk DB GC respectively. However, since the MVCC method of the disk DB has changed since Altibase 5.3.3, the disk DB GC disappears, so only the memory DB GC exists, so it is called GC or Ager.</span></p></li></ul></div><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058238/14221506.png">image2016-7-13 9_28_9.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

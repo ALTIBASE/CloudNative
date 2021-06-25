@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Shutting Altibase Down</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="14909450.html">Understanding the Altibase Start/Shut down Process</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Shutting Altibase Down
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter describes the outline and features of shutting Altibase and three options of shutting down provided by Altibase and operations.</p><h1 id="id-2.ShuttingAltibaseDown-Overview">Overview</h1><hr /><p>The starting process of Altibase is classified into 4 stages, but when it is to shut down, it is in reverse order of the startup process and ends in stage 1. (SERVICE -&gt; META -&gt; CONTROL -&gt; PROCESS)</p><p>To shut down the running Altibase server, connect to iSQL with -sysdba privileges and use the &quot;SHUTDOWN&quot; command.</p><p>The &quot;SHUTDOWN&quot; command can be used by specifying three options (NORMAL, IMMEDIATE, ABORT).</p><p>NORMAL, IMMEDIATE can be executed only when Altibase is in SERVICE stage, and ABORT can be executed at any stage.</p><p>The stop command of Altibase can be executed only with the installed OS account.</p><p><img class="confluence-embedded-image" src="attachments/14909483/15073294.png" data-image-src="attachments/14909483/15073294.png"></p><h1 id="id-2.ShuttingAltibaseDown-NORMAL">NORMAL</h1><hr /><p>As a method of shutting down the server normally, the server waits for a shutdown operation until all clients are disconnected from the server.</p><p>The NORMAL option shuts down the Altibase server after internally performing tasks such as terminating the thread that detects the communication session between the client and the server, terminating the service thread, and terminating the data storage manager.</p><p>When the Altibase is shut down using the NORMAL option, the following message will be displayed.</p><p><img class="confluence-embedded-image" src="attachments/14909483/15073295.png" data-image-src="attachments/14909483/15073295.png"></p><p>The following are the operations Altibase performs when the Altibase server is shut down using the NORMAL option.</p><ul><li>Check if the current user has sysdba privileges</li><li>Wait until all sessions have ended</li><li>Shut down each module (Storage Manager, Query Processor, Communication Manager, etc.)</li><li>Shut down Altibase process</li></ul><h1 id="id-2.ShuttingAltibaseDown-IMMEDIATE"><span style="color: rgb(0,0,0);">IMMEDIATE</span></h1><hr /><p>After forcibly disconnecting currently connected sessions, the Altibase server rolls back the currently running transaction and shut down the Altibase server.</p><p>When the server is shut down using the &quot;SERVER STOP&quot; command provided by Altibase, the same operation as the shutdown using the IMMEDIATE option is performed.</p><p>When the Altibase server is shut down using the IMMEDIATE option, the following message will be displayed.</p><p><img class="confluence-embedded-image" src="attachments/14909483/15073296.png" data-image-src="attachments/14909483/15073296.png"></p><p>The following are the operations Altibase performs when the Altibase server is shut down using the IMMEDIATE option.</p><ul><li>Check if the current user has sysdba privileges</li><li>Kill all currently connected sessions</li><li>Rollback the currently executing transaction</li><li>Shut down each module (Storage Manager, Query Processor, Communication Manager, etc.)</li><li>Shut down Altibase Process</li></ul><p><img class="confluence-embedded-image" src="attachments/14909483/15073297.png" data-image-src="attachments/14909483/15073297.png"></p><ul><li>Internal operating during &quot;SHUTDOWN IMMEDIATE&quot;<br /><hr />Looking at the altibase_boot.log, stopping is terminated by performing the process in the reverse order of when it is started. The operations that Altibase internally operates during &quot;SHUTDOWN IMMEDIATE&quot; are as follows.<br /><br /><ul><li>Prepare for stopping and terminate for each module<ul><li>Termination of modules such as SERVICE, Database Link, Security, Query Processor, Storage Manager, etc. <strong>(02) ~ (10)</strong></li></ul></li><li>Release all resources used during the server operation<ul><li>Checkpoint Manager, Memory Garbage Collector, Delete Manager, etc. <strong>(11) ~ (42)</strong></li><li>Table Compaction <strong>(14)</strong><ul><li>After allocating in memory, return the unreturned space to the system</li></ul></li><li>Flush All Dirty Pages And Checkpoint Database <strong>(24)</strong><ul><li>Flush to disk for Dirty Pages among pages loaded in the memory buffer</li><li>Checkpoint data in memory tablespace</li><li>When there are more objects that need to be flushed and objects that need to be checkpointed, the waiting time increases when stopped.</li></ul></li></ul></li></ul></li></ul><h1 id="id-2.ShuttingAltibaseDown-ABORT">ABORT</h1><hr /><p>This is a method of forcibly shutting the Altibase server down using the kill -9 system command.</p><p>If the Altibase server is shut down with this method, the consistency of the database cannot be guaranteed. Therefore, when the Altibase server is started, a database recovery process is performed.</p><p>The following operations performed by Altibase when the Altibase server is shut down using the ABORT option.</p><ul><li>Check if the current user has sysdba privileges</li><li>Send kill-9 to the server process</li><li>Wait for the server process to terminate</li></ul><div><strong><br /></strong></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14909483/15073294.png">image2019-5-14 13_3_32_eng.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14909483/15073295.png">SHUTDOWN NORMAL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14909483/15073296.png">SHUTDOWN IMMEDIATE.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14909483/15073297.png">SHUTDOWN IMMEDIATE LOG.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

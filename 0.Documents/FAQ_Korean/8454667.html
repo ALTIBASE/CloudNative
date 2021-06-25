@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 알티베이스 이중화 대상 테이블에 대한 DDL 작업</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520884.html">03. 이중화</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 알티베이스 이중화 대상 테이블에 대한 DDL 작업
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> richard.nahm	</span> on Mar 16, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051968 {padding: 0px;}
+div.rbtoc1624409051968 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051968 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051968'>
+<ul class='toc-indentation'>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-개요'>개요</a></li>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-대상버전'>대상버전</a></li>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-방법'>방법</a>
+<ul class='toc-indentation'>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-서비스중단하에서의작업'>서비스   중단하에서의  작업</a></li>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-서비스무중단제약하에서의작업'>서비스 무중단 제약하에서의 작업</a></li>
+</ul>
+</li>
+<li><a href='#id-알티베이스이중화대상테이블에대한DDL작업-참고자료'>참고자료</a></li>
+</ul>
+</div> </p><h1 id="id-알티베이스이중화대상테이블에대한DDL작업-개요">개요</h1><hr /><p>일반적으로 DB 에한 DDL 작업은 테이블에 대한 독점적인 잠금(Lock) 을 필요로 합니다.    ALTIBASE  HDB 는  지역서버에서 발생한 트랜잭션 로그를 상대편 서버에 전송하여 데이터를 일치시키는 형태의 네트워크 기반의 이중화 기법을 사용하며</p><p>DDL 같은 작업은 로그로 전송하지 않아 DDL 작업은 복제되지 않습니다.   따라서 디스크 공유방식과는 다르게 각각의 노드(Server) 에서  DDL 작업을 수행하는 다른 방식의 작업절차가 필요합니다.</p><p> </p><h1 id="id-알티베이스이중화대상테이블에대한DDL작업-대상버전">대상버전</h1><hr /><p>ALTIBASE HDB는  버전에 따라서  지원하는 DDL 구문의 종류가 다르며  이중화 관련한 DDL 구문의 기능도 차이가 있습니다.  </p><p>단순한 형태의 DDL 작업인 경우에는 본 문서의 작업절차를  ALTIBASE HDB 4.3.9 버전대에서도  그대로 사용 가능하나   주로  ALTIBASE HDB 5.3.3 이상 버전을 대상으로 설명합니다.</p><p>  </p><h1 id="id-알티베이스이중화대상테이블에대한DDL작업-방법">방법</h1><hr /><p>DDL 구문으로 인해서 대량의 데이타 변경 작업이 발생할 가능성이 있을 경우에는  보다 안전한 다른 작업절차를 사용해야 하며  <a href="attachments/8454667/8618056.pdf">ALTIBASE &#51060;&#51473;&#54868;&#54872;&#44221;&#51032; DDL &#44032;&#51060;&#46300;</a>를 참조하십시요.</p><h2 id="id-알티베이스이중화대상테이블에대한DDL작업-서비스중단하에서의작업">서비스   중단하에서의  작업</h2><p>데이터베이스에  접근하는 서비스를  일정시간 동안 모두 중단할 수 있는 환경에서는  상대적으로 간단한 작업단절차를 통해서 완료할 수 있습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">순서 </th><th class="confluenceTh">A노드 </th><th class="confluenceTh">B노드 </th></tr><tr><td class="confluenceTd">STEP 1</td><td colspan="2" class="confluenceTd"><ul><li> <strong>서비스 중지( 트랜잭션이 발생하지 않도록 조치)</strong><ul><li>확실하게 서비스를 막기 위해서 DB 를 stop 한 후 서비스 포트를 변경하여 구동 후 수행하기도 합니다.</li><li>데이터 베이스에 접속한 세션 확인 또는 수행중인 문장 확인<ul><li>iSQL&gt; select count(*) from v$session;</li><li>iSQL&gt; select count(*) from v$statement where execute_flag =1 ; </li></ul></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 2</td><td colspan="2" class="confluenceTd"><ul><li> <strong>대상 노드의 이중화 갭이 모두 &quot;0&quot; 임을 확인 ( 이중화 Sender 가 구동된 DB를 의미) </strong><ul><li>DDL 수행 대상 테이블이 속해 있는 이중화 객체 확인<ul><li>iSQL&gt; select REPLICATION_NAME,LOCAL_USER_NAME, LOCAL_TABLE_NAME from SYSTEM_.SYS_REPL_ITEMS_;</li></ul></li><li>이중화 갭 확인<ul><li><span>iSQL&gt; SELECT rep_name, rep_gap </span><span>FROM v$repgap;<span>      </span># rep_gap </span><span>이 모두<span> 0 </span>임을 확인<span>.</span></span><span> </span> </li></ul></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 3</td><td colspan="2" class="confluenceTd"><ul><li> <strong>대상노드의 이중화를 중지</strong><ul><li>iSQL&gt;  ALTER REPLICATION <em>rep_name</em> STOP;<span>   # 이중화 객체(REP_NAME) 은  STEP 2에서 확인</span></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 4</td><td colspan="2" class="confluenceTd"><ul><li><strong>이중화 객체에서 DDL을 수행하려는 대상 테이블을 제거 </strong><ul><li><span>iSQL&gt; ALTER REPLICATION </span><em><span>rep_name</span></em><span> </span><span>DROP TABLE FROM <em>user_name.table_name</em> TO <em>user_name.table_name</em>;</span><span> </span></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 5</td><td colspan="2" class="confluenceTd"><ul><li><strong>DDL 작업 수행</strong>  <ul><li> iSQL&gt; ALTER TABLE t1 ADD COLUMN ( c1 INTEGER);</li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 6</td><td colspan="2" class="confluenceTd"><ul><li><strong>STEP 4에서 제거한 이중화 대상 테이블을 다시 이중화 객체 리스트에 추가</strong> <ul><li><span>iSQL&gt; ALTER REPLICATION </span><em><span>rep_name</span></em><span> ADD </span><span>TABLE FROM <em>user_name.table_name</em> TO <em>user_name.table_name</em>;</span><span> </span></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 7</td><td colspan="2" class="confluenceTd"><ul><li><strong>대상노드에서 이중화 시작</strong><ul><li> <span>iSQL&gt; ALTER REPLICATION </span><em><span>rep_name</span></em><span> START</span></li></ul></li></ul></td></tr><tr><td colspan="1" class="confluenceTd">STEP 8</td><td colspan="2" class="confluenceTd"><ul><li><strong>서비스 개시</strong><ul><li>STEP 1에서 DB의 서비스 포트 번호를  변경했다면  서비스 포트를 다시 원복하고 데이터 베이스를  재구동합니다.</li><li>Application 을 구동하여 DB 서비스를 재개한 후  DB의 상태를 확인합니다.</li></ul></li></ul></td></tr></tbody></table></div><h2 id="id-알티베이스이중화대상테이블에대한DDL작업-서비스무중단제약하에서의작업"><br />서비스 무중단 제약하에서의 작업</h2><p> 서비스 무중단이 필요한 환경에서는   한 노드는  데이터베이스를 운영하는 상태에서 한 노드씩 교대로  작업을 해야만 하는 제약사항이 있을 수 있습니다.</p><p>이런 조건하에서는  앞서 설명한  서비스 중단이 가능한  환경에  비해서 상대적으로  여러 단계의 작업절차가 필요하며 주의가 필요할 수 있습니다.</p><ul><li><a href="attachments/8454667/8618056.pdf">ALTIBASE &#51060;&#51473;&#54868;&#54872;&#44221;&#51032; DDL &#44032;&#51060;&#46300; </a> 문서를 참고하세요.</li><li>ALTIBASE 기술지원본부로부터   기술지원을  받으십시요 (  서비스포털: <a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a>  , TEL 02-2082-1114 )</li></ul><p> </p><p> </p><h1 id="id-알티베이스이중화대상테이블에대한DDL작업-참고자료">참고자료</h1><hr /><p>보다 자세한  작업과정에 대한 설명 또는  서비스 무중단 하에서의 작업절차에 관해서는  아래의   문서를 참고하세요  </p><ul><li><a href="attachments/8454667/8618056.pdf">ALTIBASE_&#51060;&#51473;&#54868;&#54872;&#44221;&#51032;DDL_&#44032;&#51060;&#46300;.pdf</a></li></ul><p> </p><p> </p><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454667/8618056.pdf">ALTIBASE_이중화환경의DDL_가이드.pdf</a> (application/pdf)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8454667/8618057.pdf">D135_ALTIBASE_이중화환경의DDL_가이드.pdf</a> (application/pdf)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

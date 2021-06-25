@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : altibase_boot.log - TRY_COUNT, LOCK_COUNT, MISS_COUNT</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : altibase_boot.log - TRY_COUNT, LOCK_COUNT, MISS_COUNT
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><h1 id="altibase_boot.log-TRY_COUNT,LOCK_COUNT,MISS_COUNT-Overview">Overview</h1><hr /><p>In altibase_boot.log, a large number of messages with the title &quot;reset Mutex Statistics&quot; may be recorded. This document provides a brief description of this message.</p><p> </p><h1 id="altibase_boot.log-TRY_COUNT,LOCK_COUNT,MISS_COUNT-Situation">Situation</h1><hr /><p>The following message may be repeatedly recorded in altibase_boot.log.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Message format</b></div><div class="panelContent">
+<p><span>--- reset Mutex Statistics --- </span><br /><span>TRY_COUNT: 2102048999 </span><br /><span>LOCK_COUNT: 2147483647 </span><br /><span>MISS_COUNT: 59144056 </span><br /><span>------------------------------</span></p>
+</div></div><p> </p><h1 id="altibase_boot.log-TRY_COUNT,LOCK_COUNT,MISS_COUNT-Cause">Cause</h1><hr /><p>This message is output when the values of the try_count, lock_count, and miss_count columns of the v$mutex performance view table exceed the maximum value and the values are initialized.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>V$MUTEX table structure</b></div><div class="panelContent">
+<p><span>iSQL&gt; desc v$mutex;</span><br /><span>[ ATTRIBUTE ]</span><br /><span>-----------------------------------------------------</span><br /><span>NAME TYPE</span><br /><span>-----------------------------------------------------</span><br /><span>NAME VARCHAR(64)</span><br /><strong>TRY_COUNT INTEGER</strong><span> // If the integer maximum value (2147483647) is exceeded, it will be logged.</span><br /><span>LOCK_COUNT INTEGER</span><br /><span>MISS_COUNT INTEGER</span><br /><span>SPIN_VALUE INTEGER</span><br /><span>TOTAL_LOCK_TIME_US BIGINT</span><br /><span>MAX_LOCK_TIME_US BIGINT</span></p>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">Column description</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <ul><li>try_count = number of mutex lock attempts</li><li>lock_count = number of successful mutex locks</li><li>miss_count = number of waits because the mutex lock was not held</li></ul>
+                    </div>
+    </div>
+<p>v$mutex records mutex information related to concurrency control in the database. If the values of the columns continue to increase and exceed the maximum value, a value overflow occurs. When the maximum value of integer type is reached, the corresponding value is recorded in altibase_boot.log, then initialize to 0.</p><p> </p><h1 id="altibase_boot.log-TRY_COUNT,LOCK_COUNT,MISS_COUNT-Solution">Solution</h1><hr /><p>When the maximum number of columns that can store mutex-related information is reached, the information is recorded in altibase_boot.log, and there is no particular problem or action required.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

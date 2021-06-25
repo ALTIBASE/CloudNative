@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Lock related properties</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Lock related properties
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147312 {padding: 0px;}
+div.rbtoc1624409147312 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147312 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147312'>
+<ul class='toc-indentation'>
+<li><a href='#Lockrelatedproperties-Overview'>Overview</a></li>
+<li><a href='#Lockrelatedproperties-Version'>Version</a></li>
+<li><a href='#Lockrelatedproperties-Howtomonitor'>How to monitor</a></li>
+</ul>
+</div></strong></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147323 {padding: 0px;}
+div.rbtoc1624409147323 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147323 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147323'>
+<ul class='toc-indentation'>
+<li><a href='#Lockrelatedproperties-Overview'>Overview</a></li>
+<li><a href='#Lockrelatedproperties-Version'>Version</a></li>
+<li><a href='#Lockrelatedproperties-Howtomonitor'>How to monitor</a></li>
+</ul>
+</div></p><p> </p><h1 id="Lockrelatedproperties-Overview">Overview</h1><hr /><p>The user can monitor performance degradation due to transaction lock.</p><p> </p><h1 id="Lockrelatedproperties-Version">Version</h1><hr /><ul><li>This document is written based on Altibase HDB version 6.3.1.</li><li>Both ALTIBASE HDB 5 and ALTIBASE HDB 6 can be used, but some monitoring items may cause a result error.</li><li>For more information and updates, please leave a request at <a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">http://support.altibase.com/en/</a> or in the comment section on this page.</li></ul><p> </p><h1 id="Lockrelatedproperties-Howtomonitor">How to monitor</h1><hr /><p>First of all, there are two performance views for the lock information of Altibase.</p><p>These are v$loc and v$lock_statement.</p><p>First, in v$lock, the user can inquire what type of lock is applied to a table. In the case of a select statement, IX_LOCK will be locked in case of changes such as IS_LOCK, insert, update, delete, etc.</p><p>By joining this view and the system_.sys_tables_ meta table, the user can check table name and lock information.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select table_name , lock_desc 
+from system_.sys_tables_ a, v$lock b
+where a.table_oid = b.table_oid;</pre>
+</div></div><p>In addition, the user can also check which queries are holding the lock with v$lock_statement.</p><p>The user can check the query holding the lock by joining the trans_id of v$lock and the tx_id of v$lock_statement.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select query 
+from v$lock a, v$lock_statement b 
+where a.trans_id = b.tx_id; </pre>
+</div></div><p>The user can check the session ID of the query currently holding the lock by using multiple joins.</p><p>desc v$lock;</p><p>With v$lock_statement;, check which columns are existed.</p><p>the session can also be killed with the session_id obtained in this wa.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER DATABASE database_name SESSION CLOSE session_id;</pre>
+</div></div><p>The above command can be executed by entering sysdba.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">connect sys/manager as sysdba;</pre>
+</div></div><p>++ Lock wait query</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select query, tx_id 
+from v$statement 
+where tx_id in ( select trans_id from v$lock_wait);
+</pre>
+</div></div><p>++ Look up based on v$lock_wait view, such as tx_id waiting, lock grant time, related redo logfile location, etc.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">select
+id tx_id,
+lw.wait_for_trans_id wait_tx_id,
+decode (status,0,&#39;BEGIN&#39;,
+1,&#39;PRECOMMIT&#39;,
+2,&#39;COMMIT_IN_MEMORY&#39;,
+3,&#39;COMMIT&#39;,
+4,&#39;ABORT&#39;,
+5,&#39;BLOCKED&#39;,
+6,&#39;END&#39;, &#39;UNKNOWN&#39;) status,
+decode(update_status,0,&#39;READ&#39;,1,&#39;UPDATING&#39;,&#39;UNKNOWN&#39;) TTYPE,
+decode(first_undo_next_lsn_fileno,-1,&#39;READ_TRN&#39;,first_undo_next_lsn_fileno) firstlog,
+base_time - decode(first_update_time, 0, base_time, first_update_time) time
+from
+v$transaction tx
+left outer join v$lock_wait lw
+on tx.id = lw.trans_id, 
+(select base_time from v$sessionmgr) base
+where status != 6
+order by time desc;</pre>
+</div></div><p>++ Check the client_pid and session_id holding the lock</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">select a.table_oid, a.lock_desc, c.client_pid , b.session_id
+from v$lock a, v$statement b, v$session c 
+where a.trans_id = b.tx_id 
+and b.session_id = c.id;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

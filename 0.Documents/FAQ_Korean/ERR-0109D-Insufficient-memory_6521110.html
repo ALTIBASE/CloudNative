@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-0109D Insufficient memory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-0109D Insufficient memory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> JH Choi</span>, last modified by <span class='editor'> heejung lee</span> on Dec 07, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409054962 {padding: 0px;}
+div.rbtoc1624409054962 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409054962 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409054962'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-0109DInsufficientmemory-대상버전'>대상 버전</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-증상'>증상</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-원인'>원인</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-해결방안'>해결 방안</a></li>
+<li><a href='#ERR-0109DInsufficientmemory-참고'>참고</a></li>
+</ul>
+</div></p><p> </p><p> </p><h1 id="ERR-0109DInsufficientmemory-대상버전">대상 버전</h1><hr /><p>모든 버전</p><p>본 에러메시지의 경우, 알티베이스 버전에 따라 동일한 오류 원인에 대해 이 에러가 발생할 수도 있고 다른 에러가 발생할 수도 있습니다.</p><p>뿐만 아니라 본 에러메시지에 대해 알티베이스 버전에 따라 오류 원인도 다를 수 있습니다.</p><p> </p><p> </p><p> </p><h1 id="ERR-0109DInsufficientmemory-증상">증상</h1><hr /><p> </p><p># 예제</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">create table t (c1 integer, c2 integer);
+create table t2 (c1 integer, c2 integer);
+create table t3 (c1 integer, c2 integer);
+create index t_idx_01 on t(c1, c2);
+create index t2_idx_01 on t2(c1, c2);
+create index t3_idx_01 on t3(c1, c2);
+insert into t select level, level from dual connect by level &lt; 301;
+insert into t2 select level, level from dual connect by level &lt; 301;
+insert into t3 select level, level from dual connect by level &lt; 301;
+alter system set EXECUTE_STMT_MEMORY_MAXIMUM = 1048576;
+</pre>
+</div></div><p># 5.5.1 이상 버전에서 수행 결과</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);
+[ERR-0109D : Insufficient memory]
+</pre>
+</div></div><p># 5.3.3 버전에서 수행 결과</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);
+[ERR-01067 : The allocated memory size of statement exceeds the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1114112, Max size : 1048576 ).]
+</pre>
+</div></div><h1 id="ERR-0109DInsufficientmemory-원인">원인</h1><hr /><p>다음과 같이 altierr 유틸리티를 이용하여 해당 에러에 대한 설명을 확인할 수 있습니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x0109D<br /> 0x0109D (   4253) idERR_ABORT_InsufficientMemory Insufficient memory <br /> # *Cause: Insufficient memory<br /> # *Action: Please make sure that the system has enough available memory.</p>
+</div></div><p><strong>메모리테이블</strong>에 대해 order by, group by 등의 쿼리를 수행할 때 temporary 영역을 사용하는데, temporary 영역도 메모리 공간을 사용합니다.</p><p>알티베이스 서버가 쿼리 수행을 위해 메모리 할당 요청을 했는데 EXECUTE_STMT_MEMORY_MAXIMUM 속성값에 의해 에러를 리턴받은 경우 본 에러가 발생합니다.</p><p> </p><p> </p><h1 id="ERR-0109DInsufficientmemory-해결방안">해결 방안</h1><hr /><p>다음 프로퍼티 값을 늘려주어야 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>EXECUTE_STMT_MEMORY_MAXIMUM<br /> 기본값: 1G<br /> 단위는 Gigabyte이며 질의 처리 시에 실행 단계에서 메모리를 이 속성값 이상으로 사용할 경우 에러 처리한다.<br /> 이 속성값은 불필요한 메모리의 증가를 방지하기 위해 최대값을 설정한다.</p>
+</div></div><p>   </p><p>1. 쿼리 수행 중 해당 에러가 발생했다면 아래의 SQL문으로 &quot;EXECUTE_STMT_MEMORY_MAXIMUM&quot; 프로퍼티 값을 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; set vertical on;
+iSQL&gt; select name, value1 from v$property where name=&#39;EXECUTE_STMT_MEMORY_MAXIMUM&#39;;
+NAME   : EXECUTE_STMT_MEMORY_MAXIMUM                         
+VALUE1 : 1073741824  
+</pre>
+</div></div><p>2. ALTER문으로 해당 프로퍼티 값을 적절히 늘려줍니다. (단위는 byte입니다.)</p><p>   다음은 2G로 설정하는 예제입니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter system set EXECUTE_STMT_MEMORY_MAXIMUM = 2147483648;
+Alter success.
+</pre>
+</div></div><p>3. 위 명령어는 수행 이후 서버 전체에 적용되지만 알티베이스를 재구동하면 프로퍼티파일의 설정값으로 적용됩니다.</p><p>    따라서 영구적으로 적용을 위해서는 프로퍼티파일에도 해당 프로퍼티 값을 변경해야 합니다.</p><p>    $ALTIBASE_HOME/conf/altibase.properties 파일에서 해당 프로퍼티의 값을 위와 동일하게 변경해 주세요. </p><p> </p><p> </p><p> </p><h1 id="ERR-0109DInsufficientmemory-참고">참고</h1><hr /><p> </p><p>1. EXECUTE_STMT_MEMORY_MAXIMUM 프로퍼티는 최대값을 지정하는 프로퍼티로, 미리 설정값만큼 메모리를 할당받는 것은 아닙니다.</p><p>   그러나 설정값만큼 메모리사용량이 증가할 수 있으므로 설정 시 주의를 요합니다.</p><p>   따라서 미리 크게 설정하기보다 경험적으로 적절히 늘려주시기를 권장합니다.</p><p>   </p><p>2. &quot;Insufficient memory&quot; 에러는 여기에서 설명한 케이스 외에도 다양한 메모리 할당 실패 에러일 수 있습니다.</p><p>    따라서 위 해결방안으로 문제가 해결되지 않는다면 알티베이스 기술지원으로 연락주세요.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

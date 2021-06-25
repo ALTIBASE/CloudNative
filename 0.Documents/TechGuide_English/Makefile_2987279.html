@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Makefile</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Makefile
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347888 {padding: 0px;}
+div.rbtoc1624409347888 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347888 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347888'>
+<ul class='toc-indentation'>
+<li><a href='#Makefile-APREoptions'>APRE options</a></li>
+<li><a href='#Makefile-Makefile'>Makefile</a></li>
+<li><a href='#Makefile-ErrorsduringCompilation'>Errors during Compilation</a></li>
+</ul>
+</div>
+
+<h1 id="Makefile-APREoptions">APRE options</h1>
+
+<p>At first, We recommend you to read manuals for APRE (<a href="http://atc.altibase.com/sub09/551b/html/Precompiler/ch02s02.html" class="external-link" rel="nofollow">http://atc.altibase.com/sub09/551b/html/Precompiler/ch02s02.html</a>)</p>
+
+<h1 id="Makefile-Makefile">Makefile</h1>
+
+<p>Sample Makefile.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+connect1.cpp: connect1.sc
+              apre -t cpp connect1.sc
+
+connect1: connect1.cpp
+          $(LD) -o connect1 connect1.cpp -I${ALTIBASE_HOME}/include -L${ALTIBASE_HOME}/lib -lapre -lodbccli
+</pre>
+</div></div>
+<ul>
+	<li>You can see a makefile in $ALTIBASE_HOME/sample/APRE directory.</li>
+	<li>You need to specify system-libraries which is defined at $ALTIBASE_HOME/install/altibase_env.mk (For example, In Linux, &quot;LIBS= -ldl -lpthread -lcrypt -lrt&quot;)</li>
+</ul>
+
+
+<p>In Linux, Sample makefile</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+LD=g++
+
+connect1.cpp: connect1.sc
+              apre -t cpp connect1.sc
+
+connect1: connect1.cpp
+          $(LD) -o connect1 connect1.cpp -I${ALTIBASE_HOME}/include -L${ALTIBASE_HOME}/lib -lapre -lodbccli -ldl -lpthread -lcrypt -lrt
+</pre>
+</div></div>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>ALTIBASE HDB supports gnumake by default.</p>
+
+                    </div>
+    </div>
+
+<p> </p>
+
+<h1 id="Makefile-ErrorsduringCompilation">Errors during Compilation</h1>
+
+<ol>
+	<li>If you don't define directory of header-files for APRE.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/work/altibase_home/sample/APRE] make -f makefile connect1
+g++ -o connect1 connect1.cpp
+connect1.cpp:9:29: ulpLibInterface.h: No such file or directory     &lt;=== here
+connect1.cpp: In function `int main()&#39;:
+</pre>
+</div></div></li>
+	<li>If you don't define directory of library-files for APRE.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/work/altibase_home/sample/APRE] make -f makefile connect1
+g++ -o connect1 connect1.cpp -I/home/lim272/work/altibase_home/include
+/tmp/ccrXuPio.o: In function `main&#39;:
+connect1.cpp:(.text+0x122): undefined reference to `ulpGetSqlca&#39;    &lt;=== here
+connect1.cpp:(.text+0x12e): undefined reference to `ulpGetSqlcode&#39;
+connect1.cpp:(.text+0x13a): undefined reference to `ulpGetSqlstate&#39;
+connect1.cpp:(.text+0x17a): undefined reference to `ulpDoEmsql&#39;
+connect1.cpp:(.text+0x1cf): undefined reference to `ulpGetSqlca&#39;
+</pre>
+</div></div></li>
+	<li>If you specify wrong compile-bit.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/work/altibase_home/sample/APRE] make -f makefile connect1
+g++ -m32 -o connect1 connect1.cpp -I/home/lim272/work/altibase_home/include -L/home/lim272/work/altibase_home/lib  -lapre -lodbccli -ldl -lpthread -lcrypt -lrt
+/usr/local/bin/ld: skipping incompatible /home/lim272/work/altibase_home/lib/libapre.a when searching for -lapre
+/usr/local/bin/ld: cannot find -lapre
+collect2: ld returned 1 exit status
+</pre>
+</div></div>
+Linker can not find a valid library because of wrong compile-bit.<br />
+Check library-bit
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+/home/lim272/work/altibase_home/lib/libapre_sl.so: ELF 64-bit LSB shared object, AMD x86-64, version 1 (SYSV), not stripped
+
+as48-x64#~/work/altibase_home/sample/APRE] file $ALTIBASE_HOME/bin/apre
+/home/lim272/work/altibase_home/bin/apre: ELF 64-bit LSB executable, AMD x86-64, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), not stripped
+</pre>
+</div></div></li>
+	<li>If you don't define system-library-files for APRE.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/work/altibase_home/sample/APRE] make -f makefile connect1
+g++ -o connect1 connect1.cpp -I/home/lim272/work/altibase_home/include -L/home/lim272/work/altibase_home/lib  -lapre -lodbccli
+/home/lim272/work/altibase_home/lib/libapre.a(ulpLibInterface.o): In function `ulpGetSqlca&#39;:
+ulpLibInterface.cpp:(.text+0x49e): undefined reference to `pthread_once&#39;
+ulpLibInterface.cpp:(.text+0x55a): undefined reference to `pthread_getspecific&#39;
+/home/lim272/work/altibase_home/lib/libapre.a(ulpLibInterface.o): In function `ulpGetSqlcode&#39;:
+</pre>
+</div></div>
+This sample message can be occured in LINUX system. (This message can be varied by compiler) We need &quot;-ldl -lpthread -lcrypt -lrt
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+as48-x64#~/work/altibase_home/sample/APRE] make -f makefile connect1
+g++ -o connect1 connect1.cpp -I/home/lim272/work/altibase_home/include -L/home/lim272/work/altibase_home/lib  -lapre -lodbccli -ldl -lpthread -lcrypt -lrt
+as48-x64#~/work/altibase_home/sample/APRE] ./connect1
+&lt;CONNECT 1&gt;
+------------------------------------------------------------------
+[Connect]
+------------------------------------------------------------------
+Success connection to altibase server
+</pre>
+</div></div></li>
+</ol>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2. WebLogic 서버 인스턴스의 구동과 종료</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340101.html">Altibase WEBLOGIC 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2. WebLogic 서버 인스턴스의 구동과 종료
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified by <span class='editor'> Consulting Division</span> on Dec 01, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409837218 {padding: 0px;}
+div.rbtoc1624409837218 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409837218 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409837218'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-구동'>구동</a></li>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-종료'>종료</a></li>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-JDBC드라이버설정'>JDBC 드라이버 설정</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-ALTIBASEJDBC드라이버를얻는방법'>ALTIBASE JDBC 드라이버를 얻는 방법</a></li>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-ALTIBASEJDBC드라이버버전을확인하는방법'>ALTIBASE JDBC 드라이버 버전을 확인하는 방법</a></li>
+<li><a href='#id-2.WebLogic서버인스턴스의구동과종료-WebLogic에서사용할JDBC드라이버를설정하는방법'>WebLogic에서 사용할 JDBC 드라이버를 설정하는 방법</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<hr />
+<p>WebLogic 서버 인스턴스를 구동하고 종료하는 여러 가지 방법 중 $DOMAIN_HOME/bin 에 존재하는 스크립트(script or batch) 파일 실행을 통한 구동과 종료에 대해 설명한다.</p>
+
+<p>스크립트 파일은 도메인 별로 관리 서버와 관리된 서버 각각에 대한 구동/종료 스크립트 파일이 별도로 존재하는데 여기서는 관리 서버의 구동과 종료에 대해서만 설명한다.</p>
+
+<ul>
+	<li>   관리 서버 - startWebLogic.cmd / stopWebLogic.cmd</li>
+	<li>   관리된 서버 - startManagedWebLogic.cmd / stopManagedWebLogic.cmd</li>
+</ul>
+
+
+
+<h2 id="id-2.WebLogic서버인스턴스의구동과종료-구동"><strong>구동</strong></h2>
+
+<p>startWebLogic.cmd 를 실행하여 해당 도메인의 관리 서버를 구동한다. 아래는 정상적으로 구동이 완료되었을 때의 메시지 형태 예제이다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">
+$ startWebLogic.cmd
+.
+JAVA Memory arguments: -Xms256m -Xmx512m -XX:CompileThreshold=8000 -XX:PermSize=128m  -XX:MaxPermSize=256m
+.
+***************************************************
+*  To start WebLogic Server, use a username and   *
+*  password assigned to an admin-level user.  For *
+*  server administration, use the WebLogic Server *
+*  console at http:\\hostname:port\console        *
+***************************************************
+... 중략 ...
+
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000331&gt; &lt;Started the WebLogic Server Administration
+ Server &quot;myserver&quot; for domain &quot;mydomain&quot; running in development mode.&gt;
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000360&gt; &lt;The server started in RUNNING mode.&gt;
+&lt;2014. 10. 30 오후 4시 27분 13초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt; &lt;BEA-000365&gt; &lt;Server state changed to RUNNING.&gt;
+</pre>
+</div></div>
+
+
+<h2 id="id-2.WebLogic서버인스턴스의구동과종료-종료"><strong>종료</strong></h2>
+
+<p>stopWebLogic.cmd 를 실행하여 해당 도메인의 관리 서버를 종료한다. 아래는 정상적으로 종료가 완료되었을 때의 메시지 형태 예제이다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">
+$ stopWebLogic.cmd
+Stopping Weblogic Server...
+... 중략 ...
+Connecting to t3://IBM-1DA5AF93847:7001 with userid weblogic ...
+Successfully connected to Admin Server &#39;AdminServer&#39; that belongs to domain &#39;mydomain&#39;.
+... 중략 ...
+Shutting down the server AdminServer with force=false while connected to AdminServer ...
+Disconnected from weblogic server: AdminServer
+Exiting WebLogic Scripting Tool.
+Done
+Stopping Derby Server...
+</pre>
+</div></div>
+
+<p>종료의 경우, 종료 스크립트 파일 실행 결과만으로 정상 종료를 보장할 수 없다.</p>
+
+<p>메시지상으로 정상적인 종료를 수행하였음에도 불구하고 관련 프로세스가 여전히 존재할 시는 WebLogic 서버 인스턴스의 로그를 확인하여 조치하여야 한다.</p>
+
+<h2 id="id-2.WebLogic서버인스턴스의구동과종료-JDBC드라이버설정"><strong>JDBC 드라이버 설정</strong></h2>
+
+<p>JDBC 데이터 소스 생성을 하기 위해서는 관련 JDBC 드라이버를 WebLogic에 설정하여야 한다. JDBC 드라이버 설정에 대한 전반적인 사항을 설명한다.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<h3 id="id-2.WebLogic서버인스턴스의구동과종료-ALTIBASEJDBC드라이버를얻는방법"><strong>ALTIBASE JDBC 드라이버를 얻는 방법</strong></h3>
+<hr />
+<p>ALTIBASE JDBC 드라이버는 Altibase.jar 라는 하나의 파일로 제공된다.</p>
+
+<p>기본적으로 ALTIBASE 서버 패키지와 함께 제공되므로 ALTIBASE가 설치된 운영체제 계정의 $ALTIBASE_HOME/lib 디렉토리 안에서 얻을 수 있다.</p>
+
+<p>ALTIBASE 5 버전부터는 Altibase.jar는 물론 Altibase5.jar 라는 파일도 존재하는데, Altibase5.jar는 ALTIBASE 5버전과 그 이하의 버전을 함께 연동할 때 사용한다.</p>
+
+<p>따라서, 하나의 ALTIBASE 서버와만 연동하거나 동일한 버전의 여러 ALTIBASE 서버를 연동하는 일반적인 상황에서는 $ALTIBASE_HOME/lib/Altibase.jar 파일을 사용하면 된다.</p>
+
+<p>최신 ALTIBASE JDBC 드라이버는 <a href="http://support.altibase.com/kr/" class="external-link" rel="nofollow">http://support.altibase.com</a>을 통하여 얻을 수 있다. 
+<br class="atl-forced-newline" /></p>
+
+<h3 id="id-2.WebLogic서버인스턴스의구동과종료-ALTIBASEJDBC드라이버버전을확인하는방법"><strong>ALTIBASE JDBC 드라이버 버전을 확인하는 방법</strong></h3>
+<hr />
+<p>연동하려는 ALTIBASE 서버와 ALTIBASE JDBC 드라이버가 호환 가능한지 판단을 위해 ALTIBASE 서버와 ALTIBASE JDBC 드라이버의 버전을 비교하여 <span style="text-decoration: underline;">CM(Communication) 프로토콜이 일치하는지 반드시 확인하여야 한다.</span></p>
+
+<p>ALTIBASE 서버의 버전을 확인하는 방법은 아래와 같다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> <strong>$ altibase -v</strong> <br class="atl-forced-newline" />
+version   6.3.1.2.7 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.2.7-release-GCC3.4.6   (x86_64-unknown-linux-gnu) Oct  8 2014   09:16:24, binary db version 6.2.1, meta version 6.3.1, <span style="color: rgb(255,0,0);">cm protocol version 7.1.1</span>, replication protocol   version 7.4.1 </p></td>
+</tr>
+</tbody></table></div>
+
+<p>ALTIBASE JDBC 드라이버의 버전을 확인하는 방법은 아래와 같다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> <strong>$ java -jar Altibase.jar</strong> <br class="atl-forced-newline" />
+JDBC Driver Info : Altibase Ver = 6.3.1.2.6 for   JavaVM v1.4, <span style="color: rgb(255,0,0);">CMP:7.1.1</span>, Oct  6 2014 13:54:56 </p></td>
+</tr>
+</tbody></table></div>
+
+<p>여기서 ALTIBASE 서버의 “cm protocol version”과 ALTIBASE JDBC 드라이버의 “CMP”가 일치하면 호환이 가능하다.</p>
+
+<p>일반적으로 호환성을 위해 ALTIBASE 서버 패키지에 포함된 ALTIBASE JDBC 드라이버 파일을 사용하나 가급적이면 호환 가능한 최신의 ALTIBASE JDBC 드라이버 파일을 사용하는 것을 권장한다.
+<br class="atl-forced-newline" /></p>
+
+<h3 id="id-2.WebLogic서버인스턴스의구동과종료-WebLogic에서사용할JDBC드라이버를설정하는방법"><strong>WebLogic에서 사용할 JDBC 드라이버를 설정하는 방법</strong></h3>
+<hr />
+<p>WebLogic에서 특정 JDBC 드라이버를 사용하려면 관련 파일을 해당 도메인 관리 서버의 CLASSPATH에 추가해야 한다.</p>
+
+<p>크게 두 가지 방법으로 설정이 가능하며 둘 중 어느 방법을 선택하여도 무관하나 설정 후에는 반드시 해당 도메인의 관리 서버를 재구동 해야 한다.</p>
+
+<p>참고로 모든 예제들은 ALTIBASE 5와 버전이 다른 ALTIBASE 를 동시에 연동하기 위한 설정으로 동일 버전의 ALTIBASE간의 연동 시에는 하나의 JDBC 드라이버만 설정하면 된다.</p>
+<ol>
+	<li>$DOMAIN_HOME/lib에 JDBC 드라이버 관련 파일을 위치.</li>
+</ol>
+
+
+<p>각 도메인의 기본 라이브러리 경로인 $DOMAIN_HOME/lib에 JDBC 드라이버 관련 파일을 위치 후 해당 도메인의 관리 서버 구동하면 아래와 같은 메시지와 함께 해당 파일이 자동으로 CLASSPATH에 추가된다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> ... <br class="atl-forced-newline" />
+&lt;2010. 12. 14 오후 4시 48분 24초 KST&gt; &lt;Notice&gt; &lt;WebLogicServer&gt;   &lt;BEA-000395&gt; <span style="color: rgb(255,0,0);">&lt;Following extensions   directory contents added to the end_of_the_classpath:</span><span style="color: rgb(0,0,255);">C:\Oracle\Middleware\user_projects\domains\mydomain\lib\Altibase.jar;C:\Oracle\Middleware\user_projects\domains\mydomain\lib\Altibase5.jar&gt;</span> <br class="atl-forced-newline" />
+... </p></td>
+</tr>
+</tbody></table></div>
+
+<ol>
+	<li>startWebLogic.cmd 파일의 CLASSPATH에 JDBC 드라이버 관련 파일을 직접추가.</li>
+</ol>
+
+
+<p>각 도메인의 관리 서버 구동 스크립트 파일인 startWebLogic.cmd 를 open하여 CLASSPATH 항목에 JDBC 드라이버 관련 파일을 직접 추가 후 재구동 한다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> ... <br class="atl-forced-newline" />
+set <span style="color: rgb(255,0,0);">CLASSPATH</span>=%SAVE_CLASSPATH%;<span style="color: rgb(0,0,255);">C:\WebLogic_lib\Altibase5.jar;C:\WebLogic_lib\Altibase.jar</span> <br class="atl-forced-newline" />
+... </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

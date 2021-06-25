@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. Main Performance View related to Statistical Information</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Altibase-Meta-Table-and-Performance-View-Overview_14058238.html">2. Altibase Meta Table and Performance View Overview</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. Main Performance View related to Statistical Information
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p">Various statistical information can be checked through the Performance View, such as statistics information on wait events and operations at the DBMS level, session level, and query level, disk tablespace data file I/O at DBMS level, and memory usage buffer pool statistics, etc.</p><p class="md-end-block md-p md-focus"><span class="md-plain">Standards for generating statistical information vary depending on the level.</span></p><ul><li class="md-list-item md-focus-container"><p class="md-end-block md-p md-focus"><span class="md-expand"><strong>DBMS Level Statistics</strong></span></p><p class="md-end-block md-p"><span class="md-plain">Information is accumulated from the start of the Altibase server and initialized when Altibase is shut down. Therefore, in order to know the value of a specific period, (current value - value at the start of measurement) must be calculated for all column values.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span>Session Level Statistics</span></strong></p><p class="md-end-block md-p"><span class="md-plain">The related session is maintained while connected.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><span><strong>Query Level Statistics</strong></span></p><p class="md-end-block md-p md-focus"><span class="md-plain">It is maintained only for one query that was executed last at the end of each session and multiple prepared queries, and it disappears when the related session ends. Statistics at the query level are provided through the v</span><span>$</span><span class="md-plain md-expand">statement already mentioned in the query section, and are omitted in this section.</span></p></li></ul><div><p class="md-end-block md-p"><span class="md-plain">It should be noted that since the TIMED_STATISTICS property must be activated(1), it is necessary to check whether the property is activated. The default value of TIMED_STATISTICS is disabled(0).</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">The TIMED_STATISTICS property has been provided since Altibase 5. The user can check whether or not this property is activated with the following sentence.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;TIMED_STATISTICS&#39;;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Most of the performance views related to statistical information can be monitored by the view itself, so no join is necessary, but in the case of statistical information about I/O of data files in the wait event, operation, and disk tablespace. It is necessary to check by associating with a specific session or data file.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In order to obtain related information, the relationship between the meta table and performance view in which only the key columns to be referenced in the join query is referenced is as follows.</span></p><p><img class="confluence-embedded-image" width="700" src="attachments/14058244/14221509.png" data-image-src="attachments/14058244/14221509.png"></p><h2 class="md-end-block md-heading" id="id-3.MainPerformanceViewrelatedtoStatisticalInformation-PerformanceViewrelatedtoWaitingEvent"><span class="md-plain">Performance View related to Waiting Event</span></h2><p class="md-end-block md-p"><span class="md-plain">The waiting event means a series of waiting jobs of 'session' or 'Altibase threads'. For example, a thread called a service thread is waiting to acquire a latch of a page to access a page loaded in a disk buffer, and waiting to acquire a latch of a log buffer to write a log.</span></p><p class="md-end-block md-p"><span class="md-plain">For reference, Altibase classifies wait events into 8 types using the upper concept, the wait event class.</span></p><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">system_wait_class</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information about waiting events of 'Session' or 'Altibase thread' is shown for each 'Waiting Event Class'. It is accumulated statistical information after Altibase startup, and is initialized when shutdown.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">system_event</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information on waiting events of 'Session' or 'Altibase thread' is displayed for each 'Waiting Event'. It is accumulated statistical information after Altibase startup, and is initialized when shutdown.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">session_event</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information is displayed only for the wait event of the 'session'. When the session ends, the related statistical information disappears.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">session_wait</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information displayed only for the wait event of the 'activated session' at the time of inquiry among 'session'. When the session is idle or terminated, the related statistical information disappears.</span></p></li></ul><h2 class="md-end-block md-heading" id="id-3.MainPerformanceViewrelatedtoStatisticalInformation-PerformanceViewrelatedtoOperation">Performance View related to Operation</h2><p class="md-end-block md-p"><span class="md-plain">Operation refers to the various operation performed by 'session' or 'Altibase thread'. For example, performing a query of a specific session and writing a redo log of a service thread.</span></p><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v</span><span>$</span><span class="md-plain">sysstat</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information for the operation of 'session' or 'Altibase thread' is shown for each 'operation'. It is accumulated statistical information after Altibase startup, and is initialized when shutdown.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$sesstat</span></strong></p><p class="md-end-block md-p"><span class="md-plain">Statistical information is displayed only for the 'session' operation. When the session closes, the related statistical information disappears.</span></p></li></ul><h4 class="md-end-block md-heading" id="id-3.MainPerformanceViewrelatedtoStatisticalInformation-DataFileI/O"><span class="md-plain">Data File I/O</span></h4><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$filestat</span></strong></p><p class="md-end-block md-p">Shows I/O statistics information for each data file in the disk tablespace.</p></li></ul><h2 class="md-end-block md-heading" id="id-3.MainPerformanceViewrelatedtoStatisticalInformation-OtherMainPerformanceViews"><span class="md-plain">Other Main Performance Views</span></h2><p class="md-end-block md-p"><span class="md-plain">The performance views that provide other statistical information are as follows.</span></p><p class="md-end-block md-p"><span class="md-plain">Since the performance view itself provides meaningful statistical information, there is no need to join with other performance views.</span></p><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$memstat</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a performance view that shows the memory usage currently used by Altibase for each module, and is a key reference indicator when the memory usage of the Altibase server process is abnormal.</span></p><p class="md-end-block md-p"><span class="md-plain">The MAX_TOTAL_SIZE column, which means the largest memory usage of the module, is maintained from the start of Altibase and initialized when Altibase is shut down.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$buffpool_stat</span></strong></p><p class="md-end-block md-p"><span class="md-plain">When performing a query, it displays real-time statistics related to buffer pool such as 'hit ratio', which means the ratio of reusing an existing page in the buffer pool without reading pages from disk.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">v$lfg</span></strong></p><p class="md-end-block md-p"><span class="md-plain">As a performance view related to redo log files, one specific column is the main monitoring target.</span></p><p class="md-end-block md-p"><span class="md-plain">The LF_PREPARE_WAIT_COUNT column indicates the number of times the service thread has waited because the next redo log file has not yet been created when attempting to switch from the current redo log file to a new redo log file. It this value is large, change the value of the PREPARE_LOG_FILE_COUNT property to a large value and apply it (restart the Altibase server) to create a sufficient number of redo log files in advance.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">It is initialized when the Altibase is shut down in a cumulative and summed form from the time the Altibase is started.</span></p></li></ul></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058244/14221509.png">image2016-7-12 17_43_17.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

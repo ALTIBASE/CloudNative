@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 3. CPU Cost of Query Processing</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-CPU-Overload-Analysis-Guide_14647581.html">Altibase CPU Overload Analysis Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 3. CPU Cost of Query Processing
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter briefly describes the parts that Altibase uses CPU during query processing.</p><h1 id="id-3.CPUCostofQueryProcessing-3.1CPUloadaccordingtoapplicationprogramimplementationtype">3.1 CPU load according to application program implementation type</h1><p>ALTIBASE query processing is largely executed with the following processes.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1) Check sentence/grammar errors in the query</p><p>2) Check the existence of table/column used in the query</p><p>3) Establish an optimal action plan</p><p>4) Access to the data area and acquire and change data with necessary operations</p>
+</div></div><p>Among these processes, 1)~ 3) are called Prepare-Validation-Optimization (PVO), and the process of 4) is called EXECUTE. Generally, the process of executing PVO occupies about 60% to 70% of the entire query processing.</p><p>Based on the assumptions above, it is possible to guess how inefficient CPU usage is caused to execute the same query in the form of &quot;Prepare-execute&quot; every time. Therefore, if the following items are excessively increased with v$sysstat, it is recommended that the developer or operator modify the application program so as not to perform repetitive PREPARE or use the PLAN-CACHE function provided from Altibase version 5.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT * FROM V$SYSSTAT WHERE NAME LIKE &#39;%prepare%count%&#39;;
+SEQNUM      NAME                            VALUE               
+---------------------------------------------------------------------
+37          prepare success count           25522               
+38          prepare failure count           56          </pre>
+</div></div><p>If the above value increases continuously, it means that there is a part of the application program that continuously repeats Prepare. The application program can be found by combining V$sesstat, another performance view that shows v$sysstat information in detail by session, and the V$session table, which shows process PID.</p><p>For more detailed information related to the above, please refer to the &quot;Altibase Development Guide&quot;</p><h1 id="id-3.CPUCostofQueryProcessing-3.2CPULoadbyDataScan">3.2 CPU Load by Data Scan</h1><h2 id="id-3.CPUCostofQueryProcessing-3.2.1Dataaccessofmemorytable">3.2.1  <strong>Data access of memory table</strong></h2><p>Altibase's memory table is kept loaded in the physical system memory. The unit to be stored is stored in a page unit of 32Kbyte, and even within this page, it is divided into individual units (Slot) for each table suitable for record storage.</p><p>The problem is, when accessing a table in a full-scan format, the cost of accessing all the data in the table is very high. If such queries are executed in multiple sessions at the same time, the CPU usage rate will inevitably increase.</p><p>So, when using an index, does the CPU utilization necessarily decrease?</p><p>Not necessarily. The index of the memory table also exists in the system memory. However, there is no actual data value in the index of the memory table. However, it has the physical pointer value where the data in the system memory is located, and this pointer value is calculated in conjunction with the index key value and is sorted in the converted value form.</p><p>Therefore, the actual physical data indicated by the index is accessed every time to obtain and compare the data value. (This process may seem unreasonable, but it does not induce disk I/O in terms of performance, so it is possible to process more transactions by occupying the CPU even when other DBMSs require waiting time due to I/O.)</p><p>Therefore, even for queries using indexes, the CPU usage rate increases as the number of access-cost increases. Therefore, the user must make efforts to remove inefficient queries by monitoring the execution plan of queries executed in a service operation on a regular basis.</p><h2 id="id-3.CPUCostofQueryProcessing-3.2.2Dataaccessofdisktable">3.2.2  <strong>Data access of disk table</strong></h2><p>The description of the disk table requires an understanding of the CPU usage in the I/O side as follows. Generally, the OS tries to guarantee I/O performance by allocating a memory area called File-Cache and loading it in memory in advance if the file I/O occurs frequently. However, since most RDBMSs achieve this effect by placing their own buffer in the middle, it is generally recommended to use Direct I/O without using the file-cache if the file system supports Direct I/O.</p><p>Buffered I/O uses CPU resources for Read/Write System-Call processing in the code of the application program, and CPU resources are used in the process of syncing the details recorded in the file-cache to disk by OS policy. At this point, waiting for the I/O operation to be completed and CPU utilization seems to decrease, but there is a possibility that the service processing decreases as other applications cannot use the CPU resources at this time.</p><p>Conversely, when using the Direct I.O, the CPU delegates the I/O itself to the dedicated I/O channel. Accordingly, there is no need for the CPU to wait for I/O processing, and other application programs can occupy the resource, and service processing is relatively more acceptable. But, compared to Buffer I/O, the CPU usage rate can be determined by the user as if it has increased.</p><p>For more detailed information on how to set up and operate Buffer I/O and Direct I/O, please refer to the &quot;Volume Configuration Guide Considering Disk I/O Bottleneck&quot;.</p><p>In summary, there is no right answer on whether buffered I/O or direct I/O settings are appropriate because all of them have trade-offs for CPU usage and performance, so make sure to set them properly for the user's service environment.</p><h1 id="id-3.CPUCostofQueryProcessing-3.3Summary">3.3 Summary</h1><p>It is conceptually impossible that some of the processes described above all require CPU resources, require CPU resources, and as a result, the query processing itself should produce fast performance while using a low CPU. However, it can be said that is possible according to the efforts of the user/developer to efficiently use the CPU and perform the required performance.</p><p> </p><div><strong><br /></strong></div><p> </p><div><strong><br /></strong></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

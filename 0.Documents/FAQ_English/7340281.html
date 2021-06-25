@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11118 The update log size &#39;…&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;…&#39;</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11118 The update log size &#39;…&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;…&#39;
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 19, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409152004 {padding: 0px;}
+div.rbtoc1624409152004 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409152004 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409152004'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Version'>Version</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Cause'>Cause</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Action'>Action</a></li>
+<li><a href='#ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Version">Version</h2>
+
+<p>All versions</p>
+
+
+<h2 id="ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Explanation">Explanation</h2>
+
+<p>This error occurs when there is a bulk modifying operation.</p>
+
+<p>This error message applies only to memory tables. </p>
+
+
+<h2 id="ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Cause">Cause</h2>
+
+<p>In Altibase, this error occurs and the ROLLBACK is executed for the corresponding transaction when the number of redo log files due to bulk transactions exceeds TRX_UPDATE_MAX_LOGSIZE (The TRX_UPDATE_MAX_LOGSIZE property restricts the number of log files created by a DML statement.).</p>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Action">Action</h2>
+
+<p>If the transaction has to be executed with a single query only, the user is advised to change the property in a session level as follows.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 0; (Disabling property)</pre>
+</div></div>
+<p>However, the user should remember that the number of redo logfiles will increase and this might cause a disk full error. Also, when executing bulk operations, an X lock is acquired in a table to prevent resource increase due to MVCC. Thus, caution is advised that any SELECT or DML statements might have to wait for an X lock to be released.</p>
+
+<h2 id="ERR-11118Theupdatelogsize&#39;…&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;…&#39;-Reference">Reference</h2>
+
+<p>N/A</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

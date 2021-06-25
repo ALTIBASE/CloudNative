@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : SQL about Tablespaces</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Administration_1802666.html">ALTIBASE HDB Administration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Useful-SQL_1802675.html">Useful SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : SQL about Tablespaces
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Jul 22, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409153429 {padding: 0px;}
+div.rbtoc1624409153429 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409153429 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409153429'>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutTablespaces-TheusageofaMemorytablespace'>The usage of a Memory tablespace</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV4'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV5'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutTablespaces-Totalmemorytablespaceusage'>Total memory tablespace usage</a></li>
+<li><a href='#SQLaboutTablespaces-DiskTablespaceUsage'>Disk Tablespace Usage</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV4.1'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV5.1'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+<li><a href='#SQLaboutTablespaces-Thedatafileinformation'>The datafile information</a></li>
+<li><a href='#SQLaboutTablespaces-I/Ostatisticsofdatafiles'>I/O statistics of datafiles</a>
+<ul class='toc-indentation'>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV4.2'>ALTIBASE HDB V4</a></li>
+<li><a href='#SQLaboutTablespaces-ALTIBASEHDBV5.2'>ALTIBASE HDB V5</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1 id="SQLaboutTablespaces-TheusageofaMemorytablespace">The usage of a Memory tablespace</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about a memory tablespace.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Columns </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of  the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_TYPE </p></td>
+<td class="confluenceTd"><p> the type of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_NAME </p></td>
+<td class="confluenceTd"><p> the name of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX(M) </p></td>
+<td class="confluenceTd"><p> the max size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL(M) </p></td>
+<td class="confluenceTd"><p> the total size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> the allocated size of  the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USED(M) </p></td>
+<td class="confluenceTd"><p> actually used size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USAGE(%) </p></td>
+<td class="confluenceTd"><p> the tablespace usages. (USED(M) / MAX(M)) * 100.  if MAX(M) is unlimited, it assumes that MAX(M) is MEM_MAX_DB_SIZE in altibase.properties. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> STATE </p></td>
+<td class="confluenceTd"><p> the state of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOEXTEND </p></td>
+<td class="confluenceTd"><p> whether the tablespace can be extended automatically </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV4">ALTIBASE HDB V4</h2>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>ALTIBASE HDB V4 does not support User Memory Tablespaces. There's only one memory tablespace including system dictionary tablespace.</p>
+                    </div>
+    </div>
+
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV5">ALTIBASE HDB V5</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	ID TBS_ID,
+        DECODE(TYPE, 0, &#39;MEMORY_DICTIONARY&#39;, 1, &#39;MEMORY_SYS_DATA&#39;, 2, &#39;MEMORY_USER_DATA&#39;, 8, &#39;VOLATILE_USER_DATA&#39;) TBS_TYPE,
+        NAME TBS_NAME,
+        DECODE(MAXSIZE, 140737488322560, &#39;UNDEFINED&#39;, MAXSIZE) &#39;MAX(M)&#39;,
+        ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;,
+        ROUND(NVL(M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT,TOTAL_PAGE_COUNT)*PAGE_SIZE/1024/1024,2) &#39;ALLOC(M)&#39;,
+        MT.USED &#39;USED(M)&#39;,
+        DECODE(MAXSIZE, 140737488322560, ROUND((M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*PAGE_SIZE/ MEM_MAX_DB_SIZE*100,2),
+        ROUND((M.ALLOC_PAGE_COUNT-M.FREE_PAGE_COUNT)*PAGE_SIZE/MAXSIZE*100,2)) &#39;USAGE(%)&#39;,
+        DECODE(STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE,
+        DECODE(AUTOEXTEND_MODE,1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+FROM    V$DATABASE D,
+        V$TABLESPACES T,
+        V$MEM_TABLESPACES M,
+        (
+          SELECT TABLESPACE_ID,
+                 ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) USED
+          FROM   V$MEMTBL_INFO
+          GROUP BY TABLESPACE_ID
+        ) MT
+WHERE T.ID = M.SPACE_ID AND ID = MT.TABLESPACE_ID ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutTablespaces-Totalmemorytablespaceusage">Total memory tablespace usage</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the total memory tablespace usage.</p>
+</div></div>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Columns </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX(M) </p></td>
+<td class="confluenceTd"><p> the max size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL(M) </p></td>
+<td class="confluenceTd"><p> the total size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USED(M) </p></td>
+<td class="confluenceTd"><p> actually used size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> USAGE(%) </p></td>
+<td class="confluenceTd"><p> the tablespace usages. (USED(M) / MAX(M)) * 100.  if MAX(M) is unlimited, it assumes that MAX(M) is MEM_MAX_DB_SIZE in altibase.properties. </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	MEM_MAX_DB_SIZE/1024/1024 &#39;MAX(M)&#39;,
+        ROUND(MEM_ALLOC_PAGE_COUNT*32/1024, 2) &#39;TOTAL(M)&#39;,
+        TRUNC((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32/1024, 2) &#39;ALLOC(M)&#39;,
+        (SELECT ROUND(SUM((FIXED_USED_MEM + VAR_USED_MEM))/(1024*1024),3) FROM V$MEMTBL_INFO) &#39;USED(M)&#39;,
+        TRUNC(((MEM_ALLOC_PAGE_COUNT-MEM_FREE_PAGE_COUNT)*32*1024)/MEM_MAX_DB_SIZE, 4)*100 &#39;USAGE(%)&#39;
+FROM V$DATABASE ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutTablespaces-DiskTablespaceUsage">Disk Tablespace Usage</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the disk tablespace usage information.</p>
+</div></div>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Columns </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_ID </p></td>
+<td class="confluenceTd"><p> the unique identifier of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_TYPE </p></td>
+<td class="confluenceTd"><p> the type of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_NAME </p></td>
+<td class="confluenceTd"><p> the name of  the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX(M) </p></td>
+<td class="confluenceTd"><p> the max size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TOTAL(M) </p></td>
+<td class="confluenceTd"><p> the total size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the tablespace (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOEXTEND </p></td>
+<td class="confluenceTd"><p> whether the tablespace can be extended automatically </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV4.1">ALTIBASE HDB V4</h2>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	ID TBS_ID,
+        DECODE(TYPE, 1, &#39;DISK_SYS_DATA&#39;, 2, &#39;DISK_USER_DATA&#39;, 3, &#39;DISK_SYS_TEMP&#39;, 4, &#39;DISK_USER_TEMP&#39;, 5, &#39;DISK_UNDO&#39;) TBS_TYPE,
+        NAME TBS_NAME,
+        ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2) &#39;MAX(M)&#39;,
+        ROUND(TOTAL_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;,
+        ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024,2) &#39;ALLOC(M)&#39;,
+        ROUND(ALLOCATED_PAGE_COUNT / D.MAX * 100, 2) &#39;USAGE(%)&#39;,
+        D.AUTOEXTEND
+FROM    V$TABLESPACES T,
+        (
+         SELECT 	SPACEID,
+                  SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX,
+                  DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+         FROM V$DATAFILES
+         GROUP BY SPACEID
+         ) D
+WHERE T.ID = D.SPACEID ;
+</pre>
+</div></div>
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV5.1">ALTIBASE HDB V5</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	ID TBS_ID,
+        DECODE(TYPE, 3, &#39;DISK_SYS_DATA&#39;, 4, &#39;DISK_USER_DATA&#39;, 5, &#39;DISK_SYS_TEMP&#39;, 6, &#39;DISK_USER_TEMP&#39;, 7, &#39;DISK_UNDO&#39;) TBS_TYPE,
+        NAME TBS_NAME,
+        ROUND(D.MAX * PAGE_SIZE / 1024 /1024, 2) &#39;MAX(M)&#39;,
+        ROUND(TOTAL_PAGE_COUNT * PAGE_SIZE / 1024 / 1024, 2) &#39;TOTAL(M)&#39;,
+        DECODE(TYPE, 7, ROUND((SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT) * PAGE_SIZE)/1024/1024 FROM V$UDSEGS)+(SELECT (SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT) * PAGE_SIZE)/1024/1024 FROM V$TSSEGS),2), ROUND(ALLOCATED_PAGE_COUNT * PAGE_SIZE / 1024 / 1024,2)) &#39;ALLOC(M)&#39;,
+        DECODE(TYPE, 7, ROUND(((SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT) FROM V$UDSEGS)+(SELECT SUM(TOTAL_EXTENT_COUNT*PAGE_COUNT_IN_EXTENT) FROM V$TSSEGS)) / D.MAX* 100, 2), ROUND(ALLOCATED_PAGE_COUNT / D.MAX * 100, 2)) &#39;USAGE(%)&#39;, DECODE(STATE,1,&#39;OFFLINE&#39;,2,&#39;ONLINE&#39;,5,&#39;OFFLINE BACKUP&#39;,6,&#39;ONLINE BACKUP&#39;,128,&#39;DROPPED&#39;, &#39;DISCARDED&#39;) STATE,
+        D.AUTOEXTEND
+FROM    V$TABLESPACES T,
+        (
+         SELECT 	SPACEID,
+                  SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX,
+                  DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+         FROM V$DATAFILES
+         GROUP BY SPACEID
+         ) D
+WHERE T.ID = D.SPACEID ;
+</pre>
+</div></div>
+
+<h1 id="SQLaboutTablespaces-Thedatafileinformation">The datafile information</h1>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns the information about data files containing tablespaces.</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Columns </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> TBS_NAME </p></td>
+<td class="confluenceTd"><p> the name of the tablespace </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FILE# </p></td>
+<td class="confluenceTd"><p> the file number of datafiles containing the tablespace. It starts with 0. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATAFILE_NAME </p></td>
+<td class="confluenceTd"><p> the name of the datafile </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> ALLOC(M) </p></td>
+<td class="confluenceTd"><p> allocated size of the datafile (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> MAX(M) </p></td>
+<td class="confluenceTd"><p> the max size of the datafile (Megabyte) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> AUTOEXTEND </p></td>
+<td class="confluenceTd"><p> can be extended automatically </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	B.NAME TBS_NAME,
+        A.ID &#39;FILE#&#39;,
+        A.NAME DATAFILE_NAME,
+        CURRSIZE*8/1024 &#39;ALLOC(M)&#39;,
+        ROUND(CASE2(A.MAXSIZE=0, CURRSIZE, A.MAXSIZE)*8/1024) &#39;MAX(M)&#39;,
+        DECODE(AUTOEXTEND, 0, &#39;OFF&#39;, &#39;ON&#39;) &#39;AUTOEXTEND&#39;
+FROM    V$DATAFILES A,
+        V$TABLESPACES B
+WHERE   B.ID = A.SPACEID
+ORDER BY B.NAME, A.ID ;
+</pre>
+</div></div>
+
+
+<h1 id="SQLaboutTablespaces-I/Ostatisticsofdatafiles">I/O statistics of datafiles</h1>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>This query returns I/O statistics for datafiles.</p>
+</div></div>
+
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV4.2">ALTIBASE HDB V4</h2>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>ALTIBASE HDB V4 does not support V$FILESTAT performance view to retrieve the I/O statistics of datafiles.</p>
+                    </div>
+    </div>
+
+
+<h2 id="SQLaboutTablespaces-ALTIBASEHDBV5.2">ALTIBASE HDB V5</h2>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT 	NAME TBS_NAME,
+        A.PHYRDS PHY_READ,
+        A.PHYWRTS PHY_WRITE,
+        A.PHYRDS+A.PHYWRTS PHY_TOTAL,
+        TRUNC(A.PHYRDS/READ_SUM*100,2) &#39;READ(%)&#39;,
+        TRUNC(A.PHYWRTS/WRITE_SUM*100,2) &#39;WRITE(%)&#39;,
+        TRUNC( (A.PHYRDS+A.PHYWRTS) / (READ_SUM+WRITE_SUM) * 100 , 2) &#39;TOTAL(%)&#39;,
+        A.AVGIOTIM AVG_IO_TIME
+FROM 	  V$FILESTAT A,
+	      V$DATAFILES B,
+	      (
+	         	SELECT 	SUM(PHYRDS) READ_SUM,
+	         					SUM(PHYWRTS) WRITE_SUM
+	         	FROM V$FILESTAT
+	      ) C
+WHERE 	A.SPACEID = B.SPACEID
+	   	  AND A.FILEID = B.ID
+	   	  AND READ_SUM &gt; 0
+	   	  AND WRITE_SUM &gt; 0
+ORDER BY A.PHYRDS+A.PHYWRTS DESC, ROWNUM DESC ;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Cursor Attributes</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cursor-Conversion_2988073.html">Cursor Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Cursor Attributes
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 29, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347130 {padding: 0px;}
+div.rbtoc1624409347130 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347130 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347130'>
+<ul class='toc-indentation'>
+<li><a href='#CursorAttributes-Overview'>Overview</a></li>
+<li><a href='#CursorAttributes-CursorAttributes'>Cursor Attributes </a></li>
+<li><a href='#CursorAttributes-Example'>Example</a></li>
+</ul>
+</div>
+<p> </p>
+
+
+<h2 id="CursorAttributes-Overview">Overview</h2>
+
+<p>Cursor attributes are user-accessible.</p>
+
+<p>With the exception of ROWCOUNT, which returns an integer,<br />
+cursor attributes are Boolean type expressions that provide information about the state of a cursor.</p>
+
+<p>Some attributes only return TRUE or FALSE in  case of %FOUND,  %NOTFOUND,  %ISOPEN attributes.</p>
+
+<h2 id="CursorAttributes-CursorAttributes">Cursor Attributes </h2>
+
+<p>The use of cursor attributes is almost same between Oracle and Altibase except two attributes listed in the below.
+<br class="atl-forced-newline" /></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Remarks </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %FOUND </p></td>
+<td class="confluenceTd"><p> %FOUND </p></td>
+<td class="confluenceTd"><p> Before the first fetch from an open cursor, it returns null. <br class="atl-forced-newline" />
+It returns TRUE if the last fetch returned a row, <br class="atl-forced-newline" />
+or FALSE if the last fetch failed to return a row. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %NOTFOUND </p></td>
+<td class="confluenceTd"><p> %NOTFOUND </p></td>
+<td class="confluenceTd"><p> Before the first fetch from an open cursor returns null.  <br class="atl-forced-newline" />
+it returns FALSE if the last fetch returned a row. <br class="atl-forced-newline" />
+TRUE if the last fetch failed to return a row. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %ISOPEN </p></td>
+<td class="confluenceTd"><p> %ISOPEN </p></td>
+<td class="confluenceTd"><p> whether a cursor is open or not. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %ROWCOUNT </p></td>
+<td class="confluenceTd"><p> %ROWCOUNT </p></td>
+<td class="confluenceTd"><p> how many rows have been <br class="atl-forced-newline" />
+fetched so far. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %BULK_ROWCOUNT </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> This is useful with forall statement. <br class="atl-forced-newline" />
+This attribute acts like an index-by table. Its element stores the number of rows processed by the ith <br class="atl-forced-newline" />
+execution of an UPDATE or DELETE statement. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> %BULK_EXCEPTIONS </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> An associative array that stores information about any exceptions encountered by a <br class="atl-forced-newline" />
+forall statement that uses the SAVE EXCEPTIONS clause. </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="CursorAttributes-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+TYPE empcurtyp IS REF CURSOR <br class="atl-forced-newline" />
+RETURN employees%ROWTYPE; <br class="atl-forced-newline" />
+emp_cv empcurtyp; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF NOT emp_cv%ISOPEN THEN -- open cursor variable <br class="atl-forced-newline" />
+OPEN emp_cv FOR SELECT * FROM employees; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE  TYPESET empcurtypeset <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ TYPE empcurtyp IS REF CURSOR; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+  <br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE get_employee <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ TYPE MY_CUR IS REF CURSOR; <br class="atl-forced-newline" />
+ emp_cv empcurtypeset.empcurtyp; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+IF NOT emp_cv%ISOPEN THEN -- open cursor variable <br class="atl-forced-newline" />
+OPEN emp_cv FOR 'SELECT * FROM employees'; <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Fetching from a Cursor Variable into a Record using %ISOPEN attributes <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+In Altibase, Between the creation of typeset and type and the creation of procedure using ref cursor should be separated unlikely in Oracle. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+TYPE empcurtyp IS REF CURSOR RETURN employees%ROWTYPE; <br class="atl-forced-newline" />
+emp_cv empcurtyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN emp_cv FOR SELECT * FROM employees WHERE employee_id &lt; 120; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; -- fetch from cursor variable <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; -- exit when last row is fetched <br class="atl-forced-newline" />
+-- process data record <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Name = ' || emp_rec.first_name || ' ' || <br class="atl-forced-newline" />
+emp_rec.last_name); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE TYPESET empcurtypeset <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ TYPE empcurtyp IS REF CURSOR; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" />
+CREATE OR REPLACE PROCEDURE fetch_employee <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE empcurtyp IS REF CURSOR; <br class="atl-forced-newline" />
+emp_cv empcurtypeset.empcurtyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_job VARCHAR2(10) := 'webmaster'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN emp_cv FOR 'SELECT * FROM employees WHERE eno &lt; 120'; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; -- fetch from cursor variable <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; -- exit when last row is fetched <br class="atl-forced-newline" />
+-- process data record <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Name = ' || emp_rec.e_firstname || ' ' || emp_rec.e_lastname); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Fetching from a Cursor Variable into a Record %ROWTYPE attributes </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE TYPE emp_ary AS VARRAY(50) OF varchar2(4000); </p></td>
+<td class="confluenceTd"><p> CREATE TYPESET typeset_1<br class="atl-forced-newline" />
+AS<br class="atl-forced-newline" />
+TYPE emp_rec_type IS RECORD(<br class="atl-forced-newline" />
+Name VARCHAR(20),<br class="atl-forced-newline" />
+Job_id VARCHAR(10),<br class="atl-forced-newline" />
+Salary NUMBER(8));<br class="atl-forced-newline" /> <br class="atl-forced-newline" />
+TYPE emp_arr_type is TABLE OF emp_rec_type INDEX BY INTEGER;<br class="atl-forced-newline" />
+END;/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v1 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT i1 INTO v1 FROM t1 WHERE i1 = 2; <br class="atl-forced-newline" />
+IF SQL%found THEN <br class="atl-forced-newline" />
+INSERT INTO t1 SELECT * FROM t1; <br class="atl-forced-newline" />
+v1 := SQL%ROWCOUNT; <br class="atl-forced-newline" />
+INSERT INTO t3 VALUES(v1); <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE proc1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v1 INTEGER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT i1 INTO v1 FROM t1 WHERE i1 = 2; <br class="atl-forced-newline" />
+IF SQL%found THEN <br class="atl-forced-newline" />
+INSERT INTO t1 SELECT * FROM t1; <br class="atl-forced-newline" />
+v1 := SQL%ROWCOUNT; <br class="atl-forced-newline" />
+INSERT INTO t3 VALUES(v1); <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> %ROWCOUNT attribute indicates how many rows are fetched using cursor. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Sample Preparation using iBATIS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iBatis-Integration-Guide-for-Altibase_14058303.html">iBatis Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Sample Preparation using iBATIS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> 정준헌</span> on Sep 07, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">To process SQL statements using iBATIS, SqlMapConfig XML file and SqlMap XML file must be created. These files allow programmers to easily map JavaBeans to PreparedStatement parameters and ResultsSets.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">This section describes how to create SqlMapConfig XML file, SqlMap XML file, and how to actually process SQL using this file in application. For more information on writing the sample program, please refer to the appendix.</span></p><h3 class="md-end-block md-heading" id="id-2.SamplePreparationusingiBATIS-CreatingSqlMapFile"><span class="md-plain">Creating SqlMap File</span></h3><p class="md-end-block md-p"><span class="md-plain">SqlMap XML file is a file that specifies the SQL statements to be transferred to DB, mapping of parameters to be bound to PreparedStatement, and mappings of ResultSet.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">The following is an example of writing SqlMap XML file that processes CRUD in person table (Person.xml).</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMap PUBLIC &quot;-//iBATIS.com//DTD SQL Map 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-mapconfig-2.dtd&quot;&gt;
+ 
+&lt;sqlMap namespace=&quot;Person&quot;&gt;
+    &lt;resultMap id=&quot;PersonResult&quot; class=&quot;examples.domain.Person&quot;&gt;
+        &lt;result property=&quot;id&quot; column=&quot;per_id&quot; /&gt;
+        &lt;result property=&quot;name&quot; column=&quot;per_name&quot; /&gt;
+        &lt;result property=&quot;birthDate&quot; column=&quot;per_birth_date&quot; /&gt;
+        &lt;result property=&quot;weightInKilograms&quot; column=&quot;per_weight_kg&quot; /&gt;
+        &lt;result property=&quot;heightInMeters&quot; column=&quot;per_height_m&quot; /&gt;
+&lt;/resultMap&gt;
+ 
+&lt;select id=&quot;getPerson&quot; parameterClass=&quot;int&quot; resultClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            SELECT
+            PER_ID as id,
+            PER_NAME as name,
+            PER_BIRTH_DATE as birthDate,
+            PER_WEIGHT_KG as weightInKilograms,
+            PER_HEIGHT_M as heightInMeters
+            FROM PERSON
+            WHERE PER_ID = #value#
+        ]]&gt;
+&lt;/select&gt;
+ 
+&lt;insert id=&quot;insertPerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            INSERT INTO
+            PERSON (PER_ID, PER_NAME, PER_BIRTH_DATE,
+PER_WEIGHT_KG, PER_HEIGHT_M)
+            VALUES (#id#, #name#, #birthDate#,
+#weightInKilograms#, #heightInMeters#)
+        ]]&gt;
+&lt;/insert&gt;
+ 
+&lt;update id=&quot;updatePerson&quot; parameterClass=&quot;examples.domain.Person&quot;&gt;
+        &lt;![CDATA[
+            UPDATE PERSON
+            SET PER_NAME = #name#,
+            PER_BIRTH_DATE = #birthDate#,
+            PER_WEIGHT_KG = #weightInKilograms#,
+            PER_HEIGHT_M = #heightInMeters#
+            WHERE PER_ID = #id#
+        ]]&gt;
+&lt;/update&gt;
+ 
+&lt;delete id=&quot;deletePerson&quot; parameterClass=&quot;int&quot;&gt;
+        &lt;![CDATA[
+            DELETE PERSON
+            WHERE PER_ID = #id#
+        ]]&gt;
+&lt;/delete&gt;
+ 
+&lt;select id=&quot;getAllPersons&quot;  resultMap=&quot;PersonResult&quot;&gt;
+        &lt;![CDATA[
+            SELECT * FROM person
+        ]]&gt;
+&lt;/select&gt;
+&lt;/sqlMap&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">After executing the SELECT statement in the &lt;resultMap&gt; tag, define the Map object of the data to be stored in the ResultSet, and in the &lt;insert&gt;, </span><span>&lt;</span><span class="md-plain">update&gt;, </span><span>&lt;</span><span class="md-plain">delete&gt;, and </span><span>&lt;</span><span class="md-plain">select&gt; tags, define each SQL statement for CRUD operation. do.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For more information on each tag, refer to </span><span class="md-link"><a href="http://ibatis.apache.org" class="external-link" rel="nofollow">http://ibatis.apache.org</a></span><span class="md-plain"> or refer to the attached document iBATIS-SqlMaps-2-en.pdf.</span></p><h3 class="md-end-block md-heading" id="id-2.SamplePreparationusingiBATIS-CreatingSqlMapConfigFile"><span class="md-plain">Creating SqlMapConfig File</span></h3><p class="md-end-block md-p"><span class="md-plain">SqlMapConfig file is a SQL Maps configuration file that writes dataSource for DB connection, the path of SqlMap file, and other properties to control SqlMapClient.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">The following is an example of the SqlMapConfig file (SqlMapConfigExample.xml).</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE sqlMapConfig PUBLIC &quot;-//iBATIS.com//DTD SQL Map Config 2.0//EN&quot;
+&quot;http://www.ibatis.com/dtd/sql-map-config-2.dtd&quot;&gt;
+ 
+&lt;sqlMapConfig&gt;
+ 
+&lt;properties resource=&quot;db.properties&quot; /&gt;
+     
+&lt;settings
+cacheModelsEnabled=&quot;true&quot;
+enhancementEnabled=&quot;true&quot;
+lazyLoadingEnabled=&quot;true&quot;
+maxRequests=&quot;32&quot;
+maxSessions=&quot;10&quot;
+maxTransactions=&quot;5&quot;
+useStatementNamespaces=&quot;false&quot;
+/&gt;
+ 
+&lt;transactionManager type=&quot;JDBC&quot; &gt;
+    &lt;dataSource type=&quot;SIMPLE&quot;&gt;
+       &lt;property name=&quot;JDBC.Driver&quot; value=&quot;${driver}&quot;/&gt;
+       &lt;property name=&quot;JDBC.ConnectionURL&quot; value=&quot;${url}&quot;/&gt;
+       &lt;property name=&quot;JDBC.Username&quot; value=&quot;${username}&quot;/&gt;
+       &lt;property name=&quot;JDBC.Password&quot; value=&quot;${password}&quot;/&gt;
+&lt;property name=&quot;Pool.MaximumActiveConnections&quot; value=&quot;10&quot;/&gt;
+&lt;property name=&quot;Pool.MaximumIdleConnections&quot; value=&quot;5&quot;/&gt;
+&lt;property name=&quot;Pool.MaximumCheckoutTime&quot; value=&quot;120000&quot;/&gt;
+&lt;property name=&quot;Pool.TimeToWait&quot; value=&quot;500&quot;/&gt;
+&lt;property name=&quot;Pool.PingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+&lt;property name=&quot;Pool.PingEnabled&quot; value=&quot;false&quot;/&gt;
+&lt;property name=&quot;Pool.PingConnectionsOlderThan&quot; value=&quot;1&quot;/&gt;
+&lt;property name=&quot;Pool.PingConnectionsNotUsedFor&quot; value=&quot;1&quot;/&gt;
+&lt;/dataSource&gt;
+&lt;/transactionManager&gt;
+ 
+&lt;sqlMap resource=&quot;Person.xml&quot; /&gt;
+     
+&lt;/sqlMapConfig&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">In the </span><span>&lt;</span><span class="md-plain">properties&gt; tag, specify the path and name of the properties file in which properties defined in the form are written, in the </span><span>&lt;</span><span class="md-plain">settings&gt; tag, write the properties to control the SqlMapClient, and in the </span><span>&lt;</span><span class="md-plain">transactionManager&gt; and </span><span>&lt;</span><span class="md-plain">dataSource&gt;, write the DB information to connect.</span><span class="md-softbreak"> </span><span class="md-plain">In addition, the </span><span>&lt;</span><span class="md-plain">SqlMap&gt; tag writes the path and name of the previously created SqlMap files.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For more detailed information on each tag, refer to </span><span class="md-link"><a href="http://ibatis.apache.org" class="external-link" rel="nofollow">http://ibatis.apache.org</a></span><span class="md-plain"> or refer to the attached document iBATIS-SqlMaps-2-en.pdf.</span></p><h3 class="md-end-block md-heading" id="id-2.SamplePreparationusingiBATIS-CreatingSqlMapConfigfile-iBatis.NetIntegration"><span class="md-plain">Creating SqlMapConfig file - iBatis.Net Integration</span></h3><p class="md-end-block md-p"><span class="md-plain">How to set up the Altibase connection of SqlMap.config when connecting through ODBC is explained briefly.</span></p><p class="md-end-block md-p"><span class="md-plain">First, the user needs to install the Altibase ODBC Driver and add the User DSN in the ODBC Data Source Administrator.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For how to install and configure ODBC, refer to the technical document 'Altibase Windows ODBC'.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">&lt;!-- Database connection information --&gt;
+&lt;database&gt;
+&lt;provider name=&quot;Odbc2.0&quot;/&gt;
+&lt;dataSource name=&quot;Altibase&quot; connectionString=&quot;DSN=Altibase5;USER ID=sys;PASSWORD=manager&quot;/&gt;
+&lt;/database&gt;</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">Among the various DBMS provides defined in providers.config, the provider to use when connecting to Altibase is Odbc2.0. Write Odbc2.0 in the &lt;provider</span><span>&gt;</span><span class="md-plain"> tag.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In the </span><span>&lt;</span><span class="md-plain">dataSource&gt; tag, enter the DSN added by the ODBC Data Source Administrator in connectionString.</span></p><h3 class="md-end-block md-heading" id="id-2.SamplePreparationusingiBATIS-CreatingApplication"><span class="md-plain">Creating Application</span></h3><p class="md-end-block md-p"><span class="md-plain">CRUD operations can be processed by integrating with objects mapped to DB tables using SqlMapClient instance in the application.</span></p><p class="md-end-block md-p"><span class="md-plain">In order to integrate with DB using iBATIS, the user must first obtain the SqlMapClient object through the SqlMapConfig file. Then, the user can connect to the DB by calling method corresponding to CRUD through the SqlMapClient object.</span></p><p class="md-end-block md-p">The following is an application that INSERT, UPDATE, DELETE, and SELECT data in the person table of the DB.</p><p class="md-end-block md-p md-focus"><span class="md-plain">Ex) SimpleConnection's PersonApp.java</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">…
+String resource =&quot;SqlMapConfigExample.xml&quot;;
+Reader reader = Resources.getResourceAsReader(resource);
+SqlMapClient sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+         
+//insert Person
+Person newPerson1 = new Person();
+…
+sqlMap.insert (&quot;insertPerson&quot;, newPerson1);
+…  
+     
+//select all Persons
+List&lt;Person&gt; list = (List&lt;Person&gt;)sqlMap.queryForList(&quot;getAllPersons&quot;);
+…  
+     
+//update Person
+sqlMap.update(&quot;updatePerson&quot;, newPerson1);
+…
+ 
+//get Person
+Person person = (Person) sqlMap.queryForObject (&quot;getPerson&quot;, personPk);
+…
+         
+//delete Person
+sqlMap.delete (&quot;deletePerson&quot;, new Integer(1));
+…</pre>
+</div></div><p class="md-end-block md-p"><span class="md-plain">First, read the SqlMapConfig file to get the SqlMapClient object. (</span></p><p class="md-end-block md-p"><span class="md-plain">String resource =&quot;SqlMapConfigExample.xml&quot;;</span></p><p class="md-end-block md-p"><span class="md-plain md-expand">Reader reader = Resources.getResourceAsReader(resource);</span></p><p class="md-end-block md-p"><span class="md-plain">SqlMapClient sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);</span></p><p class="md-end-block md-p"><span class="md-plain">)</span></p><p class="md-end-block md-p"><span class="md-plain">Then, call each method of SqlMapClient class corresponding to CRUD. (</span></p><p class="md-end-block md-p"><span class="md-plain"> sqlMap.insert(), sqlMap.queryForList(), sqlMap.queryForObject(),sqlMap.update(), sqlMap.delete()</span></p><p class="md-end-block md-p"><span class="md-plain">)</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">For detailed description of each method, refer to </span><span class="md-link"><a href="http://ibatis.apache.org" class="external-link" rel="nofollow">http://ibatis.apache.org</a></span><span class="md-plain"> or refer to the attached document iBATIS-SqlMaps-2-en.pdf file.</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

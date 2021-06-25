@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Basic SQL Statement</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Embedded-SQL_2987032.html">Embedded-SQL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Basic SQL Statement
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348041 {padding: 0px;}
+div.rbtoc1624409348041 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348041 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348041'>
+<ul class='toc-indentation'>
+<li><a href='#BasicSQLStatement-Overview'>Overview</a></li>
+<li><a href='#BasicSQLStatement-SELECT'>SELECT</a></li>
+<li><a href='#BasicSQLStatement-INSERT'>INSERT</a></li>
+<li><a href='#BasicSQLStatement-UPDATE'>UPDATE</a></li>
+<li><a href='#BasicSQLStatement-DELETE'>DELETE</a></li>
+<li><a href='#BasicSQLStatement-MOVE'>MOVE</a></li>
+<li><a href='#BasicSQLStatement-DMLReturning'>DML Returning</a></li>
+<li><a href='#BasicSQLStatement-CURSOR-FETCH'>CURSOR-FETCH</a></li>
+<li><a href='#BasicSQLStatement-SCROLLABLECURSOR'>SCROLLABLE CURSOR</a></li>
+<li><a href='#BasicSQLStatement-SampleCode'>Sample Code</a></li>
+</ul>
+</div>
+
+<h1 id="BasicSQLStatement-Overview">Overview</h1>
+
+<p>APRE is similar to ORACLE-style precompiler(PRO*C).</p>
+
+<p>Maybe, you may easily find a few differences from ALTIBASE HDB and ORACLE.</p>
+
+<h1 id="BasicSQLStatement-SELECT">SELECT</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+...
+char out_name[40];
+int  out_age;
+char in_var[40];
+...
+EXEC SQL
+  SELECT name, age
+  INTO :out_name, :out_age
+  FROM employee
+  WHERE ename = :in_var;
+</pre>
+</div></div>
+<ul>
+	<li>SELECT statement can get only one record as a result. If you want to get multiple records, you have to use host variable arrays into &quot;INTO&quot; clauses.<br />
+If you use a single host variable, you may return an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = -331880
+sqlca.sqlerrm.sqlerrmc = Returns too many rows
+</pre>
+</div></div></li>
+	<li>APRE can use a host-variable into &quot;SELECT target&quot; clauses.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+char alias[10];
+char name[40];
+int salary;
+int rate;
+...
+SELECT name || CAST (:alias as CHAR(10)),
+       salary * CAST (:rate as INTEGER)
+INTO   :name,
+       :salray
+FROM employee;
+</pre>
+</div></div></li>
+	<li>If SELECT can not find a target-record, you can see an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = 100
+sqlca.sqlerrm.sqlerrmc = Not found data
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1 id="BasicSQLStatement-INSERT">INSERT</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL INSERT INTO table (C1, C2, C3)
+VALUES (:c1, :c2, :c3);
+
+EXEC SQL INSERT INTO table (c1, c2, c3) SELECT c1, c2, c3 FROM src_table;
+</pre>
+</div></div>
+<ul>
+	<li>If a table has an unique constraints, you can see an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = -69720
+sqlca.sqlerrm.sqlerrmc = The row already exists in a unique index.
+</pre>
+</div></div></li>
+	<li>If you try to insert a null value into column having not null constraint, you can encounter an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = -200820
+sqlca.sqlerrm.sqlerrmc = Unable to insert(or update) NULL into NOT NULL column.
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1 id="BasicSQLStatement-UPDATE">UPDATE</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL UPDATE table SET col1 = :in_var1
+WHERE name = :in_name;
+</pre>
+</div></div>
+<ul>
+	<li>If UPDATE can not find a target-record, you can see an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = 100
+sqlca.sqlerrm.sqlerrmc = Not found data
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1 id="BasicSQLStatement-DELETE">DELETE</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL DELETE FROM table WHERE name = :in_name;
+</pre>
+</div></div>
+<ul>
+	<li>If DELETE can not find a target-record, you can encounter an error as follows.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = 100
+sqlca.sqlerrm.sqlerrmc = Not found data
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1 id="BasicSQLStatement-MOVE">MOVE</h1>
+
+<p>Move-statement is supported only by ALTIBASE HDB.<br />
+This functionality is commonly used for moving a records between tables from memory table to disk table vice versa.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+// Table A : memory table
+// Table B : disk table
+EXEC SQL MOVE INTO table_b FROM table_a
+WHERE data &lt; &#39;20120101&#39;;
+</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>You can locate some tables into memory for performance.</p>
+
+<p>but, Physical memory has a limitation of space.<br />
+Therefore, When you need to move a records of memory-table to disk-table, you can use move-statement.</p>
+                    </div>
+    </div>
+
+
+<h1 id="BasicSQLStatement-DMLReturning">DML Returning</h1>
+
+<p>ORACLE can return a record changed after INSERT, UPDATE DML or before DELETE DML.<br />
+But, ALTIBASE HDB doesn't support this functionality unlike ORACLE.<br />
+This functionality will be applied in ALTIBASE HDB V7.</p>
+
+<h1 id="BasicSQLStatement-CURSOR-FETCH">CURSOR-FETCH</h1>
+
+<p>You can manipulate a Cursor as below.</p>
+<ul>
+	<li>DECLARE CURSOR
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL DECLARE cursor_name CURSOR FOR
+SELECT ename, sal
+FROM employee
+WHERE dept_no = :in_dept_no;
+</pre>
+</div></div></li>
+	<li>OPEN CURSOR
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL OPEN cursor_name;
+</pre>
+</div></div></li>
+	<li>FETCH CURSOR
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL DECLARE cursor_name CURSOR FOR
+SELECT ename, sal
+FROM employee
+WHERE dept_no = :in_dept_no;
+...
+EXEC SQL OPEN cursor_name ;
+...
+while (1)
+{
+  EXEC SQL FETCH cursor_name INTO :ename, :sal;
+  if (SQLCODE == SQL_NO_DATA)
+      break;
+}
+</pre>
+</div></div></li>
+	<li>CLOSE CURSOR
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+EXEC SQL OPEN cursor_name ;
+...
+while (1)
+{
+  EXEC SQL FETCH cursor_name INTO :ename, :sal;
+  if (SQLCODE == SQL_NO_DATA)
+      break;
+}
+EXEC SQL CLOSE cursor_name;
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>The cursor-name needs to be unique in your application.</li>
+	<li>You have to check an error on &quot;DECLARE&quot; and &quot;OPEN&quot; clauses.<br />
+After you don't check an error on &quot;DECLARE&quot; phase, The error happens at &quot;OPEN&quot; phase.<br />
+But, As you are not sure of the reason why error generated, you have to check an error at &quot;DECLARE&quot; phase.
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+SQLCODE = -1
+sqlca.sqlerrm.sqlerrmc =  The cursor must be declared for open. (Name: cursor1)
+</pre>
+</div></div></li>
+</ul>
+
+
+<h1 id="BasicSQLStatement-SCROLLABLECURSOR">SCROLLABLE CURSOR</h1>
+
+<p>ALTIBASE HDB doesn't support a scrollable-cursor.</p>
+
+<p>Also, this functionality will be applied in the ALTIBASE HDB V7(Updatable Scrollable Cursor).</p>
+
+
+<h1 id="BasicSQLStatement-SampleCode">Sample Code</h1>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: c; gutter: false" style="font-size:12px;">
+# include &lt;stdio.h&gt;
+
+main()
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+    char usr[20];
+    char pwd[20];
+    char opt[200];
+
+    char ename[40+1];
+    int  sal;
+  EXEC SQL END DECLARE SECTION;
+
+  // CONNECT TO DB
+  sprintf (usr, &quot;sys&quot;);
+  sprintf (pwd, &quot;manager&quot;);
+  sprintf (opt, &quot;DSN=127.0.0.1;PORT_NO=20300;CONNTYPE=1;NLS_USE=MS949&quot;);
+
+  EXEC SQL CONNECT :usr IDENTIFIED BY :pwd USING  :opt;
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_CONNECT_DB] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+
+  // CREATE TABLE
+  EXEC SQL CREATE TABLE employee (name CHAR(40), sal INTEGER);
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_CREATE_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+
+  // INSERT a record
+  sprintf(ename, &quot;Andy Park&quot;);
+  sal = 1000000;
+  EXEC SQL INSERT INTO employee VALUES (:ename, :sal);
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_INSERT_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+  // CURSOR ~ FETCH a record
+  sprintf(ename, &quot;Andy Park&quot;);
+
+  EXEC SQL DECLARE CURSOR1 CURSOR FOR
+  SELECT name, sal
+  FROM employee
+  WHERE name = :ename;
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_DECLARE_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+  EXEC SQL OPEN CURSOR1;
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_OPEN_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+  while (1)
+  {
+    EXEC SQL FETCH CURSOR1 INTO :ename, :sal;
+    if (sqlca.sqlcode != SQL_SUCCESS &amp;&amp; sqlca.sqlcode != SQL_NO_DATA)
+    {
+       printf(&quot;ERROR_FETCH_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+       exit(-1);
+    } else if (sqlca.sqlcode == SQL_NO_DATA) break;
+  }
+  EXEC SQL CLOSE CURSOR1;
+
+  // DROP TABLE
+  EXEC SQL DROP TABLE employee ;
+  if (sqlca.sqlcode != SQL_SUCCESS)
+  {
+      printf(&quot;ERROR_DROP_TABLE] %d, %s\n&quot;, SQLCODE, sqlca.sqlerrm.sqlerrmc);
+      exit(-1);
+  }
+
+}
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

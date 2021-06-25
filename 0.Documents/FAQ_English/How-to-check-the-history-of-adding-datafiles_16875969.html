@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to check the history of adding datafiles</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to check the history of adding datafiles
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145049 {padding: 0px;}
+div.rbtoc1624409145049 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145049 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145049'>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-Howtocheck'>How to check</a></li>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-Version'>Version</a></li>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-Howtochangeproperties'>How to change properties</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-HowtousetheALTERSYSTEMcommand'>How to use the ALTER SYSTEM command</a></li>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-Howtoreflectinthealtibase.propertiesfile'>How to reflect in the altibase.properties file</a></li>
+</ul>
+</li>
+<li><a href='#Howtocheckthehistoryofaddingdatafiles-Howtochecklogs'>How to check logs</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtocheckthehistoryofaddingdatafiles-Howtocheck">How to check</h1><hr /><p>Data file addition or change time information is not recorded in a separate performance view or v$datafiles. However, if the QP_MSGLOG_FLAG property is set to record DDL statements, DDL statements are recorded in $ALTIBASE_HOME/trc/altibase_qp.log, so this file can be opened, and the changes can be checked in the datafile.</p><h1 id="Howtocheckthehistoryofaddingdatafiles-Version">Version</h1><hr /><p>This is supported by Altibase HDB version 4.3.9 or later.</p><h1 id="Howtocheckthehistoryofaddingdatafiles-Howtochangeproperties">How to change properties</h1><hr /><p>Change the setting value of QP_MSGLOG_FLAG so that DDL can be logged in altibase_qp.log. One of the following two methods can be used to change the method.</p><h2 id="Howtocheckthehistoryofaddingdatafiles-HowtousetheALTERSYSTEMcommand">How to use the ALTER SYSTEM command</h2><p>If the user changes it by using this method,  the value of the property can be changed without restarting the server. When the server is restarted, the default value is restored. To keep the changed value even after the server is restarted, the property change value must be applied in the $ALTIBASE_HOME/conf/altibase.properties file.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt; alter system set qp_msglog_flag=2;</p><p>Alter success</p>
+</div></div><h2 id="Howtocheckthehistoryofaddingdatafiles-Howtoreflectinthealtibase.propertiesfile">How to reflect in the altibase.properties file</h2><hr /><p>1) Add the following line in the $ALTIBASE_HOME/conf/altibase.properties file.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>QP_MSGLOG_FLAG = 2 # 2: DDL logging</p></td></tr></tbody></table></div><p>2)  Restart the ALTIBASE process.</p><p>shell&gt;  server restart</p><p>3) Check if the changed value has been applied.</p><p>iSQL&gt; select name, value1 from v$property where name='QP_MSGLOG_FLAG';</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>Starting from Altibase HDB version 5.1.5.33 or later, the default value of QP_MSGLOG_FLAG is 2, so all DDLs are written to altibase_qp.log by default.</p>
+                    </div>
+    </div>
+<h1 id="Howtocheckthehistoryofaddingdatafiles-Howtochecklogs">How to check logs</h1><hr /><p>When a data file is added with the alter tablespace ~ add datafiles statement, the following log is displayed in altibase_qp.log.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>[2013/11/27 14:10:57] [Thread-1094719840] [Level-2] <br class="atl-forced-newline" /> [EXEC_DDL_BEGIN : alter tablespace TEST_TBS add DATAFILE '/altibase_home_533/dbs/test02.dbf'] <br class="atl-forced-newline" /> [2013/11/27 14:10:58] [Thread-1094719840] [Level-2] <br class="atl-forced-newline" /> [EXEC_DDL_END : SUCCESS]</p></td></tr></tbody></table></div><p> </p><p>If the user uses the following syntax, the following will be the result.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>shell&gt; $awk '/DATAFILE/ {print last &quot; : &quot; $0}{last=$0}' altibase_qp.log | grep -i 'add' <br class="atl-forced-newline" /> [2013/11/27 14:10:57] [Thread-1094719840] [Level-2] : <strong>[EXEC_DDL_BEGIN : alter tablespace TEST_TBS add DATAFILE '/altibase_home_533/dbs/test02.dbf']</strong></p></td></tr></tbody></table></div><p> </p><p>However, since it is a method of grep-ing the trace log file, the history that is old enough to be deleted from the log file cannot be found.</p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

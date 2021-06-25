@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Dynamic SQL Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Dynamic SQL Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="DynamicSQLConversion-Overview">Overview</h2>
+
+<p>With dynamic SQL, the user can create queries as desired at runtime and then execute them.<br />
+In static execution, which is the standard way to execute SQL statements in stored procedures,<br />
+an execution plan for all SQL statements in a stored procedure is created in advance</p>
+
+<p>when the stored procedure is compiled.
+<br class="atl-forced-newline" /></p>
+
+<p>Dynamic SQL is available in the following occasions.</p>
+<ul>
+	<li>When the name of the table to be queried can vary during runtime</li>
+	<li>When it is appropriate to change a query hint depending on the circumstances, or when it is<br />
+necessary to change a conditional operator for a condition clause</li>
+	<li>When SQL statements that are used in stored procedures and functions need to be optimized<br />
+frequently due to the frequent execution of DDL and DML statements</li>
+	<li>When it is necessary to frequently execute SQL statements for which the execution cost<br />
+exceeds the optimization cost.</li>
+	<li>When it is desired to create versatile, reusable stored procedures</li>
+</ul>
+
+
+<h2 id="DynamicSQLConversion-Restrictions">Restrictions</h2>
+
+<p> Following statements are useless in the ALTIBASE Stored Procedure.</p>
+<ul>
+	<li>RETURNING INTO CLAUSE
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+<p>The following statements only can be used as dynamic SQL in ALTIBASE Stored Procedure.</p>
+<ul>
+	<li>DML(SELECT, INSERT, UPDATE, DELETE, MOVE, LOCK TABLE, ENQUEUE)</li>
+	<li>DDL(CREATE, ALTER, DROP)</li>
+	<li>DCL(ALTER SYSTEM, ALTER SESSION, COMMIT, ROLLBACK)</li>
+	<li>CONNECT</li>
+	<li>DISCONNECT</li>
+	<li>DEQUEUE</li>
+</ul>
+
+
+<h2 id="DynamicSQLConversion-Examples">Examples</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> Altibase </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1(V_EMPNO INTEGER) <br class="atl-forced-newline" />
+ AS <br class="atl-forced-newline" />
+ BEGIN <br class="atl-forced-newline" />
+ EXECUTE IMMEDIATE <br class="atl-forced-newline" />
+ 'DELETE FROM EMPLOYEES WHERE ENO = <span style="color: rgb(255,0,0);"><strong>:1</strong></span>' <br class="atl-forced-newline" />
+ USING V_EMPNO; <br class="atl-forced-newline" />
+ END; <br class="atl-forced-newline" />
+ / </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1(V_EMPNO INTEGER) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ BEGIN <br class="atl-forced-newline" />
+ EXECUTE IMMEDIATE <br class="atl-forced-newline" />
+ 'DELETE FROM EMPLOYEES WHERE ENO = <span style="color: rgb(255,0,0);"><strong>?</strong></span>' <br class="atl-forced-newline" />
+ USING V_EMPNO; <br class="atl-forced-newline" />
+ END; <br class="atl-forced-newline" />
+ / </p></td>
+<td class="confluenceTd"><p> The placeholder and the question mark are compatible with each other. <br class="atl-forced-newline" />
+The corresponding placeholder value should be increased according to the increment of binding parameter count. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary (column_value NUMBER, <br class="atl-forced-newline" />
+emp_column <span style="color: rgb(255,0,0);"><strong>VARCHAR2</strong></span>, amount NUMBER) IS <br class="atl-forced-newline" />
+v_column VARCHAR2(30); <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- determine if a valid column name has been given as input <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>SELECT column_name INTO v_column FROM USER_TAB_COLS</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>WHERE TABLE_NAME = 'EMPLOYEES' AND COLUMN_NAME = emp_column;</strong></span> <br class="atl-forced-newline" />
+sql_stmt := 'UPDATE employees SET salary = salary + <span style="color: rgb(255,0,0);"><strong>:1</strong></span> <br class="atl-forced-newline" />
+WHERE '|| v_column || ' = <span style="color: rgb(255,0,0);"><strong>:2</strong></span>'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE sql_stmt USING amount, column_value; <br class="atl-forced-newline" />
+IF SQL%ROWCOUNT &gt; 0 THEN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Salaries have been updated for: ' || emp_column|| ' = ' || column_value); <br class="atl-forced-newline" />
+END IF; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN NO_DATA_FOUND THEN <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE ('Invalid Column: ' || emp_column); <br class="atl-forced-newline" />
+END raise_emp_salary; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE raise_emp_salary (column_value NUMBER, <br class="atl-forced-newline" />
+emp_column <span style="color: rgb(255,0,0);"><strong>VARCHAR2(30),</strong></span> amount NUMBER) IS <br class="atl-forced-newline" />
+ v_column VARCHAR2(30); <br class="atl-forced-newline" />
+ sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- determine if a valid column name has been given as input <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>SELECT column_name INTO v_column FROM SYSTEM_.SYS_TABLES_ TS, SYSTEM_.SYS_COLUMNS_ CS</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong> WHERE TS.USER_ID = CS.USER_ID AND TS.TABLE_ID = CS.TABLE_ID</strong></span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong>AND TABLE_NAME = 'EMPLOYEES' AND COLUMN_NAME = emp_column;</strong></span> <br class="atl-forced-newline" />
+ sql_stmt := 'UPDATE employees SET salary = salary + <span style="color: rgb(255,0,0);"><strong>?</strong></span> <br class="atl-forced-newline" />
+WHERE ' || v_column || ' = <span style="color: rgb(255,0,0);"><strong>?</strong></span>'; <br class="atl-forced-newline" />
+ EXECUTE IMMEDIATE sql_stmt USING amount, column_value; <br class="atl-forced-newline" />
+ IF SQL%ROWCOUNT &gt; 0 THEN <br class="atl-forced-newline" />
+ SYSTEM_.PRINTLN('Salaries have been updated for: ' || emp_column || ' = ' || column_value); <br class="atl-forced-newline" />
+ END IF; <br class="atl-forced-newline" />
+ EXCEPTION WHEN NO_DATA_FOUND THEN <br class="atl-forced-newline" />
+ SYSTEM_.PRINTLN ('Invalid Column: ' || emp_column); <br class="atl-forced-newline" />
+ END raise_emp_salary; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Specifying question marks and placeholders in the dynamic SQL variables respectively. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+plsql_block VARCHAR2(500); <br class="atl-forced-newline" />
+new_deptid NUMBER(4); <br class="atl-forced-newline" />
+new_dname VARCHAR2(30) := 'Advertising'; <br class="atl-forced-newline" />
+new_mgrid NUMBER(6) := 200; <br class="atl-forced-newline" />
+new_locid NUMBER(4) := 1700; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+plsql_block := 'BEGIN create_dept(<span style="color: rgb(255,0,0);"><strong>:a, :b, :c, :d</strong></span>); END;'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE plsql_block <br class="atl-forced-newline" />
+USING IN OUT new_deptid, new_dname, new_mgrid, new_locid; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS  <br class="atl-forced-newline" />
+plsql_block VARCHAR2(500); <br class="atl-forced-newline" />
+new_deptid NUMBER(4); <br class="atl-forced-newline" />
+new_dname VARCHAR2(30) := 'Advertising'; <br class="atl-forced-newline" />
+new_mgrid NUMBER(6) := 200; <br class="atl-forced-newline" />
+new_locid NUMBER(4) := 1700; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+plsql_block := 'BEGIN create_dept(<span style="color: rgb(255,0,0);"><strong>:new_deptid, :new_dname, :new_mgrid, :new_locid</strong></span>); END;'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE plsql_block <br class="atl-forced-newline" />
+USING IN OUT new_deptid, new_dname, new_mgrid, new_locid; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Specifying arbitrary(e.g&gt; 1,2,3,4.. a,b,c,d..) parameter is impossible to use in ALTIBASE Stored Procedure. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE fire_employee (emp_id NUMBER) <br class="atl-forced-newline" />
+ AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE <br class="atl-forced-newline" />
+'DELETE FROM employees WHERE eno = ' || TO_CHAR(emp_id); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE fire_employee (emp_id NUMBER) <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE <br class="atl-forced-newline" />
+'DELETE FROM employees WHERE eno = ' || TO_CHAR(emp_id); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Delivering DML as parameter. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE PROCEDURE drop_table (table_name IN <span style="color: rgb(255,0,0);"><strong>VARCHAR2</strong></span>) AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DROP TABLE ' || table_name; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE PROCEDURE drop_table (table_name IN <span style="color: rgb(255,0,0);"><strong>VARCHAR2(40))</strong></span> AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DROP TABLE ' || table_name; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Delivering DDL as parameter. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+a NUMBER := 4; <br class="atl-forced-newline" />
+b NUMBER := 7; <br class="atl-forced-newline" />
+plsql_block VARCHAR2(100); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+plsql_block := 'EXEC calc_stats(:a, :a, :b, :a);'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE plsql_block USING a, b; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+a NUMBER := 4; <br class="atl-forced-newline" />
+b NUMBER := 7; <br class="atl-forced-newline" />
+plsql_block VARCHAR2(100); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+plsql_block := 'EXEC calc_stats(<span style="color: rgb(255,0,0);"><strong>:a, :a, :b, :a</strong></span>);'; <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE plsql_block USING a, b; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Duplicate parameter name is not supported in ALTIBASE Stored Procedure. <br class="atl-forced-newline" />
+You will encounter into <br class="atl-forced-newline" />
+[ERR-31248 : Mismatched bind column count <br class="atl-forced-newline" />
+0008 : EXECUTE IMMEDIATE PLSQL_BLOCK USING A, B; <br class="atl-forced-newline" />
+      ^                                        ^ <br class="atl-forced-newline" />
+] </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DELETE FROM employees WHERE eno &gt; 10'; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Number of employees deleted: ' || TO_CHAR(SQL%ROWCOUNT)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'DELETE FROM employees WHERE eno &gt; 10'; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Number of employees deleted: ' || TO_CHAR(SQL%ROWCOUNT)); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Using Cursor Attributes with Dynamic SQL </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION row_count (tab_name <span style="color: rgb(255,0,0);"><strong>VARCHAR2</strong></span>) RETURN NUMBER <br class="atl-forced-newline" />
+AS rows NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || tab_name INTO rows; <br class="atl-forced-newline" />
+RETURN rows; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE FUNCTION row_count (tab_name <span style="color: rgb(255,0,0);"><strong>VARCHAR2(40)</strong></span>) RETURN NUMBER <br class="atl-forced-newline" />
+AS rows NUMBER; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || tab_name INTO rows; <br class="atl-forced-newline" />
+RETURN rows; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> The conversion of function in Altibase function is almost similar to that of ORACLE PL/SQL. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+emp_cv EmpCurTyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_job VARCHAR2(10) := 'designer'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+sql_stmt := 'SELECT * FROM employees WHERE emp_job = :j'; <br class="atl-forced-newline" />
+OPEN emp_cv FOR sql_stmt USING v_job; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Name: ' || emp_rec.e_lastname || ' Job Id: ' || <br class="atl-forced-newline" />
+emp_rec.emp_job); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+emp_cv EmpCurTyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_job VARCHAR2(10) := 'designer'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+sql_stmt := 'SELECT * FROM employees WHERE emp_job = :j'; <br class="atl-forced-newline" />
+OPEN emp_cv FOR sql_stmt USING v_job; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN('Name: ' || emp_rec.e_lastname || ' Job Id: ' ||emp_rec.emp_job); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> Dynamic SQL Fetching into a Record </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

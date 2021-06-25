@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to create/delete replication objects</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to create/delete replication objects
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145802 {padding: 0px;}
+div.rbtoc1624409145802 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145802 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145802'>
+<ul class='toc-indentation'>
+<li><a href='#Howtocreate/deletereplicationobjects-Overview'>Overview</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Version'>Version</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Preparation'>Preparation</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-EnablingthereplicationfunctionRepEnable'>Enabling the replication function</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Creatingreplicationobjectcreate_rep_obj'>Creating replication object</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Startingreplicationcreate_rep_obj_start'>Starting replication</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Deletingreplicationobject'>Deleting replication object</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-Errormessages'>Error messages</a></li>
+<li><a href='#Howtocreate/deletereplicationobjects-ReferenceDocuments'>Reference Documents</a></li>
+</ul>
+</div></p><p> </p><h1 id="Howtocreate/deletereplicationobjects-Overview">Overview</h1><hr /><p>For users who are new to replication, this document explains how to create and delete replication objects.</p><ul><li>This document is written assuming that the user has completed the preliminary operation for replication structure or configuration.</li><li>This document is written assuming that the data is consistent between the target servers for replication. Either all of the data exist the same, or both are zero.</li></ul><p> </p><h1 id="Howtocreate/deletereplicationobjects-Version">Version</h1><hr /><p>Altibase version 4.3.9 or later</p><p> </p><h1 id="Howtocreate/deletereplicationobjects-Preparation">Preparation</h1><hr /><ul><li>Dedicated IP for replication<br />It is recommended to use a dedicated line separate from the service network for the IP to be used for replication.</li><li>Replication service port<br />Set the service port number for replication. It can be arbitrarily set by the user, and 30300 is generally used.</li><li>Select the target table for replication<br />The table to be replicated must have a primary key.</li></ul><p> </p><h1 id="Howtocreate/deletereplicationobjects-EnablingthereplicationfunctionRepEnable">Enabling the replication function<span class="confluence-anchor-link" id="Howtocreate/deletereplicationobjects-RepEnable"></span></h1><hr /><ul><li><p>Altibase server's replication function is disabled by default,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">-- The default value of the REPLICATION_PORT_NO property is 0, which means that the replication function is disabled.
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_PORT_NO&#39;;
+NAME                            VALUE1                          
+------------------------------------------------------------------- 
+REPLICATION_PORT_NO             0                                        
+1 row selected.</pre>
+</div></div></li><li>To use the replication function, the user must enable it by changing the relevant properties.</li><li><span style="color: rgb(255,0,0);">Enabling the replication function requires restarting the Altibase server.</span></li></ul><h4 id="Howtocreate/deletereplicationobjects-ChangingREPLICATION_PORT_NOproperty"><span style="color: rgb(255,0,0);">Changing REPLICATION_PORT_NO property<br /></span></h4><ul><li>Replication is enabled by changing the value of the Altibase server property REPLICATION_PORT_NO.</li><li>The REPLICATION_PORT_NO property also means the port number to be used between replication threads.</li><li>The port number is not used by the server and is arbitrarily assigned by the user, and 30300 is also used in general.</li></ul><ol><li><p>Check if the replication port specified by the user is in use on the replication target server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># Example of execution when the replication port, REPLICATION_PORT_NO is set to 30300
+$ netstat -an | grep 30300 | grep LISTEN    </pre>
+</div></div></li><li><p>Open the altibase.properties file, change the REPLICATION_PORT_NO value, and save it. This must be done on each of the replication target servers.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># Example of setting REPLICATION_PORT_NO when setting the replication port to 30300
+
+$ cd $ALTIBASE_HOME/conf
+$ vi altibase.properties
+REPLICATION_PORT_NO = 30300                    </pre>
+</div></div></li><li><p>Restart the Altibase server process.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;">$ server restart</pre>
+</div></div>
+<div id="expander-388206592" class="expand-container">
+<div id="expander-control-388206592" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">Click here to expand...</span>
+</div>
+<div id="expander-content-388206592" class="expand-content"><p>In order to block access to the application during the process of creating a replication object, change the Altibase server service port and restart it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: bash; gutter: false" style="font-size:12px;">$ export ALTIBASE_PORT_NO=20400
+$ server restart</pre>
+</div></div></div>
+</div>
+</li><li><p>After starting the Altibase server, check the replication port LISTEN status and property settings.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># Example of Replication port when REPLICATION_PORT_NO is set to 30300
+$ netstat -an | grep 30300 | grep LISTEN
+tcp        0      0 0.0.0.0:30300               0.0.0.0:*                   LISTEN </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">-- # Example of Replication port when REPLICATION_PORT_NO is set to 30300
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME = &#39;REPLICATION_PORT_NO&#39;;
+NAME                            VALUE1                          
+-------------------------------------------------------------------
+REPLICATION_PORT_NO             30300                           
+1 row selected.</pre>
+</div></div></li></ol><p> </p><h1 id="Howtocreate/deletereplicationobjects-Creatingreplicationobjectcreate_rep_obj"><span style="color: rgb(0,0,0);">Creating replication object</span><span class="confluence-anchor-link" id="Howtocreate/deletereplicationobjects-create_rep_obj"></span></h1><hr /><ul><li>Replication objects are created with the CREATE REPLICATION statement and define information related to replication such as replication mode, replication server information, and replication target table.</li><li>Two servers to be replicated are paired.</li><li><p>Replication objects must each be created with the same object name on the paired replication server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>For creating replicaiton object</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION replication_name                   -- Define the name of the replication object.
+WITH remote_host_ip, remote_replication_port_no       -- In the WITH clause, specify the IP and PORT of the remote server to be paired with.
+FROM user_name.table_name TO user_name.table_name,    -- List the tables to be duplicated in the FROM ~ TO clause. 
+FROM ... 
+; </pre>
+</div></div></li><li>Refer to Replication Manual -&gt; 3. Using Replication -&gt; Create Replication (CREATE REPLICATION) for additional options of the replication object creation syntax.</li><li>Manual page: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a> </li></ul><p> </p>
+<div id="expander-1911353745" class="expand-container">
+<div id="expander-control-1911353745" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">Procedure for creating replication objects-Example 1 (when there are 2 replication target servers)</span>
+</div>
+<div id="expander-content-1911353745" class="expand-content"><p>This is an example of creating a replication object when the conditions for creating a replication object are as follows.</p><ul><li>The target server for replication is two A and B servers.</li><li>The replication object name is created as REP1.</li><li>The IP address of the target server A is 192.168.1.112 and the port number is 25524.</li><li>The IP address of the target server B is 192.168.1.113 and the port number is 35524.</li></ul><p><img class="confluence-embedded-image" src="attachments/16876082/17039368.png" data-image-src="attachments/16876082/17039368.png"></p><ul><li>The target tables for replication are the SYS user's employees table and departments table.</li></ul><ol><li><p><strong>Server A: IP 192.168.1.112, replication port: 25524</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep1 WITH &#39;192.168.1.113&#39;, 35524 
+FROM sys.employees TO sys.employees,
+FROM sys.departments TO sys.departments; 
+Create success.</pre>
+</div></div></li><li><p><strong>Server B: IP 192.168.1.113, replication port: 35524</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep1 WITH &#39;192.168.1.112&#39;, 25524
+FROM sys.employees TO sys.employees,
+FROM sys.departments TO sys.departments; 
+Create success.</pre>
+</div></div><p> </p><p> </p></li><li><p><strong>Check whether the replication object was created</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check on replication target server A</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP1                            192.168.1.113                   35524       
+1 row selected.
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP1                            SYS                             EMPLOYEES                       
+REP1                            SYS                             DEPARTMENTS                     
+2 rows selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check on replication target server B</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP1                            192.168.1.112                   35524       
+1 row selected.          
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP1                            SYS                             EMPLOYEES                       
+REP1                            SYS                             DEPARTMENTS                     
+2 rows selected. </pre>
+</div></div></li></ol></div>
+</div>
+
+<div id="expander-488040390" class="expand-container">
+<div id="expander-control-488040390" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">Procedure for creating replication objects-Example 2 (when there are 3 replication target servers)</span>
+</div>
+<div id="expander-content-488040390" class="expand-content"><p> This is an example of creating a replication object when the conditions for creating a redundant replication are as follows.</p><ul><li>The target servers for replication are A, B, and C<br />A is B, C and<br />B is A, C and<br />C synchronizes with A and B with each other.</li><li><p>The name of the replication object is determined as follows.<br />-REP_A_B for servers A and B<br />-REP_B_C for servers B and C<br />-REP_C_A for A and C servers</p></li><li><p>The IP address and replication port number of each server are as follows.<br />-Server A: 192.168.1.112, 30300<br />-Server B: 192.168.1.113, 30300<br />-Server C: 192.168.1.114, 30300</p></li></ul><p><img class="confluence-embedded-image" src="attachments/16876082/17039367.png" data-image-src="attachments/16876082/17039367.png"></p><ul><li>The target tables for replication are the SYS user's employees table and departments table.</li></ul><ol><li><p><strong>A Server : IP 192.168.1.112 , Replication port: 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_a_b WITH &#39;192.168.1.113&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_c_a WITH &#39;192.168.1.114&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>B Server : IP 192.168.1.113 , Replication port: 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: sql; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_a_b WITH &#39;192.168.1.112&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_b_c WITH &#39;192.168.1.114&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>C Server : IP 192.168.1.114, Replication port: 30300</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE REPLICATION rep_c_a WITH &#39;192.168.1.112&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; 
+CREATE REPLICATION rep_b_c WITH &#39;192.168.1.113&#39;, 30300 FROM sys.employees TO sys.employees, FROM sys.departments TO sys.departments; </pre>
+</div></div></li><li><p><strong>Check whether the replication object was created</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check on replication target server A</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------
+REP_A_B                         192.168.1.113                   30300       
+REP_C_A                         192.168.1.114                   30300       
+2 rows selected.
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------
+REP_A_B                         SYS                             EMPLOYEES                       
+REP_A_B                         SYS                             DEPARTMENTS                     
+REP_C_A                         SYS                             EMPLOYEES                       
+REP_C_A                         SYS                             DEPARTMENTS                     
+4 rows selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check on replication target server B</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------  
+REP_A_B                         192.168.1.112                   30300       
+REP_B_C                         192.168.1.114                   30300       
+2 rows selected.        
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------                   
+REP_A_B                         SYS                             EMPLOYEES                       
+REP_A_B                         SYS                             DEPARTMENTS                     
+REP_B_C                         SYS                             EMPLOYEES                       
+REP_B_C                         SYS                             DEPARTMENTS                     
+4 rows selected. </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Check on replication target server C</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, HOST_IP, PORT_NO FROM SYSTEM_.SYS_REPL_HOSTS_;
+REPLICATION_NAME                HOST_IP                         PORT_NO     
+--------------------------------------------------------------------------------    
+REP_B_C                         192.168.1.113                   30300       
+REP_C_A                         192.168.1.112                   30300     
+2 rows selected.        
+
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;
+REPLICATION_NAME                LOCAL_USER_NAME                 LOCAL_TABLE_NAME                
+----------------------------------------------------------------------------------------------------                                  
+REP_B_C                         SYS                             EMPLOYEES                       
+REP_B_C                         SYS                             DEPARTMENTS  
+REP_C_A                         SYS                             EMPLOYEES                       
+REP_C_A                         SYS                             DEPARTMENTS                      
+4 rows selected.</pre>
+</div></div></li></ol></div>
+</div>
+<p> </p><h1 id="Howtocreate/deletereplicationobjects-Startingreplicationcreate_rep_obj_start">Starting replication<span class="confluence-anchor-link" id="Howtocreate/deletereplicationobjects-create_rep_obj_start"></span></h1><hr /><ul><li>Starting replication means starting the data synchronization.</li><li>The server that started the replication starts the replication sender thread, and the remote server paired with the server starts the receive thread.</li></ul><ol><li><strong>Selecting the replication start server (active server)</strong><br />The server that starts the replication and the server that runs the replication sender refers to the server where the change transaction occurs and is also called the active server.<br />Among the replication target servers in a pair, the place where data change occurs is the active server, and the other server becomes the standby server.<br />If a change transaction occurs on both servers and synchronizes in both directions, both servers become active servers.</li><li><p><strong>Start of replication</strong><br />The active server starts replication with the ALTER REPLICATION statement. replication_name is the name of the object created in the replication object creation step.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">- The replication sender thread runs on the server that executes this command, and the receiver thread is runs on the remote server paired with the server.
+iSQL&gt; ALTER REPLICATION replication_name START;</pre>
+</div></div></li><li><p><strong>Check the status of starting/running replication</strong><br />This is a statement to check whether the replication sending thread (Sender) and receiving thread (Receiver) are running.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the starting status of the replication sender thread (Sender) of the replication start server and active server</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;
+REPLICATION_NAME                IS_STARTED                      
+-------------------------------------------------------------------
+REP                             STARTED                         
+1 row selected.
+
+iSQL&gt; SELECT REP_NAME, DECODE(STATUS, 0, &#39;STOP&#39;, 1, &#39;START&#39;, STATUS) STATUS FROM V$REPSENDER;
+REP_NAME                        STATUS                          
+-------------------------------------------------------------------
+REP                             START                           
+1 row selected.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the running status of the replication receiving thread (Receiver)</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; select REP_NAME, MY_IP, MY_PORT FROM V$REPRECEIVER;
+REP_NAME              MY_IP                 MY_PORT     
+------------------------------------------------------------
+REP                   192.168.1.113         30300       
+1 row selected.</pre>
+</div></div><p><br /><br /></p></li></ol><h1 id="Howtocreate/deletereplicationobjects-Deletingreplicationobject">Deleting replication object</h1><hr /><p>This section describes how to delete replication objects.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">- Stop the replicaiton first.
+iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+- Delete the replication object.
+iSQL&gt; DROP REPLICATION replication_name ;</pre>
+</div></div><p> </p><h1 id="Howtocreate/deletereplicationobjects-Errormessages">Error messages</h1><hr /><p>Here are some of the error messages that may occur during the process of creating replication objects.</p><h3 id="Howtocreate/deletereplicationobjects-[ERR-61023:Replicationisdisabled]">[ERR-61023 : Replication is disabled]</h3><ul><li>This is an error message that can be encountered when executing the CREATE REPLICATION statement. It occurs when the replication function is disabled</li><li>Check the value of the REPLICATION_PORT_NO property. Refer to the section on enabling the replication function.</li></ul><p> </p><h3 id="Howtocreate/deletereplicationobjects-[ERR-61113:Areplicatedtablemusthaveaprimarykey.(user_name.table_name)]">[ERR-61113 : A replicated table must have a primary key. (<em>user_name</em>.<em>table_name</em>)]</h3><div><ul><li>This is an error message that may occur when executing the CREATE REPLICATION statement.</li><li>This occurs when there is no primary key in the replication target table specified in the FROM clause.</li><li>At the end of the error message, a primary key needs to be created in the table inside () and perform a duplicate object creation statement.<br /><br /></li></ul></div><h3 id="Howtocreate/deletereplicationobjects-[ERR-6100D:[Sender]Failedtohandshakewiththepeerserver(HandshakeProcessError)]"><span>[ERR-6100D : [Sender] Failed to handshake with the peer server (Handshake Process Error)]</span></h3><div><ul><li>This is an error message that may occur when ALTER REPLICATION replication_name START is executed.</li><li>Check if the remote server's IP and redundancy port number entered in the WITH clause are correct, and that access to the corresponding IP and port is possible.</li></ul></div><div><strong style="white-space: pre-wrap;"><br /></strong></div><div><strong style="white-space: pre-wrap;"><br /></strong></div><h1 id="Howtocreate/deletereplicationobjects-ReferenceDocuments"><span style="white-space: pre-wrap;">Reference Documents</span></h1><p><span style="white-space: pre-wrap;"> </span></p><hr /><ul><li><span style="white-space: pre-wrap;">Replication Manual</span></li><li><span style="white-space: pre-wrap;">SQL Reference</span></li><li><span style="white-space: pre-wrap;">Download manual page: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a></span></li><li>Github: <a href="https://github.com/ALTIBASE/Documents/tree/master/Manuals/Altibase_7.1/eng" class="external-link" rel="nofollow">https://github.com/ALTIBASE/Documents/tree/master/Manuals/</a></li></ul><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876082/17039369.png">스크린샷 2021-03-17 오전 11.26.07.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876082/17039368.png">스크린샷 2021-03-17 오전 11.26.41.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876082/17039367.png">스크린샷 2021-03-17 오전 11.26.07.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

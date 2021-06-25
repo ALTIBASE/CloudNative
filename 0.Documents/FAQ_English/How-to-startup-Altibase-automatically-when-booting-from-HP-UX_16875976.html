@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to startup Altibase automatically when booting from HP-UX</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to startup Altibase automatically when booting from HP-UX
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145334 {padding: 0px;}
+div.rbtoc1624409145334 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145334 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145334'>
+<ul class='toc-indentation'>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-Overview'>Overview</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-WhatisHP-UXStartupScript?'>What is HP-UX Startup Script?</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-Howtowriteascriptforautomaticstartup/stopofAltibase'>How to write a script for automatic startup/stop of Altibase</a>
+<ul class='toc-indentation'>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP1'>STEP 1</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP2'>STEP 2</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP3'>STEP 3</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP4'>STEP 4</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP5'>STEP 5</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP6'>STEP 6</a></li>
+<li><a href='#HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP7'>STEP 7</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-Overview">Overview</h1><hr /><p>This section describes how to automatically startup Altibase when booting from HP-UX.</p><h1 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-WhatisHP-UXStartupScript?">What is HP-UX Startup Script?</h1><hr /><p>In HP-UX, script files that are executed during system boot/shutdown are managed as follows.</p><ol><li>The actual script files that are executed at boot time exist in the /sbin/init.d directory.</li><li>The configuration files for the above script files are in the /etc/rc.config.d directory. Each rc script has one configuration file and sets the definitions and values of variables necessary for script execution.</li><li>Script files that are executed at boot time exist in the /sbin/rc*.d directory, and these files are symbolic links to the files in the /sbin/init.d directory.</li></ol><h1 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-Howtowriteascriptforautomaticstartup/stopofAltibase">How to write a script for automatic startup/stop of Altibase</h1><hr /><ul><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP1">STEP 1</h2><hr /><p>Create the <strong>/etc/rc.config.d/altibase_conf </strong>file.</p><div>As described above, in this file, variables necessary for starting/shutdown of Altibase are defined and values are set.</div><p>The contents of this file are shown below.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>ALTIBASE_HOME=/altibase/altibase_home; export ALTIBASE_HOME</span><br /><span>PATH=$ALTIBASE_HOME/</span><a class="external-link" href="http://bin/usr/bin:/sbin" rel="nofollow">bin:/usr/bin:/sbin</a><span>; export PATH</span><br /><span>ALTIBASE_OWNER=altibase</span><br /><span>START_ALTIBASE=1</span></p>
+</div></div><p>If the user does not want to automatically start Altibase when booting HP-UX, set the value of START_ALTIBASE to 0. And if ALTIBASE_OWNER or ALTIBASE_HOME is changed, modify the altibase_conf file must be also modified.</p><p> </p></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP2">STEP 2</h2><hr /><p>Create the <strong>/sbin/init.d/alti_start</strong> file. This file is a script that actually starts up Altibase by using the Altibase startup command.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#!/sbin/sh</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>fi</p><p>ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p manager -sysdba -noprompt&quot;</p><p>${ADMIN} &lt;&lt; EOF</p><p>startup</p><p>quit</p><p>EOF</p>
+</div></div></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP3">STEP 3</h2><hr /><p>Create the <strong>/sbin/init.d/alti_stop</strong> file.This file is a script that actually shuts down Altibase by using the Altibase shutdown command.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p class="_mce_tagged_br">#!/sbin/sh</p><p class="_mce_tagged_br">if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p class="_mce_tagged_br">. /etc/rc.config.d/altibase_conf</p><p class="_mce_tagged_br">fi</p><p class="_mce_tagged_br">ADMIN=&quot;${ALTIBASE_HOME}/bin/isql -u sys -p manager -sysdba -noprompt&quot;</p><p class="_mce_tagged_br">FUNC_CHECK_ISQL_CONN()</p><p class="_mce_tagged_br">{</p><p class="_mce_tagged_br">    case $ISQL_CONNECTION in</p><p class="_mce_tagged_br">        [Ii][Pp][Cc])</p><p class="_mce_tagged_br">        unset ISQL_CONNECTION</p><p class="_mce_tagged_br">        ;;</p><p>        *)</p><p>        ;;</p><p>    esac</p><p>}</p><p> </p><p># Permit sysdba via IPC</p><p>FUNC_CHECK_ISQL_CONN</p><p>${ADMIN} &lt;&lt; EOF &gt; /dev/null</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_PAGE_COUNT = 0;</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_SLEEP_SEC  = 0;</p><p>ALTER SYSTEM SET CHECKPOINT_BULK_WRITE_SLEEP_USEC = 0;</p><p>quit;</p><p>EOF</p><p>killCheckServer &gt; ${ALTIBASE_HOME}/trc/killCheckServer.log 2&gt;&amp;1</p><p>${ADMIN} &lt;&lt; EOF</p><p>shutdown immediate;</p><p>quit;</p><p>EOF</p>
+</div></div></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP4">STEP 4</h2><hr /><p>Create the <strong>/sbin/init.d/altibase</strong> file.<br />This file can be created by copying the /sbin/init.d/template file, which is actually the file that the Start/Stop script will create symbolic links later on.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>#!/sbin/sh</p><p>#</p><p># @(#)B.11.11_LR</p><p>#</p><p># NOTE: This script is not configurable! Any changes made to this</p><p># script will be overwritten when you upgrade to the next</p><p># release of HP-UX.</p><p>#</p><p># WARNING: Changing this script in any way may lead to a system that</p><p># is unbootable. Do not modify this script.</p><p>#</p><p>rval=0</p><p># Check the exit value of a command run by this script. If non-zero, the</p><p># exit code is echoed to the log file and the return value of this script</p><p># is set to indicate failure.</p><p>set_return() {</p><p>x=$?</p><p>if [ $x -ne 0 ]; then</p><p>echo &quot;EXIT CODE: $x&quot;</p><p>rval=1 # script FAILed</p><p>fi</p><p>}</p><p># Kill the named process(es).</p><p># $1=</p><p>killproc() {</p><p>pid=`ps -el | awk '( ($NF ~ /'&quot;$1&quot;'/) &amp;&amp; ($4 != mypid) &amp;&amp; ($5 != mypid) )</p><p>{ print $4 }' mypid=$$ `</p><p>if [ &quot;X$pid&quot; != &quot;X&quot; ]; then</p><p>if kill &quot;$pid&quot;; then</p><p>echo &quot;$1 stopped&quot;</p><p>else</p><p>rval=1</p><p>echo &quot;Unable to stop $1&quot;</p><p>fi</p><p>fi</p><p>}</p><p>case $1 in</p><p>'start_msg')</p><p># Emit a _short_ message relating to running this script with</p><p># the &quot;start&quot; argument; this message appears as part of the checklist.</p><p>echo &quot;Starting the Altibase Database&quot;</p><p>;;</p><p>'stop_msg')</p><p># Emit a _short_ message relating to running this script with</p><p># the &quot;stop&quot; argument; this message appears as part of the checklist.</p><p>echo &quot;Stopping the Altibase Database&quot;</p><p>;;</p><p>'start')</p><p># source the system configuration variables</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>else</p><p>echo &quot;ERROR: /etc/rc.config defaults file MISSING&quot;</p><p>fi</p><p># Check to see if this script is allowed to run...</p><p>if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</p><p>rval=2</p><p>else</p><p># Execute the commands to start your subsystem</p><p>su - $ALTIBASE_OWNER -c &quot;/sbin/init.d/alti_start&quot;</p><p>fi</p><p>;;</p><p>'stop')</p><p># source the system configuration variables</p><p>if [ -f /etc/rc.config.d/altibase_conf ] ; then</p><p>. /etc/rc.config.d/altibase_conf</p><p>else</p><p>echo &quot;ERROR: /etc/rc.config defaults file MISSING&quot;</p><p>fi</p><p># Check to see if this script is allowed to run...</p><p>if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</p><p>rval=2</p><p>else</p><p>su - $ALTIBASE_OWNER -c &quot;/sbin/init.d/alti_stop&quot;</p><p># Execute the commands to stop your subsystem</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> </pre>
+</div></div><p>fi</p><p>;;</p><p>*)</p><p>echo &quot;usage: $0 {start|stop|start_msg|stop_msg}&quot;</p><p>rval=1</p><p>;;</p><p>esac</p>
+</div></div></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP5">STEP 5</h2><hr /><p>Create Symbolic Link of Startup Script and Shutdown Script in /sbin/rc2.d directory.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># cd /sbin/rc2.d</p><p># ln -s /sbin/init.d/altibase S955altibase</p><p># ln -s /sbin/init.d/altibase K955altibase</p>
+</div></div></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP6">STEP 6</h2><hr /><p>Modify the execution permission so that each script can be executed normally.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># cd /sbin/rc2.d</p><p># chmod 755 S955altibase</p><p># chmod 755 K955altibase</p><p># cd /sbin/init.d</p><p># chmod 755 *alti*</p>
+</div></div></li><li><h2 id="HowtostartupAltibaseautomaticallywhenbootingfromHP-UX-STEP7">STEP 7</h2><hr /><p>Test to see if it works properly. At this time, the test must be performed under the root account.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p># su - root</p><p># /sbin/init.d/altibase</p>
+</div></div></li></ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

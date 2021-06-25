@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Connection 연결이 끊어지는 경우와 각 경우의  에러 코드 및 에러 메세지(APRE*C/C++, SQLCLI)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520896.html">07. 개발 및 API</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Connection 연결이 끊어지는 경우와 각 경우의  에러 코드 및 에러 메세지(APRE*C/C++, SQLCLI)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Yohan Choi</span>, last modified by <span class='editor'> Shin beum-su</span> on Dec 15, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409052914 {padding: 0px;}
+div.rbtoc1624409052914 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409052914 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409052914'>
+<ul class='toc-indentation'>
+<li><a href='#Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-개요'>개요 </a></li>
+<li><a href='#Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-적용버전'>적용버전  </a></li>
+<li><a href='#Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-응용프로그램별에러코드와에러메시지확인방법'>응용프로그램별 에러 코드와 에러 메시지 확인방법</a></li>
+<li><a href='#Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-Connection에러상황및에러메시지'>Connection 에러 상황 및 에러 메시지 </a></li>
+<li><a href='#Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-결론'>결론  </a></li>
+</ul>
+</div></strong></p><p> </p><h1 id="Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-개요"><strong>개요</strong> </h1><hr /><p><span style="color: rgb(0,0,0);">응용프로그램에서 커넥션이 단절되는 경우와 각 상황에서의 에러 코드,메시지를 설명합니다.</span></p><p> </p><h1 id="Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-적용버전"><strong>적용버전</strong>  </h1><hr /><ul><li>ALTIBASE HDB 6.3.1 을 기준으로 작성 되었습니다.</li><li>추가사항 또는 업데이트가 필요한 경우 <a class="external-link" href="http://support.altibase.com/kr/" rel="nofollow">http://support.altibase.com/kr/</a> 또는 이 페이지에 댓글로 요청 글 남겨주세요.<br /><br /><br /></li></ul><p><strong style="color: rgb(0,0,0);font-size: 24.0px;line-height: 1.25;"><span>응용프로그램에서 Connection이 단절되는 경우</span></strong></p><hr /><p><span style="color: rgb(0,0,0);">다음과 같은 상황은 Connection이 되지않은 상태입니다.</span></p><ol><li><span style="color: rgb(0,0,0);">Connect를 안한 경우</span></li><li><span style="color: rgb(0,0,0);">통신소켓이상이나 서버쪽에서 연결을 끊은 경우</span></li><li><span style="color: rgb(0,0,0);">이전에 끊어진 연결을 감지 못했을 경우 (이전에 Connection이 단절된 경우)</span></li><li><span style="color: rgb(0,0,0);">Timeout에 의해 끊어진 경우.</span><br /><span style="color: rgb(0,0,0);">Query Timeout, Fetch Timeout, UTrans Timeout, Idle Timeout이 있으며, </span><span style="color: rgb(0,0,0);">Query Timeout의 경우에는 Connection이 끊기지 않으나 이외에 나머지 경우는 </span><span style="color: rgb(0,0,0);">모두 Connection이 끊어집니다.</span></li><li><span style="color: rgb(0,0,0);">DB Server가 종료된 경우</span></li><li><span style="color: rgb(0,0,0);">DB Server가 종료되어 있어 연결은 못하는 경우 (Connect 실패)</span><br /><span style="color: rgb(0,0,0);"><br /></span></li></ol><h1 id="Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-응용프로그램별에러코드와에러메시지확인방법"><strong><span style="color: rgb(0,0,0);">응용프로그램별 에러 코드와 에러 메시지</span><span><span style="color: rgb(51,51,51);"> 확인방법</span></span></strong></h1><hr /><p><span style="color: rgb(0,0,0);">응용프로그램이 ALTIBASE Embedded SQL(APRE*C/C++) 로 작성된 경우 확인할 수 있는 값은 다음과 같습니다.</span></p><ol><li><span style="color: rgb(0,0,0);">sqlca.sqlcode (쿼리 수행 리턴값 - SQL_SUCCESS, SQL_ERROR, etc)</span></li><li><span style="color: rgb(0,0,0);">sqlca.sqlerrm.sqlerrmc (에러메시지)</span></li><li><span style="color: rgb(0,0,0);">SQLCODE (에러코드)</span></li><li><span style="color: rgb(0,0,0);">SQLSTATE (상태코드)</span></li></ol><p><br /><span style="color: rgb(0,0,0);">응용프로그램이 SQLCLI로 작성된 경우 확인할 수 있는 값은 다음과 같습니다.<br /><span style="line-height: 1.42857;">SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength) 를 호출하여 확인할수 있습니다.</span><br /></span></p><ol><li><span style="color: rgb(0,0,0);">state (상태코드)</span></li><li><span style="color: rgb(0,0,0);">err (에러코드)</span></li><li><span style="color: rgb(0,0,0);">msg (에러메시지)</span></li></ol><p> </p><h1 id="Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-Connection에러상황및에러메시지"><strong>Connection 에러 상황 및 에러 메시지</strong> </h1><hr /><ol><li><p><span style="color: rgb(0,0,0);">Connect를 안했거나 이전에 Disconnect 한 경우</span><span style="color: rgb(0,0,0);"><br /></span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+	====================================================
+	sqlca STRUCTURE
+	.sqlcode [-2] (SQL_ERROR)
+	.sqlerrm.sqlerrmc The connection does not exist. (Name:default connection)
+	SQLCODE [-2]
+	SQLSTATE [&quot;08003&quot;]
+	====================================================
+
+[SQLCLI/ODBC] 
+1. 이전에 한번도 connect를 안한 경우
+	====================================================
+	return value [-2]
+	SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+	error state (state) [&quot;&quot;]
+	error number (err) [0] in Hex(0)
+	error message (msg) [ ?]
+	====================================================
+2. 이전에 disconnect 한 경우
+	====================================================
+	return value [-1] (SQL_ERROR)
+	SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+	error state (state) [&quot;08003&quot;]
+	error number (err) [331830] in Hex(51036)
+	error message (msg) [Connection does not exist (err8)]
+	====================================================</pre>
+</div></div></li><li><p><span style="color: rgb(0,0,0);">Connection이 단절된 경우 (서버에서 끊었거나 네트워크 에러)</span><span style="color: rgb(0,0,0);"><br /></span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(&#39;errno&#39;)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC] 
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(&#39;errno&#39;)]
+====================================================</pre>
+</div></div></li><li><p><span style="color: rgb(0,0,0);">이전에 연결이 단절된 것을 감지 못하고 다시 쿼리를 수행한 경우</span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Connection does not exist (err11)]
+SQLCODE [-1]
+SQLSTATE [&quot;08003&quot;]
+====================================================
+
+[SQLCLI/ODBC] 
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08003&quot;]
+error number (err) [331830] in Hex(51036)
+error message (msg) [Connection does not exist (err8)]
+====================================================</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p></li><li><p><span style="color: rgb(0,0,0);">Timeout에 의해 단절된 경우<br />Fetch Timeout, UTrans Timeout, Idle Timeout 모두 같은 에러가 리턴됨. </span><span style="color: rgb(0,0,0);">(altibase_boot.log에 timeout 내용이 기록됨.)</span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(131)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(131)]
+====================================================</pre>
+</div></div></li><li><p><span style="color: rgb(0,0,0);">DB Server가 종료된 경우</span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Communication link failure(131)]
+SQLCODE [-331843] in Hex(51043)
+SQLSTATE [&quot;08S01&quot;]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [&quot;08S01&quot;]
+error number (err) [331843] in Hex(51043)
+error message (msg) [Communication link failure(131)]
+====================================================</pre>
+</div></div><p><span style="color: rgb(0,0,0);"><br /></span></p></li><li><p><span style="color: rgb(0,0,0);">Connect 실패</span></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[APRE*C/C++]
+====================================================
+sqlca STRUCTURE
+.sqlcode [-1]
+.sqlerrm.sqlerrmc [Client unable to establish connection]
+SQLCODE [-327730] [50032]
+SQLSTATE [08001]
+====================================================
+
+[SQLCLI/ODBC]
+====================================================
+return value [-1]
+SQLError(env,dbc,stmt,state,err,msg,msgMax,msgLength)
+error state (state) [08001]
+error number (err) [327730] in Hex(50032)
+error message (msg) [Client unable to establish connection]
+====================================================</pre>
+</div></div></li></ol><p><span style="color: rgb(0,0,0);"> </span></p><h1 id="Connection연결이끊어지는경우와각경우의에러코드및에러메세지(APRE*C/C++,SQLCLI)-결론"><strong><span style="color: rgb(0,0,0);">결론</span></strong> <strong style="line-height: 1.25;"><span> </span></strong></h1><hr /><p><strong><span style="color: rgb(0,0,0);"> </span></strong>각 상황별로 에러코드로 확인한 결과 다음과 같이 3가지의 경우가 있습니다.</p><p style="margin-left: 30.0px;"><span style="color: rgb(0,0,0);"> </span><br /><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08001&quot;] SQLCODE [1(0x01)] errno [32770(0x050032)]</span><br /><span style="color: rgb(0,0,0);">* connect 실패</span><br /><br /><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08003&quot;] SQLCODE(errno) [331830(0x051036)]</span><br /><span style="color: rgb(0,0,0);">* Connect를 안하고 (disconnect 한 후) 수행하는 경우</span><br /><span style="color: rgb(0,0,0);">* 이미 Connect가 끊어져 있는 경우</span><br /><br /><span style="color: rgb(0,0,0);">- SQLSTATE(state) [&quot;08S01&quot;] SQLCODE(errno) [331843(0x051043)]</span><br /><span style="color: rgb(0,0,0);">* socket 단절</span><br /><span style="color: rgb(0,0,0);">* timeout에 의해 끊어진 경우</span><br /><span style="color: rgb(0,0,0);">* 서버가 종료되있는 경우</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 2. SQL Conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341431.html">Altibase MSSQL 변환가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 2. SQL Conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Dec 03, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409849938 {padding: 0px;}
+div.rbtoc1624409849938 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409849938 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409849938'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.SQLConversion-SQLConversion'>SQL Conversion</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.SQLConversion-1.JOIN'>1. JOIN</a></li>
+<li><a href='#id-2.SQLConversion-2.ExecutionQuery'>2. Execution Query</a></li>
+<li><a href='#id-2.SQLConversion-3.TemporaryTable'>3. Temporary Table</a></li>
+<li><a href='#id-2.SQLConversion-4.ControlStatement'>4. Control Statement</a></li>
+<li><a href='#id-2.SQLConversion-5.Identityattribute'>5. Identity attribute</a></li>
+<li><a href='#id-2.SQLConversion-6.ProcedureConversion'>6. Procedure Conversion</a>
+<ul class='toc-indentation'>
+<li><a href='#id-2.SQLConversion-1.ParameterDeclaration'>1. Parameter Declaration</a></li>
+<li><a href='#id-2.SQLConversion-2.VariableDeclaration'>2. Variable Declaration</a></li>
+<li><a href='#id-2.SQLConversion-3.ASSIGNMENT'>3. ASSIGNMENT</a></li>
+<li><a href='#id-2.SQLConversion-4.Control_flow–IF문'>4. Control_flow – IF 문</a></li>
+<li><a href='#id-2.SQLConversion-5.SELECT절'>5. SELECT 절</a></li>
+<li><a href='#id-2.SQLConversion-6.ExceptionHandler'>6. Exception Handler</a></li>
+<li><a href='#id-2.SQLConversion-7.SPCall'>7. SP Call</a></li>
+<li><a href='#id-2.SQLConversion-8.Functions'>8. Functions</a></li>
+<li><a href='#id-2.SQLConversion-9.Etc'>9. Etc</a></li>
+<li><a href='#id-2.SQLConversion-10.DBLink'>10. DB Link</a></li>
+<li><a href='#id-2.SQLConversion-11.JOINUPDATE'>11. JOIN UPDATE</a></li>
+</ul>
+</li>
+<li><a href='#id-2.SQLConversion-7.UsingCursor'>7. Using Cursor</a></li>
+</ul>
+</li>
+<li><a href='#id-2.SQLConversion-EXCEPTIONCODE'>EXCEPTION CODE</a></li>
+</ul>
+</div>
+
+<h2 id="id-2.SQLConversion-SQLConversion"><strong>SQL Conversion</strong></h2>
+
+<p>SQL Server의 SQL 문들을 ALTIBASE로 변환하는 방법을 설명에 대하여 설명한다.</p>
+
+<h3 id="id-2.SQLConversion-1.JOIN">1. JOIN</h3>
+<hr />
+<p>ALTIBASE는 ANSI 표준의 JOIN 연산만 제공한다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>SQL Server</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> INNER JOIN </p></td>
+<td class="confluenceTd"><p> INNER JOIN </p></td>
+<td class="confluenceTd"><p> <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> LEFT OUTER JOIN </p></td>
+<td class="confluenceTd"><p> LEFT OUTER JOIN </p></td>
+<td class="confluenceTd"><p> <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> RIGHT OUTER   JOIN </p></td>
+<td class="confluenceTd"><p> RIGHT OUTER   JOIN </p></td>
+<td class="confluenceTd"><p> <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> FULL OUTER JOIN </p></td>
+<td class="confluenceTd"><p> FULL OUTER JOIN </p></td>
+<td class="confluenceTd"><p> <br class="atl-forced-newline" /> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CROSS JOIN </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> <br class="atl-forced-newline" /> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-2.SQLConversion-2.ExecutionQuery">2. Execution Query</h3>
+<hr />
+<p>ALTIBASE의 쿼리 종결 문자는 “;” 이다. 따라서 여러 쿼리를 한번에 실행하려 한다면 쿼리마다 종결문자 “;”로 구분해 주어야 한다.</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>SQL Server</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GO </p></td>
+<td class="confluenceTd"><p> ; <br class="atl-forced-newline" />
+Commit; </p></td>
+<td class="confluenceTd"><p> 기본값은 Autocommit </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-2.SQLConversion-3.TemporaryTable">3. Temporary Table</h3>
+<hr />
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>SQL Server</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+<th class="confluenceTh"><p> <strong>비고</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CREATE TABLE #TempProcess </p></td>
+<td class="confluenceTd"><p> CREATE TABLE TEMP1 (…) TABLESPACE volatile_tablespace_name </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="id-2.SQLConversion-4.ControlStatement">4. Control Statement</h3>
+<hr />
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong> </strong> </p></th>
+<th class="confluenceTh"><p> <strong>SQL Server</strong> </p></th>
+<th class="confluenceTh"><p> <strong>ALTIBASE</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> IF </p></td>
+<td class="confluenceTd"><p> If (조건) <br class="atl-forced-newline" />
+Else if (조건) <br class="atl-forced-newline" />
+Else <br class="atl-forced-newline" />
+End </p></td>
+<td class="confluenceTd"><p> If 조건 then <br class="atl-forced-newline" />
+Elseif 조건 then <br class="atl-forced-newline" />
+Else <br class="atl-forced-newline" />
+End </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> While </p></td>
+<td class="confluenceTd"><p> While (조건) <br class="atl-forced-newline" />
+BEING <br class="atl-forced-newline" />
+END <br class="atl-forced-newline" />
+BREAK   =&gt;while문 탈출 </p></td>
+<td class="confluenceTd"><p> While 조건 loop <br class="atl-forced-newline" />
+End loop <br class="atl-forced-newline" />
+Exit when 조건 =&gt;조건 만족할 때 반복 loop탈출 </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<h3 id="id-2.SQLConversion-5.Identityattribute">5. Identity attribute</h3>
+<hr />
+<p>ALTIBASE에는 Identity 속성은 존재하지 않는다. 따라서 필요시 SEQUENCE를 만들어 사용한다.</p>
+
+<h3 id="id-2.SQLConversion-6.ProcedureConversion">6. Procedure Conversion</h3>
+<hr />
+<p>ALTIBASE의 PROCEDRUE 생성 및 실행구문은 SQL 서버와 다른 부분이 있다.<br />
+예제를 통하여 PROCEDURE 변경 방법을 확인한다.</p>
+
+<h4 id="id-2.SQLConversion-1.ParameterDeclaration">1. Parameter Declaration</h4>
+
+<p>SQL Server의 파라미터 선언에서 ‘@’ 기호를 없앤다.<br />
+파라미터의 성격에 따라 in , out , in out 을 명시해준다.<br />
+Function일 경우 실행 후 하나의 값을 반환해 주는 것으로 반드시 RETURN 다음의 데이터 타입을 명시해야 한다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>CREATE Procedure <a class="createlink" href="/pages/createpage.action?spaceKey=DOCKI&amp;title=dbo">dbo</a>.<a class="createlink" href="/pages/createpage.action?spaceKey=DOCKI&amp;title=sp1">sp1</a><br />
+@nTop    INT --무시<br />
+, @nGroupCode  INT = -2<br />
+, @nObjectCode  INT = -2<br />
+, @nRCLS   INT=1 – 1:Set , 0:Unset<br />
+, @nLCRS   INT=1 – 1:Set , 0:Unset<br />
+, @nLCLS   INT=1 – 1:Set , 0:Unset<br />
+, @sStartDate  VARCHAR(19) = '' – 무시<br />
+, @sEndDate   VARCHAR(19) = '' – 무시<br />
+, @nSort   INT = 0 – 0:탐지회수, 1:시도횟수 2:DataSize<br />
+, @sSignatureName VARCHAR(100) = ''<br />
+As<br />
+…</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>create or replace procedure sp1<br />
+(<br />
+i_nTop           IN INT --무시<br />
+, i_nGroupCode    IN INT := -2<br />
+, i_nObjectCode    IN INT := -2<br />
+, i_nRCLS          IN INT:=1 – 1:Set , 0:Unset<br />
+, i_nLCRS          IN INT:=1 – 1:Set , 0:Unset<br />
+, i_nLCLS          IN INT:=1 – 1:Set , 0:Unset<br />
+, i_sStartDate      IN VARCHAR(19) := '' – 무시<br />
+, i_sEndDate       IN VARCHAR(19) := '' – 무시<br />
+, i_nSort           IN INT := 0 – 0:탐지회수, 1:시도횟수 2:DataSize<br />
+, i_sSignatureName IN VARCHAR(100) := ''<br />
+)<br />
+as …</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-2.VariableDeclaration">2. Variable Declaration</h4>
+
+<p>Altibase의 변수 선언은 AS와 BEGIN 사이에서 정의된다.<br />
+SQL Server의 변수 선언에서 ‘@’ 기호를 없앤다.<br />
+변수 선언 할 때 구분자인 ‘,’를 ‘;’로 바꾼다.<br />
+마지막 변수 선언에도 항상 ‘;’로 마지막임을 선언 한다.</p>
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>create or replace procedure sp1<br />
+(<br />
+……<br />
+)<br />
+as<br />
+DECLARE @sTotalQry  VARCHAR(3000)<br />
+, @sQry   VARCHAR(3000)<br />
+, @sFilterQry VARCHAR(1000)<br />
+, @dStartDate DATETIME<br />
+, @dEndDate  DATETIME<br />
+, @sSort  VARCHAR(20)<br />
+, @sSortSub  VARCHAR(90)<br />
+, @sTop   VARCHAR(10)<br />
+, @sTable  VARCHAR(50)<br />
+, @nSec   INT<br />
+, @sBaseDate VARCHAR(23)</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>create or replace procedure sp1<br />
+(<br />
+……<br />
+)<br />
+as<br />
+i_sTotalQry  VARCHAR(3000);<br />
+i_sQry       VARCHAR(3000);<br />
+i_sFilterQry VARCHAR(1000);<br />
+i_dStartDate DATE;<br />
+i_dEndDate   DATE;<br />
+i_sSort      VARCHAR(20);<br />
+i_sSortSub   VARCHAR(90);<br />
+i_sTop       VARCHAR(10);<br />
+i_sTable     VARCHAR(50);<br />
+i_nSec       INT;<br />
+i_sBaseDate  VARCHAR(23);</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-3.ASSIGNMENT">3. ASSIGNMENT</h4>
+
+<p>SQL Server의 변수에 값 할당 시 SET 를 이용한다.  여기서 SET,  ‘@’ 문자를 없앤다.<br />
+그리고 ‘=’ 를 ‘ := ’로 바꾼다.<br />
+구분자인 ‘,’를 ‘;’로 바꾸고 마지막에 항상 ‘;’로 마지막임을 선언 한다.<br />
+위와 같이 SET 을 명시하여 변수에 값을 할당 할 수도 있다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>SET @sTop = '1000'<br />
+SET @sBaseDate = CONVERT(VARCHAR, DATEADD(dd, -1, GETDATE()), 121)</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>i_sTop      := '1000'  ;<br />
+i_sBaseDate := to_char(DATEADD (SYSDATE, -1, 'DAY'), 'YYYY-MM-DD HH:MI:SS') ;<br />
+OR<br />
+Set i_sTop      = '1000'  ;<br />
+Set i_sBaseDate  = to_char(DATEADD (SYSDATE, -1, 'DAY'), 'YYYY-MM-DD HH:MI:SS') ;</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-4.Control_flow–IF문">4. Control_flow – IF 문</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+IF문 처음에는  IF (condition)  THEN으로 처음을 표시한다.<br />
+IF문 끝에는 END IF로 IF문이 끝임을 표시한다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>IF  (@nRCLS = 1) AND (@nLCRS = 1) AND (@nLCLS = 1) SET @sFilterQry = ''<br />
+ELSE IF (@nRCLS = 0) AND (@nLCRS = 0) AND (@nLCLS = 0) SET @sFilterQry = ''</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>IF  (i_nRCLS = 1) AND (i_nLCRS = 1) AND (i_nLCLS = 1)   THEN<br />
+i_sFilterQry := '' ;<br />
+ELSIF (i_nRCLS = 0) AND (i_nLCRS = 0) AND (i_nLCLS = 0) THEN<br />
+i_sFilterQry := '' ;<br />
+END IF;</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-5.SELECT절">5. SELECT 절</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+ALTIBASE에서 select의 resultset을 client에 보내기 위해서는 DB 객체에 REF CURSOR 를 먼저 작성해주어야 한다. 그리고 sp의 인자에 ref cursor를 인자로 작성하여야 한다.  그리고 해당 쿼리를 실행할 때 Open이라는 명령어로 실행 한다.<br />
+SQL Server의 ‘@’ 문자를 없앤다</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>……<br />
+SET @sQry =  'select * from test_tbl'<br />
+EXEC(@sQry)<br />
+……</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>CREATE TYPESET MY_TYPE<br />
+AS<br />
+TYPE MY_CUR IS REF CURSOR;<br />
+END;<br />
+/<br />
+create or replace procedure spTMSGetEventSignatureRankVariation<br />
+(<br />
+……<br />
+, P1                OUT MY_TYPE.MY_CUR<br />
+)<br />
+As<br />
+i_sQry := 'select * from test_tbl'   ;<br />
+OPEN P1 FOR i_sQry;<br />
+END;</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-6.ExceptionHandler">6. Exception Handler</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+ALTIBASE의 Exception Handler는 해당 Exception이 발생했을 때 처리하는 기술이다.<br />
+Exception 처리는 항상 BEGIN …. END; 구문 안에서 처리 해야 한다.<br />
+시스템 정의 EXCEPTION이나  사용자 정의 EXCEPTION의 이름을 기술하고 해당 Exception을 만날 때 해당 statement를 처리하고, 현재 발생한 Exception을 처리하지 못할 경우 최종적으로 OTHERS 루틴으로 처리 된다.<br />
+적용 받은 레코드수가 0인지 체크하는 구문은 SQL%ROWCOUNT상수로 확인 할 수 있다.<br />
+시스템 정의 Exception은 파일 마지막에 첨부합니다</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>IF @@ERROR &lt;&gt; 0 BEGIN<br />
+IF @@ROWCOUNT = 0 BEGIN<br />
+ROLLBACK<br />
+END<br />
+END</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>BEGIN<br />
+……<br />
+EXCEPTION WHEN NO_DATA_FOUND THEN<br />
+rollback;<br />
+END;</p>
+
+<p>OR<br />
+IF SQL%ROWCOUNT = 0 then<br />
+ROLLBACK<br />
+END if;</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-7.SPCall">7. SP Call</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+SQL Server의 SP 호출은 exec sp_name 로 호출 하고 sp 인자를 괄호 없이 지정해주지만,  ALTIBASE에서 SP_name 을 실행하고 괄호안에 sp의 인자를 명시해준다.<br />
+SQL Server의 ‘@’ 문자를 없앤다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<at:declarations><at:string at:name="주민번호," /><at:string at:name="날짜1," /></at:declarations>
+<p>IF @아이디 IS NOT NULL BEGIN<br />
+EXEC SP_상품_예약조회_회원체크 <at:var at:name="주민번호," />구분,<at:var at:name="날짜1," />날짜2</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>IF i_아이디 IS NOT NULL THEN<br />
+SP_상품_예약조회_회원체크( i_주민번호,i_구분,i_날짜1,i_날짜2);</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-8.Functions">8. Functions</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+함수별로 사용법은 상이할 수 있고, 함수 명이 다를 수도 있다.<br />
+Mssql의 ‘@’ 문자를 없앤다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1. LEFT, RIGHT 함수</p>
+<ul class="alternate">
+	<li>LEFT(@주민번호,6)</li>
+	<li>RIGHT(@주민번호,7)<br />
+2. ISNULL(V1, 0)<br />
+3. CASE 연합 WHEN '0' THEN B.대외모객+B.패키지 ELSE ISNULL(D.연합모객,0) END<br />
+4. Convert<br />
+CONVERT(VARCHAR(10),,120) &lt;= B.출발일      TO_CHAR(CASE2(i_출발일1=NULL,SYSDATE),'YYYY-MM-DD');<br />
+5. LEN<br />
+6. RTRIM(LTRIM())<br />
+7. DATEADD(mi, -20, GETDATE())<br />
+8. CEILING<br />
+9. 나머지 연산자 %  (a % b )<br />
+10. charIndex(‘aaa’, ‘aaabbbcccddd’)<br />
+11. 문자열 연결 + : (‘alti’ + ‘base’)</li>
+</ul>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1. SubStr로 치환</p>
+<ul class="alternate">
+	<li>SUBSTR(주민번호,1,6)</li>
+	<li>SUBSTR(주민번호,8,7)<br />
+2. NVL(V1, 0)<br />
+3. CASE2(연합 = '0', B.대외모객 || B.패키지,D.연합모객=NULL,0,)<br />
+4. Convert</li>
+	<li>CONVERT(VARCHAR(23), dStartDate, 121) =&gt; TO_CHAR(dStartDate, 'YYYY-MM-DD HH:MI:SS.FF3');</li>
+	<li>CONVERT(DATETIME, sEndDate) =&gt; TO_DATE(sEndDate, 'YYYY-MM-DD HH:MI:SS');<br />
+5. LENGTH<br />
+6. TRIM()<br />
+7. DATEADD(sysdate, -20, 'MINITUE');<br />
+8. CEIL<br />
+9. MOD(a, b)<br />
+10. INSTR(‘aaabbbcccddd’, ‘aaa’)<br />
+11. || 사용 (‘alti’ || ’base’)</li>
+</ul>
+</div></div>
+
+<h4 id="id-2.SQLConversion-9.Etc">9. Etc</h4>
+
+<p>ALTIBASE의 문장 끝에는 항상 ‘;’로 마지막임을 표시한다.<br />
+SQL Server의 ‘@’ 문자를 없앤다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1.	UPDATE STATISTICS index_name<br />
+2.	with (nolock)<br />
+3.	order, level 등의 keyword 사용</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1.	필요 없음.<br />
+2.	삭제<br />
+3.	order, level 등의 keyword 사용 금지( 알티베이스 예약어)</p>
+</div></div>
+
+<h4 id="id-2.SQLConversion-10.DBLink">10. DB Link</h4>
+
+<p>Altibase에서 DB Link를 사용시에는<br />
+SELECT의 경우 REMOTE_TABLE(dblink명, Query);</p>
+
+<p>DML의 경우 REMOTE_EXECUTE_IMMEDIATE(dblink명, Query);<br />
+를 사용한다.</p>
+
+<h4 id="id-2.SQLConversion-11.JOINUPDATE">11. JOIN UPDATE</h4>
+
+<p>Altibase에서 Join Update를 처리하기 위해서는 두가지의 방법이 있다.</p>
+
+<p>1.  JOIN UPDATE를 사용</p>
+<ul class="alternate">
+	<li>각 Table에 Primary Key 또는 Unique Key가 존재하여야 한다.</li>
+</ul>
+
+
+<p>2. Merge Join의 update를 사용.</p>
+<ul class="alternate">
+	<li>Merge into A using ( SELECT …  )<br />
+WHEN matched then<br />
+Update …</li>
+</ul>
+
+
+<h3 id="id-2.SQLConversion-7.UsingCursor">7.	Using Cursor</h3>
+<hr />
+<p>SQL Server의 커서를 ALTIBASE로 변환하는 방법을 예제를 통하여 확인한다.</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> SQL Server </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>declare security_cursor cursor for<br />
+select fldID from tblDept where fldParentID=@fldID<br />
+open security_cursor<br />
+fetch next from security_cursor into @fldID<br />
+while @@fetch_status = 0<br />
+begin<br />
+exec sr_GetSubDeptID_Str @fldID, @DeptID OUTPUT<br />
+declare @sql as varchar(8000)<br />
+begin<br />
+exec(@sql)<br />
+end<br />
+fetch next from security_cursor into @fldID<br />
+end<br />
+close security_cursor<br />
+deallocate security_cursor</p>
+</div></div>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ALTIBASE </p></th>
+</tr>
+</tbody></table></div>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>부서별 사원수와 급여 합계를 구하는 프로시저입니다<br />
+CREATE OR REPLACE PROCEDURE ForCursor_Test<br />
+AS<br />
+BEGIN<br />
+DECLARE CURSOR dept_sum IS<br />
+SELECT b.dname, COUNT(a.empno) cnt, SUM(a.sal) salary<br />
+FROM emp a, dept b<br />
+WHERE a.deptno = b.deptno<br />
+GROUP BY b.dname;<br />
+– Cursor를 FOR문에서 실행시킨다<br />
+BEGIN<br />
+FOR emp_list IN dept_sum LOOP<br />
+println('부서명 : ' || emp_list.dname);<br />
+println ('사원수 : ' || emp_list.cnt);<br />
+println('급여합계 : ' || emp_list.salary);<br />
+END LOOP;<br />
+END;<br />
+END;<br />
+/</p>
+</div></div>
+
+
+
+<h2 id="id-2.SQLConversion-EXCEPTIONCODE"><strong>EXCEPTION CODE</strong></h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> <strong>Exception Name</strong> </p></th>
+<th class="confluenceTh"><p> <strong>Error Code</strong><br class="atl-forced-newline" />
+<strong>(integer)</strong> </p></th>
+<th class="confluenceTh"><p> <strong>Error Code</strong><br class="atl-forced-newline" />
+<strong>(hexadecimal)</strong> </p></th>
+<th class="confluenceTh"><p> <strong>Error Section</strong> </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;CURSOR_ALREADY_OPEN&quot; </p></td>
+<td class="confluenceTd"><p> 201062 </p></td>
+<td class="confluenceTd"><p> 31166 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_CURSOR_ALREADY_OPEN </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;DUP_VAL_ON_INDEX&quot; </p></td>
+<td class="confluenceTd"><p> 201063 </p></td>
+<td class="confluenceTd"><p> 31167 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_DUP_VAL_ON_INDEX </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_CURSOR&quot; </p></td>
+<td class="confluenceTd"><p> 201064 </p></td>
+<td class="confluenceTd"><p> 31168 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_INVALID_CURSOR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_NUMBER&quot; </p></td>
+<td class="confluenceTd"><p> 201065 </p></td>
+<td class="confluenceTd"><p> 31169 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_INVALID_NUMBER </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;NO_DATA_FOUND&quot; </p></td>
+<td class="confluenceTd"><p> 201066 </p></td>
+<td class="confluenceTd"><p> 3116A </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_NO_DATA_FOUND </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;PROGRAM_ERROR&quot; </p></td>
+<td class="confluenceTd"><p> 201067 </p></td>
+<td class="confluenceTd"><p> 3116B </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_PROGRAM_ERROR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;STORAGE_ERROR&quot; </p></td>
+<td class="confluenceTd"><p> 201068 </p></td>
+<td class="confluenceTd"><p> 3116C </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_STORAGE_ERROR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;TIMEOUT_ON_RESOURCE&quot; </p></td>
+<td class="confluenceTd"><p> 201069 </p></td>
+<td class="confluenceTd"><p> 3116D </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_TIMEOUT_ON_RESOURCE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;TOO_MANY_ROWS&quot; </p></td>
+<td class="confluenceTd"><p> 201070 </p></td>
+<td class="confluenceTd"><p> 3116E </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_TOO_MANY_ROWS </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;VALUE_ERROR&quot; </p></td>
+<td class="confluenceTd"><p> 201071 </p></td>
+<td class="confluenceTd"><p> 3116F </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_VALUE_ERROR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;ZERO_DIVIDE&quot; </p></td>
+<td class="confluenceTd"><p> 201072 </p></td>
+<td class="confluenceTd"><p> 31170 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_ZERO_DIVIDE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_PATH&quot; </p></td>
+<td class="confluenceTd"><p> 201237 </p></td>
+<td class="confluenceTd"><p> 31215 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_INVALID_PATH </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_MODE&quot; </p></td>
+<td class="confluenceTd"><p> 201235 </p></td>
+<td class="confluenceTd"><p> 31213 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_INVALID_FILEOPEN_MODE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_FILEHANDLE&quot; </p></td>
+<td class="confluenceTd"><p> 201238 </p></td>
+<td class="confluenceTd"><p> 31216 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_INVALID_FILEHANDLE </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;INVALID_OPERATION&quot; </p></td>
+<td class="confluenceTd"><p> 201239 </p></td>
+<td class="confluenceTd"><p> 31217 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_INVALID_OPERATION </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;READ_ERROR&quot; </p></td>
+<td class="confluenceTd"><p> 201242 </p></td>
+<td class="confluenceTd"><p> 3121A </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_READ_ERROR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;WRITE_ERROR&quot; </p></td>
+<td class="confluenceTd"><p> 201243 </p></td>
+<td class="confluenceTd"><p> 3121B </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_WRITE_ERROR </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;ACCESS_DENIED&quot; </p></td>
+<td class="confluenceTd"><p> 201236 </p></td>
+<td class="confluenceTd"><p> 31214 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_DIRECTORY_ACCESS_DENIED </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;DELETE_FAILED&quot; </p></td>
+<td class="confluenceTd"><p> 201240 </p></td>
+<td class="confluenceTd"><p> 31218 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_DELETE_FAILED </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> &quot;RENAME_FAILED&quot; </p></td>
+<td class="confluenceTd"><p> 201241 </p></td>
+<td class="confluenceTd"><p> 31219 </p></td>
+<td class="confluenceTd"><p> qpERR_ABORT_QSX_FILE_RENAME_FAILED </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

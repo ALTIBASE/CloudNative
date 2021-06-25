@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : OCI Application conversion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6.-Application-Conversion_2986525.html">6. Application Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : OCI Application conversion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 10, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409348495 {padding: 0px;}
+div.rbtoc1624409348495 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409348495 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409348495'>
+<ul class='toc-indentation'>
+<li><a href='#OCIApplicationconversion-Overview'>Overview</a></li>
+<li><a href='#OCIApplicationconversion-FunctionMappingbetweenOCIVSCLI(Altibase)'>Function Mapping between OCI VS CLI(Altibase)</a>
+<ul class='toc-indentation'>
+<li><a href='#OCIApplicationconversion-Connect/initialize/authorize'>Connect/initialize/authorize</a></li>
+<li><a href='#OCIApplicationconversion-Handles/descriptors'>Handles/descriptors</a></li>
+<li><a href='#OCIApplicationconversion-Transactionmanagement'>Transaction management</a></li>
+<li><a href='#OCIApplicationconversion-Bind/define/describe'>Bind/define/describe</a></li>
+<li><a href='#OCIApplicationconversion-Prepare/execute/fetch'>Prepare/execute/fetch</a></li>
+<li><a href='#OCIApplicationconversion-Miscellaneous'>Miscellaneous</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="OCIApplicationconversion-Overview">Overview</h2>
+
+<p>The Open Database Connectivity (ODBC) is very similar to the CLI standard.<br />
+Applications based on ODBC can connect to the most popular DBMSs.</p>
+
+<p>Thus, the application conversion is pretty easy. All the ODBC Core Level, Level 1, and<br />
+Level 2 functions are supported in Altibase CLI, except SQLDriver.</p>
+
+<p>The SQL Datatypes are same in ODBC, as in Altibase Call Level Interface (CLI).
+<br class="atl-forced-newline" /></p>
+
+<p>The Altibase CLI  driver provides extensive support for the commonly used OCI<br />
+functions.</p>
+
+<p>The OCI functions include connection, initialization, handle and<br />
+descriptor function, binding, define, statement, execution, result set, transaction<br />
+control, data type functions, date and time, large object processing, arrays,</p>
+
+<p>stored procedure executions, File I/O, and so on.</p>
+
+<p>These supported functions have a compatible syntax with the Oracle OCI<br />
+functions.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="OCIApplicationconversion-FunctionMappingbetweenOCIVSCLI(Altibase)">Function Mapping between OCI VS CLI(Altibase)</h2>
+
+<h3 id="OCIApplicationconversion-Connect/initialize/authorize">Connect/initialize/authorize</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle CLI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIInitialize </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIEnvInit </p></td>
+<td class="confluenceTd"><p> SQLAllocHandle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerAttach </p></td>
+<td class="confluenceTd"><p> SQLConnect </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerDetach </p></td>
+<td class="confluenceTd"><p> SQLDisconnect </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionBegin </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISessionEnd </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h3 id="OCIApplicationconversion-Handles/descriptors">Handles/descriptors</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIHandleAlloc </p></td>
+<td class="confluenceTd"><p> SQLAllocHandle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIHandleFree </p></td>
+<td class="confluenceTd"><p> SQLFreeHandle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIAttrGet </p></td>
+<td class="confluenceTd"><p> SQLColAttribute <br class="atl-forced-newline" />
+SQLGetConnectAttr <br class="atl-forced-newline" />
+SQLGetStmtAttr <br class="atl-forced-newline" />
+SQLGetEnvAttr </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIParamGet </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIParamSet </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIAttrSet </p></td>
+<td class="confluenceTd"><p> SQLSetEnvAttr <br class="atl-forced-newline" />
+SQLSetConnectAttr <br class="atl-forced-newline" />
+SQLSetStmtAttr </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDescriptorAlloc </p></td>
+<td class="confluenceTd"><p> SQLSetStmtAttr </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDescriptorFree </p></td>
+<td class="confluenceTd"><p> SQLFreeHandle </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="OCIApplicationconversion-Transactionmanagement">Transaction management</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransCommit </p></td>
+<td class="confluenceTd"><p> SQLEndTran </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransDetach </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransRollback </p></td>
+<td class="confluenceTd"><p> SQLEndTran </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransStart </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransPrepare </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCITransForget </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h3 id="OCIApplicationconversion-Bind/define/describe">Bind/define/describe</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindDynamic </p></td>
+<td class="confluenceTd"><p> SQLParamData, SQLPutData, SQLGetData </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindByName </p></td>
+<td class="confluenceTd"><p> SQLBindParameter </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindByPos </p></td>
+<td class="confluenceTd"><p> SQLBindParameter </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindObject </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBindArrayOfStruct </p></td>
+<td class="confluenceTd"><p> SQLBindParameter </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtGetBindInfo </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDefineArrayOfStruct </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDefineDynamic </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDefineByPos </p></td>
+<td class="confluenceTd"><p> SQLBindCol </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDefineObject </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIDescribeAny </p></td>
+<td class="confluenceTd"><p> MANY </p></td>
+<td class="confluenceTd"><p> the appropriate call from <br class="atl-forced-newline" />
+          among SQLColAttribute, SQLColumns, <br class="atl-forced-newline" />
+          SQLDescribeCol, SQLForeignKeys, <br class="atl-forced-newline" />
+          SQLGetFunctions, SQLPrimaryKeys, <br class="atl-forced-newline" />
+          SQLProcedures, SQLProcedureColumns, <br class="atl-forced-newline" />
+          SQLSpecialColumns, SQLStatistics, <br class="atl-forced-newline" />
+          SQLTablePrivileges, and SQLTables </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h3 id="OCIApplicationconversion-Prepare/execute/fetch">Prepare/execute/fetch</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> Altibase CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtPrepare </p></td>
+<td class="confluenceTd"><p> SQLPrepare </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtExecute </p></td>
+<td class="confluenceTd"><p> SQLExecute </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtFetch2 </p></td>
+<td class="confluenceTd"><p> SQLFetch </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+<p><br class="atl-forced-newline" /></p>
+
+<h3 id="OCIApplicationconversion-Miscellaneous">Miscellaneous</h3>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle OCI </p></th>
+<th class="confluenceTh"><p> ALTIBASE CLI </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIBreak </p></td>
+<td class="confluenceTd"><p> SQLCancel </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIServerVersion </p></td>
+<td class="confluenceTd"><p> SQLGetInfo </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIPasswordChange </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIErrorGet </p></td>
+<td class="confluenceTd"><p> SQLGetDiagRec </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtGetPieceInfo </p></td>
+<td class="confluenceTd"><p> SQLGetData </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCIStmtSetPieceInfo </p></td>
+<td class="confluenceTd"><p> SQLParamData, SQLPutData, SQLGetData </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCILdaToSvcCtx </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> OCISvcCtxToLda </p></td>
+<td class="confluenceTd"><p> N/A </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

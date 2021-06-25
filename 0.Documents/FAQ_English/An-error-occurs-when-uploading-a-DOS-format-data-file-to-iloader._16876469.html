@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : An error occurs when uploading a DOS format data file to iloader.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="11.-Utilities_16876463.html">11. Utilities</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="iLoader_16876467.html">iLoader</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : An error occurs when uploading a DOS format data file to iloader.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148957 {padding: 0px;}
+div.rbtoc1624409148957 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148957 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148957'>
+<ul class='toc-indentation'>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Overview'>Overview</a></li>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Howtoremove'>How to remove</a>
+<ul class='toc-indentation'>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-OnWindows'>On Windows</a></li>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-OnLinux/Unix'>On Linux/Unix</a>
+<ul class='toc-indentation'>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Converttounixtypefileusingdos2unix.'>Convert to unix type file using dos2unix.</a></li>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Remove^Musingsed'>Remove ^M using sed</a></li>
+</ul>
+</li>
+<li><a href='#AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-StartingfromALTIBASEHDB5.5.1...'>Starting from ALTIBASE HDB 5.5.1 ...</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Overview">Overview</h1><hr /><p>To upload a DOS format data file from Unix/Linux server to the iloader, you need to convert the file using an editing program or dos2unix.</p><p>If the iloader is executed without conversion, the following error may occur.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">ERR-9102B : Token value length overflow.</pre>
+</div></div><p>In DOS format files, Row Termination Code is composed of CR (Carriage Return) + LF (Line Feed).</p><p>When the iloader parses the data file, it recognizes %n(LF) as a row terminator. So when uploading a data file in DOS format, a parsing error might occur.</p><p> </p><p>When opening a DOS format file with vi in Linux/Unix, ^M is attached to the line or looks like the following:</p><p>&quot;SYS_T.dat&quot; [DOS] 225L, 33822C</p><p> </p><h1 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Howtoremove">How to remove</h1><hr /><h2 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-OnWindows">On Windows</h2><hr /><ul><li><p>In Windows, it can be converted using an editing program.</p></li><li><p>Ex) In UltraEdit, select File -&gt; Convert -&gt;'DOS-&gt;UNIX' and save</p></li></ul><p> </p><h2 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-OnLinux/Unix">On Linux/Unix</h2><hr /><h3 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Converttounixtypefileusingdos2unix.">Convert to unix type file using dos2unix.</h3><ul><li><p>The dos2unix command converts DOS/MAC files to UNIX format.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ dos2unix SYS_T.dat
+dos2unix: converting file SYS_T.dat to UNIX format ...</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>File type comparison before and after dos2unix execution</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ file SYS_T.dat
+SYS_T.dat: ISO-8859 text, with very long lines, with CRLF line terminators           # DOS format file
+
+$ dos2unix SYS_T.dat
+dos2unix: converting file SYS_T.dat to UNIX format ...
+
+$ file SYS_T.dat
+SYS_T.dat: ISO-8859 text, with very long lines                                       # UNIX format file</pre>
+</div></div></li></ul><h3 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-Remove^Musingsed">Remove ^M using sed</h3><ul><li><p>Use sed to remove ^M as an iloader data file.</p></li><li><p>^M must be entered as Ctrl+v+m.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ sed &#39;s/^M//g&#39; SYS_T.dat &gt; SYS_T.dat.1</pre>
+</div></div></li></ul><h2 id="AnerroroccurswhenuploadingaDOSformatdatafiletoiloader.-StartingfromALTIBASEHDB5.5.1...">Starting from ALTIBASE HDB 5.5.1 ...</h2><hr /><p>From ALTIBASE HDB 5.5.1, it is possible to upload without file conversion/modification by using %r%n, which means CR+LF as a record separator.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ file SYS_T.txt
+SYS_T.txt: ISO-8859 text, with CRLF, LF line terminators
+
+
+$ iloader -s 127.0.0.1 -u sys -p manager in -f SYS_T.fmt -d SYS_T.txt -log SYS_T.log -bad SYS_T.bad -t &quot;|&quot; -r &quot;%r%n&quot;
+-----------------------------------------------------------------
+     Altibase Data Load/Download utility.
+     Release Version 5.5.1.4.10
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION : TCP
+DATA_NLS_USE: MS949
+UPLOAD : 13.5710 msec
+     
+     Load Count  : 2(T)</pre>
+</div></div><p> </p><p> </p><div><span style="font-family: monospace;white-space: pre-wrap;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

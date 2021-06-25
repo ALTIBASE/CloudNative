@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11118 (  69912) The update log size &#39;?????&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;?????&#39;</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11118 (  69912) The update log size &#39;?????&#39; is bigger than TRX_UPDATE_MAX_LOGSIZE &#39;?????&#39;
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148443 {padding: 0px;}
+div.rbtoc1624409148443 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148443 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148443'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Overview'>Overview</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Version'>Version</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Symptom'>Symptom</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Cause'>Cause</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Solution'>Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-ReducethenumberofrecordsforUPDATE'>Reduce the number of records for UPDATE</a></li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-ChangeTRX_UPDATE_MAX_LOGSIZEpropertysettingvalue'>Change TRX_UPDATE_MAX_LOGSIZE property setting value</a></li>
+</ul>
+</li>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Reference'>Reference</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Relatedbug'>Related bug</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Overview">Overview</h1><hr /><p>This document describes an error that occurs while performing a change transaction in the memory table.</p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Version">Version</h1><hr /><p>Altibase version 4.3.9 or later</p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Symptom">Symptom</h1><hr /><p>This error may occur while performing a change transaction on the memory table.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Example of error occurrence) Table T5 is a memory table</b></div><div class="panelContent">
+<div class="line number1 index0 alt2"><code class="sql plain">iSQL&gt; </code><code class="sql keyword">update</code> <code class="sql plain">t5 </code><code class="sql keyword">set</code> <code class="sql plain">c1=</code><code class="sql string">'xxxxxxxxx'</code> <code class="sql plain">;</code></div><div class="line number2 index1 alt1"><code class="sql plain">[ERR-11118 : The </code><code class="sql keyword">update</code> <code class="sql plain">log </code><code class="sql keyword">size</code> <code class="sql string">'10486749'</code> <code class="sql keyword">is</code> <code class="sql plain">bigger than TRX_UPDATE_MAX_LOGSIZE </code><code class="sql string">'10485760'</code><code class="sql plain">]</code></div><div class="line number3 index2 alt2"><code class="sql plain">iSQL&gt;</code></div>
+</div></div><p>The error code differs depending on the Altibase version.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p><strong>Altibase 5 or later</strong></p><p>ERR-<span style="color: rgb(51,102,255);">11118 (  69912)</span> The update log size '?????' is bigger than TRX_UPDATE_MAX_LOGSIZE '?????'</p><p><br /><strong>Altibase 4.3.9</strong></p><p>ERR-<span style="color: rgb(51,102,255);">110C3 (  69827)</span> The update log size '?????' is bigger than TRX_UPDATE_MAX_LOGSIZE '?????'</p>
+                    </div>
+    </div>
+<p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Cause">Cause</h1><hr /><p>This error occurs because the size of the online transaction log created by one change transaction exceeds the TRX_UPDATE_MAX_LOGSIZE setting value.</p><p>TRX_UPDATE_MAX_LOGSIZE is an Altibase server property and serves to prevent excessive use of memory due to versioning of the memory table created by a large number of change transactions.</p><h4 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Versioningofthememorytable?">Versioning of the memory table?</h4><p>Altibase uses the Multi-Version Concurrency Control (MVCC) technique for concurrency control. MVCC refers to creating a new version of the record by executing the DML statement on a copy of the record, leaving the record as it was when a DML statement occurs for a record. With this technique, lookup transactions for one record are not affected by change transactions.</p><p>Due to the characteristics of each disk and memory, the disk table is in-place and the memory table is out-place and different MVCC techniques are used.</p><p>Out-place MVCC of the memory table keeps multiple versions by adding new versions to the new space, leaving the existing records intact when an update occurs on one record. TRX_UPDATE_MAX_LOGSIZE and LOCK_ESCALATION_MEMORY_SIZE properties are provided to prevent this from incurring load on the system, such as increased memory.</p><p>Since there is no previous version of INSERT, versioning does not occur, and since there is no new version of DELETE, only the delete flag is set, so multiple versions of versioning do not occur.</p><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Solution">Solution</h1><hr /><p>If this error occurs, correct it in one of the ways below.</p><h2 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-ReducethenumberofrecordsforUPDATE">Reduce the number of records for UPDATE</h2><hr /><p>By reducing the number of records that are changed at one time by an UPDATE statement, the amount of transaction logs created by one transaction is reduced.</p><h4 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Whentherearemanyrecordsthatneedtobechangedinonetable">When there are many records that need to be changed in one table</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>For Autocommit mode</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT ON; 
+iSQL&gt; UPDATE T1 SET C1=100 LIMIT 1000;        -- Reduce the UPDATE target range with the limit statement and repeat the UPDATE statement. 
+</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>For Non Autocommit mode</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF; 
+iSQL&gt; UPDATE T1 SET C1=100 LIMIT 1000;        -- Reduce the UPDATE target range with the limit statement and repeat the UPDATE statement.
+iSQL&gt; COMMIT;                                 -- The commit cycle is also short.
+</pre>
+</div></div><p><strong><br /></strong></p><h4 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-WhenperformingUPDATEonmultipletablesinonetransaction"><span style="color: rgb(0,0,0);">When performing UPDATE on multiple tables in one transaction</span></h4><p>Since the TRX_UPDATE_MAX_LOGSIZE property is applied on a per-transaction basis, if multiple statements are used in one transaction as shown below, TRX_UPDATE_MAX_LOGSIZE may increase until COMMIT or ROLLBACK is performed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF;
+iSQL&gt; UPDATE T1 SET C1 = 100;
+iSQL&gt; COMMIT;                                 -- Shorten the commit cycle.
+iSQL&gt; UPDATE T2 SET C1 = 200; 
+iSQL&gt; COMMIT;</pre>
+</div></div><h2 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-ChangeTRX_UPDATE_MAX_LOGSIZEpropertysettingvalue">Change TRX_UPDATE_MAX_LOGSIZE property setting value</h2><hr /><p>The default value for the TRX_UPDATE_MAX_LOGSIZE property is 10M. If this value is too small, this can be changed at the session or system level.</p><p>First, this section will describe how to calculate the size of the transaction log that will be created in a specific transaction and the precautions for changing TRX_UPDATE_MAX_LOGSIZE, and then how to change it.</p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-CalculationoftheTRX_UPDATE_MAX_LOGSIZEvalueofthetransaction">Calculation of the TRX_UPDATE_MAX_LOGSIZE value of the transaction</h3><p>This is how to estimate the amount of transaction log to be used by a particular transaction to change TRX_UPDATE_MAX_LOGSIZE.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Session 1-UPDATE statement execution</th><th class="confluenceTh">Session 2-Query Performance View</th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; AUTOCOMMIT OFF;
+iSQL&gt; UPDATE ORDER_LINE SET OL_DELIVERY_D = SYSDATE LIMIT 1;    -- Give and execute limit 1
+</pre>
+</div></div></td><td class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p>Among the results of executing the query below, UPDATE_SIZE * 'Number of records to be updated' is the size of the transaction log that will be created in the transaction.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT ST.SESSION_ID SESSION_ID, TX.ID TX_ID
+           , TX.UPDATE_SIZE
+           , SUBSTR(ST.QUERY, 1, 100) QUERY
+        FROM V$TRANSACTION TX, V$STATEMENT ST
+       WHERE TX.ID = ST.TX_ID AND TX.UPDATE_SIZE &lt;&gt; 0 ;</pre>
+</div></div></td></tr><tr><td colspan="1" class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ROLLBACK;</pre>
+</div></div></td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div><p> </p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Note/ConsiderationonchangingTRX_UPDATE_MAX_LOGSIZE">Note/Consideration on changing TRX_UPDATE_MAX_LOGSIZE</h3><ul><li><p><span style="color: rgb(255,0,0);">It is recommended to set TRX_UPDATE_MAX_LOGSIZE less than LOCK_ESCALATION_MEMORY_SIZE.</span><br />To prevent memory increase due to memory table MVCC, TRX_UPDATE_MAX_LOGSIZE and LOCK_ESCALATION_MEMORY_SIZE properties are provided.</p></li><li><p>If the size of the transaction log created by one transaction exceeds TRX_UPDATE_MAX_LOGSIZE, the transaction is error-processed and rolled back. If LOCK_ESCALATION_MEMORY_SIZE is exceeded, the transaction's LOCK mode is switched from record level IX_LOCK to table level X LOCK.</p></li><li>In the case of X LOCK, it may cause a problem in the service because the query transaction for the target table is also queued.</li><li>To prevent this problem, set TRX_UPDATE_MAX_LOGSIZE to be smaller than LOCK_ESCALATION_MEMORY_SIZE so that X LOCK does not occur.</li></ul><p> </p><h3 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Howtochange">How to change</h3><ul><li><p><strong>How to change property setting value</strong><br />TRX_UPDATE_MAX_LOGSIZE should be set smaller than LOCK_ESCALATION_MEMORY_SIZE, so check both properties together.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the TRX_UPDATE_MAX_LOGSIZE and LOCK_ESCALATION_MEMORY_SIZE settings</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- This is a method to check the value of a property set in the database.
+
+iSQL&gt; SELECT NAME, VALUE1 FROM V$PROPERTY WHERE NAME IN (&#39;TRX_UPDATE_MAX_LOGSIZE&#39;, &#39;LOCK_ESCALATION_MEMORY_SIZE&#39;);                      </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>How to check the TRX_UPDATE_MAX_LOGSIZE setting value for each session</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">- The TRX_UPDATE_MAX_LOGSIZE property can also be set on a per-session basis.
+-- To check the settings for each session
+iSQL&gt; SELECT ID SESSION_ID, COMM_NAME, TRX_UPDATE_MAX_LOGSIZE FROM V$SESSION;                            
+
+- To check the settings of my session. Only available for Altibase 5.3.3 or later
+iSQL&gt; SELECT ID SESSION_ID, COMM_NAME, TRX_UPDATE_MAX_LOGSIZE FROM V$SESSION WHERE ID = SESSION_ID();  </pre>
+</div></div></li><li><p><strong>How to change session unit</strong><br />This is applied to transactions performed after ALTER SESSION is executed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SESSION SET TRX_UPDATE_MAX_LOGSIZE = 52428800;        -- Value is in bytes</pre>
+</div></div></li><li><p>How to change the system level<br />After ALTER SYSTEM is executed, it is affected by the transaction performed in the new session. The value changed to ALTER SYSTEM is applied only while the Altibase server is running, and it returns to the default value when the Altibase server is restarted.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET TRX_UPDATE_MAX_LOGSIZE = 52428800;  </pre>
+</div></div><p>In order to permanently reflect the changes to the Altibase server, change the altibase.properties file as well.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; ALTER SYSTEM SET TRX_UPDATE_MAX_LOGSIZE = 52428800;  
+
+shell&gt; vi $ALTIBASE_HOME/conf/altibase.properties                  -- Open the altibase.properties file,  find TRX_UPDATE_MAX_LOGSIZE, change the value, and save.
+TRX_UPDATE_MAX_LOGSIZE = 52428800                               </pre>
+</div></div><p>If the above has done, the changed value can be kept even if the Altibase server is restarted.</p><p> </p></li></ul><p> </p><h1 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Reference">Reference</h1><hr /><h2 id="ERR-11118(69912)Theupdatelogsize&#39;?????&#39;isbiggerthanTRX_UPDATE_MAX_LOGSIZE&#39;?????&#39;-Relatedbug">Related bug</h2><hr /><p>In some versions, due to a bug related to TRX_UPDATE_MAX_LOGSIZE, it may not work properly even if the setting value of TRX_UPDATE_MAX_LOGSIZE is changed.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Altibase server version</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Symptom</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Bug</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>4.3.9.103 ~ 4.3.9.133</p></td><td class="confluenceTd"><p>The default value of TRX_UPDATE_MAX_LOGSIZE is 10M, but the value of the TRX_UPDATE_MAX_LOGSIZE column of V$SESSION is set to 0 (unlimited).</p></td><td class="confluenceTd"><p>BUG-20511</p></td></tr><tr><td class="confluenceTd"><p>4.3.9.163 ~ 4.3.9.165</p></td><td class="confluenceTd"><p>This is a bug that reads TRX_UPDATE_MAX_LOGSIZE incorrectly, and the error does not occur when an error should occur due to TRX_UPDATE_MAX_LOGSIZE.</p></td><td class="confluenceTd"><p>BUG-26311</p></td></tr></tbody></table></div><p> </p><p><br class="_mce_tagged_br" /><br /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

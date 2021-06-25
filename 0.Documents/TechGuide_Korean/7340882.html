@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 9. 부록 2(Spring-MyBatis-ALTIBASE 연동)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340818.html">Altibase MyBatis 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 9. 부록 2(Spring-MyBatis-ALTIBASE 연동)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Nov 28, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409844719 {padding: 0px;}
+div.rbtoc1624409844719 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409844719 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409844719'>
+<ul class='toc-indentation'>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-DB테이블및시퀀스생성'>DB 테이블 및 시퀀스 생성</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Spring설치'>Spring 설치</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Maven설치'>Maven 설치</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-프로젝트생성'>프로젝트 생성</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-패키지명명규칙'>패키지 명명 규칙</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-ApplicationContext파일작성'>ApplicationContext 파일 작성</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Mapper파일작성'>Mapper 파일 작성</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-DependencyInjection'>Dependency Injection</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Application작성'>Application 작성</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-관련JAR파일추가'>관련 JAR 파일 추가</a></li>
+<li><a href='#id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Application실행'>Application 실행</a></li>
+</ul>
+</div>
+<hr />
+<p>altibase_mybatis_spring 예제를 바탕으로 Spring-MyBatis-ALTIBASE와 연동하는 방법에 대해 좀 더 자세하게 설명한다.<br />
+단, IDE는 Eclipse를 사용한다.</p>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-DB테이블및시퀀스생성"><strong>DB 테이블 및 시퀀스 생성</strong></h2>
+
+<p>DB에 다음의 테이블과 시퀀스를 생성한다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+create table users(
+  user_no integer, 
+  user_name varchar(30), 
+  user_content varchar(200), 
+  reg_date date
+);
+
+</pre>
+</div></div>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Spring설치"><strong>Spring 설치</strong></h2>
+
+<p>Spring을 사용하려면 STS(STS, SpringSource Tools Suite)를 설치해야 한다.<br />
+STS란 이클립스에서 Spring으로 개발시에 편리하게 클립에서 스프링으로 개발할때 편리를 제공하는 플러그인으로 아래 목록 중 Eclipse의 Version에 맞게 설치 한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766081.png" data-image-src="attachments/7340882/7766081.png"></p>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Maven설치"><strong>Maven 설치</strong></h2>
+
+<ul class="alternate">
+	<li>Maven은 Apache Software Foundation에서 개발되고 있는 소프트웨어 프로젝트 관리 툴이다.<br />
+Maven은 Project Object Model(POM)이라는 것에 기초를 두어 프로젝트의 빌드, 테스트, 도큐멘테이션 등 프로젝트 라이프사이클 전체를 관리할 수 있는 툴이며 Spring-Mybatis-Altibase 연동 테스트 소스도 Maven을 적용 하여 관리하게 되었다.<br />
+해당 part는 Maven의 설치 과정을 설명한다.<br />
+1. Maven 파일 다운로드</li>
+	<li><a class="external-link" href="http://maven.apache.org/download.html" rel="nofollow">http://maven.apache.org/download.html</a> 에서 binary zip 파일을 다운 받는다.<br />
+ 2014년 10월 현재 최신버전은 apache-maven-3.2.8-bin.zip)<br />
+2. 메이븐 환경 설정</li>
+	<li>압축을 해제한 후에 윈도우 환경변수(바탕화면-&gt;내컴퓨터-&gt;속성-&gt;고급-&gt;환경변수)에서 MAVEN_HOME(c:\maven)을 사용자 변수에 추가하고,</li>
+</ul>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766082.png" data-image-src="attachments/7340882/7766082.png"></p>
+
+<p>PATH 설정에 maven binary path를 포함 시킨다.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766083.png" data-image-src="attachments/7340882/7766083.png"></p>
+
+<ul class="alternate">
+	<li>윈도우에서 시작 -&gt; 실행 -&gt; cmd 입력 후 도스 창 뜨면 mvn –version 입력하여 버전이 뜨면 OK</li>
+</ul>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766084.png" data-image-src="attachments/7340882/7766084.png"></p>
+
+<p>3. eclipse에서 maven 다운로드</p>
+<ul class="alternate">
+	<li>eclipse의 Help-&gt;Eclipse Marketplace를 클릭하여 STS를 다운받는 것과 같이 maven을 다운로드 받는다.</li>
+</ul>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766085.png" data-image-src="attachments/7340882/7766085.png"></p>
+
+<p>4. 압축을 해제한 maven을 eclipse에 설정 한다.</p>
+<ul class="alternate">
+	<li>windows -&gt; preference -&gt; Maven -&gt; Installatios 아래 browse클릭하여 “C:\maven\conf\settings.xml”경로를 잡아주고 Apply.</li>
+</ul>
+
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766086.png" data-image-src="attachments/7340882/7766086.png"></p>
+
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-프로젝트생성"><strong>프로젝트 생성</strong></h2>
+
+<p>Eclipse에 STS를 설치하면 Spring Template Project의 Spring 기반 프로젝트가 생성이 가능하다. 다음의 단계를 거쳐 프로젝트를 생성 한다.<br />
+1. 메뉴–File-New-Spring Template Project를 클릭하여 Spring MVC Project를 생성</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766087.png" data-image-src="attachments/7340882/7766087.png"></p>
+
+<p>2. Project name : 에 altibase_mybatis_spring, top-level package에 com.altibase.test 입력(Spring은 프로젝트 생성시 default 패키지 명을 필수로 입력해야 한다.)</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766088.png" data-image-src="attachments/7340882/7766088.png"></p>
+
+<p>3. Finish 버튼을 클릭</p>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-패키지명명규칙"><strong>패키지 명명 규칙</strong></h2>
+
+<p>부록에서 설명하고 있는 패키지 명은 기본적으로 com.altibase.test를 명명하여 사용하고 있는 데 이는 일반적으로 사용하는 패키지 분류 법칙을 가져와 적용한 것이며 각각의 성격은 다음과 같다.</p>
+<ul class="alternate">
+	<li>com : 첫번째 항목은 프로젝트를 이끄는 그룹의 성격을 결정하는 것으로 com은 company를 의미 한다. 만약 소규모 단체 등이라면 org(organization)를 사용할 것이다.</li>
+	<li>altibase : 두번째 항목은 자사의 그룹 또는 사명을 정해주는 부분으로 보통 회사라면 회사명이, 특정 그룹이라면 그룹명이 들어간다. 현 문서는 ALTIBASE에서 작성 하였으므로 altibase로 명명 하였다.</li>
+	<li>test : 세 번째 항목은 실제 이 프로젝트의 artifact 구조를 의미 한다. 현재 Samle은 DML의 일반적인 명령(Select/Insert/Delete/Update)이므로 test로 명명 하였다.</li>
+</ul>
+
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-ApplicationContext파일작성"><strong>ApplicationContext 파일 작성</strong></h2>
+
+<p>스프링 코드 작성에서 가장 먼저 해야 할 것은 AppilcationContext라고 불리는 스프링 빈 설정 파일을 작성 하는 것이다. 아래는 스프링 빈 설정 파일의 내역이다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+	xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+	xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd&quot;&gt;
+
+	&lt;description&gt;Example configuration to get you started.&lt;/description&gt;
+
+	&lt;!-- 지정된 패키지에서 빈을 탐색 --&gt;
+	&lt;context:component-scan base-package=&quot;com.altibase.test.service&quot; /&gt;
+	 
+	 &lt;!-- Apache DBCP를 이용한 ALTIBASE DB 접속 방법 - Apache DBCP라 초기에 Session Pool을 붙이는 프로퍼티가 존재하며
+	        물론 최초 연결시에 initialSize만큼 Session을 만들어 두는 것도 가능 하다.  --&gt;
+	&lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot; destroy-method=&quot;close&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot; /&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.62:21020/mydb&quot; /&gt;
+        &lt;property name=&quot;username&quot; value=&quot;test&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;test&quot; /&gt;
+        &lt;property name=&quot;initialSize&quot; value=&quot;10&quot; /&gt;
+        &lt;property name=&quot;minIdle&quot; value=&quot;25&quot; /&gt;
+        &lt;property name=&quot;maxIdle&quot; value=&quot;30&quot; /&gt;
+        &lt;property name=&quot;maxActive&quot; value=&quot;100&quot; /&gt;
+        &lt;property name=&quot;validationQuery&quot; value=&quot;select 1 from dual&quot; /&gt;
+        &lt;property name=&quot;testOnBorrow&quot; value=&quot;false&quot; /&gt;
+    &lt;/bean&gt;
+   
+	&lt;!-- 트랜잭션 사용 --&gt;
+	&lt;bean id=&quot;txManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+		&lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+	&lt;/bean&gt;
+	
+	&lt;!-- 트랜잭션 annotation 정의 --&gt;
+	&lt;tx:annotation-driven transaction-manager=&quot;txManager&quot;/&gt;
+	
+	&lt;!-- SqlSessionFactory 정의 --&gt;
+	&lt;!-- typeAliasesPackage 속성에는 맵퍼 정의 파일(XML) 내의 SQL 문장에서 참조하는 도메인 클래스가 포함된 패키지를 지정 --&gt;
+	&lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+		&lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+		&lt;property name=&quot;typeAliasesPackage&quot; value=&quot;com.altibase.test.domain&quot; /&gt;
+	&lt;/bean&gt;
+
+	&lt;!-- 맵퍼 인터페이스와 맵퍼 정의 파일에 의해 생성된 맵퍼 클래스를 빈에 주입 할 수 있도록 함 --&gt;
+	&lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+		&lt;property name=&quot;basePackage&quot; value=&quot;com.altibase.test.persistence&quot; /&gt;
+	&lt;/bean&gt;
+&lt;/beans&gt;
+
+</pre>
+</div></div>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Mapper파일작성"><strong>Mapper 파일 작성</strong></h2>
+
+<p>Users 테이블의 CRUD SQL 구문과 mapping되는 method들을 정의한 Mapper 파일을 작성한다. <br />
+pring의 방식을 따라야 하기 때문에 의존적 주입(Dependency Injection) 방식을 사용하게 된다.(UserMapper.xml, UserMapper.java)<br />
+Mapper는 com.altibase.test.persistence Package에 작성 하게 된다.</p>
+
+<p>1. altibase_mybatis_spring 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭후 New – Package을 클릭하여 com.altibase.test.persistence 라는 신규 패키지를 생성한다.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766089.png" data-image-src="attachments/7340882/7766089.png"></p>
+
+<p>2. 생성했던 신규 패키지(com.altibase.test.persistence)에 마우스 오른쪽 버튼 클릭 후 New – Interface를 클릭하여 UserMapper.java 파일을 생성한다<br />
+3. 생성한 Interface 파일의 내용을 다음과 같이 작성 한다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package com.altibase.test.persistence;
+
+import java.util.List;
+
+import com.altibase.test.domain.UserVo;
+
+public interface UserMapper {
+	public List&lt;UserVo&gt; getAllUser();
+	public UserVo getUserByNo(int user_no);
+	public Integer insertUserData(UserVo userVo);
+	public Integer deleteUserByNo(int user_no);
+	public Integer updateUserByNo(UserVo userVo);
+	
+} 
+
+</pre>
+</div></div>
+
+<p>4. 생성된 신규 패키지(com.altibase.test.persistence)에서 마우스 오른쪽 버튼 클릭 후 New – File을 클릭하여 File name: 에 UserMapper.xml을 작성한다.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766090.png" data-image-src="attachments/7340882/7766090.png"></p>
+
+<p>5. 다음의 내용을 UserMapper.xml에 작성 한다.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; 
+&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;mapper namespace=&quot;com.altibase.test.persistence.UserMapper&quot;&gt;
+	&lt;select id=&quot;getAllUser&quot; parameterType=&quot;Integer&quot; resultType=&quot;UserVo&quot;&gt;
+		SELECT user_no as userNo, 
+		user_name as userName, 
+		user_content as userContent, 
+		reg_date as regDate
+		FROM users
+		WHERE user_no = #{userNo}
+	&lt;/select&gt;
+	
+	&lt;select id=&quot;getUserByNo&quot;  resultType=&quot;UserVo&quot;&gt;
+		SELECT user_no as userNo, 
+		user_name as userName, 
+		user_content as userContent, 
+		reg_date as regDate
+		FROM users
+	&lt;/select&gt;
+	
+	&lt;insert id=&quot;insertUserData&quot; parameterType=&quot;UserVo&quot;&gt;
+		insert into 
+		users(user_no, user_name, user_content, reg_date)  
+		values(#{userNo}, #{userName}, #{userContent}, #{regDate})
+	&lt;/insert&gt;
+	
+	&lt;update id=&quot;updateUserByNo&quot; parameterType=&quot;UserVo&quot;&gt;
+		update users 
+		set user_name = #{userName},
+		user_content = #{userContent},
+		reg_date = #{regDate}
+		where user_no = #{userNo}
+	&lt;/update&gt;
+	
+	&lt;delete id=&quot;deleteUserByNo&quot; parameterType=&quot;Integer&quot;&gt;
+		delete from users
+		where user_no = #{userNo}
+	&lt;/delete&gt;
+&lt;/mapper&gt;
+
+</pre>
+</div></div>
+<p>해당 방식은 Spring만의 방식으로 의존적 주입(Dependency Injection)의 방식으로 처리 하고 있다. <br />
+Application에서는 인터페이스에 정의되어 있는 메소드를 통하여 SQL 문을 처리한다.</p>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-DependencyInjection"><strong>Dependency Injection</strong></h2>
+
+<p>Dependency Injection(줄여서 DI)는 직역하면 의존적 주입 이다.</p>
+
+<p>Dependency Injection이란 Gof의 디자인 패턴에 있는 기법으로, 실제 사용자가 사용하게 될 메소드를 인터페이스로 지정하여 실제 로직과 분리하여 처리하는 기법이다. </p>
+
+<p>이렇게 처리하게 되면 사용자는 인터페이스의 메소드만 이용 하더라도 구현부는 나중에 주입을 통해 해결하므로 획기적인 분업과 동시에 구현 클래스를 쉽게 교체할 수 있다는 장점을 얻게 된다.</p>
+
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Application작성"><strong>Application 작성</strong></h2>
+
+<p>1. users 테이블에 대한 VO(Value Object)객체인 UserVO 클래스(UserVo.java)를 작성한다.<br />
+1-1. altibase_mybatis_spring 프로젝트의 src/main/java 디렉토리에서 마우스 오른쪽 버튼 클릭 후 New – Class를 클릭 한다.<br />
+1-2. Package:에 com.altibase.test.domain을 입력하고 Name: 에 UserVo를 입력한다. </p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766091.png" data-image-src="attachments/7340882/7766091.png"></p>
+
+<p>1-3. 다음의 내용을 UserVo.java 파일에 작성 한다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package com.altibase.test.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+@SuppressWarnings(&quot;serial&quot;)
+public class UserVo implements Serializable {
+	private Integer userNo;
+	private String userName;
+	private String userContent;
+	private Date regDate;
+
+	public UserVo() {
+		
+	}
+	
+	public UserVo(Integer userNo, String userName, String userContent, Date regDate) {
+		this.userNo = userNo;
+		this.userName = userName;
+		this.userContent = userContent;
+		this.regDate = regDate;
+	}
+	
+	public Integer getUserNo() {
+		return userNo;
+	}
+	
+	public void setUserNo(Integer userNo) {
+		this.userNo = userNo;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	public String getUserContent() {
+		return userContent;
+	}
+	
+	public void setUserContent(String userContent) {
+		this.userContent = userContent;
+	}
+	
+	public Date getRegDate() {
+		return regDate;
+	}
+
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
+	}
+	
+	@Override
+	public String toString() {
+		return &quot;User [no=&quot; + userNo + &quot;, name=&quot; + userName + &quot;, content=&quot; + userContent
+				+ &quot;, date=&quot; + regDate + &quot;]&quot;;
+	}
+}
+ 
+
+</pre>
+</div></div>
+
+<p>2. 실제 쿼리를 수행하는 인터페이스 및 주입 클래스 파일을 작성 한다. <br />
+2-1. altibase_mybatis_spring 프로젝트의 src/main/java 디렉토리에서 마우스 오른쪽 버튼 클릭 후 New – Interface를 클릭 한다.<br />
+2-2. Package:에 com.altibase.test.service를 입력하고 Name: 에 UserService를 입력한다.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766092.png" data-image-src="attachments/7340882/7766092.png"></p>
+
+<p>2-3. 다음의 내용을 UserService.java 파일에 작성 한다.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package com.altibase.test.service;
+
+import java.util.List;
+import com.altibase.test.domain.UserVo;
+
+public interface UserService {
+	public List&lt;UserVo&gt; getAllUser();
+	public UserVo getUserByNo(int user_no);
+	public Integer insertUserData(UserVo userVo);
+	public Integer deleteUserByNo(int user_no);
+	public Integer updateUserByNo(UserVo userVo);
+}
+
+</pre>
+</div></div>
+
+<p>2-4. 생성했던 신규 패키지(com.altibase.test.service)에 마우스 오른쪽 버튼 클릭 후 New – Class를 클릭하여 실제 로직을 처리하는 UserServiceImpl.java Class 파일을 생성 한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766093.png" data-image-src="attachments/7340882/7766093.png"></p>
+
+<p>2-5. 다음의 내용을 UserMapperImple.java 파일에 작성 한다</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package com.altibase.test.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.altibase.test.domain.UserVo;
+import com.altibase.test.persistence.UserMapper;
+
+@Service(&quot;userService&quot;)
+public class UserServiceImpl implements UserService {
+
+	@Autowired
+	private UserMapper userMapper;
+	private Integer res_count;
+		
+	public List&lt;UserVo&gt; getAllUser() {
+		List&lt;UserVo&gt; userVos = userMapper.getAllUser();
+		return userVos;
+	}
+
+	public UserVo getUserByNo(int user_no) {
+		UserVo userVo = userMapper.getUserByNo(user_no);
+		return userVo;
+	}
+	
+	public Integer insertUserData(UserVo userVo) { 
+		res_count = userMapper.insertUserData(userVo);
+		return res_count;
+	}
+	
+	public Integer deleteUserByNo(int user_no) { 
+		res_count = userMapper.deleteUserByNo(user_no);
+		return res_count;
+	}
+	
+	public Integer updateUserByNo(UserVo userVo) {
+		res_count = userMapper.updateUserByNo(userVo);
+		return res_count;
+	}
+}
+
+</pre>
+</div></div>
+
+<p>3. 실제 프로그램이 수행되는 Main 클래스를 Main.java 파일에 작성 한다. </p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+package com.altibase.test;
+
+import java.util.Calendar;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.altibase.test.domain.UserVo;
+import com.altibase.test.service.UserService;
+
+public class Main {
+
+	private static UserService userService;
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int res_count = 0;
+		
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(&quot;META-INF/spring/ApplicationContext.xml&quot;);
+		userService = (UserService)applicationContext.getBean(&quot;userService&quot;);
+		
+		UserVo userVo = new UserVo();
+		
+		// Insert 샘플
+		userVo.setUserNo(1);
+		userVo.setUserName(&quot;psy&quot;);
+		userVo.setUserContent(&quot;psy_content&quot;);
+		userVo.setRegDate(Calendar.getInstance().getTime());
+		res_count = userService.insertUserData(userVo);
+		System.out.println(&quot;insert count = &quot; + res_count);
+		
+		// Select 샘플
+		userVo = userService.getUserByNo(1);
+		System.out.println(&quot;no = &quot; + userVo.getUserNo());
+		System.out.println(&quot;name = &quot; + userVo.getUserName());
+		System.out.println(&quot;content = &quot; + userVo.getUserContent());
+		System.out.println(&quot;date = &quot; + userVo.getRegDate());
+		
+		// Update 샘플
+		userVo.setUserName(&quot;updated_psy&quot;);
+		userVo.setUserContent(&quot;updated_psy_content&quot;);
+		res_count = userService.updateUserByNo(userVo);
+		System.out.println(&quot;update count = &quot; + res_count);
+		
+		// Delete 샘플
+		res_count = userService.deleteUserByNo(userVo.getUserNo());
+		System.out.println(&quot;delete count = &quot; + res_count);
+	}
+}
+
+</pre>
+</div></div>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-관련JAR파일추가"><strong>관련 JAR 파일 추가</strong></h2>
+
+<p>Jar를 추가하는 방법은 두 가지 이다. </p>
+<ul class="alternate">
+	<li>Maven에 의한 라이브러리 추가</li>
+	<li>기존 방식대로(properties-Java Build Path의 Add External JARS)의 라이브러리 추가<br />
+샘플 소스는 Maven에 의한 라이브러리 관리 방법을 선택하여 작성 되었으며, 두 번째 방법인 기존 방식은 위에서도 설명한 바 있어 본 장에선 Maven에 의한 라이브러리 관리 방법을 설명 한다.</li>
+</ul>
+
+
+<p>Maven을 설치 하여 Spring Template Project를 생성하면 pom.xml이라는 파일이 생성 되는데, 해당 파일이 라이브러리를 관리해 주는 파일 이다.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766094.png" data-image-src="attachments/7340882/7766094.png"></p>
+
+<p>pom.xml 파일에서 library를 추가하는 방법은 두 가지이다.</p>
+<ul class="alternate">
+	<li>pom.xml 탭에서 태그를 직접 입력 하여 library 추가</li>
+	<li>Dependencies 탭에서 Add 버튼으로 library 추가<br />
+태그를 직접 입력 하는 방법은, 위의 탭중 pom.xml 탭을 눌러 나타나는 xml 파일에 직접 입력하여 library를 추가 하는 방법이며 아래 화면과 같이 추가 한다.<br />
+(테스트에 사용한 library는 Apache common dbcp library 이다.)</li>
+</ul>
+
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766095.png" data-image-src="attachments/7340882/7766095.png"></p>
+
+<p>추가한 후에 xml 파일을 저장하면 Maven Dependecies에 Library가 추가된 것을 확인할 수 있다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766096.png" data-image-src="attachments/7340882/7766096.png"></p>
+
+<p>Dependencies 탭에서 Add 버튼으로 library 추가하는 방법은 다음과 같은 단계를 거쳐 추가가 가능하다.<br />
+1) pom.xml 파일에서 dependencies-Add 버튼을 클릭하면 다음의 창이 뜨게 된다.<br />
+  해당 창의 Enter groupId, artifactId or sha1 prefix or pattern <img class="emoticon emoticon-yellow-star" src="images/icons/emoticons/star_yellow.png" data-emoticon-name="yellow-star" alt="(star)"/> :  칸에 추가하고 싶은 library의 이름을 입력하게 되면 아래와 같이 입력한 이름에 대한 라이브러리를 보여 준다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766097.png" data-image-src="attachments/7340882/7766097.png"></p>
+
+<p>2) Search Results에 나타난 Library를 클릭하면 해당 Library에 대한 버전이 나타나게 되고 필요한 버전을 클릭한 후 OK 버튼을 클릭하면 해당 Library가 추가 된다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766098.png" data-image-src="attachments/7340882/7766098.png"></p>
+
+<p>라이브러리가 추가된 것을 확인할 수 있다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766099.png" data-image-src="attachments/7340882/7766099.png"></p>
+
+<p>파일을 저장하면 변경된 내역이 반영되면서 Library가 추가 된다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766100.png" data-image-src="attachments/7340882/7766100.png"></p>
+
+<p>마지막에 Library가 추가된 것을 보면 commons-dbcp말고 commons-pool도 같이 추가가 되었는데, dependencies 탭을 통해 추가하게 되면 이와 같이 관련된 Library도 같이 추가해 준다.</p>
+
+<h2 id="id-9.부록2(Spring-MyBatis-ALTIBASE연동)-Application실행"><strong>Application 실행</strong></h2>
+
+<p>altibase_mybatis_spring 프로젝트를 실행한다.<br />
+altibase_mybatis_spring 프로젝트를 클릭한 후 메뉴에서 Run을 실행하거나 com.altibase.test 패키지의 Main.java 클래스를 더블 클릭하여 파일을 연 후에 Run을 실행 한다.</p>
+
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7340882/7766101.png" data-image-src="attachments/7340882/7766101.png"></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766081.png">additional2_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766082.png">additional2_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766083.png">additional2_3.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766084.png">additional2_4.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766085.png">additional2_5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766086.png">additional2_6.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766087.png">additional2_7.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766088.png">additional2_8.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766089.png">additional2_9.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766090.png">additional2_10.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766091.png">additional2_11.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766092.png">additional2_12.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766093.png">additional2_13.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766094.png">additional2_14.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766095.png">additional2_15.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766096.png">additional2_16.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766097.png">additional2_17.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766098.png">additional2_18.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766099.png">additional2_19.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766100.png">additional2_20.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/7766101.png">additional2_21.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/10256550.png">image2016-8-12 11:3:20.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/10256551.png">image2016-8-12 11:3:43.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7340882/10256552.png">image2016-8-12 11:4:30.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

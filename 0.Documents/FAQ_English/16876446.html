@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-91015 ( 593941) Communication failure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-91015 ( 593941) Communication failure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="ERR-91015(593941)Communicationfailure-/*&lt;![CDATA[*/div.rbtoc1624409148767{padding:0px;}div.rbtoc1624409148767ul{list-style:disc;margin-left:0px;}div.rbtoc1624409148767li{margin-left:0px;padding-left:0px;}/*]]&gt;*/Overview#ERR-91015(593941)Communicationfailu"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148767 {padding: 0px;}
+div.rbtoc1624409148767 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148767 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148767'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-91015(593941)Communicationfailure-Overview'>Overview</a></li>
+<li><a href='#ERR-91015(593941)Communicationfailure-Version'>Version</a></li>
+<li><a href='#ERR-91015(593941)Communicationfailure-Symptom'>Symptom</a></li>
+<li><a href='#ERR-91015(593941)Communicationfailure-CauseandSolution'>Cause and Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-91015(593941)Communicationfailure-WhentryingtoconnecttotheAltibaseserver'>When trying to connect to the Altibase server</a></li>
+<li><a href='#ERR-91015(593941)Communicationfailure-WhenoccurswhileconnectedtotheAltibaseserver'>When occurs while connected to the Altibase server</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-91015(593941)Communicationfailure-WhenthesessionisterminatedbyanAltibaseserverproperty'>When the session is terminated by an Altibase server property</a></li>
+<li><a href='#ERR-91015(593941)Communicationfailure-Whenthesessionisterminatedbythesysdbauser'>When the session is terminated by the sysdba user</a></li>
+</ul>
+</li>
+<li><a href='#ERR-91015(593941)Communicationfailure-Whenrunningthedatabaseserver'>When running the database server</a></li>
+</ul>
+</li>
+</ul>
+</div></h2><h1 id="ERR-91015(593941)Communicationfailure-Overview"><br />Overview</h1><hr /><p>This document describes ERR-91015 (593941) Communication failure.</p><p> </p><h1 id="ERR-91015(593941)Communicationfailure-Version">Version</h1><hr /><p>All the versions of Altibase HDB</p><p> </p><h1 id="ERR-91015(593941)Communicationfailure-Symptom">Symptom</h1><hr /><p>ERR-91015 (593941) Communication failure errors can occur in various environments as follows.</p><ul><li><p><strong>When trying to connect to the Altibase server</strong><br />When connecting to an Altibase server, this error occurs mainly when using iSQL.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of occurrence when connecting to the Altibase server from iSQL</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ is 
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.3.1.4.4
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = localhost, PORT_NO = 20300
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><p><strong>When occurs while connected to the Altibase server</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; SELECT * FROM CUSTOMERS;
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li><li><p><strong>When running the Altibase server</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of occurrence when running the Altibase server</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[eheejung@63138 /data/eheejung/work/sh]$server start
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.3.1.4.4
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = UNIX, SERVER = localhost
+[ERR-910FB : Connected to idle instance]
+Set autocommit off success.
+Connecting to the DB server... Connected.
+
+TRANSITION TO PHASE : PROCESS
+
+TRANSITION TO PHASE : CONTROL
+
+TRANSITION TO PHASE : META
+  [SM] Recovery Phase - 1 : Preparing Database
+                          : Dynamic Memory Version =&gt; Parallel Loading
+  [SM] Recovery Phase - 2 : Loading Database 
+  [SM] Recovery Phase - 3 : Starting Recovery
+                            Initializing Active Transaction List 
+                            Redo 
+                            Refine Disk Table..
+                            Undo 
+  [SM] Refine Memory Table : ................................................................................................................................ [SUCCESS]
+[ERR-91015 : Communication failure.]</pre>
+</div></div></li></ul><h1 id="ERR-91015(593941)Communicationfailure-CauseandSolution">Cause and Solution</h1><hr /><h2 id="ERR-91015(593941)Communicationfailure-WhentryingtoconnecttotheAltibaseserver">When trying to connect to the Altibase server</h2><hr /><p><strong>According to the ALTIBASE HDB compatibility policy, this error may occur <u>when attempting to connect from a higher version of the Altibase client to a lower version of the Altibase server than the client.</u></strong></p><p>In case of this reason, various types of messages are displayed in the altibase_boot.log on the Altibase server, depending on the version of the Altibase server. (However, certain versions may not leave a message at all.)</p><p>Therefore, if this error occurs when connecting to the Altibase server, first check the version of the Altibase server and client. <span style="color: rgb(0,0,255);"><strong>If the client version is later than the server version, you must match the client version to the server version or install and use an earlier version than the server version.</strong></span></p><ul><li><p><span style="color: rgb(0,0,255);"><span style="color: rgb(0,0,0);">How to check ALTIBASE HDB server version</span></span></p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span style="color: rgb(0,0,0);">$ altibase -v<br />version 6.1.1.4.9 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.4.4-release-GCC3.4.6 (x86_64-unknown-linux-gnu) Apr 14 2015 11:31:37, binary db version 6.2.1, meta version 6.3.1, cm protocol version 7.1.1, replication protocol version 7.4.1</span></p>
+</div></div></li><li><p>How to check ALTIBASE HDB client version</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ apre -v</span><br /><span>Altibase Precompiler2(APRE) </span><span style="color: rgb(255,0,0);">Ver.1 6.1.1.4.9</span><span> XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.4.9-release-GCC3.4.6 (xeon-redhat-linux-gnu) Dec 9 2014 16:06:42</span></p>
+</div></div><p>Or, the version can be checked on the banner when connecting to iSQL.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ is</p><span>-----------------------------------------------------------------</span><br /><span> Altibase Client Query utility.</span><br /><span> Release Version </span><span style="color: rgb(255,0,0);">6.1.1.4.9</span><br /><span> Copyright 2000, ALTIBASE Corporation or its subsidiaries.</span><br /><span> All Rights Reserved.</span><br /><span>-----------------------------------------------------------------</span>
+</div></div></li></ul><h2 id="ERR-91015(593941)Communicationfailure-WhenoccurswhileconnectedtotheAltibaseserver">When occurs while connected to the Altibase server</h2><hr /><h3 id="ERR-91015(593941)Communicationfailure-WhenthesessionisterminatedbyanAltibaseserverproperty">When the session is terminated by an Altibase server property</h3><ul><li>If the session is terminated by the Altibase server properties FETCH_TIMEOUT, UTRANS_TIMEOUT, IDLE_TIMEOUT, a communication failure message may occur in the client.</li><li><p>For this reason, if the session is terminated, an error message stating that the session was terminated due to the timeout setting remains in the altibase_boot.log on the Altibase server side as shown below. (altibase_boot.log is located under the $ALTIBASE_HOME/trc directory. $ALTIBASE_HOME is the installation location of the Altibase server.)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) ALTIBASE HDB 6.3.1 - altibase_boot.log</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[2016/02/02 10:08:56] [Thread-140294005577504] [Level-1]
+[Notify : Idle Timeout] Session Closed by Server : Session ID = 1
+    CLIENT_INFO           =&gt; TCP 127.0.0.1:29881(PID : 6881)
+    Time Limit            =&gt; 3
+    Running Time          =&gt; 6</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) ALTIBASE HDB 4.3.9 - altibase_boot.log</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">[2016/02/02 09:30:50] [Thread-139691805542144] [Level-1]
+[Notify : Idle Timeout] Session Closed by Server : Session ID = 14
+
+[2016/02/02 09:30:50] [Thread-139691805542144] [Level-1]
+         Time   Limit =&gt; 3
+         Running Time =&gt; 3</pre>
+</div></div></li><li>Please refer to the page below for details on session properties and how to take action.<ul><li>FETCH_TIMEOUT : <a href="16876301.html">[Notify : Fetch Timeout] Session Closed by Server.</a></li><li>UTRANS_TIMEOUT : <span style="color: rgb(192,192,192);">TBA</span></li><li>IDLE_TIMEOUT : <span style="color: rgb(192,192,192);">TBA</span></li></ul></li></ul><h3 id="ERR-91015(593941)Communicationfailure-Whenthesessionisterminatedbythesysdbauser"><span style="color: rgb(192,192,192);"><span style="color: rgb(0,0,0);">When the session is terminated by the sysdba user</span></span></h3><ul><li><p>sysdba ALTER DATABASE <span style="color: rgb(0,0,255);"><em>database_name</em></span> SESSION CLOSE <span style="color: rgb(0,0,255);"><em>session_id</em></span>; Communication failure error may occur even if the session is forcibly terminated with a sentence.</p></li><li><p>In this case, no additional error information is left on the Altibase server or client-side.</p></li></ul><p> </p><h2 id="ERR-91015(593941)Communicationfailure-Whenrunningthedatabaseserver">When running the database server</h2><hr /><p>If the Altibase server properties are not set correctly, a communication failure error may occur when the Altibase server is started up.<br />In some cases, it may be difficult to find the cause with the log displayed on the terminal, so find out which property is caused by the following information.</p><ul><li><p>Log output on terminal</p></li><li><p>altibase_boot.log file (located in $ALTIBASE_HOME/trc, $ALTIBASE_HOME is the installation location of the Altibase server.)</p></li><li><p>altibase.properties file (located in $ALTIBASE_HOME/conf)</p></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

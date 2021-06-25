@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : DDL operation on the table for Altibase replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="03.-Replication_16876057.html">03. Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : DDL operation on the table for Altibase replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409145684 {padding: 0px;}
+div.rbtoc1624409145684 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409145684 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409145684'>
+<ul class='toc-indentation'>
+<li><a href='#DDLoperationonthetableforAltibasereplication-Overview'>Overview</a></li>
+<li><a href='#DDLoperationonthetableforAltibasereplication-Version'>Version</a></li>
+<li><a href='#DDLoperationonthetableforAltibasereplication-Procedure'>Procedure</a>
+<ul class='toc-indentation'>
+<li><a href='#DDLoperationonthetableforAltibasereplication-Operationunderserviceoutages'>Operation under service outages</a></li>
+<li><a href='#DDLoperationonthetableforAltibasereplication-Operationunderuninterruptedconstraints'>Operation under uninterrupted constraints</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="DDLoperationonthetableforAltibasereplication-Overview">Overview</h1><hr /><p>In general, DDL operations on the DB require an exclusive lock on the table. ALTIBASE HDB uses a network-based redundancy technique in which data is matched by transmitting the transaction log generated in the local server to the other server.</p><p>DDL-like operations are not sent to the log, so DDL operations are not replicated. Therefore, different from the disk sharing method, a different method of performing DDL operations on each node (Server) is required.</p><p> </p><h1 id="DDLoperationonthetableforAltibasereplication-Version">Version</h1><hr /><p>ALTIBASE HDB supports different types of DDL statements depending on the version, and the functions of DDL statements related to replication are also different.</p><p>In the case of simple DDL operation, the operation procedure in this document can be used as it is in ALTIBASE HDB 4.3.9, but it is mainly described for ALTIBASE HDB 5.3.3 or later.</p><p> </p><h1 id="DDLoperationonthetableforAltibasereplication-Procedure">Procedure</h1><hr /><p>If there is a possibility that a large amount of data change may occur due to the DDL statement, other safer operation procedures should be used, and please refer to the DDL Guide of ALTIBASE Replication Environment.</p><h2 id="DDLoperationonthetableforAltibasereplication-Operationunderserviceoutages">Operation under service outages</h2><p>In an environment where all services accessing the database can be stopped for a certain period of time, it can be completed with a relatively simple procedure.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Step</th><th class="confluenceTh">A node</th><th class="confluenceTh">B node</th></tr><tr><td class="confluenceTd">STEP 1</td><td colspan="2" class="confluenceTd"><ul><li> <strong>Stop the serve (take action to prevent transactions from occurring)</strong><ul><li>In order to stop the service, the service port is changed after the DB is stopped, and the service is started.</li><li>Check the session connected to the database or checking the statement being executed<br /><ul><li>iSQL&gt; select count(*) from v$session;</li><li>iSQL&gt; select count(*) from v$statement where execute_flag =1 ; </li></ul></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 2</td><td colspan="2" class="confluenceTd"><ul><li> <strong>Check that the replication gaps of the target nodes are all &quot;0&quot; (this means the DB where the replication sender is driven)</strong><strong> </strong><ul><li>Check the replication object to which the target table for DDL execution belongs<br /><ul><li>iSQL&gt; select REPLICATION_NAME,LOCAL_USER_NAME, LOCAL_TABLE_NAME from SYSTEM_.SYS_REPL_ITEMS_;</li></ul></li><li>Check the replication gap<ul><li>iSQL&gt; SELECT rep_name, rep_gap FROM v$repgap;      # Check that rep_gap is all 0.  </li></ul></li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 3</td><td colspan="2" class="confluenceTd"><ul><li><strong>Stop the replication of target node</strong><br /><ul><li>iSQL&gt;  ALTER REPLICATION <em>rep_name</em> STOP;   # The replication object (REP_NAME) is checked in STEP 2.</li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 4</td><td colspan="2" class="confluenceTd"><ul><li><strong>Remove the target table to execute DDL from the replication object</strong><br /><ul><li>iSQL&gt; ALTER REPLICATION <em>rep_name</em> DROP TABLE FROM <em>user_name.table_name</em> TO <em>user_name.table_name</em>; </li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 5</td><td colspan="2" class="confluenceTd"><ul><li><strong>Perform DDL operation</strong>  <ul><li> iSQL&gt; ALTER TABLE t1 ADD COLUMN ( c1 INTEGER);</li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 6</td><td colspan="2" class="confluenceTd"><ul><li><strong>Add the replication target table removed in STEP 4 back to the replication object list</strong><br /><ul><li>iSQL&gt; ALTER REPLICATION <em>rep_name</em> ADD TABLE FROM <em>user_name.table_name</em> TO <em>user_name.table_name</em>; </li></ul></li></ul></td></tr><tr><td class="confluenceTd">STEP 7</td><td colspan="2" class="confluenceTd"><ul><li><strong>Start the replication at the target node</strong><ul><li> iSQL&gt; ALTER REPLICATION <em>rep_name</em> START</li></ul></li></ul></td></tr><tr><td colspan="1" class="confluenceTd">STEP 8</td><td colspan="2" class="confluenceTd"><ul><li><strong>Initiate the service</strong><ul><li>If the service port number of the DB is changed in STEP 1, restore the service port and restart the database.</li><li>After restarting the DB service by running the application, check the DB status.</li></ul></li></ul></td></tr></tbody></table></div><h2 id="DDLoperationonthetableforAltibasereplication-Operationunderuninterruptedconstraints">Operation under uninterrupted constraints</h2><hr /><p>In an environment that requires uninterrupted service, there may be a limitation that one node must alternately work one node at a time while operating the database.</p><p>Under these conditions, compared to the environment in which service disruption described above is possible, several steps are required and caution may be required.</p><ul><li>Please refer to the DDL guide document of the ALTIBASE replication environment.</li><li>Get technical support from ALTIBASE Technical Support Division (Service Portal:<a href="http://support.altibase.com" class="external-link" rel="nofollow">http://support.altibase.com</a><a href="http://support.altibase.com/en/" class="external-link" rel="nofollow">/en/</a>, TEL +82-2-2082-1114)</li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

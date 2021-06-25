@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Overview of Exception Handling</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Exception-Handling_2988077.html">Exception Handling</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Overview of Exception Handling
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347235 {padding: 0px;}
+div.rbtoc1624409347235 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347235 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347235'>
+<ul class='toc-indentation'>
+<li><a href='#OverviewofExceptionHandling-Overview'>Overview</a></li>
+<li><a href='#OverviewofExceptionHandling-Exception'>Exception</a></li>
+<li><a href='#OverviewofExceptionHandling-System-definedException'>System-defined Exception</a></li>
+<li><a href='#OverviewofExceptionHandling-User-definedException'>User-defined Exception</a></li>
+<li><a href='#OverviewofExceptionHandling-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="OverviewofExceptionHandling-Overview">Overview</h2>
+
+<p>When an error occurrs in DBMS, An exception handler can handle exception.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+
+<p>The basic procedure for handling exception of ALTIBASE HDB is identical to ORACLE.</p>
+
+<p>It includes declaring, raising exceptions. and so forth.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="OverviewofExceptionHandling-Exception">Exception</h2>
+
+<p>Exceptions can be divided into two categories.</p>
+
+<p>For further information on the following exceptions, we recommend you to read the subdivided pages.</p>
+<ul>
+	<li>System-defined exceptions</li>
+	<li>User-defined exceptions</li>
+</ul>
+
+
+<h2 id="OverviewofExceptionHandling-System-definedException">System-defined Exception</h2>
+
+<p>This exception is a predefined by the ALTIBASE HDB.</p>
+
+<ul>
+	<li>General erros which can occur during the execution of the stored procedures.</li>
+	<li>No need to declare name in the DECLARE section.</li>
+</ul>
+
+
+<h2 id="OverviewofExceptionHandling-User-definedException">User-defined Exception</h2>
+
+<p>This exception is arbitraily defined by user.</p>
+<ul>
+	<li>This exception can be specified and defined by user.</li>
+	<li>This exception can be specified and defined in the DECLARE section.</li>
+	<li>This exception can be ocurred using a RAISE statement.</li>
+	<li>This exception can be processed in the EXCEPTION Handler.</li>
+</ul>
+
+
+<h2 id="OverviewofExceptionHandling-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+name employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+v_code NUMBER; <br class="atl-forced-newline" />
+v_errm VARCHAR2(64); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT e_lastname INTO name FROM employees WHERE eno = 1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+v_code := SQLCODE; <br class="atl-forced-newline" />
+v_errm := SUBSTR(SQLERRM, 1 , 64); <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE('Error code ' || v_code || ': ' || v_errm); <br class="atl-forced-newline" />
+-- Normally we would call another procedure, declared with PRAGMA <br class="atl-forced-newline" />
+-- AUTONOMOUS_TRANSACTION, to insert information about errors. <br class="atl-forced-newline" />
+INSERT INTO errors VALUES (v_code, v_errm, SYSTIMESTAMP); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+name employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+v_code NUMBER; <br class="atl-forced-newline" />
+v_errm VARCHAR2(64); <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+SELECT e_lastname INTO name FROM employees WHERE eno = 1; <br class="atl-forced-newline" />
+EXCEPTION <br class="atl-forced-newline" />
+WHEN OTHERS THEN <br class="atl-forced-newline" />
+v_code := SQLCODE; <br class="atl-forced-newline" />
+v_errm := SUBSTR(SQLERRM, 1 , 64); <br class="atl-forced-newline" />
+PRINTLN('Error code ' || v_code || ': ' || v_errm); <br class="atl-forced-newline" />
+-- Normally we would call another procedure, declared with PRAGMA <br class="atl-forced-newline" />
+-- AUTONOMOUS_TRANSACTION, to insert information about errors. <br class="atl-forced-newline" />
+INSERT INTO errors VALUES (v_code, v_errm, SYSTIMESTAMP); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Basic usages of exception handling are almost same <br class="atl-forced-newline" />
+between the ALTIBASE HDB and ORACLE. </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-4109C Invalid session property.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-4109C Invalid session property.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148101 {padding: 0px;}
+div.rbtoc1624409148101 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148101 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148101'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty.-Whenerroroccurswithinthesamemajorversion'>When error occurs within the same major version</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty.-ALTIBASEHDB5.5.1'>ALTIBASE HDB 5.5.1</a></li>
+</ul>
+</li>
+<li><a href='#ERR-4109CInvalidsessionproperty.-Cause'>Cause</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty.-Solution'>Solution</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty.-Reference'>Reference</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-4109CInvalidsessionproperty.-HowtocheckALTIBASEHDBserverversion(sameforUnix/Linux/Windows)'>How to check ALTIBASE HDB server version (same for Unix/Linux/Windows)</a></li>
+<li><a href='#ERR-4109CInvalidsessionproperty.-HowtochecktheversionoftheAltibaseclient'>How to check the version of the Altibase client</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-4109CInvalidsessionproperty.-Symptom">Symptom</h1><hr /><p>Connection from ALTIBASE HDB client to Altibase server fails.</p><p>An error may occur in the following two cases. In the version, the first three digits are the major version, and the back digits are the patch version.</p><ul><li><p>When the major version of the server and the client are the same, but the patch version of the client is later than that of the server.</p></li><li><p>When the client's major version is later than the server's major version.</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) When the major version of the server and the client are the same, but the patch version of the client is later than that of the server.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Client server
+$ apre -v
+Altibase Precompiler2(APRE) Ver.1 6.1.1.1.10 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.1.10-release-GCC3.4.6 (xeon-redhat-linux-gnu) Mar  4 2013 09:43:18
+
+# Altibase server version
+$ altibase -v
+version 6.1.1.0.0 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.0.0-release-GCC3.4.6 (xeon-redhat-linux-gnu) Apr 18 2012 18:20:15, binary db version 6.1.1, meta version 5.9.1, cm protocol version 5.6.2, replication protocol version 6.1.1
+
+
+# When connecting to the 6.1.1.0.0 server from a client whose major version is 6.1.1 and the patch version is 1.10
+$ isql -u sys -p manager -s 127.0.0.1 -port 26110
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.1.1.1.10
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 26110
+[ERR-4109C : Invalid session property]</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Ex) When the client's major version is later than the server's major version.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Client server
+$ apre -v
+Altibase Precompiler2(APRE) Ver.1 6.1.1.3.2 XEON_LINUX_redhat_Enterprise_ES4-64bit-6.1.1.3.2-release-GCC3.4.6 (xeon-redhat-linux-gnu) Aug 28 2013 17:54:46
+
+# Altibase server version
+$ altibase -v
+version 5.5.1.4.10 XEON_LINUX_redhat_Enterprise_ES4-64bit-5.5.1.4.10-release-GCC3.4.6 (xeon-redhat-linux-gnu) Aug 14 2013 18:09:27, binary db version 5.4.1, meta version 5.9.1, cm protocol version 5.6.3, replication protocol version 5.6.1
+
+# When connecting to the Altibase server 5.5.1.4.10 from the client version 6.1.1.3.2
+$ isql -u sys -p manager -s 127.0.0.1 -port 25514
+-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.1.1.3.2
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+ISQL_CONNECTION = TCP, SERVER = 127.0.0.1, PORT_NO = 25514
+[ERR-4109C : Invalid session property]</pre>
+</div></div><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty.-Whenerroroccurswithinthesamemajorversion">When error occurs within the same major version</h1><hr /><h2 id="ERR-4109CInvalidsessionproperty.-ALTIBASEHDB5.5.1"><span style="color: rgb(0,0,0);">ALTIBASE HDB 5.5.1</span></h2><hr /><h3 id="ERR-4109CInvalidsessionproperty.-JDBCClient">JDBC Client</h3><p>When connecting to a server with a version earlier than 5.5.1.3.7 from a later version including ALTIBASE JDBC DRIVER version 5.5.1.3.7, the connection fails. (Example, JDBC driver version 5.5.1.3.7 -&gt; ALTIBASE HDB server 5.5.1.3.6)</p><h3 id="ERR-4109CInvalidsessionproperty.-CLIClient">CLI Client</h3><p>When connecting to a server with a version earlier than 6.1.1.1.10 from a later version client including 6.1.1.1.10, the connection fails. (Example, iSQL version 6.1.1.1.10 -&gt; ALTIBASE HDB server 6.1.1.1.9)</p><p> </p><h1 id="ERR-4109CInvalidsessionproperty.-Cause">Cause</h1><hr /><p>This error occurs when a client connects to the server and requests a server property that the server does not know.</p><p>At the time of connection, the client requests the server properties necessary for client configuration to the ALTIBASE HDB server.<img class="confluence-embedded-image" width="500" src="attachments/16876354/17039378.png" data-image-src="attachments/16876354/17039378.png"></p><p>However, when a server property is added from a later version and a later version of the client connects to the lower version, an error occurs as follows.</p><p><img class="confluence-embedded-image" width="500" src="attachments/16876354/17039379.png" data-image-src="attachments/16876354/17039379.png"></p><p> </p><p> </p><h1 id="ERR-4109CInvalidsessionproperty.-Solution">Solution</h1><hr /><ul><li><p>Use the same or earlier version of the client as the ALTIBASE HDB server.<br />In order to use a later version of the client, the ALTIBASE HDB server version must also be patched or upgraded to the same version.</p></li></ul><p> </p><h1 id="ERR-4109CInvalidsessionproperty.-Reference">Reference</h1><hr /><h2 id="ERR-4109CInvalidsessionproperty.-HowtocheckALTIBASEHDBserverversion(sameforUnix/Linux/Windows)">How to check ALTIBASE HDB server version (same for Unix/Linux/Windows)</h2><hr /><h4 id="ERR-4109CInvalidsessionproperty.-ExecutethefollowingcommandinashellpromptorDOSwindow.">Execute the following command in a shell prompt or DOS window.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> $ altibase -v</pre>
+</div></div><h4 id="ERR-4109CInvalidsessionproperty.-ConnecttotheALTIBASEHDBserverandquerywiththequerybelow.">Connect to the ALTIBASE HDB server and query with the query below.</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT PRODUCT_VERSION FROM V$VERSION;</pre>
+</div></div><p> </p><h2 id="ERR-4109CInvalidsessionproperty.-HowtochecktheversionoftheAltibaseclient">How to check the version of the Altibase client</h2><hr /><h4 id="ERR-4109CInvalidsessionproperty.-WhentheAltibaseclientpackageisinstalled(SameforUnix/Linux/Windows)">When the Altibase client package is installed (Same for Unix/Linux/Windows)</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ apre -v</pre>
+</div></div><p> </p><h4 id="ERR-4109CInvalidsessionproperty.-InthecaseoftheODBCdriver">In the case of the ODBC driver</h4><p>Check in the properties of the altiodbc.dll file in Windows Explorer.</p><h4 id="ERR-4109CInvalidsessionproperty.-InthecaseoftheJDBCdriver">In the case of the JDBC driver</h4><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ java -jar Altibase.jar </pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876354/17039378.png">스크린샷 2021-03-25 오후 2.47.21.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876354/17039379.png">스크린샷 2021-03-25 오후 2.48.38.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : Datafile 을 추가한 이력 확인 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : Datafile 을 추가한 이력 확인 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> richard.nahm	</span> on Mar 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409050850 {padding: 0px;}
+div.rbtoc1624409050850 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409050850 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409050850'>
+<ul class='toc-indentation'>
+<li><a href='#Datafile을추가한이력확인방법-확인방법'>확인 방법</a></li>
+<li><a href='#Datafile을추가한이력확인방법-지원버전'>지원버전</a></li>
+<li><a href='#Datafile을추가한이력확인방법-프라퍼티변경법'>프라퍼티 변경법</a></li>
+<li><a href='#Datafile을추가한이력확인방법-로그확인법'>로그 확인 법</a></li>
+</ul>
+</div></p><h1 id="Datafile을추가한이력확인방법-확인방법">확인 방법</h1><hr /><p>데이터파일을 추가하거나 변경한  시간 정보는   별도의 성능뷰 나 v$datafiles 에 기록하지 않습니다.  하지만   DDL문은  QP_MSGLOG_FLAG  프라퍼티가 DDL문을 기록하도록 설정되어 있다면</p><p>$ALTIBASE_HOME/trc/altibase_qp.log 에 기록되므로  이 파일을  열어서  datafile 의 변경 내용을 확인할 수 있습니다.</p><h1 id="Datafile을추가한이력확인방법-지원버전">지원버전</h1><hr /><p>HDB 4.3.9  이상의 모든 버전에서 지원합니다. </p><p> </p><h1 id="Datafile을추가한이력확인방법-프라퍼티변경법">프라퍼티 변경법</h1><hr /><p>QP_MSGLOG_FLAG의 설정값을 DDL 이 altibase_qp.log 에 로깅 될 수 있도록  변경합니다.  변경방법은  다음 2가지 중 한가지 방법을 사용할 수 있습니다.</p><h3 id="Datafile을추가한이력확인방법-ALTERSYSTEM명령을사용하는방법"> ALTER SYSTEM 명령을 사용하는 방법</h3><p>이 방법을 사용하여 변경할 경우  서버를 재구동 하지 않고  프라퍼티의 값을 변경할 수 있습니다.  서버가 다시 구동될 경우  default 값으로 원복되므로 서버 재구동 후에도 변경값을 유지하려면 $ALTIBASE_HOME/conf/altibase.properties 파일안에</p><p>프라퍼티 변경값을 적용해야 합니다.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>iSQL&gt; alter system set qp_msglog_flag=2;</p><p>Alter success</p>
+</div></div><p> </p><h3 id="Datafile을추가한이력확인방법-altibase.properties파일에반영하는방법">altibase.properties 파일에 반영하는 방법</h3><p>1)  $ALTIBASE_HOME/conf/altibase.properties 파일안에 아래의 라인을 추가합니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>QP_MSGLOG_FLAG = 2 # 2: DDL logging</p></td></tr></tbody></table></div><p>2)  ALTIBASE 프로세스를 재구동합니다.</p><p>shell&gt;  server restart</p><p>3) 변경된 값이 적용되었는지 확인합니다.</p><p>iSQL&gt; select name, value1 from v$property where name='QP_MSGLOG_FLAG';</p><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>HDB 5.1.5.33 이상의 버전부터는  QP_MSGLOG_FLAG 의 default 값이 2 이므로   모든 DDL 이 기본적으로  altibase_qp.log 에 기록됩니다. </p>
+                    </div>
+    </div>
+<p> </p><h1 id="Datafile을추가한이력확인방법-로그확인법">로그 확인 법</h1><hr /><p>alter tablespace ~ add datafile 문으로 데이터파일을 추가하면 altibase_qp.log 에 아래와 같은 로그가 남습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>[2013/11/27 14:10:57] [Thread-1094719840] [Level-2] <br class="atl-forced-newline" /> [EXEC_DDL_BEGIN : alter tablespace TEST_TBS add DATAFILE '/altibase_home_533/dbs/test02.dbf'] <br class="atl-forced-newline" /> [2013/11/27 14:10:58] [Thread-1094719840] [Level-2] <br class="atl-forced-newline" /> [EXEC_DDL_END : SUCCESS]</p></td></tr></tbody></table></div><p> </p><p>이를 아래와 같은 구문으로 하시면 결과를 볼 수 있습니다.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd"><p>shell&gt; $awk '/DATAFILE/ {print last &quot; : &quot; $0}{last=$0}' altibase_qp.log | grep -i 'add' <br class="atl-forced-newline" /> [2013/11/27 14:10:57] [Thread-1094719840] [Level-2] : <strong>[EXEC_DDL_BEGIN : alter tablespace TEST_TBS add DATAFILE '/altibase_home_533/dbs/test02.dbf']</strong></p></td></tr></tbody></table></div><p> </p><p>단, 트레이스 로그파일을 grep 하는 형식의 방법이기 때문에 로그파일에서 지워질 정도로 오래된 이력은 찾을 수 없습니다.</p><p> </p><p> </p><p><span style="color: rgb(0,0,0);font-size: 24.0px;">로그 확인 법</span></p><div><span style="color: rgb(0,0,0);font-size: 24.0px;"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

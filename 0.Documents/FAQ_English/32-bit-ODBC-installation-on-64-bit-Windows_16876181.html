@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : 32-bit ODBC installation on 64-bit Windows</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="07.-Development-and-API_16876165.html">07. Development and API</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ODBC_16876179.html">ODBC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : 32-bit ODBC installation on 64-bit Windows
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span> on Mar 23, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409146610 {padding: 0px;}
+div.rbtoc1624409146610 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409146610 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409146610'>
+<ul class='toc-indentation'>
+<li><a href='#id-32-bitODBCinstallationon64-bitWindows-Overview'>Overview</a></li>
+<li><a href='#id-32-bitODBCinstallationon64-bitWindows-Version'>Version</a></li>
+<li><a href='#id-32-bitODBCinstallationon64-bitWindows-AltibaseODBCinstallation'>Altibase ODBC installation</a></li>
+<li><a href='#id-32-bitODBCinstallationon64-bitWindows-ODBCSetting'>ODBC Setting</a></li>
+</ul>
+</div></p><p> </p><h1 id="id-32-bitODBCinstallationon64-bitWindows-Overview">Overview</h1><hr /><p>This document describes how to set up 32-bit ODBC driver on Windows Server 2003 64-bit systems.</p><p> </p><h1 id="id-32-bitODBCinstallationon64-bitWindows-Version">Version</h1><hr /><p>~ Altibase 6.5.1</p><p> </p><h1 id="id-32-bitODBCinstallationon64-bitWindows-AltibaseODBCinstallation">Altibase ODBC installation</h1><hr /><ol><li>Download the Windows Altibase 32-bit client installation file or the Altibase 32-bit ODBC installation file.<br />Download: <a href="http://support.altibase.com/en/product" class="external-link" rel="nofollow">http://support.altibase.com/en/product</a><br />Client installation file name example: altibase-HDB-client-x.x.x.x.x-WINDOWS-X86-32bit-release.exe<br />ODBC installation file name example: altibase-HDB-ODBC-x.x.x.x.x-WINDOWS-X86-32bit-release.exe<br /><br /></li><li>Install the Windows Altibase 32-bit client.<br />For the installation method, refer to 2. Product Installation Using Package Installer -&gt; ALTIBASE HDB Client Product Installation in Windows in the Installation Guide manual.<br />Manual download: <a href="http://support.altibase.com/en/manual" class="external-link" rel="nofollow">http://support.altibase.com/en/manual</a></li></ol><p> </p><h1 id="id-32-bitODBCinstallationon64-bitWindows-ODBCSetting">ODBC Setting</h1><hr /><p> </p><ol><li>Run the data source manager for 32-bit ODBC.<br />Double-click <span style="color: rgb(255,0,0);">C:\windows\sysWOW64</span>\odbcad32.exe.<br /><img class="confluence-embedded-image" width="500" src="attachments/16876181/17039370.png" data-image-src="attachments/16876181/17039370.png"></li><li>Create a new data source<br />Click the 'Add' button in the user 'DSN tab' of the ODBC Data Source Administrator window to open the Create New Data Source window.<br />Select the Altibase 32-bit ODBC driver and click 'Finish'.<br /><img class="confluence-embedded-image" width="500" src="attachments/16876181/17039371.png" data-image-src="attachments/16876181/17039371.png"></li><li>When the 'Altibase Connection Config' window appears, enter the Altibase server connection information.<br /><img class="confluence-embedded-image" src="attachments/16876181/17039372.png" data-image-src="attachments/16876181/17039372.png"><br />● Windows DSN Name<br />Enter a custom name for the data source.<br />● host (name or IP)<br />Enter the IP of the Altibase server.<br />● Port (default 20300)<br />Enter the service port of the Altibase server<br />Check the value of PORT_NO in the altibase.properties file (Altibase server properties file) or the value of the ALTIBASE_PORT_NO environment variable on the Altibase server.<br />● User<br />Enter the database user name.<br />● Password<br />Enter the database user password.<br />● Database<br />Enter the database name.<br />The database name can be checked with SELECT_DB_NAME FROM V$DATABASE;<br />● NLS_USE<br />Enter the Altibase server character set.<br />The Altibase server character set can be checked with NLS_CHARACTERSET FROM V$NLS_PARAMETERS;<br /><br /></li><li>Click the Test Connection button to check the connection.<br /><img class="confluence-embedded-image" src="attachments/16876181/17039373.png" data-image-src="attachments/16876181/17039373.png"><br /><br /></li><li>Check the Altibase DSN added to the User DSN tab.<br /><img class="confluence-embedded-image" width="500" src="attachments/16876181/17039374.png" data-image-src="attachments/16876181/17039374.png"></li></ol><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876181/17039370.png">image2018-11-7 17_39_40.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876181/17039371.png">image2018-11-7 17_42_35.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876181/17039372.png">image2018-11-7 17_45_52.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876181/17039373.png">image2018-11-7 17_54_58.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16876181/17039374.png">image2018-11-7 17_56_26.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

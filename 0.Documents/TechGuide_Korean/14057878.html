@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase Hibernate 연동가이드</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase Hibernate 연동가이드
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 1 Team</span>, last modified by <span class='editor'> heejung lee</span> on Jan 02, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409845547 {padding: 0px;}
+div.rbtoc1624409845547 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409845547 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409845547'>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-개요'>개요 </a></li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate개요'>Hibernate 개요</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate란?'>Hibernate란?</a></li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate다운로드'>Hibernate 다운로드</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate를이용한sample작성'>Hibernate를 이용한 sample 작성</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-hibernate-mapping파일작성'>hibernate-mapping 파일 작성 </a></li>
+<li><a href='#AltibaseHibernate연동가이드-hibernate-configuration파일작성'>hibernate-configuration 파일 작성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-응용프로그램작성'>응용 프로그램 작성</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate와Altibase연동'>Hibernate와 Altibase 연동</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-AltibaseDialect클래스를Hibernatejar파일에추가'>AltibaseDialect 클래스를 Hibernate jar 파일에 추가</a></li>
+<li><a href='#AltibaseHibernate연동가이드-AltibaseJDBC드라이버를구하는방법'>Altibase JDBC 드라이버를 구하는 방법</a></li>
+<li><a href='#AltibaseHibernate연동가이드-JDBC드라이버를설정하는방법'>JDBC 드라이버를 설정하는 방법</a></li>
+<li><a href='#AltibaseHibernate연동가이드-hibernate-configuration파일에dialect를설정하여Altibase와연동hibernate-configuration파일에dialect를설정하여Altibase와연동'>hibernate-configuration 파일에 dialect를 설정하여 Altibase와 연동 </a></li>
+<li><a href='#AltibaseHibernate연동가이드-FailOver를이용한Connection'>FailOver를 이용한 Connection</a></li>
+<li><a href='#AltibaseHibernate연동가이드-Altibase2개의버전을동시에접속'>Altibase 2개의 버전을 동시에 접속</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate,Spring,ALTIBASE연동'>Hibernate, Spring, ALTIBASE 연동</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-Spring에dataSource를설정하는경우Spring에dataSource를설정하는경우'>Spring에 dataSource를 설정하는 경우 </a></li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate속성에접속정보를설정하는경우'>Hibernate 속성에 접속 정보를 설정하는 경우</a></li>
+<li><a href='#AltibaseHibernate연동가이드-Altibase의ConnectionPool을이용'>Altibase의 ConnectionPool을 이용</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate연동시고려사항'>Hibernate 연동 시 고려사항</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-Hibernate에서트랜잭션관리'>Hibernate에서 트랜잭션 관리</a></li>
+<li><a href='#AltibaseHibernate연동가이드-LOB데이터처리'>LOB 데이터 처리</a></li>
+<li><a href='#AltibaseHibernate연동가이드-Procedure/Function호출'>Procedure/Function 호출</a></li>
+<li><a href='#AltibaseHibernate연동가이드-NativeSQL실행'>NativeSQL 실행</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-부록'>부록</a>
+<ul class='toc-indentation'>
+<li><a href='#AltibaseHibernate연동가이드-DBMS테이블및시퀀스생성'>DBMS 테이블 및 시퀀스 생성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-프로젝트생성'>프로젝트 생성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-hibernate-mapping파일작성.1'>hibernate-mapping 파일 작성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-hibernate-configuration파일작성.1'>hibernate-configuration 파일 작성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-응용프로그램작성.1'>응용 프로그램 작성</a></li>
+<li><a href='#AltibaseHibernate연동가이드-필요한jar파일추가'>필요한 jar 파일 추가</a></li>
+<li><a href='#AltibaseHibernate연동가이드-응용프로그램실행'>응용 프로그램 실행</a></li>
+</ul>
+</li>
+<li><a href='#AltibaseHibernate연동가이드-참고자료'>참고자료</a></li>
+</ul>
+</div></p><p> </p><h1 id="AltibaseHibernate연동가이드-개요"><strong>개요 </strong></h1><hr /><p class="0cm">본 문서는 Hibernate, Hibernate+Spring 환경에서 ALTIBASE와 연동하는 방법에 관해 기술한다.</p><p class="0cm">Altibase를 위한 dialect인 AltibaseDialect 클래스를 포팅하는 방법을 설명한다.</p><p> </p><p> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<h1 id="AltibaseHibernate연동가이드-Hibernate개요"><strong>Hibernate 개요</strong></h1><hr /><p>본 장에서는 Hibernate의 개념과 특징, 다운로드 및 사용 방법에 대해 간단히 살펴보도록 한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Hibernate란?">Hibernate란?</h2><hr /><p>Hibernate란 프로그래머가 DBMS를 보다 편리하게 사용할 수 있게 해주는 ORM(Object Relational Mapping) 프레임워크로서 DBMS 테이블과 Java 객체와의 관계를 매핑시켜 persistence logic 처리를 도와주는 역할을 한다. 즉, Hibernate를 이용하면 DBMS의 테이블과 Java Persistence Object(JavaBean)를 매핑시켜 DBMS 에 CRUD(삽입, 조회, 수정, 삭제) 를 위한 DML을 쉽게 수행 할 수 있다.</p><p>다음은 Hibernate Architecture를 나타내는 그림이다.</p><p><img class="confluence-embedded-image confluence-external-resource" alt="Data Access Layers" src="https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/images/architecture/data_access_layers.svg" data-image-src="https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/images/architecture/data_access_layers.svg"></p><p> </p><p>Hibernate의 더욱 자세한 아키텍처는 아래 사이트에서 참고할 수 있다.</p><p><a class="external-link" href="http://www.hibernate.org/" rel="nofollow">http://www.hibernate.org</a></p><p> </p><h2 id="AltibaseHibernate연동가이드-Hibernate다운로드">Hibernate 다운로드</h2><hr /><p>Hibernate를 사용하기 위해서 Hibernate 관련 jar 파일이 필요하다. 이 jar 파일은 <a href="http://hibernate.org/orm/releases/5.4/" class="external-link" rel="nofollow">http://hibernate.org/orm/releases/5.4/</a> 사이트에서 다운로드 받을 수 있다. 다운로드 한 파일을 압축 해제하면 여러 디렉토리가 있으며, 특히 lib 디렉토리의 하위 디렉토리 내에 여러 가지 jar 파일들이 존재하는데 이 파일들을 이용하여 Hibernate와 연동한다.</p><p>본 문서에서는 Hibernate 5.4.8 버전을 사용하였으며 이 버전의 압축을 푼 디렉토리의 이름은 'hibernate-release-5.4.8.Final'이다.</p><p> </p><h1 id="AltibaseHibernate연동가이드-Hibernate를이용한sample작성"><strong>Hibernate를 이용한 sample 작성</strong></h1><hr /><p>Hibernate를 이용하여 DBMS와 연동하기 위해서는 hibernate-configuration XML 파일과 hibernate-mapping XML 파일을 작성해야 한다.</p><ul><li>hibernate-configuration XML : DBMS와 연동하기 위한 접속 정보 및 고유 기능을 사용하기 위한 dialect를 정의 파일</li><li>hibernate-mapping XML : Java Persistence Object와 DBMS 테이블 간의 매핑을 정의한 파일</li></ul><p> </p><p>본 장에서는 hibernate-configuration XML 파일, hibernate-mapping XML 파일을 작성하는 방법과 응용 프로그램에서 이 파일을 이용하여 실제로 DML 수행하는 방법에 대해 설명한다.</p><p>Sample 프로그램을 작성하는 자세한 방법은 부록을 참고한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-hibernate-mapping파일작성">hibernate-mapping 파일 작성 </h2><hr /><p>hibernate-mapping XML 파일은 DBMS 테이블과 Java Object 사이의 매핑 정보를 담고 있는 설정 파일이다.</p><p>다음은 person 테이블과 Person 클래스 간의 매핑을 정의한 hibernate-mapping XML 파일을 작성한 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Person.hbm.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;euc-kr&quot; ?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+    &quot;-//Hibernate/Hibernate Mapping DTD//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;!-- person 테이블과 Person 클래스 매핑 --&gt;
+    &lt;class name=&quot;examples.domain.Person&quot; table=&quot;person&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;int&quot;&gt;
+            &lt;generator class=&quot;sequence&quot;&gt;
+                &lt;param name=&quot;sequence_name&quot;&gt;PERSON_SEQ&lt;/param&gt;
+            &lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot;/&gt;
+        &lt;property name=&quot;birthDate&quot; column=&quot;birth_date&quot; type=&quot;date&quot;/&gt;
+        &lt;property name=&quot;weightInKilograms&quot; column=&quot;weight_kg&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;heightInMeters&quot; column=&quot;height_m&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;isMarried&quot; column=&quot;is_Married&quot; type=&quot;boolean&quot;/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><ul><li>&lt;class&gt; 태그를 이용해 Java 클래스와 DBMS 테이블, 그리고 &lt;property&gt; 태그에 테이블의 컬럼과 이 컬럼에 대응하는 Java 변수에 대한 매핑을 지정한다.</li><li>Hibernate 버전에 따라 sequence 객체는 sequence_name 또는 sequence 로 param name 을 정의해야 한다.</li></ul><p><br class="_mce_tagged_br" />각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://www.hibernate.org/" rel="nofollow">http://www.hibernate.org</a> 사이트를 참고한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-hibernate-configuration파일작성">hibernate-configuration 파일 작성</h2><hr /><p>hibernate-configure 파일은 DBMS 연결을 위한 여러 가지 접속 정보와 고유 기능을 사용하기 위한 dialect 클래스 및 hibernate-mapping 파일들을 설정하는 파일이다.</p><p>다음은 hibernate-configuration 파일 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&#39;1.0&#39; encoding=&quot;euc-kr&quot;?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC
+    &quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+            &lt;!-- DBMS 연결 정보 설정--&gt;
+            &lt;property name=&quot;connection.driver_class&quot;&gt;
+                    Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+            &lt;property name=&quot;connection.url&quot;&gt;
+                    jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+            &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+            &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+            &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;           
+            &lt;property name=&quot;dialect&quot;&gt;  &lt;!-- DBMS에 알맞은 dialect 클래스 이름을 명시 --&gt;
+                    org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+            &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+            &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+            &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><ul><li><strong>&lt;session-factory&gt; 태그</strong> <br />DBMS 접속 정보를 설정하고 dialect 프로퍼티에 연결하고자 하는 DBMS에 알맞은 dialect 클래스 이름을 명시한다.</li><li><strong>&lt;mapping resource&gt; 태그</strong> <br />hibernate-mapping 파일들을 명시해준다.</li></ul><p>각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://www.hibernate.org/" rel="nofollow">http://www.hibernate.org</a> 사이트를 참고한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-응용프로그램작성">응용 프로그램 작성</h2><hr /><p>응용 프로그램에서 Session 객체를 이용하면 매핑 된 객체와 연동하여 DBMS 테이블에 DML을 수행할 수 있으며 방법은 다음과 같다.</p><ol><li>hibernate-configuraion 파일을 통해 SessionFactory 객체를 얻어온다.</li><li>SessionFactory 객체를 통해 Session 객체를 얻어온다.</li><li>Session 객체의 각 DML에 해당하는 메소드를 호출한다.</li></ol><p>다음은 DBMS의 person 테이블에 데이터를 삽입, 변경, 삭제, 조회하는 응용프로그램이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnection의 PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…중략…
+SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+ 
+//insert Person
+Person newPerson1 = new Person();
+…중략…
+session.save(newPerson1);
+tx.commit();
+ 
+//select all Person
+Criteria crit = session.createCriteria(Person.class);
+crit.addOrder(Order.asc(&quot;id&quot;));
+List&lt;Person&gt; list = crit.list();
+…중략…
+ 
+//update Person
+tx = session.beginTransaction();
+newPerson1.setHeightInMeters(1.93);
+newPerson1.setWeightInKilograms(86.36);
+session.update(newPerson1);
+tx.commit();
+ 
+//get Person
+Person person = (Person) session.get(Person.class,newPerson1.getId());
+System.out.println(person);
+ 
+//delete Person
+tx = session.beginTransaction();
+session.delete(session.get(Person.class, newPerson1.getId()));
+tx.commit();
+…중략…</pre>
+</div></div><ul><li>먼저 hibernate-configuration 파일을 읽어 들여 SessionFactory 객체를 얻어온다. <br />SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();</li><li>그리고 SessionFactory 객체를 통해 Session 객체를 얻어온다.<br />Session session = sessionFactory.openSession();</li><li>이후 각 DML에 해당하는 Session 클래스의 각각의 메소드를 호출한다. <br />session.save()<br />session.update()<br />session.delete()<br />session.get()<br />session.createCriteria()</li></ul><p>각각의 태그에 대한 보다 자세한 설명은 <a class="external-link" href="http://www.hibernate.org/" rel="nofollow">http://www.hibernate.org</a> 사이트를 참고한다.</p><p> </p><h1 id="AltibaseHibernate연동가이드-Hibernate와Altibase연동"><strong>Hibernate와 Altibase 연동</strong></h1><hr /><p>Hibernate에서 Altibase를 연동하기 위해서는 Altibase JDBC 드라이버를 설정하고 hibernate-configuration 파일에 Altibase를 위한 dialect 클래스를 지정해야 한다.</p><p>본 장에서는 Altibase에 특정되는 AltibaseDialect 클래스를 Hibernate jar 파일에 포함시키는 방법과 Altibase JDBC 드라이버를 얻는 방법, JDBC 드라이버를 설정하는 방법, hibernate-configuration 파일에 dialect를 설정하는 방법에 대해 설명한다. 또한, FailOver 기능을 사용하는 방법, 여러 버전의 Altibase를 연동하는 방법에 대해서도 살펴본다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-AltibaseDialect클래스를Hibernatejar파일에추가">AltibaseDialect 클래스를 Hibernate jar 파일에 추가</h2><hr /><p>DBMS 벤더는 제품의 특성에 맞는 비 표준 SQL을 제공할 수 있다.</p><p>Hibernate 에서는 비 표준 SQL문을 수행할 수 있도록 dialect 클래스를 제공하지만, Altibase를 위한 dialect 클래스를 기본적으로 제공되지 않는다.</p><p>배포된 Hibernate jar 파일에 Altibase 전용 dialect 클래스를 포함해야 Altibase에서 제공하는 여러 가지 비 표준 SQL(limit절, sequence 구문 등)을 사용할 수 있다.</p><p>Altibase 전용 dialect 클래스는 아래의 URL을 통해 제공하고 있다.</p><p> </p><p><a href="https://github.com/ALTIBASE/hibernate-orm/blob/master/ALTIBASE_DIALECT_PORTING.md" class="external-link" rel="nofollow"><span class="nolink">https://github.com/ALTIBASE/hibernate-</span>orm/blob/master/ALTIBASE_DIALECT_PORTING.md</a><a href="https://github.com/ALTIBASE/hibernate-orm/blob/master/ALTIBASE_DIALECT_PORTING.md" class="external-link" rel="nofollow"></a></p><p> </p><p>Hibernate 버전에 맞는 AltibaseDialect 클래스와 연관 파일을 다운로드 받은 후 Hibernate jar 파일에 포함시키는 방법은 다음과 같다.</p><p> </p><ol><li><p>Hibernate jar 파일의 압축을 푼다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate jar 압축 풀기</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$mv hibernate-core-x.x.x.Final.jar to-the-java-file-directory
+$cd to-the-java-file-directory
+$jar xvf hibernate-core-x.x.x.Final.jar</pre>
+</div></div></li><li><p>배포되는 AltibaseDialect.java, AltibaseLimitHandler.java, SequenceInformationExtractorAltibaseDatabaseImpl.java 파일을 Hibernate jar 압축 푼 디렉토리에 위치하고, 컴파일 한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseDialect 컴파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$mv Altibase*.java to-the-java-file-directory
+$cd to-the-java-file-directory
+$javac -d . -cp . AltibaseLimitHandler.java
+$javac -d . -cp . AltibaseDialect.java
+$javac -d . -cp . SequenceInformationExtractorAltibaseDatabaseImpl.java</pre>
+</div></div></li><li><p>AltibaseDialect 클래스가 포함된 Hibernate jar를 생성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseDialect 포함하는 Hibernate jar</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$jar -cvfm hibernate-core-x.x.x.Final.jar  META-INF/MANIFEST.MF .</pre>
+</div></div></li><li>위에서 생성 된 hibernate-core-x.x.x.Final.jar  파일을 Hibernate jar 파일로 사용한다.</li></ol><h2 id="AltibaseHibernate연동가이드-AltibaseJDBC드라이버를구하는방법">Altibase JDBC 드라이버를 구하는 방법</h2><hr /><p>Altibase에서 제공하는 JDBC 드라이버는 Altibase.jar 파일이다. 이 파일은 Altibase가 설치되어있는 서버의 $ALTIBASE_HOME/lib 디렉토리에 위치한다.</p><p>Altibase 5 버전부터는 $ALTIBASE_HOME/lib 디렉토리에 Altibase.jar 파일과 Altibase5.jar 과 같이 메이저 버전을 같이 명기한 두 가지 파일을 제공한다.</p><p>Altibase.jar는 일반 JDBC 드라이버 파일이고, Altibase5.jar는 Altibase 5 버전과 그 외의 버전을 함께 연동할 때 사용하는 JDBC 드라이버 파일이다. 따라서 하나의 Altibase 서버와 연동하거나, 버전이 동일한 여러 대의 Altibase와 연동할 경우에 Altibase.jar 파일을 사용한다.</p><p>Altibase JDBC 드라이버를 사용하기 전 Altibase 서버와 Altibase JDBC 드라이버 간 호환 여부를 확인해야 한다. Altibase 서버의 통신 프로토콜 버전과 Altibase JDBC 드라이버의 통신 프로토콜(CMP) 버전을 비교하여 호환 가능 여부를 확인할 수 있다. </p><p> </p><ul><li><p><strong>Altibase JDBC 드라이버 버전을 확인하는 방법</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 JDBC 드라이버 버전 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ java –jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 5.3.3.13 for JavaVM v1.4, CMP:5.6.1, $Revision: 14502 $ Jan13 2010 14:35:28</pre>
+</div></div></li></ul><ul><li><p><strong>Altibase 서버의 통신 프로토콜 버전 확인 방법</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>알티베이스 서버의 통신 프로토콜 버전 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">$ altibase -v
+version 5.3.3.13 XEON_LINUX_redhat_Enterprise_AS4-64bit-5.3.3.13-release-GCC3.4.6 (xeonredhat-linux-gnu) Jan 13 2010 14:35:30, binary db version 5.4.1, meta version 5.6.1, cm protocol version 5.6.1, replication protocol version 5.4.1</pre>
+</div></div></li></ul><h2 id="AltibaseHibernate연동가이드-JDBC드라이버를설정하는방법">JDBC 드라이버를 설정하는 방법</h2><hr /><p>Altibase JDBC 드라이버, Altibase.jar 파일을 classpath에 추가하거나 웹 서버의 적절한 디렉토리에 위치시킨다.</p><p>만약, Eclipse를 사용하여 개발한다면 다음과 같이 해당 프로젝트에 Altibase JDBC 드라이버를 추가할 수 있다.</p><p>프로젝트 – JRE System Library [J2SE-1.5] - Properties – Installed JREs – 항목 중 jre를 클릭 – Edit – Add External JARs 를 클릭하여 Altibase.jar를 추가한다.</p><p><img class="confluence-embedded-image confluence-external-resource" width="750" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A17%3A15.png?version=1&amp;modificationDate=1576019835000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A17%3A15.png?version=1&amp;modificationDate=1576019835000&amp;api=v2"></p><p> </p><h2 id="AltibaseHibernate연동가이드-hibernate-configuration파일에dialect를설정하여Altibase와연동hibernate-configuration파일에dialect를설정하여Altibase와연동">hibernate-configuration 파일에 dialect를 설정하여 Altibase와 연동<span class="confluence-anchor-link"> <span class="confluence-anchor-link" id="AltibaseHibernate연동가이드-hibernate-configuration파일에dialect를설정하여Altibase와연동"></span></span></h2><hr /><p>hibernate-configuration 파일의 &lt;sessionFactory&gt; 의 &lt;property&gt;태그를 이용하여 Altibase 연동을 위한 접속 정보와 dialect 클래스를 지정한다.</p><p>이 때, 정의된 각각의 속성은 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">속성</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">설명</div></th></tr></thead><tbody><tr><td class="confluenceTd">connection.driver_class</td><td class="confluenceTd"><p>ALTIBASE JDBC driver class Name</p></td></tr><tr><td class="confluenceTd">connection.url</td><td class="confluenceTd"><p>ALTIBASE와 연결을 위한 접속 문자열 정보</p></td></tr><tr><td class="confluenceTd">connection.username</td><td class="confluenceTd">데이터베이스 계정</td></tr><tr><td class="confluenceTd">connection.password</td><td class="confluenceTd">데이터베이스 패스워드</td></tr><tr><td class="confluenceTd">dialect</td><td class="confluenceTd"><p>AltibaseDialect 클래스이름</p></td></tr></tbody></table></div><p><br />다음은 hibernate-configuration 파일에서 Altibase 접속 정보들을 설정하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;!-- Altibase 연결 설정 --&gt;
+            &lt;property name=&quot;connection.driver_class&quot;&gt;
+                    Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+            &lt;property name=&quot;connection.url&quot;&gt;
+                    jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+            &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+            &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+             
+            &lt;!-- dialect 프로퍼티에 AltibaseDialect 클래스를 지정 --&gt;
+            &lt;property name=&quot;dialect&quot;&gt;
+                    org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+            &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;
+            &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+            &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+             
+            &lt;!-- hibernate-mapping 파일 Person.hbm.xml 파일 설정--&gt;
+            &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><ul><li>Altibase 서버 접속을 위한 프로퍼티 4가지를 설정한다.<br />connection.driver_class<br />connection.url<br />connection.username<br />connection.password </li><li>dialect 프로퍼티에 AltibaseDialect 클래스를 지정한다.</li><li>hibernate-mapping 파일인 Person.hbm.xml 파일을 설정한다.</li></ul><p>위의 AltibaseConnection 프로젝트를 실행하기 Hibernate 관련 jar 파일들과 Altibase.jar 파일이 필요하다.</p><p><img class="confluence-embedded-image confluence-external-resource" width="750" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A4%3A56.png?version=1&amp;modificationDate=1576019096000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A4%3A56.png?version=1&amp;modificationDate=1576019096000&amp;api=v2"></p><p> </p><h2 id="AltibaseHibernate연동가이드-FailOver를이용한Connection">FailOver를 이용한 Connection</h2><hr /><p>ALTIBASE 5.3.3 부터 FailOver를 지원하는데, FailOver 기능을 사용하기 위해서는 hibernate-configuration 파일의 connection.url 프로퍼티에 FailOver 관련 속성을 설정하면 된다.</p><p>다음은 FailOver를 이용하여 Altibase 서버에 연결하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>FailoverSample의 Hibernate.cfg.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.url&quot;&gt;
+jdbc:Altibase://192.168.1.35:20300/mydb?AlternateServers=(127.0.0.1:20300)&amp;amp;ConnectionRetryCount=1&amp;amp;ConnectionRetryDelay=1&amp;amp;SessionFailOver=on&amp;amp;LoadBalance=off
+&lt;/property&gt;</pre>
+</div></div><p> </p><p>위의 파일에 지정한 Connection url 부분에 정의하는 FailOver 관련 property는 다음과 같다.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner">Property</div></th><th class="confluenceTh"><div class="tablesorter-header-inner">설명</div></th></tr></thead><tbody><tr><td class="confluenceTd">AlternateServer</td><td class="confluenceTd"><p>장애 발생시 접속하게 될 가용 서버를 나타내며 (IP Address1:Port1, IP Address2:Port2,...) 형식으로 기술한다.</p></td></tr><tr><td class="confluenceTd">ConnectionRetryCount</td><td class="confluenceTd">가용 서버 접속 실패 시, 접속 시도 반복 횟수</td></tr><tr><td class="confluenceTd">ConnectionRetryDelay</td><td class="confluenceTd"><p>가용 서버 접속 실패 시 다시 접속을 시도하기 전에 대기하는 시간(초 단위)</p></td></tr><tr><td class="confluenceTd">LoadBalance</td><td class="confluenceTd"><p>on으로 설정하면 최초 접속 시도 시에 기본 서버와 가용 서버를 포함하여 랜덤으로 선택한다.</p><p>off로 설정하면 최초 접속 시도 시에 기본 서버에 접속하고 기본 서버로의 접속이 실패하면 AlternateServer로 기술한 서버에 접속한다.</p></td></tr><tr><td class="confluenceTd">SessionFailOver</td><td class="confluenceTd"><p>STF(Service Time Fail-Over)를 사용할 것인지 설정한다. on : STF, off : CTF</p><p>CTF(Connection Time Fail-Over)는 <a name="9000790" rel="nofollow"></a>DBMS 접속 시점에 장애를 인식하여 장애가 발생한 DBMS대신 다른 가용 노드의 DBMS로 접속을 재시도한다.</p><p>STF(Service Time Fail-Over)는 <a name="9000791" rel="nofollow"></a>DBMS 서비스하는 도중에 장애를 감지하여 다른 가용 노드의 DBMS에 다시 접속하여 세션의 프로퍼티를 복구해 주어, 사용자 응용 프로그램의 업무 로직이 계속 수행될 수 있도록 하는 것을 의미한다.</p><p>STF는 DBMS접속에 대해서만 Fail-Over를 수행해 주기 때문에, 실패한 트랜잭션은 사용자에 의해 재처리되어야 한다.</p></td></tr></tbody></table></div><p> </p><p>위의 FailoverSample 프로젝트를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-hibernate-configuration파일에dialect를설정하여Altibase와연동">hibernate-configuration &#54028;&#51068;&#50640;&nbsp;dialect&#47484; &#49444;&#51221;&#54616;&#50668; Altibase&#50752; &#50672;&#46041;</a>' 부분과 동일한 jar 파일들이 필요하다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Altibase2개의버전을동시에접속">Altibase 2개의 버전을 동시에 접속</h2><hr /><p>Altibase 5 부터는 하나의 어플리케이션에서 2개 이상의 버전을 동시에 연결할 수 있도록 Altibase 5 버전 전용의 JDBC 드라이버를 제공한다. 이 드라이버를 이용하면 Altibase 5 – Altibase 7, Altibase 5 – Altibase 6 간 두 버전의 Altibase에 접속이 가능하다.</p><p>기존의 Altibase.jar와 구별하기 위해 별도로 Altibase 5 전용의 Altibase5.jar 가 필요하며, 각기 버전에서는 메이져 버전을 파일에 같이 명기하는 형태로 제공된다. 또한 hibernate-configuration 파일의 connection.driver_class 프로퍼티에 지정하는 JDBC 드라이버 클래스 이름도 기존의 Altibase.jdbc.driver.AltibaseDriver 대신 Altibase 5 전용의 Altibase5.jdbc.driver.AltibaseDriver과 같이 지정해야 한다.</p><p>Hibernate에서 다른 버전의 Altibase와 연동하기 위해서는 각 버전에 해당하는 hibernate-configuration 파일을 별도로 작성하여 응용 프로그램에서 각각의 hibernate-configuration 파일을 읽어오면 된다.</p><p>이 때 주의할 점은 응용 프로그램에서 Altibase5.jdbc.driver.AltibaseDriver를 먼저 로딩한 후에 Altibase.jdbc.driver.AltibaseDriver를 로딩해야 한다는 것이다.</p><p><br />다음은 Altibase.jar와 Altibase5.jar 파일을 이용하여 두 버전의 Altibase의 드라이버를 로딩하는 예제이다.</p><p> </p><h5 id="AltibaseHibernate연동가이드-예)MultiVersionConnection의Hibernate.Altibase5.cfg.xml파일">예) MultiVersionConnection의 Hibernate.Altibase5.cfg.xml 파일</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE 5 버전에 대한 설정</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.driver_class&quot;&gt;Altibase5.jdbc.driver.AltibaseDriver
+&lt;/property&gt;
+…</pre>
+</div></div><p> </p><h5 id="AltibaseHibernate연동가이드-예)MultiVersionConnection의Hibernate.Altibase7.cfg.xml파일">예) MultiVersionConnection의 Hibernate.Altibase7.cfg.xml 파일</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE 5 이외 버전에 대한 설정</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;property name=&quot;connection.driver_class&quot;&gt;Altibase.jdbc.driver.AltibaseDriver
+&lt;/property&gt;
+…</pre>
+</div></div><h5 id="AltibaseHibernate연동가이드-예)MultiVersionConnection의PersonApp.java파일"><br />예) MultiVersionConnection의 PersonApp.java파일</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+SessionFactory sessionFactory1 =
+    new Configuration().configure(&quot;Hibernate.Altibase5.cfg.xml&quot;).buildSessionFactory();
+SessionFactory sessionFactory2 =
+    new Configuration().configure(&quot;Hibernate.Altibase7.cfg.xml&quot;).buildSessionFactory();
+     
+Session session1 = sessionFactory1.openSession();
+Session session2 = sessionFactory2.openSession();
+…</pre>
+</div></div><p><br />위의 PersonApp.java 예제를 보면 Altibase5.jdbc.driver.AltibaseDriver를 Altibase.jdbc.driver.AltibaseDriver보다 먼저 로딩하기 위해 Altibase5.jdbc.driver.AltibaseDriver를 connection.driver_class로 사용하는 Hibernate.Altibase5.cfg.xml 파일을 먼저 읽어오고 있다.</p><p>반드시 Altibase 5 전용의 드라이버를 먼저 로딩해야 한다는 것에 유의해야 한다.</p><p><img class="confluence-embedded-image confluence-external-resource" width="750" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A24%3A8.png?version=1&amp;modificationDate=1576020248000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-11%208%3A24%3A8.png?version=1&amp;modificationDate=1576020248000&amp;api=v2"></p><p> </p><h1 id="AltibaseHibernate연동가이드-Hibernate,Spring,ALTIBASE연동">Hibernate, Spring, ALTIBASE 연동</h1><hr /><p>Altibase 서버와 연동하기 위해서 Hibernate의 설정에 접속 정보와 dialect를 지정해서 연결 할 수도 있고, Spring에 dataSource를 지정해서 연결할 수도 있다.</p><p>본 장에서는 이 두 방법을 이용하여 Altibase 서버와 연동하는 방법에 대해 설명한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Spring에dataSource를설정하는경우Spring에dataSource를설정하는경우">Spring에 dataSource를 설정하는 경우 <span class="confluence-anchor-link" id="AltibaseHibernate연동가이드-Spring에dataSource를설정하는경우"></span></h2><hr /><p>Hibernate와 Spring을 함께 사용하기 위해서는 다음의 과정이 필요하다.</p><p> </p><ol><li>Spring의 applicationContext.xml 파일에 DBMS 연동을 위한 dataSource를 작성한다.<br />dataSource를 설정하는 방법은『ALTIBASE_Spring_연동가이드』 문서를 참고하면 된다.</li><li>applicationContext.xml 파일에 Hibernate의 sessionFactory bean을 지정해준다.<br />이 때 &lt;property name=&quot;dataSource&quot;&gt;에 1 번에서 설정한 dataSource를 지정하고, &lt; property name=&quot;mapping-resource”&gt;에 hibernate-mapping 파일들을 지정한다. 그리고 &lt;property name=&quot;hibernate Properties”&gt;를 이용해 Hibernate에 관한 여러 가지 속성들을 정의한다.</li><li>applicationContext.xml 파일에서 각각의 DAO bean에 SessionFactory bean을 참조하도록 설정해준다.</li><li>DAO 클래스에서 설정한 SessionFactory 객체를 통해 Session 객체를 얻어와 각 DML에 해당하는 메소드들을 호출한다.</li></ol><p> </p><p>다음은 applicationContext.xml 파일에서 dataSource와 sessionFactory bean을 지정하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SpringAltibaseConnection1 의 applicationContext.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;!-- Altibase 서버 접속을 위한 dataSource 를 설정한다. --&gt;
+&lt;bean id=&quot;dataSource&quot;
+        class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+    &lt;property name=&quot;driverClassName&quot; value=&quot;Altibase.jdbc.driver.AltibaseDriver&quot;/&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:20300/mydb&quot;/&gt;
+    &lt;property name=&quot;username&quot; value=&quot;sys&quot;/&gt;
+    &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+ 
+&lt;!-- Hibernate의 sessionFactory bean을 지정한다. --&gt;
+&lt;bean id=&quot;sessionFactory&quot;
+        class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;          &lt;!-- 위에서 설정한 dataSource를 입력한다. --&gt;
+    &lt;property name=&quot;mappingResources&quot;&gt;
+        &lt;list&gt;
+                &lt;!-- hibernate-mapping 파일들을 지정--&gt;
+                &lt;value&gt;Person.hbm.xml&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+ 
+    &lt;!-- Hibernate에 관한 여러 가지 속성들을 정의한다. --&gt;
+    &lt;property name=&quot;hibernateProperties&quot;&gt;
+        &lt;props&gt;
+                &lt;prop key=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.AltibaseDialect&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+ 
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot; &gt;
+    &lt;constructor-arg ref=&quot;sessionFactory&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><p> </p><h4 id="AltibaseHibernate연동가이드-Spring연동시필요한jar파일">Spring 연동 시 필요한 jar 파일<span class="confluence-anchor-link"> </span></h4><p>위의 예제 SpringAltibaseConnection1 프로젝트를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-hibernate-configuration파일에dialect를설정하여Altibase와연동">hibernate-configuration &#54028;&#51068;&#50640; dialect&#47484; &#49444;&#51221;&#54616;&#50668; Altibase&#50752; &#50672;&#46041;</a>' 부분에서 필요했던 jar파일들뿐만 아니라 spring 관련된 jar 파일이 더 필요하다.</p><p>jar 파일의 자세한 디렉토리 위치는 『ALTIBASE_Spring_연동가이드』문서를 참고한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Hibernate속성에접속정보를설정하는경우">Hibernate 속성에 접속 정보를 설정하는 경우</h2><hr /><p>Hibernate+Spring 환경에서 Hibernate에 접속 속성을 지정하여 연결할 경우에는 다음의 과정이 필요하다.</p><p> </p><ol><li>applicationContext.xml 파일에 Hibernate의 SessionFactory bean을 지정해준다.<br />&lt; property name=&quot;mapping-resource”&gt;에 hibernate-mapping 파일들을 지정한다. 그리고 &lt;property name=&quot;hibernate Properties”&gt; 태그 안에 접속 관련 정보 및 dialect 클래스를 정의한다.</li><li>각각의 DAO bean에 sessionFactory bean을 참조하도록 설정해준다.</li><li>DAO 클래스에서 설정한 SessionFactory 객체를 통해 Session 객체를 얻어와 각 DML 에 해당하는 메소드들을 호출한다.</li></ol><p> </p><p>다음은 Hibernate에 접속 속성을 설정하여 Altibase와 연동하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>SpringAltibaseConnection2의 applicationContext.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">...
+&lt;bean id=&quot;sessionFactory&quot;
+    class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+    &lt;property name=&quot;mappingResources&quot;&gt;
+        &lt;list&gt;
+            &lt;value&gt;Person.hbm.xml&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+    &lt;property name=&quot;hibernateProperties&quot;&gt;
+        &lt;props&gt;
+            &lt;prop key=&quot;hibernate.dialect&quot;&gt;
+                            org.hibernate.dialect.AltibaseDialect&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.driver_class&quot;&gt;
+                            Altibase.jdbc.driver.AltibaseDriver&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.url&quot;&gt;
+                            jdbc:Altibase://192.168.1.35:21129/mydb&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.username&quot;&gt;sys&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.password&quot;&gt;manager&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.connection.pool_size&quot;&gt;1&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.current_session_context_class&quot;&gt;thread&lt;/prop&gt;
+            &lt;prop key=&quot;hibernate.show_sql&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+     
+&lt;bean id=&quot;personDao&quot; class=&quot;examples.domain.PersonDao&quot; &gt;
+    &lt;constructor-arg ref=&quot;sessionFactory&quot; /&gt;
+&lt;/bean&gt;
+... </pre>
+</div></div><h4 id="AltibaseHibernate연동가이드-필요한jar파일"><strong>필요한 jar 파일</strong></h4><p>SpringAltibaseConnection2 예제를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-Spring에dataSource를설정하는경우">Spring&#50640; dataSource&#47484;&nbsp;&#49444;&#51221;&#54616;&#45716; &#44221;&#50864;</a>' 부분과 같은 jar 파일들이 필요하다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Altibase의ConnectionPool을이용">Altibase의 ConnectionPool을 이용</h2><hr /><p>Altibase에서 제공하는 ABConnectionPoolDataSource 클래스를 사용하면 Altibase의 ConnectionPool을 이용할 수 있다.</p><p>만약, Hibernate + Spring 연동 환경이라면 Spring의 applicationContext.xml 파일에 ABConnectionPoolDataSource 클래스를 이용하여 dataSource bean을 정의하면 된다. 하지만, Spring과 연동 없이 Hibernate만 사용한다면 Altibase의 ConnectionPool을 사용할 수 없다.</p><p><br />Altibase의 ConnectionPool을 이용하는 자세한 내용은 『 <a href="7340945.html">ALTIBASE_Spring_&#50672;&#46041;&#44032;&#51060;&#46300;</a> 』문서를 참고하여 설정한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnectionPool의 applicationContext.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;bean id=&quot;dataSource&quot;
+        &lt;!-- Altibase에서 제공하는 ABConnectionPoolDataSource 클래스를 사용 --&gt;
+        class=&quot;Altibase.jdbc.driver.ABConnectionPoolDataSource&quot;&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:Altibase://192.168.1.35:21129/mydb&quot;/&gt;
+        &lt;property name=&quot;user&quot; value=&quot;sys&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;manager&quot; /&gt;
+&lt;/bean&gt;
+…</pre>
+</div></div><h4 id="AltibaseHibernate연동가이드-필요한jar파일.1"><strong>필요한 jar 파일</strong></h4><p>AltibaseConnectionPool 예제를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-Spring에dataSource를설정하는경우">Spring&#50640; dataSource&#47484; &#49444;&#51221;&#54616;&#45716;&nbsp;&#44221;&#50864;</a>' 부분과 같은 jar 파일들이 필요하다.</p><p> </p><h1 id="AltibaseHibernate연동가이드-Hibernate연동시고려사항">Hibernate 연동 시 고려사항</h1><hr /><p>Hibernate에서 Altibase 연동 시 고려해야 할 사항에 대해 설명한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Hibernate에서트랜잭션관리">Hibernate에서 트랜잭션 관리</h2><hr /><p>Hibernate에서 트랜잭션을 처리할 때는 응용 프로그램에서 Session 클래스의 beginTransaction() 메소드를 호출한 후 Transaction 클래스의 commit() / rollback() 메소드를 호출하면 된다.</p><p>beginTransaction() 메소드를 호출할 때 자동으로 setAutoCommit(false)가 호출 되어 트랜잭션이 유지되고, 이 후 commit() / rollback() 메소드를 호출하면 해당 트랜잭션이 종료된다.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnection의 PersonApp.java 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+&lt;!-- 트랜잭션 시작을 알리기 위해 beginTransaction() 메소드를 호출 --&gt;
+Transaction tx = session.beginTransaction();
+//insert Person
+Person newPerson1 = new Person();
+…
+session.save(newPerson1);
+&lt;!-- 트랜잭션 종료를 알리기 위해 commit() 메소드 호출 --&gt;
+tx.commit();
+…
+//update Person
+&lt;!-- 트랜잭션 시작을 알리기 위해 beginTransaction() 메소드를 호출 --&gt;
+tx = session.beginTransaction();
+newPerson1.setHeightInMeters(1.93);
+newPerson1.setWeightInKilograms(86.36);
+session.flush();
+&lt;!-- 트랜잭션 종료를 알리기 위해 commit() 메소드 호출 --&gt;
+tx.commit();
+…
+//delete Person
+&lt;!-- 트랜잭션 시작을 알리기 위해 beginTransaction() 메소드를 호출 --&gt;
+tx = session.beginTransaction();
+session.delete(session.get(Person.class, newPerson1.getId()));
+&lt;!-- 트랜잭션 종료를 알리기 위해 commit() 메소드 호출 --&gt;
+tx.commit();
+…</pre>
+</div></div><h2 id="AltibaseHibernate연동가이드-LOB데이터처리">LOB 데이터 처리</h2><hr /><p>Hibernate에서 LOB을 처리하기 위해서 hibernate-mapping 파일에 컬럼과 변수의 mapping을 정의한 &lt;property&gt; 태그에 CLOB일 경우에는 type=“org.hibernate.type.StringClobType”, sql-type=”clob”으로 정의해주고,</p><p>BLOB일 경우에는 type= “org.hibernate.type. PrimitiveByteArrayBlobType”, sql-type=”blob”으로 정의해줘야 한다.</p><p>이를 지키지 않을 경우에 길이 제한에 의해 올바르지 않은 데이터를 입력하거나 잘못된 데이터를 질의할 수 있다. 또는 Invalid length 등의 에러가 발생할 수도 있다.</p><p><br />다음은 CLOB과 BLOB 타입의 데이터에 대한 &lt;property&gt;를 정의하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>LobSample의 LobSample.hbm.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">…
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;com.altibase.lob.Lobsample&quot; table=&quot;lobsample&quot;&gt;
+        &lt;id name=&quot;lob_id&quot; column=&quot;lob_id&quot; type=&quot;int&quot;&gt;
+        &lt;generator class=&quot;assigned&quot;/&gt;
+        &lt;/id&gt;
+        &lt;!-- 컬럼이 CLOB 타입임을 알리기 위해 type과 sql-type 을 아래와 같이 정의한다. --&gt;
+        &lt;property name=&quot;clobcolumn&quot; type=&quot;org.hibernate.type.StringClobType&quot;&gt;
+            &lt;column name=&quot;clobcolumn&quot; sql-type=&quot;clob&quot;/&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;blobcolumn&quot;
+            type=&quot;org.hibernate.type.PrimitiveByteArrayBlobType&quot;&gt;
+            &lt;column name=&quot;blobcolumn&quot; sql-type=&quot;blob&quot;/&gt;
+        &lt;/property&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;
+…</pre>
+</div></div><p>LOB 처리 시 반드시 주의해야 할 또 다른 사항은 Altibase는 LOB 데이터를 처리하기 위해서는 반드시 autocommit 모드를 false로 바꾼 후 트랜잭션을 관리해야 한다는 것이다.</p><p>Hibernate 연동 시 Session의 beginTransaction() 메소드를 호출하면 자동으로 setAutoCommit(false)를 해주기 때문에 LOB을 처리 하기 전 beginTransaction() 메소드를 호출해야한다.<br />Hibernate와 Spring을 함께 연동할 경우 Spring에서 트랜잭션을 관리해주더라도 aucocommit을 false가 적용되지 않을 수 있으므로 반드시 Java 응용 프로그램에서 beginTransaction() 메소드를 호출하는 방법을 권장한다.</p><p><br />만약 beginTransaction() 메소드를 호출하지 않았다면 다음과 같은 에러 및 현상이 발생할 수 있다.</p><ol><li><strong>LOB 데이터 조회 시</strong> <br />null 값이 리턴 되거나, “java.sql.SQLException: [0]:LobLocator can not span the transaction 101858625.” 과 같은 에러가 발생</li><li><strong>LOB 데이터 입력 시</strong> <br />“java.sql.SQLException: [0]: Connection is in autocommit mode. One can not operate on LOB datas with autocommit mode on.” 에러가 발생</li></ol><p>다음의 예제는 Hibernate에서 LOB을 처리하는 예제이다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>LobSample의 LobApp.java파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+    &lt;!-- beginTransaction() 메소드를 호출하면 autocommit 모드를 false 가 된다.
+         LOB을 처리 하기 전 반드시 beginTransaction() 메소드를 호출한다. --&gt;
+    Transaction tx = session.beginTransaction();
+     
+    StringBuffer msg=new StringBuffer(&quot;Existing Disk-based RDBMS (also known as
+    Disk-Resident DBMSs or DRDBMSs&quot; );
+     
+    for(int i=0; i&lt;10;i++){
+    msg.append(msg.toString());
+    }
+     
+    Lobsample lob1 = new Lobsample(1,msg.toString(),msg.toString().getBytes());
+    session.save(lob1);
+    tx.commit();
+    session.flush();
+     
+    tx = session.beginTransaction();
+     
+    Lobsample Lobsample1
+        = (Lobsample) session.get(Lobsample.class,lob1.getLob_id());
+     
+    System.out.println(Lobsample1.getClobcolumn().substring(0, 100));
+    System.out.println(Lobsample1.getBlobcolumn());
+     
+    tx.commit();
+…</pre>
+</div></div><p> </p><h4 id="AltibaseHibernate연동가이드-필요한Jar파일"><strong>필요한 Jar 파일</strong></h4><p>위의 LobSample 프로젝트를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-hibernate-mapping파일에dialect를설정하여Altibase와연동">hibernate-mapping &#54028;&#51068;&#50640; dialect&#47484;&nbsp;&#49444;&#51221;&#54616;&#50668; Altibase&#50752; &#50672;&#46041;</a>' 부분과 같은 jar 파일들이 필요하다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-Procedure/Function호출">Procedure/Function 호출</h2><hr /><p>Hibernate에서 DBMS에 생성한 Stored Procedure/Function 호출은 지원하지 않기 때문에 Session 객체를 통해 Connection 객체를 얻어와서 일반 JDBC에서 호출하는 방법처럼 CallableStatement를 이용해야 한다.</p><p>다음은 Stored Procedure/Function을 호출하는 예제이다.</p><h5 id="AltibaseHibernate연동가이드-예)ProcedureSample의Procedure/Function생성구문">예) ProcedureSample의 Procedure/Function 생성 구문</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ProcedureSample의 Procedure/Function 생성 구문</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: sql; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE sum_proc
+(
+        p_num1 IN NUMBER,
+        p_num2 IN NUMBER,
+        p_num3 OUT NUMBER
+)
+AS
+BEGIN
+        p_num3 := p_num1 + p_num2;
+END;
+/
+ 
+CREATE OR REPLACE FUNCTION sum_func
+(
+        p_num1 IN NUMBER,
+        p_num2 IN NUMBER
+)
+RETURN NUMBER
+AS
+        v_num NUMBER;
+BEGIN
+        v_num := p_num1 + p_num2;
+        RETURN v_num;
+END;
+/</pre>
+</div></div><p> </p><h5 id="AltibaseHibernate연동가이드-예)ProcedureSample의ProcedureApp.java">예) ProcedureSample의 ProcedureApp.java</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ProcedureSample의 ProcedureApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+    SessionFactory sessionFactory =
+            new Configuration().configure().buildSessionFactory();
+             
+    Session session = sessionFactory.openSession();
+    Connection con =session.connection();
+     
+    // Stored Procedure 호출
+    String sql1 = &quot;{call sum_proc(?,?,?)}&quot;;
+    CallableStatement altibaseStatement1 = con.prepareCall(sql1);
+    altibaseStatement1.setInt(1,10);
+    altibaseStatement1.setInt(2,20);
+    altibaseStatement1.registerOutParameter(3,java.sql.Types.NUMERIC);
+    altibaseStatement1.execute();
+    System.out.println(altibaseStatement1.getDouble(3));
+     
+     
+    // Stored Function 호출
+    String sql2 = &quot;{call ? := sum_func(?,?)}&quot;;
+    CallableStatement altibaseStatement2 = con.prepareCall(sql2);
+    altibaseStatement2.registerOutParameter(1,java.sql.Types.NUMERIC);
+    altibaseStatement2.setInt(2,10);
+    altibaseStatement2.setInt(3,20);
+    altibaseStatement2.execute();
+    System.out.println(altibaseStatement2.getDouble(1));
+…</pre>
+</div></div><p> </p><p><strong>필요한 Jar 파일</strong></p><p>ProcedureSample 예제를 실행하기 위해서는 'hibername-mapping 파일에 dialect를 설정하여 Altibase와 연동'과 같은 jar 파일들이 필요하다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-NativeSQL실행">NativeSQL 실행</h2><hr /><p>SQL문 중 MOVE 구문은 Altibase에서만 제공하는 문장이다. 이렇게 특정 DBMS가 제공하는 특화된 기능을 실행하는 방법은 다음과 같다.</p><ol><li>hibernate-mapping 파일에 nativeSQL 구문을 작성한다.</li><li>응용 프로그램에서 session 객체의 getNamedQuery() 메소드를 호출하여 Query 객체를 얻어온다.</li><li>Query 객체의 각각의 SQL문을 실행하는 메소드를 호출한다. (ex. executeUpdate(), list() 등)</li></ol><p>다음은 MOVE 문을 실행하는 예제이다.</p><h5 id="AltibaseHibernate연동가이드-예)NativeSQL의NativeSQL.hbm.xml파일">예) NativeSQL의 NativeSQL.hbm.xml 파일</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>NativeSQL의 NativeSQL.hbm.xml 파일</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;hibernate-mapping&gt;
+…
+    &lt;sql-query name=&quot;nativeSQLMove&quot;&gt;
+            &lt;![CDATA[
+                    MOVE INTO t2 (c1,c2,c3)
+                    FROM t1(c1,c2,c3)
+            ]]&gt;
+    &lt;/sql-query&gt;
+…
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><p> </p><h5 id="AltibaseHibernate연동가이드-예)NativeSQL의NativeSQLApp.java">예) NativeSQL의 NativeSQLApp.java</h5><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>NativeSQL의 NativeSQLApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">…
+SessionFactory sessionFactory
+        = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+Session session = sessionFactory.openSession();
+Query query = session.getNamedQuery(&quot;nativeSQLMove&quot;);
+Transaction tx = session.beginTransaction();
+int rows = query.executeUpdate();
+tx.commit();
+System.out.println(rows+&quot; data moved&quot;);
+…</pre>
+</div></div><p> </p><h4 id="AltibaseHibernate연동가이드-필요한Jar파일.1"><strong>필요한 Jar 파일</strong></h4><p>NativeSQL 예제를 실행하기 위해서는 '<a href="#AltibaseHibernate연동가이드-hibernate-mapping파일에dialect를설정하여Altibase와연동">hibername-mapping &#54028;&#51068;&#50640; dialect&#47484; &#49444;&#51221;&#54616;&#50668;&nbsp;Altibase&#50752; &#50672;&#46041;</a>' 부분과 같은 jar 파일들이 필요하다.</p><p> </p><h1 id="AltibaseHibernate연동가이드-부록">부록</h1><hr /><p>AltibaseConnection 예제를 바탕으로 Hibernate에서 Altibase와 연동하는 방법에 대해 좀 더 자세하게 설명한다.</p><p>예제에서 개발 도구는 Eclipse를 사용한다.</p><p> </p><h2 id="AltibaseHibernate연동가이드-DBMS테이블및시퀀스생성">DBMS 테이블 및 시퀀스 생성</h2><hr /><p>DBMS에 다음의 테이블과 시퀀스를 생성한다. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>create_tbl.sql</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: sql; gutter: false" style="font-size:12px;">CREATE TABLE PERSON (
+    ID          NUMBER (5, 0)   NOT NULL,
+    NAME        VARCHAR (40)    NOT NULL,
+    BIRTH_DATE  DATE,
+    WEIGHT_KG   NUMBER (4, 2)   NOT NULL,
+    HEIGHT_M    NUMBER (4, 2)   NOT NULL,
+    IS_MARRIED  CHAR(1),
+    PRIMARY KEY (ID)
+);
+CREATE SEQUENCE PERSON_SEQ;</pre>
+</div></div><h2 id="AltibaseHibernate연동가이드-프로젝트생성">프로젝트 생성</h2><hr /><p>Eclipse에서 AltibaseConnection 이라는 프로젝트를 생성한다.</p><ol><li>메뉴 – File – New - Java Project 클릭</li><li>Project name : 에 AltibaseConnection 입력</li><li>Finish 버튼을 클릭<br /><br /><img class="confluence-embedded-image confluence-external-resource" width="500" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2011%3A20%3A23.png?version=1&amp;modificationDate=1575858025000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2011%3A20%3A23.png?version=1&amp;modificationDate=1575858025000&amp;api=v2"></li></ol><h2 id="AltibaseHibernate연동가이드-hibernate-mapping파일작성.1">hibernate-mapping 파일 작성</h2><hr /><p>DBMS의 person 테이블과 Person 클래스 사이의 mapping 정보를 정의한 hibernate-mapping 파일을 작성한다.</p><ol><li>AltibaseConnection 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다.</li><li><p>File name: 에 Person.hbm.xml을 작성한다.<br /><br /><img class="confluence-embedded-image confluence-external-resource" width="500" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2011%3A21%3A40.png?version=1&amp;modificationDate=1575858102000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2011%3A21%3A40.png?version=1&amp;modificationDate=1575858102000&amp;api=v2"> <br /><br />다음의 내용을 Person.hbm.xml 파일에 작성한다.</p><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Person.hbm.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;euc-kr&quot; ?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+      &quot;-//Hibernate/Hibernate Mapping DTD//EN&quot;
+      &quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;examples.domain.Person&quot; table=&quot;person&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;int&quot;&gt;
+            &lt;generator class=&quot;sequence&quot;&gt;
+                &lt;param name=&quot;sequence_name&quot;&gt;PERSON_SEQ&lt;/param&gt;
+            &lt;/generator&gt;
+        &lt;/id&gt;       
+        &lt;!-- person 테이블의 컬럼과 Person class의 변수를 &lt;property&gt; 태그를 통해 각각 매핑한다. --&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot;/&gt;
+        &lt;property name=&quot;birthDate&quot; column=&quot;birth_date&quot; type=&quot;date&quot;/&gt;
+        &lt;property name=&quot;weightInKilograms&quot; column=&quot;weight_kg&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;heightInMeters&quot; column=&quot;height_m&quot; type=&quot;double&quot;/&gt;
+        &lt;property name=&quot;isMarried&quot; column=&quot;is_Married&quot; type=&quot;boolean&quot;/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+</div></div><p> </p><p>person 테이블의 컬럼과 Person 클래스의 변수를 &lt;property&gt; 태그를 통해 각각 매핑한다.<br />Java의 boolean 타입은 DBMS에서 지원하는 타입이 아니므로 0(false), 1(true)의 값으로 저장하도록 컬럼을 CHAR(1)의 타입으로 생성하였다.</p></li></ol><h2 id="AltibaseHibernate연동가이드-hibernate-configuration파일작성.1">hibernate-configuration 파일 작성</h2><hr /><p>Altibase 서버에 접속하기 위한 dialect를 정의하는 hibernate-configuration 파일을 작성한다. </p><ol><li>AltibaseConnection 프로젝트 – src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – File을 클릭한다. </li><li>File name: 에 Hibernate.cfg.xml을 작성한다.</li></ol><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Hibernate.cfg.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: xml; gutter: false" style="font-size:12px;">&lt;?xml version=&#39;1.0&#39; encoding=&quot;euc-kr&quot;?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC
+    &quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;
+    &quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;property name=&quot;connection.driver_class&quot;&gt;Altibase.jdbc.driver.AltibaseDriver&lt;/property&gt;
+        &lt;property name=&quot;connection.url&quot;&gt;jdbc:Altibase://192.168.1.35:20300/mydb&lt;/property&gt;
+        &lt;property name=&quot;connection.username&quot;&gt;sys&lt;/property&gt;
+        &lt;property name=&quot;connection.password&quot;&gt;manager&lt;/property&gt;
+        &lt;property name=&quot;connection.pool_size&quot;&gt;1&lt;/property&gt;
+        &lt;property name=&quot;dialect&quot;&gt;org.hibernate.dialect.AltibaseDialect&lt;/property&gt;
+        &lt;property name=&quot;current_session_context_class&quot;&gt;thread&lt;/property&gt;
+        &lt;property name=&quot;show_sql&quot;&gt;true&lt;/property&gt;
+        &lt;mapping resource=&quot;Person.hbm.xml&quot;/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div><h2 id="AltibaseHibernate연동가이드-응용프로그램작성.1">응용 프로그램 작성</h2><hr /><ol><li><p>person 테이블에 대한 DO객체인 Person 클래스를 작성한다.<br /><br />1-1. AltibaseConnection 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.<br />1-2. Package: 에 examples.domain를 입력하고 Name: 에 Person를 입력한다.<br /><img class="confluence-embedded-image confluence-external-resource" width="500" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A14%3A37.png?version=1&amp;modificationDate=1575864879000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A14%3A37.png?version=1&amp;modificationDate=1575864879000&amp;api=v2"> <br /><br />다음의 내용을 Person.java 파일에 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Person.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">package examples.domain;
+import java.sql.*;
+public class Person {
+    private int id;
+    private String name;
+    private Date birthDate;
+    private double weightInKilograms;
+    private double heightInMeters;
+    private boolean isMarried;
+     
+    public int getId () {
+        return id;
+    }
+    public void setId (int id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public void setWeightInKilograms(double weightInKilograms) {
+        this.weightInKilograms = weightInKilograms;
+    }
+    public void setIsMarried(boolean isMarried) {
+        this.isMarried = isMarried;
+    }
+    public double getWeightInKilograms() {
+        return weightInKilograms;
+    }
+    public void setHeightInMeters(double heightInMeters) {
+        this.heightInMeters = heightInMeters;
+    }
+    public double getHeightInMeters() {
+        return heightInMeters;
+    }
+    public boolean getIsMarried() {
+        return isMarried;
+    }
+    public String toString(){
+        return &quot;id=&quot;+id+&quot;, name=&quot;+name+&quot;, birthData=&quot;+birthDate+&quot;, weightInKillograms=&quot;
+        +weightInKilograms+&quot;,heightInMeters=&quot;+heightInMeters+&quot;,isMarried=&quot;+isMarried;
+         
+    }
+}</pre>
+</div></div></li><li><p>DBMS에 DML을 실행하는 main 프로그램을 작성한다.</p><p>2-1. AltibaseConnection 프로젝트의 src 디렉토리에서 마우스 오른쪽 버튼 클릭하여 New – Class를 클릭한다.</p><p>2-2. Name: 에 PersonApp를 입력한다.<br /><img class="confluence-embedded-image confluence-external-resource" width="500" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A23%3A11.png?version=1&amp;modificationDate=1575865392000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-9%2013%3A23%3A11.png?version=1&amp;modificationDate=1575865392000&amp;api=v2"> <br /><br />다음의 내용을 PersonApp.java 파일에 작성한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PersonApp.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: java; gutter: false" style="font-size:12px;">import java.sql.SQLException;
+import java.util.*;
+import org.hibernate.SessionFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import examples.domain.Person;
+public class PersonApp {
+    public static void main(String[] args) throws  SQLException {
+        SessionFactory sessionFactory = new Configuration().configure(&quot;Hibernate.cfg.xml&quot;).buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+         
+        //insert Person
+        System.out.println(&quot;insert Person&quot;);
+        Person newPerson1 = new Person();
+        newPerson1.setName(&quot;KIM&quot;);
+        newPerson1.setBirthDate (new java.sql.Date(1978 - 1900, 2 - 1, 1));
+        newPerson1.setHeightInMeters(1.82);
+        newPerson1.setWeightInKilograms(80.23);
+        newPerson1.setIsMarried(true);
+        session.save(newPerson1);
+         
+        Person newPerson2 = new Person();
+        newPerson2.setName(&quot;LEE&quot;);
+        newPerson2.setBirthDate (new java.sql.Date(1975 - 1900, 5 - 1, 5));
+        newPerson2.setHeightInMeters(1.57);
+        newPerson2.setWeightInKilograms(45.23);
+        newPerson2.setIsMarried(false);
+        session.save(newPerson2);
+        tx.commit();
+         
+        System.out.println();
+        System.out.println(&quot;select all Persons&quot;);
+        Criteria crit = session.createCriteria(Person.class);
+        crit.addOrder(Order.asc(&quot;id&quot;));
+        List&lt;Person&gt; list = crit.list();
+        System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+        for(int i=0; i&lt; list.size();i++){
+            System.out.println(list.get(i));
+         
+        }
+        tx = session.beginTransaction();
+         
+        //update Person
+        //Session 범위 내에서 변경된 객체 값은 자동으로 DBMS에 반영
+        System.out.println();
+        System.out.println(&quot;update Person&quot;);
+        newPerson1.setHeightInMeters(1.93);
+        newPerson1.setWeightInKilograms(86.36);
+        System.out.println();
+        session.update(newPerson1);
+        tx.commit();
+        Person person = (Person) session.get(Person.class,newPerson1.getId());
+        System.out.println(person);
+         
+        //delete Person
+        tx = session.beginTransaction();
+        System.out.println();
+        System.out.println(&quot;delete Person&quot;);
+        session.delete(session.get(Person.class, newPerson1.getId()));
+        //session.delete(session.get(Person.class, newPerson2.getId()));
+        tx.commit();
+        crit = session.createCriteria(Person.class);
+        crit.addOrder(Order.asc(&quot;id&quot;));
+        list = crit.list();
+        System.out.println(&quot;Selected &quot;+list.size()+&quot; records.&quot;);
+        for(int i=0; i&lt; list.size();i++){
+            System.out.println(list.get(i));
+         
+        }
+         
+    }
+}</pre>
+</div></div></li></ol><h2 id="AltibaseHibernate연동가이드-필요한jar파일추가">필요한 jar 파일 추가</h2><hr /><p>Altibase.jar와 hibernate 관련 jar 파일을 추가한다.</p><p>AltibaseConnection 프로젝트에서 마우스 오른쪽 버튼 클릭하여 Properties를 클릭 – Java Build Path – Libraries 에서 Add External JARS를 클릭하여 필요한 jar 파일들을 추가한다.</p><p><img class="confluence-embedded-image confluence-external-resource" width="750" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-10%2016%3A47%3A36.png?version=1&amp;modificationDate=1575964056000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-10%2016%3A47%3A36.png?version=1&amp;modificationDate=1575964056000&amp;api=v2"></p><p> </p><h2 id="AltibaseHibernate연동가이드-응용프로그램실행">응용 프로그램 실행</h2><hr /><p>AltibaseConnection 프로젝트를 실행한다.</p><p>AltibaseConnection 프로젝트를 클릭한 후 메뉴에서 Run을 실행하거나 Run 실행 단추를 클릭한다.</p><p><img class="confluence-embedded-image confluence-external-resource" width="800" src="http://docs.altibase.com/download/attachments/14057878/image2019-12-10%2016%3A57%3A21.png?version=1&amp;modificationDate=1575964641000&amp;api=v2" data-image-src="http://docs.altibase.com/download/attachments/14057878/image2019-12-10%2016%3A57%3A21.png?version=1&amp;modificationDate=1575964641000&amp;api=v2"></p><h1 id="AltibaseHibernate연동가이드-참고자료">참고자료</h1><hr /><p class="0cm">1. 『 <a href="7341274.html">ALTIBASE &#44060;&#48156;&#44032;&#51060;&#46300;</a> 』</p><p class="0cm">2. 『 <a href="https://docs.altibase.com/pages/viewpage.action?pageId=9110598">JAVA &#44060;&#48156; &#44032;&#51060;&#46300;</a> 』</p><p class="0cm">3. 『 <a href="13437492.html">Altibase JBoss &#50672;&#46041;&#44032;&#51060;&#46300;</a> 』</p><p class="0cm">4. 『 <a href="7341030.html">Altibase TOMCAT &#50672;&#46041;&#44032;&#51060;&#46300;</a> 』</p><p class="0cm">5. 『 <a href="13435602.html">Altibase WebSphere &#50672;&#46041; &#44032;&#51060;&#46300;</a> 』</p><p class="0cm">6. 『 <a href="7340101.html">Altibase WEBLOGIC &#50672;&#46041;&#44032;&#51060;&#46300;</a> 』</p><p class="0cm">7. 『 <a href="7340945.html">ALTIBASE Spring &#50672;&#46041;&#44032;&#51060;&#46300;</a> 』</p><p>8. 『 <a href="7340053.html">Altibase iBatis &#50672;&#46041;&#44032;&#51060;&#46300;</a> 』</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221354.png">image2019-12-9 11:19:22.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221355.png">image2019-12-9 11:20:23.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221356.png">image2019-12-9 11:21:40.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221357.png">image2019-12-9 13:14:37.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221358.png">image2019-12-9 13:23:11.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221370.png">image2019-12-10 16:47:36.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221371.png">image2019-12-10 16:57:21.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221372.png">image2019-12-11 8:4:56.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221373.png">image2019-12-11 8:17:15.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14057878/14221374.png">image2019-12-11 8:24:8.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

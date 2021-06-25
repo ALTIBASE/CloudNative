@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Passing result sets between procedures</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Subprograms-Conversion_2988075.html">Subprograms Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Passing result sets between procedures
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 17, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347187 {padding: 0px;}
+div.rbtoc1624409347187 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347187 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347187'>
+<ul class='toc-indentation'>
+<li><a href='#Passingresultsetsbetweenprocedures-Overview'>Overview</a></li>
+<li><a href='#Passingresultsetsbetweenprocedures-Theorderofprocessingaresultset'>The order of processing a result set</a></li>
+<li><a href='#Passingresultsetsbetweenprocedures-PassingaREFCURSORasaparameter'>Passing a REF CURSOR as a parameter</a></li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2 id="Passingresultsetsbetweenprocedures-Overview">Overview</h2>
+
+<p>A stored procedure can pass a result set, resulting from execution of a SQL statement, to a client<br />
+using a cursor variable (REF CURSOR).</p>
+
+<p>Like a cursor, a cursor variable points to the current row in the result set of a multi-row<br />
+query.</p>
+
+<p>Cursor variables are used to pass query result sets between PL/SQL stored<br />
+subprograms and client programs. Neither PL/SQL nor any client program owns a<br />
+result set.</p>
+
+<p>They share a pointer to the work area where the result set is stored.</p>
+
+<h2 id="Passingresultsetsbetweenprocedures-Theorderofprocessingaresultset">The order of processing a result set</h2>
+
+<p> The followings are descriptions about a procedure for processing a result set in ALTIBASE HDB.</p>
+
+<p>To see details, refer to the following examples(Passing a REF CURSOR as a parameter).</p>
+<ul>
+	<li>Create a typeset which containing a corresponding type. And create user-defined type which is a REF CURSOR.</li>
+	<li>Create the stored procedure, which having OUT parameters.</li>
+	<li>Execute a procedure.
+<br class="atl-forced-newline" /></li>
+</ul>
+
+
+<p>On the other hand, in case of Oracle, processing a result set can be done as follows</p>
+<ul>
+	<li>Declaring REF CURSOR Types and Cursor Variables, passing Cursor Variables As Parameters can be executed in a procedure.</li>
+</ul>
+
+
+<h2 id="Passingresultsetsbetweenprocedures-PassingaREFCURSORasaparameter">Passing a REF CURSOR as a parameter</h2>
+
+<p>The example described below shows how to pass a ref cursor as parameter to a client program in ORACLE.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">DECLARE
+TYPE empcurtyp IS REF CURSOR;
+TYPE namelist IS TABLE OF employees.e_lastname%TYPE;
+TYPE sallist IS TABLE OF employees.salary%TYPE;
+emp_cv empcurtyp;
+names namelist;
+sals sallist;
+BEGIN
+OPEN emp_cv FOR SELECT e_lastname, salary FROM employees
+WHERE emp_job = &#39;manager&#39;;
+FETCH emp_cv BULK COLLECT INTO names, sals;
+CLOSE emp_cv;
+-- loop through the names and sals collections
+FOR i IN names.FIRST .. names.LAST
+
+LOOP
+DBMS_OUTPUT.PUT_LINE(&#39;Name = &#39; || names(i) || &#39;, salary = &#39; || sals(i));
+END LOOP;
+END;
+/</pre>
+</div></div>
+
+
+<p>An example below arouses same result as above in ALTIBASE HDB.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE fetch_employee(v_emp_job varchar(20))
+AS
+TYPE empcurtyp IS REF CURSOR;
+TYPE namelist IS TABLE OF CHAR(20) INDEX BY INTEGER;
+TYPE sallist IS TABLE OF NUMBER(38) INDEX BY INTEGER;
+emp_cv empcurtyp;
+names namelist;
+sals sallist;
+
+BEGIN
+OPEN emp_cv FOR &#39;SELECT e_lastname, salary FROM employees WHERE emp_job = ?&#39; USING v_emp_job;
+FETCH emp_cv INTO names, sals;
+CLOSE emp_cv;
+
+-- loop through the names and sals collections
+FOR i IN names.FIRST() .. names.LAST()
+
+LOOP
+SYSTEM_.PRINTLN(&#39;Name = &#39; || names[i] || &#39;, salary = &#39; || sals[i]);
+END LOOP;
+END;
+/</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

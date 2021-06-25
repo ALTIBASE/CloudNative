@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 이중화 대상 테이블 추가/삭제 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520884.html">03. 이중화</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 이중화 대상 테이블 추가/삭제 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Dec 11, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409052492 {padding: 0px;}
+div.rbtoc1624409052492 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409052492 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409052492'>
+<ul class='toc-indentation'>
+<li><a href='#id-이중화대상테이블추가/삭제방법-개요'>개요</a></li>
+<li><a href='#id-이중화대상테이블추가/삭제방법-버전'>버전</a></li>
+<li><a href='#id-이중화대상테이블추가/삭제방법-이중화대상테이블추가'>이중화 대상 테이블 추가</a></li>
+<li><a href='#id-이중화대상테이블추가/삭제방법-이중화대상테이블삭제'>이중화 대상 테이블 삭제</a></li>
+<li><a href='#id-이중화대상테이블추가/삭제방법-참고문서'>참고 문서</a></li>
+</ul>
+</div></p><p> </p><p> </p><p> </p><h1 id="id-이중화대상테이블추가/삭제방법-개요">개요</h1><hr /><p>이중화 객체에 이중화 대상 테이블을 추가하거나 삭제하는 방법에 관한 설명합니다.</p><p> </p><p> </p><h1 id="id-이중화대상테이블추가/삭제방법-버전">버전</h1><hr /><p>Altibase 4.3.9 이상</p><p> </p><p> </p><p> </p><h1 id="id-이중화대상테이블추가/삭제방법-이중화대상테이블추가">이중화 대상 테이블 추가</h1><hr /><ul style="list-style-type: square;"><li>이중화 객체에 이중화 대상 테이블 추가하기 위한 작업 절차입니다.</li></ul><p> </p><ol><li><p><strong>이중화 중지</strong></p><p>이중화 송신 쓰레드가 구동된 서버에서 수행합니다.<br />아래 문장으로 지역 서버의 이중화 송신 쓰레드(Sender)와 원격 서버의 수신 쓰레드(Receiver)를 중지합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- 이중화 구동 상태 확인
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li><li><p><strong>이중화 대상 테이블 추가</strong></p><p>이중화 객체에 이중화 대상 테이블을 추가하는 구문입니다.이중화 대상 서버에서 각각 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name ADD TABLE user_name.table_name TO user_name.table_name;</pre>
+</div></div><p>이중화 객체에 추가되었는지 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;</pre>
+</div></div></li><li><p><strong>이중화 SYNC</strong></p><p>양 서버에 데이터가 서로 일치하지 않을 경우, 한 쪽 서버 테이블을 TRUNCATE 한 후 데이터가 존재하는 서버에서 SYNC 구문을 수행하여 데이터를 일치시킵니다.<br />양 서버에 데이터가 일치하는 경우 4. 이중화 시작을 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name SYNC ONLY TABLE user_name.table_name;</pre>
+</div></div></li><li><p><strong>이중화 시작</strong></p><p>양 서버에 데이터가 서로 일치한다면, 이중화 시작 구문을 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name START;
+
+-- 이중화 구동 상태 확인
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div><p> </p><p> </p></li></ol><p> </p><p> </p><p> </p><h1 id="id-이중화대상테이블추가/삭제방법-이중화대상테이블삭제">이중화 대상 테이블 삭제</h1><hr /><ul style="list-style-type: square;"><li>이중화 객체에 이중화 대상 테이블 삭제하기 위한 작업 절차입니다.</li></ul><p> </p><ol><li><p><strong>이중화 중지</strong></p><p>이중화 송신 쓰레드가 구동된 서버에서 수행합니다.<br />아래 문장으로 지역 서버의 이중화 송신 쓰레드(Sender)와 원격 서버의 수신 쓰레드(Receiver)를 중지합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name STOP;
+
+-- 이중화 구동 상태 확인
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li><li><p><strong>이중화 대상 테이블 삭제</strong></p><p>이중화 객체에 이중화 대상 테이블을 삭제하는 구문입니다.이중화 대상 서버에서 각각 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name DROP TABLE user_name.table_name TO user_name.table_name;
+
+-- 이중화 객체의 이중화 대상 테이블 확인 문장
+iSQL&gt; SELECT REPLICATION_NAME, LOCAL_USER_NAME, LOCAL_TABLE_NAME FROM SYSTEM_.SYS_REPL_ITEMS_;</pre>
+</div></div></li><li><p><strong>이중화 시작</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: RDark; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER REPLICATION replication_name START;
+
+-- 이중화 구동 상태 확인
+iSQL&gt; SELECT REPLICATION_NAME, DECODE(IS_STARTED, 0, &#39;STOPPED&#39;, 1, &#39;STARTED&#39;) IS_STARTED FROM SYSTEM_.SYS_REPLICATIONS_;</pre>
+</div></div></li></ol><p> </p><p> </p><p> </p><h1 id="id-이중화대상테이블추가/삭제방법-참고문서">참고 문서</h1><hr /><ul style="list-style-type: square;"><li>ALTER REPLICATION 문장의 구문 설명 및 추가적인 옵션은 SQL Reference 매뉴얼 -&gt; 3. 데이터 정의어 -&gt; <a name="t120" rel="nofollow"></a>ALTER REPLICATION 부분을 참고하시기 바랍니다.</li><li>매뉴얼 다운로드 페이지<br /><a href="http://support.altibase.com/kr/manual" class="external-link" rel="nofollow">http://support.altibase.com/kr/manual</a></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

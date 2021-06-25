@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to resolve a replication conflict?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ALTIBASE-HDB-Replication_2555989.html">ALTIBASE HDB Replication</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to resolve a replication conflict?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_SeHwan Lim</span>, last modified by <span class='editor'> OO_Cy Erbay</span> on Aug 06, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409156526 {padding: 0px;}
+div.rbtoc1624409156526 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409156526 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409156526'>
+<ul class='toc-indentation'>
+<li><a href='#Howtoresolveareplicationconflict?-ReplicationconflictresolutioninALTIBASEHDB'>Replication conflict resolution in ALTIBASE HDB</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtoresolveareplicationconflict?-EagermodeReplication'>Eager mode Replication</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtoresolveareplicationconflict?-Overview'>Overview</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Howtoconfigurethismode?'>How to configure this mode?</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Considerations'>Considerations</a></li>
+</ul>
+</li>
+<li><a href='#Howtoresolveareplicationconflict?-User-orientedscheme(REPLICATION_UPDATE_REPLACEproperty)'>User-oriented scheme (REPLICATION_UPDATE_REPLACE property)</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtoresolveareplicationconflict?-Overview.1'>Overview</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Howtoconfigurethisscheme?'>How to configure this scheme?</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Considerations.1'>Considerations</a></li>
+</ul>
+</li>
+<li><a href='#Howtoresolveareplicationconflict?-TimeStampscheme'>Time Stamp scheme</a>
+<ul class='toc-indentation'>
+<li><a href='#Howtoresolveareplicationconflict?-Overview.2'>Overview</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Howtoconfigurethisscheme?.1'>How to configure this scheme?</a></li>
+<li><a href='#Howtoresolveareplicationconflict?-Considerations.2'>Considerations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#Howtoresolveareplicationconflict?-Summary'>Summary</a></li>
+</ul>
+</div>
+
+<h1 id="Howtoresolveareplicationconflict?-ReplicationconflictresolutioninALTIBASEHDB">Replication conflict resolution in ALTIBASE HDB</h1>
+
+<p>We explained that a replication conflict is caused by either network delays or irregular sequence of transactions.<br />
+In a typical conflict situation, a Receiver cannot decide which record is correct between the current value and the before value in Xlog.<br />
+To help users to deal with such replication conflicts, ALTIBASE HDB provides a few different conflict resolution schemes, such as user-oriented scheme, a master-scheme and a time stamp based scheme.</p>
+
+
+
+<h2 id="Howtoresolveareplicationconflict?-EagermodeReplication">Eager mode Replication</h2>
+
+
+<h3 id="Howtoresolveareplicationconflict?-Overview">Overview</h3>
+
+
+<map id="gliffy-map-1769581-6361" name="gliffy-map-1769581-6361"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 599px;" usemap="#gliffy-map-1769581-6361" src="attachments/1802562/1769582.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Steps </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1 </p></td>
+<td class="confluenceTd"><p> Local Transaction takes place and waits until the step #5 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 2 </p></td>
+<td class="confluenceTd"><p> Sender creates XLog </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> Sender sends XLog to Receiver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 4,5 </p></td>
+<td class="confluenceTd"><p> Receiver applies and returns the result back to Sender </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 6 </p></td>
+<td class="confluenceTd"><p> Return errorCode to the application </p></td>
+</tr>
+</tbody></table></div>
+
+<p>We already explained about the typical flow of <a href="http://aid.altibase.com/x/BYEb" class="external-link" rel="nofollow">Eager mode Replication.</a><br />
+Here is a typical flow for in case of a replication conflict: the transaction in the local server cannot be completed until the Sender receives an ACK from the Receiver in the remote server.<br />
+The Receiver checks whether any conflict has occurred in the remote server. If the transaction fails due to a conflict in the remote server, the Receiver sends an ACK containing the error information related to the conflict back to Sender. In this case, the transaction in the local server will also fail.</p>
+
+
+<h3 id="Howtoresolveareplicationconflict?-Howtoconfigurethismode?">How to configure this mode?</h3>
+
+<p>User can specify the mode when creating a replication object as shown below:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE EAGER REPLICATION WITH &#39;&#39; ...
+</pre>
+</div></div>
+
+<h3 id="Howtoresolveareplicationconflict?-Considerations">Considerations</h3>
+
+<p>Performance of Eager mode replication is always slower than that of Lazy mode. If your priority is high performance,  Eager mode replication is not a good choice.</p>
+
+<h2 id="Howtoresolveareplicationconflict?-User-orientedscheme(REPLICATION_UPDATE_REPLACEproperty)">User-oriented scheme (REPLICATION_UPDATE_REPLACE property)</h2>
+
+
+<h3 id="Howtoresolveareplicationconflict?-Overview.1">Overview</h3>
+
+
+<map id="gliffy-map-1769585-4213" name="gliffy-map-1769585-4213"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 678px;" usemap="#gliffy-map-1769585-4213" src="attachments/1802562/1769586.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Steps </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 1,2 </p></td>
+<td class="confluenceTd"><p> Local Transaction completes without waiting for an ACK from Receiver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> Sender creates XLog </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 3 </p></td>
+<td class="confluenceTd"><p> Sender sends XLog to Receiver </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> 4 </p></td>
+<td class="confluenceTd"><p> Receiver applies XLog regardless of a replication conflict </p></td>
+</tr>
+</tbody></table></div>
+
+<p>REPLICATION_UPDATE_REPLACE is one of properties in ALTIBASE HDB.<br />
+When it is turn on, Receiver does not check for a conflict any more. It simply overwrites the existing record even if there is a replication conflict.<br />
+In the above diagram, the conflict has occurred because the existing value (&quot;30&quot;) is different from the before-value (&quot;10&quot;) of XLog.<br />
+When user uses this method, the existing data in the remote server is modified to &quot;20&quot;.</p>
+
+<h3 id="Howtoresolveareplicationconflict?-Howtoconfigurethisscheme?">How to configure this scheme?</h3>
+
+<p>Set the value of REPLICATION_UPDATE_REPLACE property to &quot;1&quot; in $ALTIBASE_HOME/conf/altibase.properties so that Receiver does not check for any conflict.</p>
+
+<h3 id="Howtoresolveareplicationconflict?-Considerations.1">Considerations</h3>
+
+<p>Network delays can introduce mismatches for last values.</p>
+
+<h2 id="Howtoresolveareplicationconflict?-TimeStampscheme">Time Stamp scheme</h2>
+
+
+<h3 id="Howtoresolveareplicationconflict?-Overview.2">Overview</h3>
+
+
+<map id="gliffy-map-1769597-739" name="gliffy-map-1769597-739"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 741px;" usemap="#gliffy-map-1769597-739" src="attachments/1802562/1769598.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<p>This method is similar to REPLICATION_UPDATE_REPLACE method, however, Receiver compares the timestamp value of an existing record with the timestamp value of XLog when Receiver applies XLog to the remote server.<br />
+If the timestamp value of XLog is bigger than the existing record, XLog will be applied, otherwise, the replication transaction will be dropped.<br />
+In the above diagram, since the timestamp value (11:01) of XLog is smaller than the timestamp value (11:02) of the existing data, the replication transaction can not be applied to the remote server.<br />
+On the other hand, if XLog of Node B has been sent to Node A, the existing data would be replaced with the XLog from Node B since timestamp value of Node B is bigger than that of Node B.</p>
+
+<h3 id="Howtoresolveareplicationconflict?-Howtoconfigurethisscheme?.1">How to configure this scheme?</h3>
+
+<ol>
+	<li>Add a timestamp column to the table.</li>
+	<li>set REPLICATION_TIMESTAMP_RESOLUTION value to &quot;1&quot; in $ALTIBASE_HOME/conf/altibase.properties.</li>
+</ol>
+
+
+<h3 id="Howtoresolveareplicationconflict?-Considerations.2">Considerations</h3>
+
+<p>Since the size of timestamp data type is 8 bytes, the size of the record will be increased by 8 bytes.</p>
+
+<p>System clocks should be synchronized across the servers to ensure accuracy of the operation.</p>
+
+
+<h1 id="Howtoresolveareplicationconflict?-Summary">Summary</h1>
+
+<p>Users should know that these methods do not guarantee the data consistency perfectly, they only allow users to control the behavior of Receiver when replication conflicts occur.</p>
+
+<p>For more information, please refer to <a href="http://atc.altibase.com/sub09/551b/html/Replication/ch02s03.html#N10570" class="external-link" rel="nofollow">reference manual</a></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769540">offline_diagram_test1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769541.png">offline_diagram_test1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769542">replication_by_seperation_1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769543.png">replication_by_seperation_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769544">replication_by_coldStanby</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769545.png">replication_by_coldStanby.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769546">conflict_by_timestamp</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769547.png">conflict_by_timestamp.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769550">failover_cold_method</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769551.png">failover_cold_method.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769554">failover_cold_method</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769555.png">failover_cold_method.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769552">biz_active_standby</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769553.png">biz_active_standby.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769548">failover_cold_method</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769549.png">failover_cold_method.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769556">failover_offline_repl</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769557.png">failover_offline_repl.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769583">Eager_method_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769584.png">Eager_method_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769587">Eager_method_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769588.png">Eager_method_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769591">replication_update_replace_byconflict_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769592.png">replication_update_replace_byconflict_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769589">Eager_method_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769590.png">Eager_method_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769581">Eager_method_1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769582.png">Eager_method_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769593">replication_update_replace_byconflict_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769594.png">replication_update_replace_byconflict_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769595">replication_update_replace_byconflict_1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769596.png">replication_update_replace_byconflict_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769585">replication_update_replace_byconflict_1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769586.png">replication_update_replace_byconflict_1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769599">timestamp_methoid_basic12</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769600.png">timestamp_methoid_basic12.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769597">timestamp_methoid_basic12</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/1802562/1769598.png">timestamp_methoid_basic12.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-11036 The data file is in use</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Error-Messages_6979655.html">Altibase Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-11036 The data file is in use
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Education/Contents Team</span>, last modified on Nov 20, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409149610 {padding: 0px;}
+div.rbtoc1624409149610 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409149610 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409149610'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11036Thedatafileisinuse-Version'>Version</a></li>
+<li><a href='#ERR-11036Thedatafileisinuse-Explanation'>Explanation</a></li>
+<li><a href='#ERR-11036Thedatafileisinuse-Cause'>Cause</a></li>
+<li><a href='#ERR-11036Thedatafileisinuse-Action'>Action</a></li>
+<li><a href='#ERR-11036Thedatafileisinuse-Reference'>Reference</a></li>
+</ul>
+</div>
+
+<h2 id="ERR-11036Thedatafileisinuse-Version">Version</h2>
+
+<p>All versions</p>
+
+<h2 id="ERR-11036Thedatafileisinuse-Explanation">Explanation</h2>
+
+<p>The following error message is output when ALTER TABLESPACE ... DROP DATAFILE is executed:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; ALTER TABLESPACE SYS_TBS_DISK_DATA
+    2 DROP DATAFILE &#39;/altibase/dbs/DISK_DATA2.dbf&#39;;
+</pre>
+</div></div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p><a class="unresolved" href="#"><span style="color: rgb(0,0,0);">ERR-11036: The data file is in use.</span></a></p>
+                    </div>
+    </div>
+
+
+<h2 id="ERR-11036Thedatafileisinuse-Cause">Cause</h2>
+
+<p>The following error description can be viewed with the AltiErr utility: </p>
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ altierr 0x0109D<br />
+0x11036 ( 69686) smERR_ABORT_CannotRemoveDataFileNode The data file is in use.</p>
+
+<p># *Cause: The data file is in use.</p>
+
+<p># *Action: Please remove an unnecessary data file.</p>
+</div></div>
+<p>Even if the user executed an INSERT statement and followed it with a DELETE statement so that all the datafiles can only have free pages, a previously used datafile cannot be dropped.</p>
+
+
+<p>This error occurs when an attempt is made to drop a datafile that has previously been used.</p>
+
+<p>Only datafiles that have never been used can be dropped.</p>
+
+<h2 id="ERR-11036Thedatafileisinuse-Action">Action</h2>
+
+<p>It is impossible to drop a datafile that was used even once.</p>
+
+<p>To drop a datafile, the tablespace must be recreated as below:</p>
+
+<div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>1. Export the data and object scripts that are created in the tablespace.</p>
+
+<p>2. Drop and create the tablespace.</p>
+
+<p>3. Import the data and create the object.</p>
+</div></div>
+
+<h2 id="ERR-11036Thedatafileisinuse-Reference">Reference</h2>
+
+<p>N/A</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

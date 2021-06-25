@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 4. Transaction &amp; lock</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060431.html">Altibase 모니터링 쿼리 가이드</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="10060447.html">3. 모니터링 요소와 모니터링 쿼리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 4. Transaction &amp; lock
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> heejung lee</span> on Aug 01, 2016
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409833789 {padding: 0px;}
+div.rbtoc1624409833789 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409833789 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409833789'>
+<ul class='toc-indentation'>
+<li><a href='#id-4.Transaction&amp;lock-Transaction&amp;LockTL'>Transaction &amp; Lock</a>
+<ul class='toc-indentation'>
+<li><a href='#id-4.Transaction&amp;lock-[TL01]Transaction및lock정보TL01[맨위로]'>[TL01] Transaction 및 lock 정보[맨 위로]</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h2 id="id-4.Transaction&amp;lock-Transaction&amp;LockTL"><strong style="color: rgb(0,0,0);font-size: 20.0px;line-height: 1.5;">Transaction &amp; Lock<span class="confluence-anchor-link" id="id-4.Transaction&amp;lock-TL"></span></strong></h2><hr /><p>트랜잭션 및 Lock 정보를 확인하기 위한 각 모니터링 요소에 대응하는 쿼리는 아래와 같다.</p><p> </p><h4 id="id-4.Transaction&amp;lock-[TL01]Transaction및lock정보TL01[맨위로]">[TL01] Transaction 및 lock 정보<span class="confluence-anchor-link" id="id-4.Transaction&amp;lock-TL01"></span><a href="#id-4.Transaction&amp;lock-TL">[&#47592; &#50948;&#47196;]</a></h4><ul style="list-style-type: square;"><li><p>알티베이스 5 이상 버전에서 사용할 수 있다.  </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT TX.ID TX_ID
+     , WAIT_FOR_TRANS_ID BLOCKED_TX_ID
+     , DECODE(TX.STATUS, 
+                 0, &#39;BEGIN&#39;, 
+                 1, &#39;PRECOMMIT&#39;, 
+                 2, &#39;COMMIT_IN_MEMORY&#39;, 
+                 3, &#39;COMMIT&#39;, 
+                 4, &#39;ABORT&#39;, 
+                 5, &#39;BLOCKED&#39;, 
+                 6, &#39;END&#39;) STATUS
+     , DECODE(TX.LOG_TYPE, 0, U1.USER_NAME, &#39;REPLICATION&#39;) USER_NAME
+     , DECODE(TX.LOG_TYPE, 0, TX.SESSION_ID, RT.REP_NAME) SESSION_ID
+     , DECODE(TX.LOG_TYPE, 0, ST.COMM_NAME, RR.PEER_IP) CLIENT_IP
+     , DECODE(ST.AUTOCOMMIT_FLAG, 1, &#39;ON&#39;, &#39;OFF&#39;) AUTOCOMMIT
+     , L.LOCK_DESC
+     , DECODE(TX.FIRST_UPDATE_TIME, 
+                 0, &#39;0&#39;, 
+                 TO_CHAR(TO_DATE(&#39;1970010109&#39;, &#39;YYYYMMDDHH&#39;) + TX.FIRST_UPDATE_TIME / (60*60*24), &#39;MM/DD HH:MI:SS&#39;)) FIRST_UPDATE_TIME
+     , U2.USER_NAME||&#39;.&#39;||T.TABLE_NAME TABLE_NAME
+     , DECODE(TX.LOG_TYPE, 0, SUBSTR(ST.QUERY, 1, 10), &#39;REMOTE TX_ID &#39;||REMOTE_TID) CURRENT_QUERY
+     , DECODE(TX.DDL_FLAG, 0, &#39;NON-DDL&#39;, &#39;DDL&#39;) DDL
+     , DECODE(TX.FIRST_UNDO_NEXT_LSN_FILENO, -1, &#39;-&#39;, TX.FIRST_UNDO_NEXT_LSN_FILENO) &#39;LOGFILE#&#39;
+  FROM V$TRANSACTION TX,
+       V$LOCK L 
+       LEFT OUTER JOIN (SELECT ST.*, SS.AUTOCOMMIT_FLAG, SS.DB_USERID, SS.COMM_NAME
+                          FROM V$STATEMENT ST, V$SESSION SS
+                         WHERE SS.ID = ST.SESSION_ID
+                           AND SS.CURRENT_STMT_ID = ST.ID) ST ON L.TRANS_ID = ST.TX_ID 
+       LEFT OUTER JOIN V$REPRECEIVER_TRANSTBL RT ON L.TRANS_ID = RT.LOCAL_TID 
+       LEFT OUTER JOIN V$REPRECEIVER RR ON RT.REP_NAME = RR.REP_NAME 
+       LEFT OUTER JOIN V$LOCK_WAIT LW ON L.TRANS_ID = LW.TRANS_ID 
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U1 ON ST.DB_USERID = U1.USER_ID,
+       SYSTEM_.SYS_TABLES_ T 
+       LEFT OUTER JOIN SYSTEM_.SYS_USERS_ U2 ON T.USER_ID = U2.USER_ID
+ WHERE TX.ID = L.TRANS_ID
+   AND T.TABLE_OID = L.TABLE_OID
+   AND TX.STATUS != 6
+ORDER BY TX.ID, ST.ID, TX.FIRST_UPDATE_TIME DESC ; </pre>
+</div></div></li></ul><ul><li><p><strong>주요 컬럼 설명</strong></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><td class="confluenceTd">TX_ID</td><td class="confluenceTd">트랜잭션의 아이디</td></tr><tr><td class="confluenceTd">BLOCKED_TX_ID</td><td class="confluenceTd">lock 획득 대기를 유발한 트랜잭션의 아이디로 없는 경우는 공백이다.</td></tr><tr><td class="confluenceTd">STATUS</td><td class="confluenceTd"><p>트랜잭션의 상태를 의미하는 0~6까지의 숫자를 문자열로 나타낸다.<br />BEGIN(0), PRECOMMIT(1), COMMIT_IN_MEMORY(2), COMMIT(3), ABORT(4), BLOCKED(5), END(6)</p></td></tr><tr><td class="confluenceTd">USER_NAME</td><td class="confluenceTd">트랜잭션을 수행 중인 사용자의 이름으로 이중화 트랜잭션의 경우 'REPLICATION'으로 표시된다.</td></tr><tr><td class="confluenceTd">SESSION_ID</td><td class="confluenceTd">트랜잭션을 수행 중인 세션의 아이디로 이중화 트랜잭션의 경우 이중화 객체 이름이 표시된다.</td></tr><tr><td class="confluenceTd">CLIENT_IP</td><td class="confluenceTd">세션과 관련된 클라이언트 응용프로그램의 ip 주소로 이중화 트랜잭션의 경우 원격 서버의 ip 이다.</td></tr><tr><td class="confluenceTd">FIRST_UPDATE_TIME</td><td class="confluenceTd">트랜잭션이 최초로 변경연산을 시작한 시각. SELECT만 수행하는 트랜잭션은 0 이다.</td></tr><tr><td class="confluenceTd">LOCK_DESC</td><td class="confluenceTd">해당 트랜잭션에 의해 lock이 설정된 경우 lock 정보를 출력한다. IX_LOCK, IS_LOCK, X_LOCK 등이 있다.</td></tr><tr><td class="confluenceTd">TABLE_NAME</td><td class="confluenceTd">lock 획득 대상 테이블로 '<em>사용자이름</em>.<em>테이블이름</em>' 형식으로 나타낸다.</td></tr><tr><td class="confluenceTd">CURRENT_QUERY</td><td class="confluenceTd">트랜잭션에서 가장 마지막으로 수행하였거나 현재 수행 중인 쿼리. 이중화 트랜잭션의 경우 상대편 서버의 ip 주소와 트랜잭션 아이디를 나타낸다.</td></tr><tr><td class="confluenceTd">DDL</td><td class="confluenceTd">트랜잭션의 DDL 여부. / DDL(0) non-DDL(1)</td></tr><tr><td class="confluenceTd">LOGFILE#</td><td class="confluenceTd">트랜잭션과 관련된 리두로그 파일 번호. SELECT만 수행하는 트랜잭션은 '-' 이다.</td></tr></tbody></table></div></li></ul><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

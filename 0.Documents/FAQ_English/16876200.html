@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : How to log queries performed in Altibase (altiProfile)?</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : How to log queries performed in Altibase (altiProfile)?
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147219 {padding: 0px;}
+div.rbtoc1624409147219 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147219 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147219'>
+<ul class='toc-indentation'>
+<li><a href='#HowtologqueriesperformedinAltibase(altiProfile)?-Overview'>Overview</a></li>
+<li><a href='#HowtologqueriesperformedinAltibase(altiProfile)?-Profilingrelatedproperties'>Profiling related properties</a></li>
+<li><a href='#HowtologqueriesperformedinAltibase(altiProfile)?-Howtostartandstopprofiling'>How to start and stop profiling</a></li>
+<li><a href='#HowtologqueriesperformedinAltibase(altiProfile)?-Howtoanalyzetheresults'>How to analyze the results</a></li>
+<li><a href='#HowtologqueriesperformedinAltibase(altiProfile)?-Precautions'>Precautions</a></li>
+</ul>
+</div></p><p> </p><h1 id="HowtologqueriesperformedinAltibase(altiProfile)?-Overview">Overview</h1><hr /><p>All SQL statements executed on the Altibase server can be traced.</p><p>It is possible by setting/disabling Altibase properties, and in addition to SQL statements, it is possible to trace execution time, index/disk access information, PLAN information, session information, and ALTIBASE HDB system information.</p><p>This chapter describes how to profile Altibase and check the results.</p><p> </p><h1 id="HowtologqueriesperformedinAltibase(altiProfile)?-Profilingrelatedproperties">Profiling related properties</h1><hr /><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property Name</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">QUERY_PROF_FLAG</td><td class="confluenceTd"><p>Whether to profile and set logging level</p><p>0   : Disable profiling (default)</p><p>1   : Whenever an SQL statement is executed, the SQL statement, execution time, execution information, and index/disk access information are displayed.</p><p>2   : Output Bind Parameter value every time the prepared SQL statement is executed (limited to the case where there is variable value binding information.)</p><p>4   : Output execution plan every time SQL statement is executed</p><p>8   : Output session information (V$SESSTAT) every 3 seconds</p><p>16  : Output system information (V$SYSSTAT) every 3 seconds</p><p>32  : Ouput memory information (V$MEMSTAT) every 3 seconds</p><p>It is also possible to set by combining values in bit units.</p><p>For example, if it is set to 7 (1 + 2 + 4), information such as the plan, the value of the variable to be bound, the statement and execution time, etc. are displayed at each SQL statement execution.</p><p>If it is set to 63(1 + 2 + 4 + 8 + 16 + 32), all printable information is displayed. When executing each SQL statement, the SQL statement execution information is displayed in the order of [BIND] [PLAN] [STATEMENT].</p><p>Altibase status information is output every 3 seconds in the order of [SESSION] [SYSTEM] [MEMORY].</p></td></tr><tr><td colspan="1" class="confluenceTd"><p>QUERY_PROF_LOG_DIR</p><p>(6.5.1 or later)</p></td><td colspan="1" class="confluenceTd"><p><a name="9008248" rel="nofollow"></a>Directory path where the profiling result file will be saved</p><p>Default value : $ALTIBASE_HOME/trc</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_SIZE</td><td class="confluenceTd"><p>Size of the buffer in which statistics information will be stored</p><p>Default value : 1MBytes</p><p>Range : 32KBytes ~ 4GBytes-1</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_FLUSH_SIZE</td><td class="confluenceTd"><p>Set the size to flush when the buffer is full</p><p>Default value : 32KBytes</p><p>Range : 512Bytes ~ 4GBytes-1</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_BUF_FULL_SKIP</td><td class="confluenceTd"><p>Choose whether to skip profiling and wait for all data to be recorded when the statistics buffer is full.</p><p>Default value : 1</p><p>Range : 0(wait) or 1(skip)</p></td></tr><tr><td class="confluenceTd">QUERY_PROF_FILE_SIZE</td><td class="confluenceTd"><p>Maximum size of profiling log file</p><p>Default value : 100MBytes</p><p>Range : 0 ~ 4GBytes-1</p><p>          0  : Limited by OS limits</p><p>        &gt; 0 : Log as much as the size is recorded, and after closing, a new file is created to continue logging. The log file name is created in the same format as alti-#time-#number.prof, and the number starts from 0 and increases by 1</p></td></tr></tbody></table></div><p> </p><h1 id="HowtologqueriesperformedinAltibase(altiProfile)?-Howtostartandstopprofiling">How to start and stop profiling</h1><hr /><ul><li><p>Start profiling<br />Record information on all SQL statements executed after the next command is executed in the log file.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>ALTER SYSTEM SET QUERY_PROF_FLAG = <em>value</em>;</p><p>ALTER SYSTEM SET TIMED_STATISTICS = 1;</p>
+</div></div><p>Value: Refer to the description of the QUERY_PROF_FLAG property above.</p><p>TIMED_STATISTICS: In version 5.1.5 or later, to check the execution time of an SQL statement, this property value should be set to 1 (default is 0). (In versions earlier that, there is no corresponding property, and you can check the execution time of all SQL statements by default.)</p></li><li><p>Stop profiling<br />To stop profiling, execute the following command:</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>ALTER SYSTEM SET QUERY_PROF_FLAG = 0;</span></p>
+</div></div><p><br /><br /></p></li></ul><h1 id="HowtologqueriesperformedinAltibase(altiProfile)?-Howtoanalyzetheresults">How to analyze the results</h1><hr /><p>When profiling starts, a log file is created in the format $ALTIBASE_HOME/trc/<strong>alti#time-#number.prof.</strong> (In version 6.5.1 or later, the log file path can be set in the QUERY_PROF_LOG_DIR property)</p><p>Since the log file is in binary format, it must be converted to a text file using the altiProfile command. The method is as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>$ <strong>altiProfile</strong> alti-#time-#number.prof&gt; #number.out</p>
+</div></div><p>Since the log file conversion result is output to stdout, it is recommended to save it as a file as in the example above.</p><p>The following is a description of the contents of the converted result.</p><ul><li>When QUERY_PROF_FLAG = 1 is set</li></ul><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Output format</b></div><div class="panelContent">
+<p>[STATEMENT] Record time (session_ID/SQL statement_ID/transaction_ID)</p><p>   SQL statement</p><p>   User information :</p><p>   Time it took to execute</p><p>   Execution information: Success/failure status and number of success/failures</p><p>   Index access information</p><p>   Disk access information</p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[STATEMENT] 2007/11/06 14:35:03 (56/7/79168)
+  SQL
+     =&gt; [UPDATE EMPLOYEE SET DNO = ?, EMP_TEL = ? WHERE ENO = ?]
+
+
+  User Info
+     User    ID     = 2
+     Client PID     = 8294
+     Client Type    = [CLI]
+
+
+  Elapsed Time
+     Total =            0 sec      194 usec
+     Parse =            0 sec      381 usec
+     Valid =            0 sec      152 usec
+     Optim =            0 sec      161 usec
+     Execu =            0 sec      135 usec
+     Fetch =            0 sec        0 usec
+
+
+  Query Execute Info
+     EXECUTE Result =                    1 (0:failure, 1:success)
+     Optimizer Mode =                    0
+     Cost      Mode =                    3
+     Used Memory    =                    0
+     SUCCESS   SUM  =                    1
+     FAILURE   SUM  =                    0
+     PROCESSED ROW  =                    1
+
+
+  Index Access Info
+     Memory Full  Scan Count  =                    0
+     Memory Index Scan Count  =                    1
+     Disk   Full  Scan Count  =                    0
+     Disk   Index Scan Count  =                    0
+
+
+  Disk Access Info
+     READ   DATA PAGE  =                    0
+     WRITE  DATA PAGE  =                    0
+     GET    DATA PAGE  =                    0
+     CREATE DATA PAGE  =                    0
+     READ   UNDO PAGE  =                    0
+     WRITE  UNDO PAGE  =                    0
+     GET    UNDO PAGE  =                    0
+     CREATE UNDO PAGE  =                    0</pre>
+</div></div><ul><li>When QUERY_PROF_FLAG = 2 is set<br />The variable value bound to the prepared SQL statement is output, but it is output in binary type and cannot be analyzed by the user.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[BIND] 2007/11/06 14:35:03 (56/7/0)
+    [
+    00000000 0 3 0 0 0 2 7 D1 0 1 0 D 0 B 30 31
+    00000010 34 35 34 31 31 32 33 36 36 0 0 2 0 4 0 0
+    00000020 0
+    ]</pre>
+</div></div><ul><li>When QUERY_PROF_FLAG = 4 is set<br />Output the execution plan information created for the execution of the SQL statement.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[PLAN] 2007/11/06 14:35:03(56/7/79168)
+[
+SCAN ( TABLE: EMPLOYEE, INDEX: __SYS_IDX_ID_228, ACCESS: ??, SELF_ID: 2 )
+]
+</pre>
+</div></div><ul><li>When QUERY_PROF_FLAG = 8 is set<br />For all sessions created in the current server, session information is recorded as follows, and it is the same as the result of executing select * from v$sesstat order by sid, seqnum.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p>[SESSION STAT] Record time (Session_ID)</p><p>Field name = value</p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[SESSION STAT] 2007/11/06 11:30:22 (36)
+        logon current                             =          1
+        logon cumulative                          =          1
+        data page read                            =          0
+        data page write                           =          0
+        data page gets                            =          0
+        data page create                          =          0
+        undo page read                            =          0
+        undo page write                           =          0
+        undo page gets                            =          0
+        undo page create                          =          0
+        base time in second                       =          0
+        query timeout                             =          0
+        idle timeout                              =          0
+        fetch timeout                             =          0
+        utrans timeout                            =          0
+        session terminated                        =          0
+        session commit                            =          2
+        session rollback                          =          0
+        execute success count                     =          2
+        execute failure count                     =          0
+        prepare success count                     =          2
+        prepare failure count                     =          0
+        write redo log count                      =         21
+        write redo log bytes                      =       4919
+        byte received via inet                    =        465
+        byte sent via inet                        =        601
+        byte received via unix domain             =          0
+        byte sent via unix domain                 =          0
+        semop count for receiving via ipc         =          0
+        semop count for sending via ipc           =          0
+        memory table cursor full scan count       =          2
+        memory table cursor index scan count      =          1
+        disk table cursor full scan count         =          0
+        disk table cursor index scan count        =          0
+        lock acquired count                       =          1
+        lock released count                       =          1</pre>
+</div></div><ul><li>When QUERY_PROF_FLAG = 16 is setIt <br />Output the overall contents of the Altibase system and is the same as the result of executing select * from v$sysstat order by seqnum.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[SYSTEM STAT] 2007/11/06 11:30:22 (0)
+     logon current                             =          3
+     logon cumulative                          =         34
+     data page read                            =          1
+     data page write                           =          3
+     data page gets                            =         14
+     data page create                          =          3
+     undo page read                            =          3
+     undo page write                           =          0
+     undo page gets                            =     130327
+     undo page create                          =          0
+     base time in second                       = 1194316222
+     query timeout                             =          0
+     idle timeout                              =          0
+     fetch timeout                             =          0
+     utrans timeout                            =          0
+     session terminated                        =          0
+     session commit                            =        245
+     session rollback                          =          2
+     execute success count                     =        342
+     execute failure count                     =          3
+     prepare success count                     =        345
+     prepare failure count                     =          2
+     write redo log count                      =        102
+     write redo log bytes                      =      15190
+     byte received via inet                    =     208466
+     byte sent via inet                        =     461498
+     byte received via unix domain             =       4849
+     byte sent via unix domain                 =      11745
+     semop count for receiving via ipc         =          0
+     semop count for sending via ipc           =          0
+     memory table cursor full scan count       =        170
+     memory table cursor index scan count      =      12635
+     disk table cursor full scan count         =          0
+     disk table cursor index scan count        =          0
+     lock acquired count                       =         61
+     lock released count                       =         15</pre>
+</div></div><ul><li>When QUERY_PROF_FLAG = 32 is set<br />Output the memory usage of each Altibase module at that point, and is the same as the result of executing select * from v$memstat order by seqnum.</li></ul><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Output format</b></div><div class="panelContent">
+<p>[MEMORY STAT] recording time</p><p>Module name: (Current amount of memory used / number of unit memory / maximum amount of memory used)</p>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[MEMORY STAT] 2007/11/06 11:30:22
+         Main_Module_Channel : (155400/ 3/ 155400)
+         Main_Module_Distributed : (0/ 0/ 0)
+         Main_Module_Interface : (0/ 0/ 65560)
+         Main_Module_Thread : (728040/ 16/ 730600)
+         Main_Module_Utility : (0/ 0/ 0)
+         Query_Common : (1400/ 23/ 2640)
+         Query_Meta : (359176/ 2049/ 361360)
+         Query_DML : (0/ 0/ 1336)
+         Query_Sequence : (0/ 0/ 0)
+         Query_Replication : (0/ 0/ 0)
+         Query_PSM_Node : (0/ 0/ 0)
+         Query_PSM_Execute : (4993992/ 118/ 4993992)
+         Query_Prepare : (262240/ 4/ 1770352)
+         Query_Execute : (196680/ 3/ 458952)
+         Query_Binding : (8384/ 8/ 150048)
+         Query_Transaction : (0/ 0/ 0)
+         Query_Conversion : (0/ 0/ 19048)
+         Mathematics : (50176/ 190/ 109120)
+         Storage_Manager : (0/ 0/ 0)
+         Storage_Disk_Ager : (8464/ 3/ 8464)
+         Storage_Disk_Buffer : (164242040/ 34/ 164258448)
+         Storage_Disk_Collection : (0/ 0/ 0)
+         Storage_Disk_Datafile : (2760/ 14/ 2792)
+         Storage_Disk_Index : (2444760/ 25/ 2444760)
+         Storage_Disk_Page : (1056/ 3/ 1056)
+         Storage_Disk_Recovery : (0/ 0/ 1072)
+         Storage_Memory_Ager : (840/ 5/ 2254144)
+         Storage_Memory_Collection : (4195592/ 3/ 4196152)
+         Storage_Memory_Interface : (317576/ 321/ 317576)
+         Storage_Memory_Locking : (11938744/ 1124/ 11938744)
+         Storage_Memory_Manager : (18713376/ 80/ 50179448)
+         Storage_Memory_Index : (10836424/ 25/ 11039600)
+         Storage_Memory_Page : (5517400/ 33665/ 5517400)
+         Storage_Memory_Recovery : (53739512/ 15/ 53740072)
+         Storage_Memory_Utility : (11843832/ 5218/ 11843832)
+         Storage_Memory_Transaction : (1863448/ 3105/ 1863448)
+         Temp_Memory : (0/ 0/ 0)
+         Transaction_Table : (205955888/ 3074/ 205955888)
+         Transaction_OID_List : (688296/ 3/ 688296)
+         Transaction_Private_Buffer : (0/ 0/ 0)
+         Transaction_Table_Info : (1990656/ 21504/ 1991296)
+         Index_Memory : (4195592/ 3/ 4195592)
+         LOG_Memory : (0/ 0/ 0)
+         OS_Independent : (27754720/ 228/ 27754720)
+         Other : (0/ 0/ 0)</pre>
+</div></div><p> </p><h1 id="HowtologqueriesperformedinAltibase(altiProfile)?-Precautions">Precautions</h1><hr /><p>When profiling is enabled, execution information for all SQL statements executed in the Altibase server is recorded in the log file, and the Altibase status is profiled every 3 seconds according to the setting, which can affect Altibase performance as well as the load on the system.</p><p>In addition, there is a possibility that a disk pool may occur due to high disk usage due to log recording by profiling.</p><p>Therefore, it is not recommended to enable profiling on operation servers by default.</p><p>It is recommended to use it for a short time during testing, performance analysis, and tuning. When profiling, be sure to monitor the disk usage together and stop it appropriately.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

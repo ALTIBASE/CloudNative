@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : Automatic altibase startup during OS booting in Solaris</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="02.-Operation-and-Management_16875945.html">02. Operation and Management</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : Automatic altibase startup during OS booting in Solaris
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 02, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409144625 {padding: 0px;}
+div.rbtoc1624409144625 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409144625 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409144625'>
+<ul class='toc-indentation'>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-Overview'>Overview</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-HowtoautomaticallystartupAltibase'>How to automatically startup Altibase</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-Steps'>Steps</a>
+<ul class='toc-indentation'>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP1'>STEP 1</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP2'>STEP2</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP3'>STEP3 </a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP4'>STEP4</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP5'>STEP5</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP6'>STEP6</a></li>
+<li><a href='#AutomaticaltibasestartupduringOSbootinginSolaris-STEP7'>STEP7</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="AutomaticaltibasestartupduringOSbootinginSolaris-Overview">Overview</h1><hr /><p>This document describes how to write a script that automatically starts up the Altibase server when booting in Sun Solaris.</p><h1 id="AutomaticaltibasestartupduringOSbootinginSolaris-HowtoautomaticallystartupAltibase">How to automatically startup Altibase</h1><hr /><p>Solaris provides an rc script that is related to the run level. These scripts reside in the /sbin directory and are symlinked to the rc scripts in the /etc directory.</p><p>The /sbin/rc# scripts exist under the /etc/rc#.d directory with matching names, which contains scripts to start and stop system processes for run levels.</p><p>File names in this directory start with K and S, K* scripts are used to kill processes, and S* scripts are used to start processes. These files are run in alphanumeric order.</p><p>In the /etc/init.d directory there are actual run control files that start or kill processes, which are hard-linked to the etc/rc#.d directory.</p><p> </p><h1 id="AutomaticaltibasestartupduringOSbootinginSolaris-Steps">Steps</h1><hr /><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP1">STEP 1</h3><p>Create the /etc/alti-conf.d/alti.conf file. In this file, variables necessary for automatic operation are defined and set. The contents of this file are as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">ALTIBASE_HOME=/home/altibase/altibase_home ; export ALTIBASE_HOME</span> <br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">PATH=$ALTIBASE_HOME/<a href="http://bin/usr/bin:/sbin" class="external-link" rel="nofollow">bin:/usr/bin:/sbin</a> ; export PATH</span> <br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">ALTIBASE_OWNER=altibase</span> <br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">START_ALTIBASE=1</span></p></th></tr></tbody></table></div><p>If the user does not want to run the file automatically, set the value of START_ALTIBASE to 0. And when ALTIBASE_OWNER or ALTIBASE_HOME is changed, the value in this file must be modified.</p><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP2">STEP2</h3><div>Create the /etc/init.d/alti_start file. In this script, it is a script that actually starts up the DBMS by using the Altibase startup command.</div><div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">#!/sbin/sh</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ -f /etc/alti-conf.d/alti.conf ] ; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">. /etc/alti-conf.d/alti.conf</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">Fi</span><span style="color: rgb(0,51,102);"> </span></p><p>{*}ADMIN="$</p>
+<div class="error"><span class="error">Unknown macro: {ALTIBASE_HOME}</span> </div>
+<p>/bin/isql &#45;s 127.0.0.1 &#45;u sys &#45;p manager &#45;sysdba"*</p><p><span style="color: rgb(0,51,102);"> </span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"> </span></p><p>*$</p>
+<div class="error"><span class="error">Unknown macro: {ADMIN}</span> </div>
+<p> &lt;&lt;EOF{*}</p><p><span style="color: rgb(0,51,102);"> </span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">startup</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">quit</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">EOF</span></p></th></tr></tbody></table></div><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP3">STEP3 </h3><div>Create the /etc/init.d/alti_stop file.</div><div>In this script, it is a script that actually stops the DBMS by using the Altibase command.</div><div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">#!/sbin/sh</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ -f /etc/alti-conf.d/alti.conf ] ; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">. /etc/alti-conf.d/alti.conf</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">fi</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"> </span></p><p>ADMIN="$</p>
+<div class="error"><span class="error">Unknown macro: {ALTIBASE_HOME}</span> </div>
+<p>/bin/isql &#45;s 127.0.0.1 &#45;u sys &#45;p manager &#45;sysdba"</p><p>*$</p>
+<div class="error"><span class="error">Unknown macro: {ADMIN}</span> </div>
+<p> &lt;&lt;EOF{*}</p><p><span style="color: rgb(0,51,102);"> </span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">shutdown immediate</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">quit</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">EOF</span></p></th></tr></tbody></table></div><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP4">STEP4</h3><p>Create the /etc/init.d/altibase file.</p>This file is actually the file that the startup script or stop script will create a symbolic link later on. The contents of this file are as follows.<div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">#!/sbin/sh</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">#</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># Copyright (c) 1997, 2001 by Sun Microsystems, Inc.</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># All rights reserved.</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">#</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">#ident &quot;@(#)altibase 1.0 04/08/17&quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">case $1 in</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">'start')</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># source the system configuration variables</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ -f /etc/alti-conf.d/alti.conf ] ; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">. /etc/alti-conf.d/alti.conf</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">else</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">echo &quot;ERROR: /etc/alti-conf.d/alti.conf defaults file MISSING&quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">fi</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># Check to see if this script is allowed to run...</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">exit 2</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">else</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># Execute the commands to start your subsystem</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">su - $ALTIBASE_OWNER -c &quot;/etc/init.d/alti_start&quot;</span> <br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">fi</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">;;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">'stop')</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># source the system configuration variables</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ -f /etc/alti-conf.d/alti.conf ] ; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">. /etc/alti-conf.d/alti.conf</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">else</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">echo &quot;ERROR: /etc/alti-conf.d/alti.conf defaults file MISSING&quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">fi</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># Check to see if this script is allowed to run...</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">if [ &quot;$START_ALTIBASE&quot; != 1 ]; then</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">exit 2</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">else</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">su - $ALTIBASE_OWNER -c &quot;/etc/init.d/alti_stop&quot;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># Execute the commands to stop your subsystem</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">fi</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">;;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">*)</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"> </span></p><p>{*}echo "usage: $0 </p>
+<div class="error"><span class="error">Unknown macro: {start|stop}</span> </div>
+<p>"*</p><p><span style="color: rgb(0,51,102);"> </span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">exit 1</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">;;</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">esac</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">exit 0</span><span style="color: rgb(51,51,51);"> </span></p></th></tr></tbody></table></div><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP5"><br />STEP5</h3><p>Create a Hard Link of Startup Script and Shutdown Script in /etc/rc3.d Directory.</p><div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">#cd /etc/rc3.d</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># ln /etc/init.d/altibase S955altibase</span></p></th></tr></tbody></table></div><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP6">STEP6</h3><p>Set the execution authority so that each script can be executed normally.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);">#cd /etc/rc3.d</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># chmod 755 S955altibase</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);">#cd /etc/init.d</span><br class="atl-forced-newline" /> <span style="color: rgb(0,51,102);"># chmod 755 *alti*</span></p></th></tr></tbody></table></div><h3 id="AutomaticaltibasestartupduringOSbootinginSolaris-STEP7">STEP7</h3><div>Test to see if it operates normally. At this time, the test should be performed under the root account.<div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"><p><span style="color: rgb(0,51,102);"># /etc/init.d/altibase &lt;start:stop&gt;</span></p></th></tr></tbody></table></div></div></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

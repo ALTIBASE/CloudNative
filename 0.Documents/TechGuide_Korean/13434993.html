@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : Altibase 구동/중지 과정의 이해</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : Altibase 구동/중지 과정의 이해
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Technical Support 1 Team</span>, last modified by <span class='editor'> heejung lee</span> on Dec 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p style="text-align: left;"><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409858829 {padding: 0px;}
+div.rbtoc1624409858829 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409858829 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409858829'>
+<ul class='toc-indentation'>
+<li><a href='#Altibase구동/중지과정의이해-개요'>개요</a></li>
+<li><a href='#Altibase구동/중지과정의이해-Altibase구동'>Altibase 구동</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase구동/중지과정의이해-구동개요'>구동 개요</a></li>
+<li><a href='#Altibase구동/중지과정의이해-PROCESS단계'>PROCESS 단계</a></li>
+<li><a href='#Altibase구동/중지과정의이해-CONTROL단계'>CONTROL단계</a></li>
+<li><a href='#Altibase구동/중지과정의이해-META단계'>META 단계</a></li>
+<li><a href='#Altibase구동/중지과정의이해-SERVICE단계'>SERVICE 단계</a></li>
+</ul>
+</li>
+<li><a href='#Altibase구동/중지과정의이해-Altibase중지'>Altibase 중지</a>
+<ul class='toc-indentation'>
+<li><a href='#Altibase구동/중지과정의이해-중지개요'>중지 개요</a></li>
+<li><a href='#Altibase구동/중지과정의이해-NORMAL'>NORMAL</a></li>
+<li><a href='#Altibase구동/중지과정의이해-IMMEDIATE'>IMMEDIATE</a></li>
+<li><a href='#Altibase구동/중지과정의이해-ABORT'>ABORT</a></li>
+</ul>
+</li>
+</ul>
+</div> </strong></p><p style="text-align: left;"> </p><h1 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-개요">개요</h1><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">Altibase가 구동과 종료되는 과정에 대해서 설명하고, 각 과정에서 Altibase 내부 모듈들이 동작하는 내용과 사용자가 수행할 수 있는 작업에 대해서 기술한다.</p><p style="text-align: left;">※ 이 문서에서 사용한 예시는 Altibase 7.1.0 버전에서 수행하였으며, 출력 결과는 Altibase 버전에 따라 다를 수 있다.</p><p style="text-align: left;"> </p><p style="text-align: left;"> </p><p style="text-align: left;"> </p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서와 관련된 오류 및 개선사항은 기술지원포털 또는 기술지원센터로 문의주시기 바랍니다.</p><ul><li>기술지원포털 : <a href="http://support.altibase.com/" class="external-link" rel="nofollow">http://support.altibase.com</a> ▶ 기술 지식 ▶ Q&amp;A</li><li>기술지원센터 : 02-2082-1114</li></ul>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>이 문서는 정보 제공을 목적으로 제공되며, 사전에 예고 없이 변경될 수 있습니다. 이 문서는 오류가 있을 수 있으며, 상업적 또는 특정 목적에 부합하는 명시적, 묵시적인 책임이 일절 없습니다. 이 문서에 포함된 Altibase 제품의 특징이나 기능의 개발, 발표 등의 시기는 Altibase 재량입니다. Altibase는 이 문서에 대하여 관련된 특허권, 상표권, 저작권 또는 기타 지적 재산권을 보유할 수 있습니다.</p>
+                    </div>
+    </div>
+<p> </p><p> </p><p> </p><h1 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-Altibase구동">Altibase 구동</h1><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">Altibase는 구동 과정을 4 단계로 구분한다.</p><p style="text-align: left;">Altibase가 구동되는 각 단계의 상태와 각 단계로 전이될 때 내부적으로 수행되는 동작들에 대해서 기술한다.</p><p style="text-align: left;">또, 사용자가 각 단계에서 수행할 수 있는 작업들에 대하여 기술함으로써 Altibase를 효율적으로 사용할 수 있도록 한다.</p><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-구동개요">구동 개요</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">DB를 구동 과정이 한 단계로 되면, 서버가 구동되기 전 할 수 있는 작업과 서버 구동 후 할 수 있는 작업이 엄격히 구분되어 한 번의 명령어 실행으로 DB가 구동되기 때문에 DBA가 클라이언트와 구별된 작업을 수행할 수 없다.</p><p style="text-align: left;">이로 인해 메타 마이그레이션, 복구 기능에 대한 제약 사항이 발생하게 된다.</p><p style="text-align: left;">이러한 문제점을 해결하기 위해 Altibase는 DB가 구동되는 단계를 PROCESS, CONTROL, META, SERVICE 의 4 단계로 구분하여 제공한다.</p><p style="text-align: left;">각 단계별로 DBA가 DB의 생성, 메타 업그레이드, 선택별 복구 등의 작업이 가능하다.</p><p style="text-align: left;">Altibase를 구동할 때, 각 단계로 전이하기 위해서는 “STARTUP” 이라는 명령어를 사용하게 되는데, 이 명령어는 iSQL에 SYSDBA 권한으로 접근한 후에 사용할 수 있다.</p><p style="text-align: left;">각 단계로 상태를 변경할 때, 다음 단계로의 전이는 가능하지만 이전 단계로의 복귀는 지원하지 않는다.</p><p style="text-align: left;"><img class="confluence-embedded-image" src="attachments/13434993/13631501.png" data-image-src="attachments/13434993/13631501.png"></p><p style="text-align: left;">위의 그림에서 화살표는 상태가 전이되는 과정을 나타내고, 색상은 각 단계의 상태를 나타낸다.</p><p style="text-align: left;">사용자는 각 단계에서 제공되는 기능을 수행할 수 있다.</p><p style="text-align: left;">아래에서 각 단계별 Altibase 내부적으로 수행되는 동작들과 사용자가 수행할 수 있는 작업들에 대해서 설명한다.</p></li></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-PROCESS단계">PROCESS 단계</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;text-decoration: none;"> </p></li></ul><ul><ul><li style="text-align: left;">PROCESS 단계 전환 명령어<hr style="text-align: left;text-decoration: none;" /><p>Altibase를 구동시킬 때의 가장 처음 단계로, “STARTUP PROCESS” 명령어를 통하여 상태를 전이할 수 있다.</p><p>
+
+<map id="gliffy-map-13632601-851" name="gliffy-map-13632601-851"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632601-851" src="attachments/13434993/13632602.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p><p>이 단계에서는 DB에 대한 접근이 불가능하다.PROCESS 단계는 각 모듈(Storage Manager, Query Processor, Communication Manager 등)이 초기화되는 단계이며, 서버와 iSQL이 통신을 하기 위해 Altibase 프로세스를 시작하게 된다.</p></li></ul></ul><p style="text-align: left;"> </p><ul><li style="list-style-type: none;background-image: none;"><ul><li style="text-align: left;">초기 → PROCESS 단계의 내부 동작<hr style="text-align: left;text-decoration: none;" /></li></ul></li></ul><ul><li style="list-style-type: none;background-image: none;"><ul><li style="list-style-type: none;background-image: none;"><p style="text-align: left;">Altibase는 구동이 되는 과정을 $ALTIBASE_HOME/trc/altibase_boot.log 파일에 기록하기 때문에 각 단계에서 DB 내부적으로 어떤 동작을 수행하는지 확인할 수 있다.</p><p>다음은 PROCESS 단계로 구동 될 때 기록된 altibase_boot.log 내용이며, 이를 통하여 어떤 동작들을 수행하는지 알아본다.</p>
+
+<map id="gliffy-map-13632607-8290" name="gliffy-map-13632607-8290"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632607-8290" src="attachments/13434993/13632608.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<ul><li style="text-align: left;"><p> Altibase를 생성 또는 구동하기 위한 각 모듈의 초기화</p></li></ul></li></ul></li><ul><ul><ul><li style="text-align: left;">프로퍼티 파일 Check 및 Loading <strong>(01)</strong><ul><li style="text-align: left;">$ALTIBASE_HOME/conf/altibase.properites 파일을 체크 및 로딩</li></ul></li><li style="text-align: left;">Licence 유효 체크 <strong>(02)</strong></li><li style="text-align: left;">Process Signal System 초기화 <strong>(04)</strong></li><li style="text-align: left;">Checking ide Layer Initialization Result <strong>(05)</strong></li><li style="text-align: left;">Error Message Binary File 초기화 <strong>(06)</strong></li><li style="text-align: left;">All Module Message Logging System 초기화 <strong>(07)</strong></li><li style="text-align: left;">Logging Host System Up-Time <strong>(09)</strong></li><li style="text-align: left;">Do Daemonizing <strong>(10)</strong></li><li style="text-align: left;">Process Lock File 초기화 <strong>(12)</strong><ul><li style="text-align: left;">$ALTIBASE_HOME/conf/altibase.properties 파일에 Lock을 획득</li><li style="text-align: left;">Altibase 프로세스의 중복 구동 방지</li></ul></li><li style="text-align: left;">Lock Manager <strong>(14)</strong><ul><li style="text-align: left;">동시성 제어를 위해 사용하는 lock item 을 초기화</li></ul></li><li style="text-align: left;">서버의 주요 모듈 초기화<ul><li style="text-align: left;">Communication Manager <strong>(25)</strong></li><li style="text-align: left;">Storage Manager <strong>(26)</strong></li><li style="text-align: left;">Query Processor <strong>(27)</strong></li><li style="text-align: left;">Database Link Module <strong>(28)</strong></li><li style="text-align: left;">Altibase 프로세스를 구동하고 iSQL과 통신</li></ul></li><li style="text-align: left;">DB 공간 접근 불가</li><li style="text-align: left;">Fixed Table 에 대한 접근만 가능</li><li style="text-align: left;">Meta 관련한 초기화나 작업 불가능(DB 접근이 불가능)</li><li style="text-align: left;">CREATE/DROP DATABASE 수행 가능</li></ul></ul></ul></ul><p style="text-align: left;"> </p><ul><ul><li style="text-align: left;">PROCESS 단계에서 수행할 수 있는 작업<hr style="text-align: left;text-decoration: none;" /></li></ul><li style="list-style-type: none;background-image: none;"><ul><li style="list-style-type: none;background-image: none;"><p style="text-align: left;">사용자가 PROCESS 단계에서 수행할 수 있는 작업은 다음과 같다.</p></li></ul></li></ul><ul><ul><ul><li style="text-align: left;"><p>CREATE DATABASE 구문을 사용하여 데이터베이스 생성</p>
+
+<map id="gliffy-map-13632621-1238" name="gliffy-map-13632621-1238"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1096px;" usemap="#gliffy-map-13632621-1238" src="attachments/13434993/13632622.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul></ul><li style="list-style-type: none;background-image: none;"><ul><li style="list-style-type: none;background-image: none;"><ul><li>프로퍼티 값을 변경<ul><li style="text-align: left;">iSQL 에서 ALTER 명령어로 변경이 가능한 프로퍼티 값들을 변경</li></ul></li><li style="text-align: left;"><p>사용자가 조회활 수 있는 성능 뷰 </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="1" style="text-align: center;" class="confluenceTh">뷰</th><th colspan="1" style="text-align: center;" class="confluenceTh">설명</th></tr><tr><td colspan="1" class="confluenceTd">V$ACCESS_LIST</td><td colspan="1" class="confluenceTd">Altibase에 접근하는 특정 IP 패킷의 접근 허용 및 제한 정보</td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$ALLCOLUMN</p></td><td style="text-align: left;" class="confluenceTd"><p>성능 뷰를 구성하는 칼럼 정보</p></td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$DBA_2PC_PENDING</p></td><td style="text-align: left;" class="confluenceTd"><p>분산 트랜잭션에서 in-doubt 상태의 트랜잭션 브랜치 목록</p></td></tr><tr><td colspan="1" class="confluenceTd">V$DIRECT_PATH_INSERT</td><td colspan="1" class="confluenceTd">Direct-Path 업로드 관련 통계 정보</td></tr><tr><td style="text-align: left;" class="confluenceTd">V$INSTANCE</td><td style="text-align: left;" class="confluenceTd"><p>현재 알티베이스의 다단계 구동 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$NLS_TERRITORY</td><td colspan="1" class="confluenceTd">데이터베이스 또는 현재 세션에 설정 가능한 지역의 이름이 저장되어 있는 성능 뷰</td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$PROPERTY</p></td><td style="text-align: left;" class="confluenceTd"><p>알티베이스 내부에 설정된 프로퍼티 정보</p></td></tr><tr><td style="text-align: left;" class="confluenceTd">V$TABLE</td><td style="text-align: left;" class="confluenceTd"><p>모든 성능 뷰의 레코드 및 칼럼 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$TIME_ZONE_NAMES                                        </td><td colspan="1" class="confluenceTd">TIME_ZONE 프로퍼티에 설정할 수 있는 지역 이름과 약어 및 UTC 오프셋 값의 목록                                                   </td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$TRACELOG</p></td><td style="text-align: left;" class="confluenceTd"><p>트레이스 로깅 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$TRANSACTION</td><td colspan="1" class="confluenceTd">트랜잭션 객체 정보 </td></tr><tr><td colspan="1" class="confluenceTd">V$TRANSACTION_MGR</td><td colspan="1" class="confluenceTd">알티베이스 트랜잭션 관리자 정보</td></tr><tr><td colspan="1" class="confluenceTd">V$TXSEGS</td><td colspan="1" class="confluenceTd">바인딩 된 트랜잭션 세그먼트들의 정보</td></tr><tr><td colspan="1" class="confluenceTd">V$VERSION</td><td colspan="1" class="confluenceTd">알티베이스 버전 정보</td></tr></tbody></table></div><p>  </p></li></ul></li><li style="list-style-type: none;background-image: none;"><ul><li style="text-align: left;">CONTROL 단계 등의 상위 단계로 전이 </li></ul></li></ul></li></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-CONTROL단계">CONTROL단계</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;text-decoration: none;"> </p></li></ul><ul><ul><li style="text-align: left;">CONTROL 단계 전환 명령어<hr style="text-align: left;text-decoration: none;" /><p>CONTROL 단계는 PROCESS 단계에서의 작업을 마치고 &quot;STARTUP CONTROL&quot; 명령어를 통해서 상태를 전이할 수 있다.</p>
+
+<map id="gliffy-map-13632631-634" name="gliffy-map-13632631-634"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632631-634" src="attachments/13434993/13632632.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul></ul><ul><ul><li style="text-align: left;">PROCESS 단계 → CONTROL 단계의 내부 동작<hr style="text-align: left;text-decoration: none;" /><p>CONTROL 단계는 DB의 복구가 가능한 수준까지 각 메니저들을 초기화하고, Storage Manager 모듈을 구성하는 주요 관리자(Buffer, Recovery, Disk 등)를 준비하는 단계이다.</p><p>다음은 CONTROL 단계로 구동 될 때 기록된 altibase_boot.log 내용이며, 이를 통하여 어떤 동작들이 수행되는지 알아본다.</p>
+
+<map id="gliffy-map-13632641-6970" name="gliffy-map-13632641-6970"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632641-6970" src="attachments/13434993/13632642.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul><ul><ul><li style="text-align: left;">DB의 복구가 가능한 수준까지 각 모듈 초기화</li><li style="text-align: left;">서버 주요 모듈 초기화<ul><li style="text-align: left;">Communication Manager <strong>(01)</strong></li><li style="text-align: left;">Storage Manager <strong>(02)</strong></li><li style="text-align: left;">Query Processor <strong>(17)</strong></li><li style="text-align: left;">DDL, DML을 사용한 DB의 변경연산을 금지시킴</li></ul></li><li style="text-align: left;">복구가 가능한 수준까지 Storage Manager 모듈 준비 <strong>(03) ~ (16)</strong><ul><li style="text-align: left;">Buffer Manager, Disk Manager, Recovery Manager 등을 준비</li></ul></li></ul></ul></ul><p style="text-align: left;"> </p><ul><ul><li style="text-align: left;">CONTROL 단계에서 수행할 수 있는 작업<hr style="text-align: left;text-decoration: none;" />사용자가 CONTROL 단계에서 수행할 수 있는 작업은 다음과 같다.<br /> </li><ul><li style="text-align: left;"><p>다음의 DB 복구 구문을 사용하여 Altibase 의 복구를 수행</p>
+
+<map id="gliffy-map-13632647-7618" name="gliffy-map-13632647-7618"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1096px;" usemap="#gliffy-map-13632647-7618" src="attachments/13434993/13632648.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul><ul><li style="text-align: left;">온라인 로그파일 초기화<p style="text-align: left;">META 단계에서 DB Restart Recovery를 수행하기 때문에, CONTROL 단계에서 불완전 복구를 진행 할 경우 복구에 반영되지 않은 온라인 로그파일들이 DB를 구동시키는 과정에서 문제를 발생 가능성이 있다.</p><p style="text-align: left;">따라서, 복구를 진행 할 경우 META 단계로 전이하기 전에 반드시 다음의 명령어를 사용하여 온라인 로그파일을 Reset 해줘야 한다. </p>
+
+<map id="gliffy-map-13632649-8134" name="gliffy-map-13632649-8134"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1096px;" usemap="#gliffy-map-13632649-8134" src="attachments/13434993/13632650.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul></ul></ul><ul><ul><ul><li style="text-align: left;"><p>데이터베이스 모드 변경</p>
+
+<map id="gliffy-map-13632651-7454" name="gliffy-map-13632651-7454"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1096px;" usemap="#gliffy-map-13632651-7454" src="attachments/13434993/13632652.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li><li style="text-align: left;"><p>성능 뷰 조회<br />PROCESS 단계에서 조회가 가능한 성능 뷰와 추가적으로 다음의 성능 뷰를 조회할 수 있다.<br />(일반 테이블은 조회 할 수 없다.) </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="1" style="text-align: center;" class="confluenceTh">뷰</th><th colspan="1" style="text-align: center;" class="confluenceTh">설명</th></tr><tr><td colspan="1" class="confluenceTd">V$BACKUP_INFO</td><td colspan="1" class="confluenceTd">현재까지 수행 된 모든 증분 백업에 대한 정보</td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$DATAFILES</p></td><td style="text-align: left;" class="confluenceTd"><p>테이블스페이스에서 사용하는 데이터 파일의 정보</p></td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$FILESTAT</p></td><td style="text-align: left;" class="confluenceTd"><p>디스크의 데이터 파일별 I/O 통계 정보</p></td></tr><tr><td style="text-align: left;" class="confluenceTd">V$LFG</td><td style="text-align: left;" class="confluenceTd"><p>그룹커밋 관련 통계값</p></td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$LOCK_WAIT</p></td><td style="text-align: left;" class="confluenceTd"><p>트랜잭션의 락 대기 상태 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$LOG</td><td colspan="1" class="confluenceTd">로그앵커파일 정보</td></tr><tr><td colspan="1" class="confluenceTd">V$MEM_TABLESPACE_CHECKPOINT_PATHS</td><td colspan="1" class="confluenceTd">특정 테이블스페이스(메모리)에 대해 체크포인트 발생 시 변경된 페이지(Dirty Page)가 반영되는<br />데이터베이스 이미지 파일의 위치(디렉토리 경로)</td></tr><tr><td style="text-align: left;" class="confluenceTd">V$MEM_TABLESPACE_STATUS_DESC</td><td style="text-align: left;" class="confluenceTd"><p>메모리 테이블스페이스의 상태 값 내용 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$OBSOLETE_BACKUP_INFO</td><td colspan="1" class="confluenceTd"><p>더 이상 유지할 필요가 없는 백업에 대한 정보<br />(V$BACKUP_INFO의 일부로 자세한 내용은 <span>V$BACKUP_INFO 정보 참고)                                                                    </span></p></td></tr><tr><td style="text-align: left;" class="confluenceTd"><p>V$TABLESPACES</p></td><td style="text-align: left;" class="confluenceTd"><p>테이블스페이스 정보</p></td></tr><tr><td colspan="1" class="confluenceTd">V$TSSEGS</td><td colspan="1" class="confluenceTd">모든 TSS 세그먼트들의 정보 </td></tr></tbody></table></div><p>  </p></li></ul><ul><li style="text-align: left;">META 단계 등의 상위 상태로 전이</li></ul></ul></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-META단계">META 단계</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;text-decoration: none;"> </p></li></ul><ul><ul><li style="text-align: left;">META 단계 전환 명령어<hr style="text-align: left;text-decoration: none;" /><p>META 단계는 CONTROL 단계에서의 작업을 마치고 &quot;STARTUP META&quot; 명령어를 통해서 상태를 전이할 수 있다.</p><p>
+
+<map id="gliffy-map-13632661-4113" name="gliffy-map-13632661-4113"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632661-4113" src="attachments/13434993/13632662.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</p></li></ul></ul><ul><ul><li style="text-align: left;">CONTROL 단계 → META 단계의 내부 동작<hr style="text-align: left;text-decoration: none;" /><p>META 단계는 CONTROL 단계에서 작업한 복구 과정에 대한 완료 단계이며, DB 구동을 위해 메모리와 디스크의 데이터 파일들을 체크하고 Restart Recovery 를 수행하는 단계이다.</p><p>다음은 META 단계로 구동 될 때 기록된 altibase_boot.log 내용이며, 이를 통하여 어떤 동작들이 수행되는지 알아본다.</p>
+
+<map id="gliffy-map-13632667-9946" name="gliffy-map-13632667-9946"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632667-9946" src="attachments/13434993/13632668.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<ul><li style="text-align: left;">오류 검사 및 Restart Recovery 하여 DB가 구동 가능한 수준까지 각 모듈의 초기화<ul><li style="text-align: left;">각 모듈의 초기화<ul><li style="text-align: left;">Communication Manager <strong>(01)</strong></li><li style="text-align: left;">Storage Manager <strong>(02)</strong></li><li style="text-align: left;">Query Processor <strong>(16)</strong></li><li style="text-align: left;">Database Link Module <strong>(18)</strong></li></ul></li><li style="text-align: left;">데이터 파일에 대한 미디어 오류를 검사 <strong>(03) ~ (04)</strong><ul><li style="text-align: left;">DB에 대한 Check / Identify 수행</li><li style="text-align: left;">정상 구동이 가능한지 메모리 / 디스크 테이블스페이스의 데이터 파일 및 온라인 로그파일 검사</li></ul></li><li style="text-align: left;">DBMS 에 대해 Restart Recovery 과정을 수행 <strong>(07)</strong><ul><li style="text-align: left;">정상 종료 후에 DB가 구동이 되면, Restart Recovery 과정이 생략되지만 비정상 종료 후에 DB를 구동하면 Restart Recovery 수행</li></ul></li><li style="text-align: left;">Transaction Segment Entries Rebuild <strong>(09)</strong><ul><li style="text-align: left;">트랜잭션이 시작되면 TSS(Transaction Status Slot)가 필요하기 때문에 Transaction Segment 를 Rebuild</li><li style="text-align: left;">Transaction Segment가 Undo Tablespace에 포함되어 있기 때문에 Undo Tablespace를 Reset</li></ul></li><li style="text-align: left;">체크포인트 쓰레드를 구동</li><li style="text-align: left;">Minimum SCN Rebuild <strong>(10)</strong><ul><li style="text-align: left;">MVCC 의 제공으로 인한 Old 버전의 데이터를 삭제하기 위한 Minimum SCN을 생성</li></ul></li><li style="text-align: left;">Garbage Collector<ul><li style="text-align: left;">Index의 Old Key 삭제</li></ul></li><li style="text-align: left;">Delete Manager<ul><li style="text-align: left;">Table의 Old Record 삭제</li></ul></li><li style="text-align: left;">Memory Index Rebuilding 수행<ul><li style="text-align: left;">메모리는 휘발성이라는 특징을 가지고 있기 때문에 DB 종료 후 새로 구동할 때, Index Rebuild</li></ul></li><li style="text-align: left;">Memory Table Refining<ul><li style="text-align: left;">Memory DB의 Free slot, Free Page 정보는 디스크에 기록되지 않는 런타임 정보이기 때문에 구동 시 재구축해야 하며, 이런 작업을 Memory Table Refining 시 수행</li></ul></li><li style="text-align: left;">DDL, DML을 사용한 DB 변경 연산 금<br />지</li></ul></li></ul></li></ul></ul><p style="text-align: left;"> </p><ul><ul><li style="text-align: left;">META 단계에서 수행할 수 있는 작업<hr style="text-align: left;text-decoration: none;" />사용자가 META 단계에서 수행할 수 있는 작업은 다음과 같다.<br /><ul><li style="text-align: left;"><p>모든 성능 뷰 조회 가능</p></li><li style="text-align: left;"><p>SERVICE 단계 등의 상위 상태로 전이 가능</p></li></ul></li></ul></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-SERVICE단계">SERVICE 단계</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;text-decoration: none;"> </p></li></ul><ul><ul><li style="text-align: left;">SERVICE 단계 전환 명령어<hr style="text-align: left;text-decoration: none;" /><p>SERVICE 단계는 META 단계에서의 작업을 마치고 &quot;STARTUP SERVICE or STARTUP&quot; 명령어를 통해서 상태를 전이할 수 있다.</p>
+
+<map id="gliffy-map-13632675-2517" name="gliffy-map-13632675-2517"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632675-2517" src="attachments/13434993/13632676.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul></ul><ul><li style="list-style-type: none;background-image: none;"><ul><li style="text-align: left;">META 단계 → SERVICE 단계의 내부 동작<hr style="text-align: left;text-decoration: none;" /><p>SERVICE 단계는 사용자가 DB 를 사용할 수 있는 최종 단계를 의미한다.</p><p>SERVICE 단계로 구동이 되면, 일반 데이터베이스 사용자가 접속 할 수 있는 상태가 된다.</p><p>다음은 SERVICE 단계로 구동 될 때 기록된 altibase_boot.log 내용이며, 이를 통하여 어떤 동작들이 수행되는지 알아본다.</p>
+
+<map id="gliffy-map-13632677-4080" name="gliffy-map-13632677-4080"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1136px;" usemap="#gliffy-map-13632677-4080" src="attachments/13434993/13632678.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<ul><li style="text-align: left;">사용자에게 정상적인 DB 서비스를 제공하기 위한 각 모듈 초기화<ul><li style="text-align: left;">Communication Manager 초기화 함 <strong>(01)</strong><ul><li style="text-align: left;">Listener 시작</li></ul></li><li style="text-align: left;">DB 서비스를 위한 각 모듈 초기화 <strong>(02) ~ (03), (05) ~ (08)</strong><ul><li style="text-align: left;">Query Processr, Database Link Module, Security Module 등</li></ul></li><li style="text-align: left;">Meta DB 체크 <strong>(04)</strong><ul><li style="text-align: left;">테이블, 인덱스 등</li></ul></li><li style="text-align: left;">이중화 모듈 초기화 <strong>(09)</strong><ul><li style="text-align: left;">이중화 정보 Read</li><li style="text-align: left;">이중화 Manager 시작</li><li style="text-align: left;">이중화 Heart Beat Manager 시작</li></ul></li><li style="text-align: left;">각 단계의 메시지를 iSQL로 전송하고, 성공 메세지를 보<br />냄</li></ul></li></ul></li></ul></li></ul><p> </p><p style="text-align: left;"> </p><ul><ul><li style="text-align: left;">SERVICE 단계에서 수행할 수 있는 작업<hr style="text-align: left;text-decoration: none;" />사용자가 SERVICE 단계에서 수행할 수 있는 작업은 다음과 같다.<br /><ul><li style="text-align: left;">iSQL 접속</li><li style="text-align: left;"><p>정상적인 DB 운영이 가능한 상태</p></li></ul></li></ul></ul><p style="text-align: left;text-decoration: none;"> </p><h1 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-Altibase중지">Altibase 중지</h1><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">Altibase 중지의 개요 및 특징에 대해서 설명하고, Altibase 에서 제공하는 중지의 세 가지 옵션들과 Altibase 종료 시에 수행되는 동작들에 대해서 기술한다.</p><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-중지개요">중지 개요</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">Altibase의 구동 과정은 4 단계로 구분되어 진행하지만, 중지을 하면 구동에서 수행한 과정을 역순으로 진행하며 1단계로 종료한다.<br />(SERVICE → META → CONTROL → PROCESS)</p><p style="text-align: left;">현재 구동중인 Altibase 서버를 종료하기 위해서는 iSQL에 -sysdba 권한으로 접속하여 &quot;SHUTDOWN&quot; 명령어를 사용한다.</p><p style="text-align: left;">&quot;SHUTDOWN&quot; 명령어는 세 가지 옵션(NORMAL, IMMEDIATE, ABORT)을 지정하여 사용할 수 있다.</p><p style="text-align: left;">NORMAL, IMMEDIATE 는 Altibase 가 SERVICE 상태일 때만 수행가능하며, ABORT 는 어떤 상태에서도 수행이 가능하다</p><p style="text-align: left;">Altibase의 중지 명령어는 설치한 OS 계정으로만 수행이 가능하다.</p><p style="text-align: left;"> </p><p style="text-align: left;"><img class="confluence-embedded-image" width="500" src="attachments/13434993/13631503.png" data-image-src="attachments/13434993/13631503.png"> </p></li></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-NORMAL">NORMAL</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">서버를 정상적으로 종료하는 방식으로서, 서버는 모든 클라이언트들이 서버로부터 접속을 끊을 때까지 종료 작업을 대기한다.</p><p style="text-align: left;">NORMAL 옵션은 내부적으로 클라이언트 ↔ 서버 간 통신 세션을 감지하는 쓰레드 종료, 서비스 쓰레드의 종료, 자료 저장 관리자의 종료 등의 작업을 수행 한 후 Altibase 서버를 종료 한다.</p><p style="text-align: left;">NORMAL 옵션을 사용하여 Altibase 서버를 종료했을 경우, 다음과 같은 메세지가 출력된다.</p>
+
+<map id="gliffy-map-13632679-2506" name="gliffy-map-13632679-2506"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1175px;" usemap="#gliffy-map-13632679-2506" src="attachments/13434993/13632680.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li></ul><ul>다음은 NORMAL 옵션을 사용하여 Altibase 서버를 종료할 때, Altibase가 수행하는 동작들이다.<ul><li style="text-align: left;">현재 유저가 sysdba 권한인지 확인</li><li style="text-align: left;">모든 세션이 종료할 때까지 대기</li><li style="text-align: left;">각 모듈(Storage Manager, Query Processor, Communication Manager 등)을 종료</li><li style="text-align: left;">Altibase 프로세스 종료</li></ul></ul><p style="text-align: left;"> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-IMMEDIATE">IMMEDIATE</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">현재 연결된 세션들을 강제로 단절시킨 후 Altibase 서버가 현재 실행 중인 트랜잭션을 롤백시키고 Altibase 서버를 종료하는 방법이다.</p><p style="text-align: left;">Altibase 에서 제공하는 &quot;SERVER STOP&quot; 명령어를 사용하여 서버를 종료하는 경우에는 IMMEDIATE 옵션을 사용하여 종료하는 것과 동일한 동작을 하게 된다.</p><p style="text-align: left;">IMMEDIATE 옵션을 사용하여 Altibase 서버를 종료했을 경우, 다음과 같은 메세지가 출력된다. </p>
+
+<map id="gliffy-map-13632681-6580" name="gliffy-map-13632681-6580"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1175px;" usemap="#gliffy-map-13632681-6580" src="attachments/13434993/13632682.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>다음은 IMMEDIATE 옵션을 사용하여 Altibase 서버를 종료할 때, Altibase가 수행하는 동작들이다.</p></li><ul><li style="text-align: left;">현재 유저가 sysdba 권한인지 확인</li><li style="text-align: left;">현재 연결 중인 모든 세션을 강제 종료</li><li style="text-align: left;">현재 수행중인 트랜잭션을 롤백</li><li style="text-align: left;"><p>각 모듈(Storage Manager, Query Processor, Communication Manager 등)을 종료</p></li><li>Altibase 프로세스 종료</li></ul><li style="list-style-type: none;background-image: none;">
+
+<map id="gliffy-map-13632683-1955" name="gliffy-map-13632683-1955"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 1175px;" usemap="#gliffy-map-13632683-1955" src="attachments/13434993/13632684.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</li>  <li>&quot;SHUTDOWN IMMEDIATE&quot; 시의 내부 동작<hr style="text-align: left;text-decoration: none;" />altibase_boot.log를 살펴보면, 중지는 구동 할 때와 역순의 과정을 수행하여 종료한다. &quot;SHUTDOWN IMMEDIATE&quot; 시 Altibase 가 내부적으로 동작하는 작업은 다음과 같다.<br /><br /><ul><li>중지를 위한  준비를 하며, 각 모듈에 대해 종료<ul><li>SERVICE, Database Link, Security, Query Processor, Storage Manager 등의 모듈 종료 <strong>(02) ~ (10)</strong></li></ul></li><li>서버 운영 중 사용되었던 모든 Resource 등을 해제<ul><li>Checkpoint Manager, Memory Garbage Collector, Delete Manager 등 <strong>(11) ~ (42)</strong></li><li>Table Compaction <strong>(14)</strong><ul><li>메모리에 할당된 후 제대로 반환되지 않은 공간을 시스템에 반환</li></ul></li><li>Flush All Dirty Pages And Checkpoint Database <strong>(24)</strong><ul><li>메모리 버퍼에 적재된 페이지들 중 Dirty Pages 에 대해서 디스크로 Flush</li><li>메모리 테이블스페이스에 있는 데이터에 대해 체크포인프 수행</li><li>Flush 해야 하는 대상과 체크포인트를 해야하는 대상이 많아지면 중지 시 대기 시간 증가</li></ul></li></ul></li></ul></li></ul><p> </p><ul><li><h2 style="text-align: left;text-decoration: none;" id="Altibase구동/중지과정의이해-ABORT">ABORT</h2><hr style="text-align: left;text-decoration: none;" /><p style="text-align: left;">Altibase 서버를 kill -9 시스템 명령을 사용하여 강제로 종료하는 방벙이다.</p><p style="text-align: left;">이 방법으로 Altibase 서버를 종료하면, 데이터베이스의 일관성을 보장할 수 없기 때문에 Altibase 서버를 구동할 때, 데이터베이스 복구 과정을 거치게 된다.</p><p style="text-align: left;">다음은 ABORT 옵션을 사용하여 Altibase 서버를 종료할 때, Altibase가 수행하는 동작들이다.<br /><br /></p></li><ul><li style="text-align: left;">현재 유저가 sysdba 권한인지 확인</li><li style="text-align: left;">서버 프로세스에게 kill -9 를 전송</li><li style="text-align: left;">서버 프로세스가 종료 될 때까지 대기 </li></ul></ul><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13631501.png">image2019-5-14 12:56:31.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13631502.png">image2019-5-14 13:2:5.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13631503.png">image2019-5-14 13:3:32.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632603">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632604.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632605">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632606.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632609">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632610.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632701">STARTUP PROCESS LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632702.png">STARTUP PROCESS LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632611">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632612.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632613">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632614.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632615">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632616.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632617">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632618.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632619">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632620.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632685">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632686.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632623">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632624.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632625">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632626.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632627">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632628.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632629">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632630.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632643">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632644.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632633">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632634.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632635">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632636.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632637">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632638.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632639">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632640.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632659">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632660.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632699">STARTUP CONTROL LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632700.png">STARTUP CONTROL LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632645">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632646.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632621">CREATE DATABASE 구문</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632622.png">CREATE DATABASE 구문.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632647">DB RECOVERY SQL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632648.png">DB RECOVERY SQL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632649">META RESET LOG SQL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632650.png">META RESET LOG SQL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632651">CHANGE ARCHIVE LOG MODE</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632652.png">CHANGE ARCHIVE LOG MODE.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632631">STARTUP CONTROL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632632.png">STARTUP CONTROL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632663">STARTUP META</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632664.png">STARTUP META.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632665">STARTUP META</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632666.png">STARTUP META.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632661">STARTUP META</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632662.png">STARTUP META.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632673">STARTUP META LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632674.png">STARTUP META LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632667">STARTUP META LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632668.png">STARTUP META LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632675">STARTUP SERVICE</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632676.png">STARTUP SERVICE.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632677">STARTUP SERVICE LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632678.png">STARTUP SERVICE LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632687">SHUTDOWN NORMAL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632688.png">SHUTDOWN NORMAL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632691">SHUTDOWN IMMEDIATE</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632692.png">SHUTDOWN IMMEDIATE.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632693">SHUTDOWN IMMEDIATE LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632694.png">SHUTDOWN IMMEDIATE LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632601">STARTUP PROCESS</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632602.png">STARTUP PROCESS.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632689">SHUTDOWN NORMAL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632690.png">SHUTDOWN NORMAL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632679">SHUTDOWN NORMAL</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632680.png">SHUTDOWN NORMAL.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632681">SHUTDOWN IMMEDIATE</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632682.png">SHUTDOWN IMMEDIATE.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632695">SHUTDOWN IMMEDIATE LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632696.png">SHUTDOWN IMMEDIATE LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632697">SHUTDOWN IMMEDIATE LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632698.png">SHUTDOWN IMMEDIATE LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632683">SHUTDOWN IMMEDIATE LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632684.png">SHUTDOWN IMMEDIATE LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632641">STARTUP CONTROL LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632642.png">STARTUP CONTROL LOG.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632607">STARTUP PROCESS LOG</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/13434993/13632608.png">STARTUP PROCESS LOG.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

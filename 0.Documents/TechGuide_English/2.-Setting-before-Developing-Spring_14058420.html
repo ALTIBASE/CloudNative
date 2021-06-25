@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 2. Setting before Developing Spring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Spring-Integration-Guide-for-Altibase_14058410.html">Spring Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 2. Setting before Developing Spring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 17, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409358385 {padding: 0px;}
+div.rbtoc1624409358385 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409358385 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409358385'>
+<ul class='toc-indentation'>
+<li><a href='#id-2.SettingbeforeDevelopingSpring-BuildingenvironmentforSpringFramework'>Building environment for Spring Framework</a></li>
+<li><a href='#id-2.SettingbeforeDevelopingSpring-'></a></li>
+<li><a href='#id-2.SettingbeforeDevelopingSpring-WhatisMaven?'>What is Maven?</a></li>
+<li><a href='#id-2.SettingbeforeDevelopingSpring-HowtogetALTIBASEJDBCDriver'>How to get ALTIBASE JDBC Driver</a></li>
+</ul>
+</div></p><hr /><p>In order to use the Spring Framework, jar files related to Spring are required. In addition, in order to integrate with Altibase, the ALTIBASE JDBC Driver is required. This chapter describes how to build an environment for Spring, and how to get an ALTIBASE JDBC Driver.</p><h2 id="id-2.SettingbeforeDevelopingSpring-BuildingenvironmentforSpringFramework"><strong>Building environment for Spring Framework</strong></h2><div>The environment for Spring can be easily built by using the Eclipse Spring Development Tool (STS) and Maven.</div><div><h2 id="id-2.SettingbeforeDevelopingSpring-"><strong><br /></strong></h2><h2 id="id-2.SettingbeforeDevelopingSpring-WhatisMaven?"><strong>What is Maven?</strong></h2><p>This is a project management tool.</p><div>This is a management tool that includes logic for executing plug-in goals in the steps defined in the project object model, standard set, project lifecycle, and dependency management system.</div></div><div>Example of Maven</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Maven
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+        &lt;version&gt;3.2.xx.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre>
+</div></div>    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">Information</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <div class="message-content"><ul><li>Please refer to Appendix 2 of &quot;MyBatis Integration Guide for Altibase&quot;</li><li>The red mark should be set according to the patch version.</li></ul></div>
+                    </div>
+    </div>
+<h2 id="id-2.SettingbeforeDevelopingSpring-HowtogetALTIBASEJDBCDriver"><strong><br />How to get ALTIBASE JDBC Driver</strong></h2><p>The JDBC driver provided by ALTIBASE is Altibase.jar file. This file is located in the $ALTIBASE_HOME/lib directory of the server where ALTIBASE is installed.</p><p> </p><div>Starting from Altibase version 5, Altibase.jar and Altibase5.jar files exist in the $ALTIBASE_HOME/lib directory. Altibase.jar is a general JDBC Driver file, and Altibase5.jar is the JDBC Driver file used when the user wants to integrate ALTIBASE version 5 or lower versions together. Therefore, when integrating with one ALTIBASE DB or multiple ALTIBASEs with the same version, use the $ALTIBASE_HOME/lib/Altibase.jar file.</div><div>It is necessary to check the version of ALTIBASE JDBC Driver to verify that the ALTIBASE DB Server to be integrated with the ALTIBASE JDBC Driver is compatible.</div><div>To check the ALTIBASE JDBC Driver version, execute the following command.</div><div><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ java –jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 6.3.1.2.6 for JavaVM v1.4, CMP:7.1.1, Oct  6 2014 13:54:56</pre>
+</div></div><p>At this time, if the cm protocol version of the ALTIBASE DB Server and the CMP of the ALTIBASE JDBC Driver is the same, they are compatible.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ altibase -v
+version 6.3.1.2.7 X86_64_LINUX_redhat_Enterprise_ES4-64bit-6.3.1.2.7-release-GCC3.4.6
+(x86_64-unknown-linux-gnu) Oct  8 2014 09:16:24, binary db version 6.2.1, meta version 6.3.1,
+cm protocol version 7.1.1, replication protocol version 7.4.1</pre>
+</div></div><p>It is recommended that the user uses the ALTIBASE JDBC Driver file, which is the same as or later than the version of ALTIBASE DB Server, because JDBC related bugs may be fixed as the version is upgraded.</p><p> </p></div><p> </p></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

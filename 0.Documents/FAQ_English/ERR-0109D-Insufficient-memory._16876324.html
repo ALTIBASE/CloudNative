@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-0109D Insufficient memory.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-0109D Insufficient memory.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 25, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147911 {padding: 0px;}
+div.rbtoc1624409147911 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147911 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147911'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-0109DInsufficientmemory.-Version'>Version</a></li>
+<li><a href='#ERR-0109DInsufficientmemory.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-0109DInsufficientmemory.-Cause'>Cause</a></li>
+<li><a href='#ERR-0109DInsufficientmemory.-Solution'>Solution</a></li>
+<li><a href='#ERR-0109DInsufficientmemory.-Reference'>Reference</a></li>
+</ul>
+</div></p><p> </p><h1 id="ERR-0109DInsufficientmemory.-Version">Version</h1><hr /><p>All versions</p><p>In the case of this error message, this error may occur for the same error cause or another error may occur depending on the Altibase version.</p><p>In addition, the cause of the error may be different depending on the version of Altibase for this error message.</p><p> </p><h1 id="ERR-0109DInsufficientmemory.-Symptom">Symptom</h1><hr /><p># Example</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">create table t (c1 integer, c2 integer);
+create table t2 (c1 integer, c2 integer);
+create table t3 (c1 integer, c2 integer);
+create index t_idx_01 on t(c1, c2);
+create index t2_idx_01 on t2(c1, c2);
+create index t3_idx_01 on t3(c1, c2);
+insert into t select level, level from dual connect by level &lt; 301;
+insert into t2 select level, level from dual connect by level &lt; 301;
+insert into t3 select level, level from dual connect by level &lt; 301;
+alter system set EXECUTE_STMT_MEMORY_MAXIMUM = 1048576;</pre>
+</div></div><p># Results from version 5.5.1 or later</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);
+[ERR-0109D : Insufficient memory]</pre>
+</div></div><p># Result of execution in version 5.3.3</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select count(*) from (select count(*) from t, t2, t3 group by t.c2, t2.c2, t3.c2);
+[ERR-01067 : The allocated memory size of statement exceeds the maximum limit ( Name : Query_Execute, Wanted Memory Size : 1114112, Max size : 1048576 ).]</pre>
+</div></div><p> </p><h1 id="ERR-0109DInsufficientmemory.-Cause">Cause</h1><hr /><p>The description of the error can be checked using the altierr utility as follows.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>$ altierr 0x0109D</span><br /><span> 0x0109D (   4253) idERR_ABORT_InsufficientMemory Insufficient memory </span><br /><span> # *Cause: Insufficient memory</span><br /><span> # *Action: Please make sure that the system has enough available memory.</span></p>
+</div></div><p>When performing queries such as order by and group by on a memory table, the temporary area is used. The temporary area also uses memory space.</p><p>This error occurs when the ALTIBASE HDB server makes a memory allocation request to execute a query and an error is returned by the EXECUTE_STMT_MEMORY_MAXIMUM attribute value.</p><p> </p><h1 id="ERR-0109DInsufficientmemory.-Solution">Solution</h1><hr /><p>The value of the following property must be increased.</p><div class="panel" style="border-width: 1px;"><div class="panelContent">
+<p><span>EXECUTE_STMT_MEMORY_MAXIMUM</span></p><p>Default value: 1G<br />The unit is Gigabyte, and if the memory is used more than this attribute value in the execution step during query processing, an error is handled.<br />This attribute value is set to a maximum value to prevent unnecessary memory growth.</p>
+</div></div><p>1. If the error occurs during query execution, check the &quot;EXECUTE_STMT_MEMORY_MAXIMUM&quot; property value with the following SQL statement.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; set vertical on;
+iSQL&gt; select name, value1 from v$property where name=&#39;EXECUTE_STMT_MEMORY_MAXIMUM&#39;;
+NAME   : EXECUTE_STMT_MEMORY_MAXIMUM                         
+VALUE1 : 1073741824  </pre>
+</div></div><p>2. Increase the property value appropriately with the ALTER statement. (The unit is byte.)</p><p>The following is an example of setting to 2G.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter system set EXECUTE_STMT_MEMORY_MAXIMUM = 2147483648;
+Alter success.</pre>
+</div></div><p>3. The above command is applied to the entire server after execution, but it is applied as the setting value of the property file when Altibase is restarted.</p><p>Therefore, to apply it permanently, the property value must be changed in the property file as well.</p><p>Change the property value in the $ALTIBASE_HOME/conf/altibase.properties file as above.</p><p> </p><h1 id="ERR-0109DInsufficientmemory.-Reference">Reference</h1><hr /><ol><li><p>The EXECUTE_STMT_MEMORY_MAXIMUM property specifies the maximum value, and memory is not allocated as much as the preset value.</p><p>However, the memory usage may increase as much as the set value, so be careful when setting it.</p><p>Therefore, it is recommended to increase it appropriately empirically rather than setting it large in advance.</p><p> </p></li><li><p>The &quot;Insufficient memory&quot; error can be a number of memory allocation failure errors in addition to the cases described here.</p><p>Therefore, if the above solutions do not solve the problem, please contact Altibase Technical Support.</p></li></ol><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

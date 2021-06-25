@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Comparing PL SQL and ALTIBASE Stored Procedures</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Comparing PL SQL and ALTIBASE Stored Procedures
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 19, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409346654 {padding: 0px;}
+div.rbtoc1624409346654 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409346654 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409346654'>
+<ul class='toc-indentation'>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-Overview'>Overview </a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-AnonymousBlock'>Anonymous Block</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-CollectionsandRecords'>Collections and Records</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-DMLstatementsthathaveRETURNINGclause'>DML statements that have RETURNING clause</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-UsingFORALLandBULKCOLLECTTogether'>Using FORALL and BULK COLLECT Together</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-PragmaOption'>Pragma Option</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-Array'>Array</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-Datatypes'>Datatypes</a></li>
+<li><a href='#ComparingPLSQLandALTIBASEStoredProcedures-Example'>Example</a></li>
+</ul>
+</div>
+
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-Overview">Overview </h2>
+
+<p>ALTIBASE Stored Procedure is very similar to the ORACLE's PL/SQL in concept.</p>
+
+<p>ALTIBASE Stored Procedure is one of database object comprising a declaration section, a body section, exception handler section.</p>
+
+<p>A body section can also involve multiple subordinate body sections.</p>
+
+<p>ALTIBASE Stored Procedure is considered to be PSM(Persistent Stored Modules) as well.
+<br class="atl-forced-newline" /></p>
+
+<p>Hereafter, we call them as ALTIBASE Stored Procedure(Shortly, Stored Procedure) to put them together.</p>
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-AnonymousBlock">Anonymous Block</h2>
+
+<p>Anonymous block doesn't have any name of procedure which it belongs.</p>
+
+<p>Simply, it can be transformed as below.</p>
+
+<p>Even if you transformed &quot;Anonymous Block&quot; statement as below, the execution of 'exec proc_name' statement should be accompanied after then.</p>
+
+<p>That's why an execution of the Altibase psm statement is not caused by issuing corresponding statement unlike an anynonymous block of oracle.</p>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em> ORACLE</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Declare
+a NUMBER := 4;
+b NUMBER := 7;
+plsql_block VARCHAR2(100);
+BEGIN
+plsql_block := &#39;BEGIN calc_stats(:x, :x, :y, :x); END;&#39;;
+EXECUTE IMMEDIATE plsql_block USING a, b;
+END;
+/</pre>
+</div></div></div>
+
+<p><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p><strong><em>ALTIBASE HDB</em></strong></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CREATE OR REPLACE PROCEDURE PROC1
+AS
+a NUMBER := 4;
+b NUMBER := 7;
+plsql_block VARCHAR2(100);
+BEGIN
+plsql_block := &#39;BEGIN calc_stats(:x, :x, :y, :x); END;&#39;;
+EXECUTE IMMEDIATE plsql_block USING a, b;
+END;
+/</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p></div><br class="atl-forced-newline" /></p></div></div></div>
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-CollectionsandRecords">Collections and Records</h2>
+
+<p>A collection is an ordered group of elements, all of the same type.</p>
+
+<p>A record is a group of related data items stored in fields, each with its own name and datatype. </p>
+<ul>
+	<li> Associative arrays, also known as index-by tables, let you look up elements using<br />
+arbitrary numbers and strings for subscript values. These are similar to hash tables.</li>
+	<li>Nested tables hold an arbitrary number of elements.</li>
+	<li>Varrays (short for variable-size arrays) hold a fixed number of elements (although<br />
+you can change the number of elements at runtime). Varrays is not supported in Altibase.</li>
+</ul>
+
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-DMLstatementsthathaveRETURNINGclause">DML statements that have RETURNING clause</h2>
+
+<p>This clause can be employed at ALTIBASE Stored Procedure and PL/SQL as well.</p>
+
+<p>The manipulating data and retrieving result can be done in a time using RETURNING CLAUSE.</p>
+
+<p>This clause is a efficient way to access a table on account of its dual access to a table in one time.</p>
+
+<p>Returning clause will be applied at ALTIBASE HDB V7.</p>
+
+<p>Just now, it can be transformed as follows. </p>
+
+<div class="sectionColumnWrapper"><div class="sectionMacro">
+<div class="sectionMacroRow"><div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p>ORACLE</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">UPDATE employees
+SET emp_job =&#39;SA_MAN&#39;, salary = salary + 1000, dno = 140
+WHERE e_lastname = &#39;Jones&#39;
+RETURNING salary*0.25, e_lastname, dno
+INTO :bnd1, :bnd2, :bnd3;</pre>
+</div></div>
+<p>  </p></div>
+
+<div class="columnMacro" style="width:50%;min-width:50%;max-width:50%;">
+<p>ALTIBASE HDB</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">UPDATE employees
+SET emp_job =&#39;SA_MAN&#39;, salary = salary + 1000, dno = 140
+WHERE e_lastname = &#39;Jones&#39;;
+
+SELECT salary*0.25, last_name, dno
+INTO :bnd1, :bnd2, :bnd
+FROM employees
+WHERE e_lastname = &#39;Jones&#39;;</pre>
+</div></div>
+<p><br class="atl-forced-newline" /></p></div>
+<p><br class="atl-forced-newline" /></p></div></div></div>
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-UsingFORALLandBULKCOLLECTTogether">Using FORALL and BULK COLLECT Together</h2>
+
+<p>This functionality is not supported in ALTIBASE HDB.</p>
+
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-PragmaOption">Pragma Option</h2>
+
+<p>ALTIBASE HDB does not support this functionality.</p>
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-Array">Array</h2>
+
+<p>VArray(Variable Array) and Associative Array are employed as kinds of collections described above.
+<br class="atl-forced-newline" /></p>
+
+<p>ALTIBASE HDB does not support VArray functionality.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-Datatypes">Datatypes</h2>
+
+<p>The ORACLE PL/SQL has its own datatypes having corresponding type to data types which ALTIBASE HDB supports.</p>
+
+<p>PL/SQL provides many predefined datatypes.</p>
+
+<p>As described below, PL/SQL DATATYPES and ALTIBASE data types are compatible with each other.
+<br class="atl-forced-newline" /></p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BINARY_DOUBLE, BINARY_FLOAT, BINARY_INTEGER, DEC, <br class="atl-forced-newline" />
+DECIMAL, DOUBLE PRECISION, FLOAT, INT, INTEGER, NATURAL, <br class="atl-forced-newline" />
+NATURALN, NUMBER, NUMERIC, PLS_INTEGER, POSITIVE, <br class="atl-forced-newline" />
+POSITIVEN, REAL, SIGNTYPE, SMALLINT </p></td>
+<td class="confluenceTd"><p> INTEGER, FLOAT, DECIMAL, DOUBLE, NUMBER, REAL </p></td>
+<td class="confluenceTd"><p> PL/SQL Number Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> CHAR, CHARACTER, LONG, LONG RAW, NCHAR, NVARCHAR2, <br class="atl-forced-newline" />
+RAW, ROWID, STRING, UROWID, VARCHAR, VARCHAR2 </p></td>
+<td class="confluenceTd"><p> CHAR, VARCHAR, NCHAR, NVARCHAR </p></td>
+<td class="confluenceTd"><p> PL/SQL Character and String Types and PL/SQL National Character Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> BOOLEAN </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> PL/SQL Boolean Types </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DATE, TIMESTAMP, TIMESTAMP WITH TIMEZONE, <br class="atl-forced-newline" />
+TIMESTAMP WITH LOCAL TIMEZONE, INTERVAL YEAR TO MONTH, <br class="atl-forced-newline" />
+INTERVAL DAY TO SECOND </p></td>
+<td class="confluenceTd"><p> DATE </p></td>
+<td class="confluenceTd"><p> PL/SQL Date, Time, and Interval Types </p></td>
+</tr>
+</tbody></table></div>
+
+
+<h2 id="ComparingPLSQLandALTIBASEStoredProcedures-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> ORACLE </p></th>
+<th class="confluenceTh"><p> ALTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <span style="color: rgb(255,0,0);">DECLARE</span> <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+emp_cv EmpCurTyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_job VARCHAR2(10) := 'manager'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+sql_stmt := 'SELECT * FROM employees WHERE emp_job = :j'; <br class="atl-forced-newline" />
+OPEN emp_cv FOR sql_stmt USING v_job; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">DBMS_OUTPUT.PUT_LINE</span>('Name: ' || emp_rec.e_lastname || ' Job Title: ' || emp_rec.emp_job); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> <span style="color: rgb(255,0,0);">CREATE OR REPLACE PROCEDURE PROC1</span> <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">AS</span> <br class="atl-forced-newline" />
+TYPE EmpCurTyp IS REF CURSOR; <br class="atl-forced-newline" />
+emp_cv EmpCurTyp; <br class="atl-forced-newline" />
+emp_rec employees%ROWTYPE; <br class="atl-forced-newline" />
+sql_stmt VARCHAR2(200); <br class="atl-forced-newline" />
+v_job VARCHAR2(10) := 'manager'; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+sql_stmt := 'SELECT * FROM employees WHERE emp_job = :j'; <br class="atl-forced-newline" />
+OPEN emp_cv FOR sql_stmt USING v_job; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH emp_cv INTO emp_rec; <br class="atl-forced-newline" />
+EXIT WHEN emp_cv%NOTFOUND; <br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);">PRINTLN</span>('Name: ' || emp_rec.e_lastname || ' Job Title: ' || emp_rec.emp_job); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE emp_cv; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> Anonymous block </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> UPDATE employees <br class="atl-forced-newline" />
+     SET emp_job ='SA_MAN', salary = salary + 1000, dno = 140 <br class="atl-forced-newline" />
+    WHERE e_lastname = 'Jones' <br class="atl-forced-newline" />
+ <span style="color: rgb(255,0,0);">RETURNING</span> salary*0.25, e_lastname, dno <br class="atl-forced-newline" />
+      <span style="color: rgb(255,0,0);">INTO</span> :bnd1, :bnd2, :bnd3; </p></td>
+<td class="confluenceTd"><p> UPDATE employees <br class="atl-forced-newline" />
+   SET emp_job ='SA_MAN', salary = salary + 1000, dno = 140 <br class="atl-forced-newline" />
+ WHERE e_lastname = 'Jones'; <br class="atl-forced-newline" />
+<br class="atl-forced-newline" />
+SELECT salary*0.25, last_name, dno <br class="atl-forced-newline" />
+  <span style="color: rgb(255,0,0);">INTO</span> :bnd1, :bnd2, :bnd <br class="atl-forced-newline" />
+  FROM employees <br class="atl-forced-newline" />
+ WHERE e_lastname = 'Jones'; </p></td>
+<td class="confluenceTd"><p> DML Returning clause  <br class="atl-forced-newline" />
+will be applied at ALTIBASE HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,0);">dept_info departments%ROWTYPE</span>; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- department_id, department_name, and location_id are the table columns <br class="atl-forced-newline" />
+-- The record picks up these names from the %ROWTYPE <br class="atl-forced-newline" />
+dept_info.dno := 300; <br class="atl-forced-newline" />
+dept_info.dname := 'Personnel'; <br class="atl-forced-newline" />
+dept_info.dep_location := 1700; <br class="atl-forced-newline" />
+-- Using the %ROWTYPE means we can leave out the column list <br class="atl-forced-newline" />
+-- (department_id, department_name, and location_id) from the INSERT statement <br class="atl-forced-newline" />
+INSERT INTO departments <span style="color: rgb(255,0,0);">VALUES dept_info</span>; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+ dept_info departments%ROWTYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+-- department_id, department_name, and location_id are the table columns <br class="atl-forced-newline" />
+-- The record picks up these names from the %ROWTYPE <br class="atl-forced-newline" />
+ dept_info.dno := 300; <br class="atl-forced-newline" />
+ dept_info.dname := 'Personnel'; <br class="atl-forced-newline" />
+ dept_info.dep_location := 1700; <br class="atl-forced-newline" />
+-- Using the %ROWTYPE means we can leave out the column list <br class="atl-forced-newline" />
+-- (department_id, department_name, and location_id) from the INSERT statement <br class="atl-forced-newline" />
+ INSERT INTO departments(dno, dname, dep_location) VALUES (<span style="color: rgb(255,0,0);">dept_info.dno, dept_info.dname, dept_info.dep_location</span>); <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

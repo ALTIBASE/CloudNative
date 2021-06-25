@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Whether Users can Access the Tablespace, System/Object Privileges, PSM, View related Meta Tables and Peformance Views</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="2.-Altibase-Meta-Table-and-Performance-View-Overview_14058238.html">2. Altibase Meta Table and Performance View Overview</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Whether Users can Access the Tablespace, System/Object Privileges, PSM, View related Meta Tables and Peformance Views
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="md-end-block md-p"><span class="md-plain">Real-time monitoring is not necessary, but elements frequently identified during the operation include 'user's access to the tablespace', 'system/object authority', and 'schema object'. In the case of schema objects, PSM, and views are the cases.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain">In order to understand related information, the relationship between the meta table and performance view in which only key columns to be referenced in the join query is referenced is as follows.</span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><img class="confluence-embedded-image" width="700" src="attachments/14058250/14221511.png" data-image-src="attachments/14058250/14221511.png"></span></p><p class="md-end-block md-p"><span class="md-plain">Please note that the column names of other objects corresponding to the object number OBJ_ID column (green) in SYS_GRANT_OBJECT_ are different depending on the object.</span></p><p class="md-end-block md-p"><span class="md-plain">Examples include TABLE_ID (red), VIEW_ID (red), and PROC_OID (purple) columns.</span></p><p class="md-end-block md-p"><span class="md-plain">In addition, most database objects have a separate meta table corresponding to them, but in the case of views, they are managed together with tables, so specific information such as the name of the view must be checked in SYS_TABLES_. SYS_VIEWS</span><span>_</span><span class="md-plain"> stores only the view compile status. (That is, VIEW_ID of SYS</span><span>_</span><span class="md-plain">VIEWS</span><span>_</span><span class="md-plain"> is the same as TABLE_ID of SYS_TABLES</span><span>_</span><span class="md-plain">.)</span></p><h2 class="md-end-block md-heading" id="id-5.WhetherUserscanAccesstheTablespace,System/ObjectPrivileges,PSM,ViewrelatedMetaTablesandPeformanceViews-MainMetaTables"><span class="md-plain">Main Meta Tables</span></h2><ul class="ul-list"><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_TBS_USERS_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that contains a list of tablespaces accessible to the user</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_PRIVILEGES_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores the authority number (PRIV_ID) and the authority name (PRIV_NAME) for system authority and object authority.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_GRANT_SYSTEM_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores the authority number (PRIV_ID) for the system authority granted by the user.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_GRANT_OBJECT_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores the authority number (PRIV_ID) and object information for the object authority granted by the user. Through the object number (OBJ_ID), detailed information of the object can be checked.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_VIEWS_, SYS_VIEW_PARSE</span><span>_</span></strong></p><p class="md-end-block md-p"><span class="md-plain">This is a meta table that stores only the compiled state of the view. The view creation statement can be confirmed through SYS_VIEW_PARSE_.</span></p></li><li class="md-list-item"><p class="md-end-block md-p"><strong><span class="md-plain">SYS_PROCEDURES_, SYS_PROC_PARSE</span><span>_</span></strong></p><p class="md-end-block md-p md-focus"><span class="md-plain">This is the meta table that stores detailed information about PSM (Procedure, Function, Typeset). The creation statement corresponding to each PSM can be confirmed through SYS_PROC_PARSE_.</span></p></li></ul><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p><p class="md-end-block md-p md-focus"><span class="md-plain"><br /></span></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14058250/14221511.png">2.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

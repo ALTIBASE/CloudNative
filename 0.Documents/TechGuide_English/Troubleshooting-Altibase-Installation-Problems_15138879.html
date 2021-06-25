@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Troubleshooting Altibase Installation Problems</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Troubleshooting Altibase Installation Problems
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409365106 {padding: 0px;}
+div.rbtoc1624409365106 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409365106 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409365106'>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Overview'>Overview</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Troubleshootingincommonenvironments'>Troubleshooting in common environments</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-UnabletointerpretBinary'>Unable to interpret Binary</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Environmentvariablenotregistered'>Environment variable not registered</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Problemwithuser&#39;sfileprivileges'>Problem with user&#39;s file privileges</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Absenceofaltibase.propertiesfile'>Absence of altibase.properties file</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Absenceoflicensefile'>Absence of license file</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Licenseerror'>License error</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-ExpiredLicenseerror'>Expired License error</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Propertyvalueerror'>Property value error</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Writingfileerror'>Writing file error</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Skippingthedatabasecreationprocedure'>Skipping the database creation procedure</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Listenerportbindfailure'>Listener port bind failure</a></li>
+<li><a href='#TroubleshootingAltibaseInstallationProblems-Replicationportbindfailure'>Replication port bind failure</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="TroubleshootingAltibaseInstallationProblems-Overview">Overview</h1><hr /><p>This document describes troubleshooting for each type of problem that may occur when users attempt to install ALTIBASE products.</p><p>Problems not listed in the document may occur and the type of occurrence may differ depending on the version of ALTIBASE.</p><p>For problems that are no described in this document, please send an email to <a href="mailto:support@altibase.com" class="external-link" rel="nofollow">support@altibase.com</a> with a description of the occurrence conditions and the ALTIBASE trace log files ('trc' directory under the ALTIBASE installation path).</p><ul><li>Altibase version 5.5.1 or later</li></ul>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center.</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<p> </p><h1 id="TroubleshootingAltibaseInstallationProblems-Troubleshootingincommonenvironments">Troubleshooting in common environments</h1><hr /><p>This section describes the list of types of problems that may occur during the installation with corrective solutions.</p><h2 id="TroubleshootingAltibaseInstallationProblems-UnabletointerpretBinary">Unable to interpret Binary</h2><hr /><ul><li><p>The ALTIBASE package is compiled and distributed according to the supported CPU classification. </p></li><li>This can occur if the user tries to download and install the ALTIBASe package that does not match the CPU of the device where the user wants to install ALTIBASE.com</li><li>To check whether the installed executable file is normal, simply use the altibase -v command.</li><li>The error message in the example below is the most common error situation. In addition to this, other error messages such as library compatibility can be returned.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example 1: When the CPU of the device and the ALTIBASe package do not match</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ ./altibase-HDB-server-6.5.1.6.8-LINUX-POWERPC-64bit-release.run
+-bash: ./altibase-HDB-server-6.5.1.6.8-LINUX-POWERPC-64bit-release.run: cannot execute binary file
+</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Reinstall the pack for the CPU of the device.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Environmentvariablenotregistered"><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Environment variable not registered</span></span></h2><p><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);"> </span></span></p><hr /><ul><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">In order to connect ALTIBASE in sysdba mode, the path where ALTIBASe is installed must be registered in a variable named &quot;ALTIBASE_HOME'.</span></span></li><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">If this variable is not registered, the following error occurs.</span></span></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -s 127.0.0.1 -u sys -p manager -port 20300 -sysdbaISQL_CONNECTION = UNIX, SERVER = 127.0.0.1, PORT_NO = 20300
+[ERR-91003 : Environment (ALTIBASE_HOME) does not exists.</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Register the ALTIBASE installation path with the value of the variable named 'ALTIBASE_HOME'.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Problemwithuser&#39;sfileprivileges"><span style="color: rgb(0,0,0);">Problem with user's file privileges</span></h2><hr /><ul><li><span style="color: rgb(0,0,0);">When installing and creating a database, it must be connected in the sysdba.</span></li><li><span style="color: rgb(0,0,0);">At this time access to sysdba mode is possible only with the user who installed ALTIBASE.</span></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">$ isql -s 127.0.0.1 -u sys -p manager -port 26084 -sysdba-----------------------------------------------------------------
+     Altibase Client Query utility.
+     Release Version 6.5.1.6.8
+     Copyright 2000, ALTIBASE Corporation or its subsidiaries.
+     All Rights Reserved.
+-----------------------------------------------------------------
+WARNING: A port number is not required when connecting via IPC or UNIX, so the -port option was ignored.
+ISQL_CONNECTION = UNIX, SERVER = 127.0.0.1
+[ERR-9100B : Privilege error for sysdba user account.]</pre>
+</div></div><ul><li><strong><span style="color: rgb(255,0,0);">Solution: Try again as the user who installed ALTIBASE, or change the owner's privileges of all files under the ALTIABSE installation path to the current user.</span></strong></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Absenceofaltibase.propertiesfile"><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Absence of altibase.properties file</span></span></h2><hr /><ul><li>This problem occurs when there is no altibase.properfies file in the 'conf' directory under the ALTIBASE installation path.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup process
+idp readConf() Error : Open File [/hdb_home/651/conf/altibase.properties] Error.</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: 'altibase.properties.sample' file for first-time users is provided in the 'conf' directory under the ALTIBASE installation path. Edit this file and the altibase.properties file to suit the environment.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Absenceoflicensefile"><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">Absence of license file</span></span></h2><hr /><ul><li><span style="color: rgb(255,0,0);"><span style="color: rgb(0,0,0);">This problem occurs when proceeding without creating a license file in the 'conf' directory under the ALTIBASE installation path.</span></span></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESSCommencing Server as Community Edition
+DISK_MAX_DB_SIZE(Unlimited) exceeded limit 8192M
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><strong><span style="color: rgb(255,0,0);">Solution: Based on the license issued from ALTIBASe, a license file should be created in the corresponding location.</span></strong></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Licenseerror">License error</h2><hr /><ul><li>MAC ADDRESS may be changed for reasons such as changing the network card of the device. Or, the wrong license may been issued because the license issuance information was incorrectly sent to ALTIBASE.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESSInvalid or expired license in License File(/hdb_home/651/conf/license)
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><strong><span style="color: rgb(255,0,0);">Solution: If the hostid or Mac Address when the license is issued is different from the information of the target device, the license must be reissued.</span></strong><strong><span style="color: rgb(255,0,0);"><br /></span></strong></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-ExpiredLicenseerror">Expired License error</h2><hr /><p>This problem occurs when the issued license has expired.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESSInvalid or expired license in License File(/hdb_home/651/conf/license)
+[FAILURE] License invalid or expired.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Apply/request for a new license from the Altibase Technical Support Portal (<a href="http://support.altibase.com/en/)" class="external-link" rel="nofollow"><span style="color: rgb(255,0,0);">http://support.altibase.com/en/)</span></a>.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Propertyvalueerror">Property value error</h2><hr /><ul><li>This problem occurs when the value specified in the altibase.properties file or the value specified with the environment variable in the 'conf' directory under the ALTIBASE installation path is incorrect.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When the currently set value is out of range</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">idp checkRange() Error : Property [property_name] [current_value] Overflowed the Value Range.(min_value~max_value) </pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>If the currently set value is impossible to convert the data type</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;"> idp convertFromString() Error : The property [property_name] value [current_value] is not convertable.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>When the same property is duplicated</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">idp insertBySrc() Error : Property [property_name] Can&#39;t Store Multiple Values. </pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Check the problem property and correct it to a normal value.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Writingfileerror">Writing file error</h2><hr /><ul><li>Writing file error can be caused by a number of problem factors</li><li>The disk may not have enough free space, or the directory may have omitted privileges.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : PROCESSCommand execute success.
+ 
+DB Info (Page Size     = 32768)
+        (Page Count    = 257)
+        (Total DB Size = 8421376)
+        (DB File Size  = 1073741824)
+ 
+FAILURE of createdb.
+ 
+[ERR-0103C : Unable to invoke create() function on [/ALTIBASE/altibase_home/dbs/dwfile0.dwf]] </pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: check the free space on the disk and the privileges of the directory.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Skippingthedatabasecreationprocedure">Skipping the database creation procedure</h2><hr /><ul><li>In order to start Altibase in service mode, the database creation procedure must be preceded.</li><li>This problem occurs when the user omits this procedure and starts the server in a shell prompt, starts in iSQL, or starts ALTIBASE as a service in the WINDOWS environment.</li><li>Usually, when ALTIBASE starts up, the loganchor file is retrieved for the first time, so an error message indicating that the file does not exist is returned.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : CONTROL[FAILURE] The log anchor file does not exist or it is not valid.
+ 
+Startup Failed....
+ 
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Perform database creation procedure.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Listenerportbindfailure">Listener port bind failure</h2><hr /><ul><li>This problem occurs when the ALTIBASE process fails to bind the TCP port to be used.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Emacs; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : SERVICE  [CM] Listener failed  : TCP on port 20300 [IPV4]
+[FAILURE] Unable to bind the socket.
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><span style="color: rgb(255,0,0);"><strong>Solution: Find the case that the port cannot be bound, and then solve it. </strong></span><br /><span style="color: rgb(255,0,0);"><strong>If another application is preempted, the application or the port used for ALTIBASE must be changed.</strong></span></li></ul><h2 id="TroubleshootingAltibaseInstallationProblems-Replicationportbindfailure"><span style="color: rgb(0,0,0);">Replication port bind failure</span></h2><hr /><ul><li>This problem occurs when the ALTIBASE replication thread fails in the step of binding the port to be used.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: DJango; brush: bash; gutter: false" style="font-size:12px;">TRANSITION TO PHASE : SERVICE  [CM] Listener started : TCP on port 20300 [IPV4]
+  [CM] Listener started : UNIX
+  [CM] Listener started : IPC
+  [RP] Initialization : FAIL
+[FAILURE] [Receiver] Failed to listen to a replication socket (Port No:30300)
+Startup Failed....
+[ERR-91015 : Communication failure.]</pre>
+</div></div><ul><li><strong><span style="color: rgb(255,0,0);">Solution: Find the cause that the port cannot be bound, then solve it.</span></strong><br /><strong><span style="color: rgb(255,0,0);">If another application is preempted, the application or the port used for ALTIBASE must be changed.</span></strong></li></ul><div><span style="font-size: 20.0px;color: rgb(0,0,255);"><br /></span></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

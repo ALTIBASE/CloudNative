@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 1. TOMCAT 설치</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7341030.html">Altibase TOMCAT 연동가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 1. TOMCAT 설치
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified by <span class='editor'> richard.nahm	</span> on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409848947 {padding: 0px;}
+div.rbtoc1624409848947 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409848947 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409848947'>
+<ul class='toc-indentation'>
+<li><a href='#id-1.TOMCAT설치-TOMCAT다운로드'>TOMCAT 다운로드</a></li>
+<li><a href='#id-1.TOMCAT설치-TOMCAT설치'>TOMCAT 설치</a></li>
+<li><a href='#id-1.TOMCAT설치-환경변수설정'>환경변수 설정</a></li>
+<li><a href='#id-1.TOMCAT설치-TOMCAT구동'>TOMCAT 구동</a></li>
+<li><a href='#id-1.TOMCAT설치-TOMCAT종료'>TOMCAT 종료</a></li>
+</ul>
+</div></p><hr /><p>TOMCAT 설치 방법에 대해 간단히 살펴보도록 한다. TOMCAT 7 제품을 설치한다.<br /> TOMCAT을 설치하기 전에 반드시 JDK(Java Development Kit) 또는 JRE(Java Runtime Environment) 가 설치되어 있어야 한다.</p><h2 id="id-1.TOMCAT설치-TOMCAT다운로드"><strong>TOMCAT 다운로드</strong></h2><p><a href="http://tomcat.apache.org/download-70.cgi" class="external-link" rel="nofollow">http://tomcat.apache.org/download-70.cgi</a> 사이트에 방문하여 최근 release된 TOMCAT 바이너리 파일을 다운받는다.( apache-tomcat-7.0.56.tar.gz)</p><p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/7341384/7766157.png" data-image-src="attachments/7341384/7766157.png"></p><h2 id="id-1.TOMCAT설치-TOMCAT설치"><strong>TOMCAT 설치</strong></h2><p>다운로드 한 압축 파일을 FTP로 옮긴다.(tomcat 설치 계정)<br /> 업로드 한 압축 파일을 적절한 디렉토리에 푼다.(tar xvzf apache-tomcat-7.0.56.tar.gz)<br /> Binary이기 때문에 압축을 푸는 것으로 설치는 끝난다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">[tomcat@dev ~]$ tar xvzf apache-tomcat-7.0.56.tar.gz
+apache-tomcat-7.0.56/bin/catalina.sh
+apache-tomcat-7.0.56/bin/configtest.sh
+apache-tomcat-7.0.56/bin/daemon.sh
+apache-tomcat-7.0.56/bin/digest.sh
+apache-tomcat-7.0.56/bin/setclasspath.sh
+apache-tomcat-7.0.56/bin/shutdown.sh
+apache-tomcat-7.0.56/bin/startup.sh
+apache-tomcat-7.0.56/bin/tool-wrapper.sh
+apache-tomcat-7.0.56/bin/version.sh
+apache-tomcat-7.0.56/conf/
+.
+.
+.
+apache-tomcat-7.0.56/webapps/manager/images/tomcat.gif
+apache-tomcat-7.0.56/webapps/manager/images/update.gif
+apache-tomcat-7.0.56/webapps/manager/images/void.gif
+apache-tomcat-7.0.56/webapps/manager/index.jsp
+apache-tomcat-7.0.56/webapps/manager/status.xsd
+apache-tomcat-7.0.56/webapps/manager/xform.xsl
+[tomcat@dev ~]$ mv apache-tomcat-7.0.56 /app/was/tomcat7
+</pre>
+</div></div><p>&lt;tomcat 설치 예&gt;</p><h2 id="id-1.TOMCAT설치-환경변수설정"><strong>환경변수 설정</strong></h2><p>다음의 환경변수를 설정한다.</p><p>1. CATALINA_HOME : TOMCAT을 설치한 디렉토리를 지정한다.<br /> 2. JAVA_HOME 혹은 JRE_HOME : JDK 혹은 JRE가 설치된 디렉토리를 지정한다.<br /> 3. PATH : $CATALINA_HOME/bin 디렉토리(1번에 설정한 TOMCAT설치디렉토리 하위의 bin디렉토리의 경로)를 PATH에 추가한다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">[tomcat@dev ~]$ vi .bash_profile
+export CATALINA_HOME=/app/was/tomcat7
+export JAVA_HOME=/app/java/jdk1.6
+export PATH=$CATALINA_HOME/bin:$JAVA_HOME/bin:$PATH
+
+[tomcat@dev ~]$ . .bash_profile
+</pre>
+</div></div><p>&lt;linux 환경설정 예&gt;</p><h2 id="id-1.TOMCAT설치-TOMCAT구동"><strong>TOMCAT 구동</strong></h2><p>다음의 명령어를 수행하여 TOMCAT을 구동시킨다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">$ catalina.sh start (windows : catalina start)
+[tomcat@dev ~]$ catalina.sh start
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+Tomcat started.
+[tomcat@dev ~]$
+</pre>
+</div></div><h2 id="id-1.TOMCAT설치-TOMCAT종료"><strong>TOMCAT 종료</strong></h2><p>다음의 명령어를 수행하여 TOMCAT을 종료시킨다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: shell; gutter: false" style="font-size:12px;">$ catalina.sh stop (windows : catalina stop)
+[tomcat@dev ~]$ catalina.sh stop
+Using CATALINA_BASE:   /app/was/tomcat7
+Using CATALINA_HOME:   /app/was/tomcat7
+Using CATALINA_TMPDIR: /app/was/tomcat7/temp
+Using JRE_HOME:        /app/java/jdk1.6
+Using CLASSPATH:       /app/was/tomcat7/bin/bootstrap.jar:/app/was/tomcat7/bin/tomcat-juli.jar
+[tomcat@dev ~]$
+</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341384/7766157.png">download.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/7341384/10715137.png">download_9.PNG</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

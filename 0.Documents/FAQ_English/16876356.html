@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ERR-5102E ( 331822) Invalid cursor state.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="09.-Error-Messages_16876299.html">09. Error Messages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ERR-5102E ( 331822) Invalid cursor state.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Mar 25, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409148182 {padding: 0px;}
+div.rbtoc1624409148182 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409148182 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409148182'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-Overview'>Overview</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-Version'>Version</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-Symptom'>Symptom</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-CauseandSolution'>Cause and Solution</a>
+<ul class='toc-indentation'>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-1.WhenthecursorwiththesamenameisreusedwithoutclosingthecursoraftercompletingtheFETCH'>1. When the cursor with the same name is reused without closing the cursor after completing the FETCH</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-2.WhenExceptionhandlingisomittedwhencursorCLOSEfailsafterFETCHiscompleted'>2. When Exception handling is omitted when cursor CLOSE fails after FETCH is completed</a></li>
+<li><a href='#ERR-5102E(331822)Invalidcursorstate.-3.Whenthecursorisreusedwhiletheresultofthedatatobefetchedremains'>3. When the cursor is reused while the result of the data to be fetched remains</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-Overview">Overview</h1><hr /><p>This error occurs when reusing an opened cursor when handling a statement in an application.</p><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-Version">Version</h1><hr /><p>ALTIBASE HDB version 4 or later</p><p>&quot;HDB 4.3.9 Error Message&quot; manual or altierr utility &quot;Invalid cursor state.&quot; cannot confirm the explanation, but HDB 4.3.9 can also cause this error.</p><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-Symptom">Symptom</h1><hr /><ul><li><p>Invalid cursor state occurs when executing CURSOR DECLARE or CURSOR OPEN during CURSOR FETCH in APRE (or SESC).</p></li><li><p>Invalid cursor state occurs when executing CURSOR DECLARE or CURSOR OPEN after CURSOR FETCH in APRE (or SESC).</p></li><li><p>Invalid cursor state occurs when executing one of SQLExecute(), SQLPrepare(), and SQLExecDirect() while executing SQLFetch() in SQLCLI or ODBC.</p></li><li><p>Invalid cursor state occurs when executing one of SQLExecute(), SQLPrepare(), and SQLExecDirect() after executing SQLFetch() in SQLCLI or ODBC.</p></li></ul><p> </p><h1 id="ERR-5102E(331822)Invalidcursorstate.-CauseandSolution">Cause and Solution</h1><hr /><h4 id="ERR-5102E(331822)Invalidcursorstate.-1.WhenthecursorwiththesamenameisreusedwithoutclosingthecursoraftercompletingtheFETCH">1. When the cursor with the same name is reused without closing the cursor after completing the FETCH</h4><ul><li><p>This is for HDB 5 or later version. In HDB 4 version, there is no error in this case.</p></li><li><p>In some cases, an error may occur because the cursor with the same name is reused without executing cursor CLOSE.</p></li><li><p>Example code.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">declare cursor A;
+open cursor A;
+fetch cursor A;       // fetch completed! 
+// close cursor A;    // Do not process cursor close! 
+declare cursor A;     // Reuse the cursor of the same name! </pre>
+</div></div></li><li><strong>If this is the case, add a CLOSE statement to the cursor.</strong></li></ul><h4 id="ERR-5102E(331822)Invalidcursorstate.-2.WhenExceptionhandlingisomittedwhencursorCLOSEfailsafterFETCHiscompleted">2. When Exception handling is omitted when cursor CLOSE fails after FETCH is completed</h4><ul><li><p>Cursor CLOSE fails, but the exception is not handled, and the cursor is reused with the same name without knowing that the cursor CLOSE failed.</p></li><li><p>This is for HDB 5 or later version. In HDB 4 version, there is no error in this case.</p></li><li><p>Example code</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">declare cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   exception handling;
+} 
+open cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   exception handling;
+}
+fetch cursor A;                                          // fetch completed! 
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   exception handling;
+}                                                               
+ 
+close cursor A;                                          //  No exception handling.
+/* close cursor A failed!! */ 
+                      
+declare cursor A;
+if (  sqlca.sqlcode != SQL_SUCCESS ) {
+   exception handling; 
+}</pre>
+</div></div></li><li><strong>If this is the case, add exception handling to the cursor CLOSE statement and figure out what caused the cursor CLOSE to fail.</strong></li></ul><h4 id="ERR-5102E(331822)Invalidcursorstate.-3.Whenthecursorisreusedwhiletheresultofthedatatobefetchedremains"><strong>3. When the cursor is reused while <span style="color: rgb(255,0,0);">the result of the data to be fetched remains</span></strong></h4><ul><li><p>If there is data to be fetched in the DB server, the result is deleted when the cursor is closed.</p></li><li><p>In other words, the cursor with the same name cannot be reused until the data to be fetched is deleted. In order to reuse, the cursor must be FETCHed after OPENed.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example 1</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: false" style="font-size:12px;">while(1)
+{   
+   fetch cursor A             // Data to be fetched remains
+   open cursor A             // An error occurs when the cursor with the same name is reused while the data to be fetched remains!
+}</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">while(1)
+{
+   SQLFetch(stmt)          // Data to be fetched remains
+   SQLExecute(stmt)      // An error occurs when the cursor with the same name is reused while the data to be fetched remains!
+}</pre>
+</div></div></li><li><strong>If this is the case, try to reuse the cursor after adding the cursor CLOSE statement.</strong></li></ul><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

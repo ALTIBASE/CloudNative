@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : About Replication</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7.-HA-Support_2986528.html">7. HA Support</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : About Replication
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> OO_Han</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 12, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409350611 {padding: 0px;}
+div.rbtoc1624409350611 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409350611 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409350611'>
+<ul class='toc-indentation'>
+<li><a href='#AboutReplication-WhatisReplication?'>What is Replication?</a></li>
+<li><a href='#AboutReplication-ReplicationConcept'>Replication Concept</a></li>
+<li><a href='#AboutReplication-FeaturesofReplication'>Features of Replication</a></li>
+<li><a href='#AboutReplication-RestrictionsofReplication'>Restrictions of Replication</a></li>
+<li><a href='#AboutReplication-MethodsofReplicationinAltibaseHDB'>Methods of Replication in Altibase HDB</a></li>
+<li><a href='#AboutReplication-Topology'>Topology</a>
+<ul class='toc-indentation'>
+<li><a href='#AboutReplication-Active-StandBy'>Active - StandBy</a></li>
+<li><a href='#AboutReplication-Active-Active'>Active - Active</a></li>
+</ul>
+</li>
+<li><a href='#AboutReplication-Replicationconflict'>Replication conflict</a></li>
+<li><a href='#AboutReplication-WhyReplicationConflictoccurs'>Why Replication Conflict occurs</a></li>
+<li><a href='#AboutReplication-Howtoresolveconflict'>How to resolve conflict</a></li>
+<li><a href='#AboutReplication-Replicationtype'>Replication type</a></li>
+<li><a href='#AboutReplication-LazyReplication'>Lazy Replication</a></li>
+<li><a href='#AboutReplication-EagerReplication'>Eager Replication</a></li>
+<li><a href='#AboutReplication-ORACLEFailOvervsALTIBASEHDB&amp;nbsp;FailOver'>ORACLE FailOver vs ALTIBASE HDB FailOver</a>
+<ul class='toc-indentation'>
+<li><a href='#AboutReplication-ConnectionStringinaClientApplication'>Connection String in a Client Application</a></li>
+<li><a href='#AboutReplication-ConnectionPropertiesintheSettingsFile((altibase_cli.iniorodbc.inifile)'>Connection Properties in the Settings File((altibase_cli.ini or odbc.ini file)</a></li>
+<li><a href='#AboutReplication-ConnectionStringoftheclientapplication&#39;sconnectionfunction'>Connection String of the client application&#39;s connection function</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><br class="atl-forced-newline" /></p>
+
+<h2><a name="AboutReplication-WhatisReplication?"></a>What is Replication?</h2>
+
+<p>Replication is a technique for sending information about the changes to the contents of a single database over a network to one or more other databases.</p>
+
+
+<h2><a name="AboutReplication-ReplicationConcept"></a>Replication Concept</h2>
+
+<p>Replication enables data from ALTIBASE to be replicated to one or more ALTIBASE.</p>
+
+<p>The basic idea behind replication in Altibase is the use of the log replay method.</p>
+
+<p>To support the replication feature of Altibase, a local server transfers transaction logs to a remote server when the logs change.</p>
+
+<p>The remote server ”replays” the received logs to its database, that is, it implements the changes that have been recorded in the transaction logs.</p>
+
+
+
+<map id="gliffy-map-3114296-7368" name="gliffy-map-3114296-7368"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 760px;" usemap="#gliffy-map-3114296-7368" src="attachments/2988512/3114297.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>Here're the steps how ALTIBASE replicate the changes when DML statement issues.</p>
+
+
+<p>(1) Client issues a SQL, for example, "INSERT INTO T1 .... ".&nbsp;</p>
+
+<p>(2) A service thread executes the SQL. By the WAL (Write Ahread Logging) protocol, the sevice thread first writes the changes to the redo log files.&nbsp;</p>
+
+<p>(3) Replication Sender thread is watching the redo logs. As soon as the service thread writes its change log,</p>
+
+<p>Replication Sender thread reads logs and translate the change log to XLOG.</p>
+
+<p>(4) Replication Sender send the changes to Replication Receiver in the remote ALTIBASE over TCP/IP protocol.</p>
+
+<p>(5) Replication Receiver receives the XLOG and applies the XLOG to local ALTIBASE.</p>
+
+<p>Replication Receiver writes its change log to the redo log before change the bufferpool or memory tablespace as well.</p>
+
+<h2><a name="AboutReplication-FeaturesofReplication"></a>Features of Replication</h2>
+
+<ul>
+	<li>ALTIBASE provides Replication feature as a form of database object, called "Replication Object." You can administrate and monitor the Replication Object by&nbsp;Querying SQL. ALTIBASE provies an easy way to configure Replication object as well.</li>
+	<li>When you create Replication object, you can specify the tables which you want to replicate. If so, the only specified tables are replicated.</li>
+	<li>ALTIBASE Replication works over TCP/IP procotol, in other words, you can configure Replication environment between ALTIBASE instances even if physically separated.</li>
+	<li>SELECT statement does not&nbsp;cause any replication issue because SELECT statement does not&nbsp;generate any redo&nbsp;log I/O in ALTIBASE.</li>
+	<li>An Altibase HDB single node can accomodate up to 32-way replications(replication objects).</li>
+</ul>
+
+
+<h2><a name="AboutReplication-RestrictionsofReplication"></a>Restrictions of Replication</h2>
+
+<ul>
+	<li>A DDL statement (ALTER TABLE , RENAME TABLE, TRUNCATE TABLE , DROP TABLE ...) is not permitted the tables which participate a replication by default. You can issue a DDL statement in the replication environment by changing ALTIBASE property, however, it is not recommended because data integrity can not be guaranteed.</li>
+	<li>Only Table data can be replicated. Other objects such as Synonym, View, Procedure, Trigger are not replicated.</li>
+	<li>The pairs between replicated table should have identical structures including table schema, column size and indices.</li>
+	<li>Altibase replication does not resolve conflict automatically. It will be described in the below.</li>
+	<li>ALL tables those participate replication should have PRIMARY KEY constraints.</li>
+	<li>User is not able to update the columns having PRIMARY KEY.</li>
+	<li>Redo log-based Replication takes place in real time.</li>
+</ul>
+
+
+<h2><a name="AboutReplication-MethodsofReplicationinAltibaseHDB"></a>Methods of Replication in Altibase HDB</h2>
+
+<p>By Converting Redo Logs in the SM module, is responsible for data storage and management via concurrency control and recovery, &nbsp;to a replayable Logical Form and Sending them.</p>
+
+<p>Some conversion expense is incurred, but replication performance is good.</p>
+
+<h2><a name="AboutReplication-Topology"></a>Topology</h2>
+
+
+
+<map id="gliffy-map-3114391-2190" name="gliffy-map-3114391-2190"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 520px;" usemap="#gliffy-map-3114391-2190" src="attachments/2988512/3114392.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h3><a name="AboutReplication-Active-StandBy"></a>Active - StandBy</h3>
+
+<p>Active-StandBy topology means that data manipulation&nbsp;is occured in only one ALTIBASE instance.</p>
+
+<p>Note that data manipulation means data changes and&nbsp;It will cause generation of the redo logfile.</p>
+
+<p>SELECT statement does not issue any data change, therefore, you can deploy the applications which only read from the standby ALTIBSE instance.</p>
+
+<h3><a name="AboutReplication-Active-Active"></a>Active - Active</h3>
+
+<p>Active-Active topology means that the data manipulation&nbsp;is occured both/among ALTIBASE instances in the same time.</p>
+
+<p>This topology is able to maximize hardware utilization, however, you must find the way&nbsp;to resolve conflict.</p>
+
+<h2><a name="AboutReplication-Replicationconflict"></a>Replication conflict</h2>
+
+<p>The term ”Replication Conflict” refers to the case where records having the same primary key or records to which constraints apply in replication target tables in two or more database servers are changed by respective local transactions.</p>
+
+<p>Replication Conflict can cause data mismatch between/among ALTIBASE instances.</p>
+
+<p>It is very important why Replication Conflict occurs and how to resolve conflict.</p>
+
+<h2><a name="AboutReplication-WhyReplicationConflictoccurs"></a>Why Replication Conflict occurs</h2>
+
+<p>There're two main reasons why Replication Conflict occurs.</p>
+
+<ul>
+	<li>Global lock<br/>
+ALTIBASE does not have any global lock in Replication enviroment. If Transaction A occurs in ALTIBASE #1, Replication sender automatically sends the changes of Transaction A to ALTIBASE #2's receiver, then Receiver in ALTBASE #2 create new transaction to apply received log. The transaction that made by Replication receiver is independent from Transaction A. Transaction A and Replication transaction is not in same context.</li>
+</ul>
+
+
+<ul>
+	<li>Network latency<br/>
+Although ALTIBASE Replication replicates changed data to another ALTIBASE instances as soon as transaction issued, receiver is not able to faster than service thread does. due to the network latency. If developer is not aware of network latency problem, transaction ordering can not be guaranteed.</li>
+</ul>
+
+
+<p>Here's an example.</p>
+
+
+<map id="gliffy-map-3114447-5459" name="gliffy-map-3114447-5459"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 550px;" usemap="#gliffy-map-3114447-5459" src="attachments/2988512/3114448.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>Assume that an application has to process the transactions in order, such as tranaction #1, transaction #2, transaction #3, transaction #4.</p>
+
+<p>And the application sent its transactions to both two ALTIBASE instances without consideration of replication conflict.</p>
+
+<p>The application has two connections to ALTIBASE instances, which are configurated with active-active topology.</p>
+
+<p>Suppose that application sent its transactions as below.</p>
+<ul>
+	<li>Connection to ALTIBASE #1 : transaction #1, transaction #3</li>
+	<li>Connection to ALTIBASE #2 : transaction #2, transaction #4</li>
+</ul>
+
+
+<p>In this case, the result of transactions may be wrong, because ALTIBASE does not guarantee the order of transactions even if application sent its transactions in order.</p>
+
+<p>If an application has to keep the order of transactions, the application has to use only one ALTIBASE instance during performing the transactions.</p>
+
+<h2><a name="AboutReplication-Howtoresolveconflict"></a>How to resolve conflict</h2>
+
+<p>The only one thing that you have to remember, to resolve replication conflict, is to make replication receiver and service thread to be independent each other.</p>
+
+<p>If a service thread handles row#1 and receiver thread handles the same row at the same time, it may cause replication conflict, however, if you prevent replication receiver and service thread from accessing same rows in same ALTIBASE instance, the data conflict is resolved.</p>
+
+<p>That is to say, It means that preventing an intervention by handling duplicated data is crucial.</p>
+
+<p>Here's a simple example.</p>
+
+
+<map id="gliffy-map-3114467-8421" name="gliffy-map-3114467-8421"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="left" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 820px;" usemap="#gliffy-map-3114467-8421" src="attachments/2988512/3114468.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<p>Application #1 handles only ORDER table and ALTIBASE #2 handles only CUSTOMER table.</p>
+
+<p>Therefore the service thread and replication receiver work perfectly independent, once there is no intervention by handling duplicated data between them with each other.</p>
+
+<p>Furthermore, Application #1 handles record#1 in ORDER table and Application #2 handles record#2 in same table, Replication conflict problem is resolved.</p>
+
+<h2><a name="AboutReplication-Replicationtype"></a>Replication type</h2>
+
+<p>ALTIBASE provides two options when you create Replication object.</p>
+
+
+<map id="gliffy-map-3114383-9894" name="gliffy-map-3114383-9894"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td  align="center" >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 660px;" usemap="#gliffy-map-3114383-9894" src="attachments/2988512/3114386.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<h2><a name="AboutReplication-LazyReplication"></a>Lazy Replication</h2>
+
+<p>This is a Default replication mode in ALTIBASE. When a transaction is issued,</p>
+
+<p>Service thread does not wait the completion of replication.</p>
+
+<p>There're no sychonoization mechanism between service thread and replication sender thread.</p>
+
+<p>Here're the benefits and risks when you want to use lazy replication.</p>
+
+<h2><a name="AboutReplication-EagerReplication"></a>Eager Replication</h2>
+
+<p>Eager Replication is focused on ensuring data consistency rather than Lazy Replication.</p>
+
+<p>When a transaction is issued, Service thread will wait for the completion of replication.</p>
+
+<p>Then replication sender transfers the redo log to replication receiver, and replication receiver notifies the transaction completion to replication sender thread.</p>
+
+<p>Then Replication sender thread wake blocked service thread, then client can issue another transaction.</p>
+
+<p>If Receiver thread has a problem to apply the redo log file, service thread transaction will fail.</p>
+
+<p>But there's a disadvantage in Eager replication, so to speak, replication can affect transaction performance(degradation).</p>
+
+<p>Comparing the Lazy replication, the performance may decrease 50% or more.
+<br class="atl-forced-newline" /></p>
+
+<h2><a name="AboutReplication-ORACLEFailOvervsALTIBASEHDB&amp;nbsp;FailOver"></a>ORACLE FailOver vs ALTIBASE HDB&nbsp;FailOver</h2>
+
+<p>ORACLE</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$TNS_ADMIN/tnsnames.ora
+AP =
+(DESCRIPTION = (FAILOVER=ON) (LOAD_BALANCE=ON)
+(ADDRESS_LIST =
+(ADDRESS = (PROTOCOL = TCP)(HOST = vip-sc1)(PORT = 1521))
+(ADDRESS = (PROTOCOL = TCP)(HOST = vip-sc2)(PORT = 1521))
+)
+(CONNECT_DATA =
+(SERVICE_NAME = AP)
+(FAILOVER_MODE =
+(TYPE=SESSION)
+(METHOD=BASIC)
+)
+)</pre>
+</div></div>
+
+
+<p>ALTIBASE HDB</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>To register Fail-Over option, You may choose from the followings. For further information, <a href="http://aid.altibase.com/display/migfromora/Database+Connect" class="external-link" rel="nofollow">refer to this page.</a></p>
+                    </div>
+    </div>
+
+
+<h3><a name="AboutReplication-ConnectionStringinaClientApplication"></a>Connection String in a Client Application</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">• JDBC
+Jdbc:Altibase://192.168.3.51:20300/mydb?AlternateServers=(
+192.168.3.54:20300,192.168.3.53:20300)&amp;ConnectionRetryCount=3&amp;ConnectionRetryDelay=
+3&amp;LoadBalance=off&amp;SessionFailOver=on;
+• ODBC, Embedded SQL
+DSN=192.168.3.51;UID=altibase;PWD=altibase;PORT_NO=20300;AlternateServer
+s=(192.168.3.54:20300,192.168.3.53:20300);ConnectionRetryCount=3;ConnectionRetryDelay=
+5;LoadBalance=on;SessionFailOver=on;</pre>
+</div></div>
+
+<h3><a name="AboutReplication-ConnectionPropertiesintheSettingsFile((altibase_cli.iniorodbc.inifile)"></a>Connection Properties in the Settings File((altibase_cli.ini or odbc.ini file)</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[MyDataSource1]
+Server=192.168.3.51
+Port=20300
+User=altibase
+Password=altibase
+DataBase = mydb
+AlternateServers=(192.168.3.54:20300,192.168.3.53:20300)
+ConnectionRetryCount=3
+ConnectionRetryDelay=5
+LoadBalance = on
+SessionFailOver = off</pre>
+</div></div>
+
+<h3><a name="AboutReplication-ConnectionStringoftheclientapplication&#39;sconnectionfunction"></a>Connection String of the client application's connection function</h3>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">• JDBC
+The data source name is specified as part of the Connection URL as follows:
+Jdbc:Altibase://MyDataSource1//
+
+• ODBC, Embedded SQL
+The data source name is specified in the DSN properties as follows:
+DSN=MyDataSource</pre>
+</div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114377">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114378.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114379">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114380.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114381">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114382.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114397">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114398.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114389">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114390.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653075">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653076.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114393">topology</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114394.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114395">topology</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114396.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653071">topology</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653072.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653069">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653070.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114459">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114460.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114461">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114462.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114463">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114464.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114465">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114466.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653065">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653066.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114469">conflict_resolve1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114470.png">conflict_resolve1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653063">conflict_resolve1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653064.png">conflict_resolve1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653107">conflict_resolve1</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653108.png">conflict_resolve1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653067">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653068.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653109">conflict</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653110.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653111">replication</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653112.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653073">topology</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653074.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653113">topology</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653114.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653119">eager_lazy</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/4653120.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114467">conflict_resolve1</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114468.png">conflict_resolve1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114447">conflict</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114448.png">conflict.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114296">replication</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114297.png">replication.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114391">topology</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114392.png">topology.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114383">eager_lazy</a> (application/gliffy+xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/2988512/3114386.png">eager_lazy.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

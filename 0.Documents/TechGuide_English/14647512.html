@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 1. Disk I/O Occurrence Type</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-Configuration-Guide-for-Altibase_14647508.html">Disk Configuration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 1. Disk I/O Occurrence Type
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><h1 id="id-1.DiskI/OOccurrenceType-RedoLog">Redo Log</h1><p>The redo logs of ALTIBASE record all changes that occur during the transaction processing, which means, all necessary information is recorded in case data needs to be recovered. This information includes the change history of the resource required to process the transaction and all information that occurs in the process of changing the data.</p><p>The redo logs of ALTIBASE are first recorded in the area mapped on the memory by mmap, and are periodically saved in the redo log file by LogSyncThread. The change history of the memory mapped to map ensures that the OS is saved as a file even if the calling processing is abnormally terminated. Therefore, the loss of log does not occur unless there is a power failure or OS hang. (Please refer to the &quot;Failure Response Guide for Recovery&quot; in case of failure.)</p><p>Since ALTIBASE DBMS is a performance-oriented product, the above processing method is adopted as a default setting to minimize frequent disk I/O, which is one of the main factors of performance degradation. If high processing performance is not needed, the user can change the redo log recording method with properties.</p><h1 id="id-1.DiskI/OOccurrenceType-Checkpoint">Checkpoint</h1><p>ALTIBASE supports in-memory DB and disk DB at the same time. In the case of memory DB, let's look at which in phase disk I/O occurs.</p><p>In the running phase, the memory DB resides in the memory for all data stored on the disk. The space for loading data in the memory is managed in units of pages, and the size of one page is fixed at 32K. Each page is divided into n slots according to the record size of the table to which the page belongs, and data is stored in each slot. When data is changed/saved/deleted in the process of a transaction, the page where the data is stored is registered in the list of dirty pages managed internally. The process of storing the pages managed in this dirty page list in a physical file is called a checkpoint.</p><p>Since memory is volatile, data cannot have persistency in a situation such as power outages unless a process such as a checkpoint is performed. For more detailed information on the checkpoint, please refer to the checkpoint documentation. A thing to consider in this document is that the memory DB is also saved as a data file on the disk with a periodic checkpoint.</p><p>If the data files in the memory DB and the space in which the redo logs are stored were set to be in the same physical disk space, it is recommended to configure each disk separately because the transactions that occur during the checkpoint causes disk bottleneck in the checkpoint stage.</p><p>This can be configured as an example.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner">Disk configuration</div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Redo log space</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>Data space</p></td><td class="confluenceTd"><p>/ALTIBASE_DATA</p></td></tr></tbody></table></div><h1 id="id-1.DiskI/OOccurrenceType-DiskDB">Disk DB</h1><p>This section describes the disk I/O creation stage of the disk DB and how to configure it.</p><p>Disk DB stores all data in a file stored on disk, so if accessing data by a transaction is needed, the data stored on disk must be retrieved each time. </p><p>Since these disk access costs cause performance degradation, all DBMSs that support disk DB set up and utilize temporary memory storage space which is generally called buffers. In addition, frequently accessed data is stored in a buffer to reduce the cost of searching the disk each time.</p><p>The buffer is set in the memory as much as the size set by the user and is managed in the form of 8K pages. When a transaction for the disk DB occurs, the buffer is retrieved first to check if necessary data exists, and if not, load it into the buffer from the data file. Pages containing changed data in the buffer are registered in the flush list, and when flushing occurs, the pages registered here are saved to disk. Alternatively, if there is no more space available in the buffer, pages with low access frequency are stored on the disk by the LRU algorithm and then set as empty space and resued. This process is referred to as buffer replacement.</p><p>If memory DB and disk DB are allocated and used on the same disk, the checkpoint described above and the flush and buffer replacement occurring in the transaction processing process of the disk DB frequently can cause disk I/O and even performance degradation due to disk bottlenecks.  Therefore, when using memory DB and disk DB in combination, it is recommended to configure each storage space as a physically separate disk.</p><p>This can be configured as an example below.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p><strong>Disk configuration</strong></p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Redo log space</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>Data space (Memory DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_MEMORY_DATA</p></td></tr><tr><td class="confluenceTd"><p>Data space (Disk DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_DATA</p></td></tr></tbody></table></div><h1 id="id-1.DiskI/OOccurrenceType-UndoTablespace">Undo Tablespace</h1><p>When a change transaction occurs, the memory DB manages the undo image for recovery in memory. After copying the original data to a separate space, the out-place update method is used to apply the change operation to the copy. (This method is called the MVCC technique. For more information on MVCC, refer to the MVCC guide.)</p><p>In the case of disk DB, after copying the original data to the undo tablespace, change transactions are executed in the original data space. This method is called the in-place update method.</p><p>If recovery is required, use a method of restoring the original data stored in the undo tablespace by copying it back to its original location. In this process, the undo tablespace is replicated whenever a disk DB change transaction occurs. Therefore, it is recommended to configure it as a disk DB and a separate disk space in order to avoid a physical bottleneck.</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Disk configuration</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>Redo log</p></td><td class="confluenceTd"><p>/ALTIBASE_REDO_LOG</p></td></tr><tr><td class="confluenceTd"><p>Data space (Memory DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_MEMORY_DATA</p></td></tr><tr><td class="confluenceTd"><p>Data space (Disk DB)</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_DATA</p></td></tr><tr><td class="confluenceTd"><p>Disk DB undo space</p></td><td class="confluenceTd"><p>/ALTIBASE_DISK_UNDO</p></td></tr></tbody></table></div><p> </p><p> </p><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

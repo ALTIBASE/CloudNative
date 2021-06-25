@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : JAVA Developer&#39;s Guide</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : JAVA Developer&#39;s Guide
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409366810 {padding: 0px;}
+div.rbtoc1624409366810 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409366810 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409366810'>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-Overview'>Overview</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Settingsbeforethedevelopment'>Settings before the development</a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-TypesofAltibaseJDBCDrivers'>Types of Altibase JDBC Drivers </a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-HowtocheckAltibaseJDBCDriverversion'>How to check Altibase JDBC Driver version</a></li>
+</ul>
+</li>
+<li><a href='#JAVADeveloper&#39;sGuide-SettingupJDBCDriver'>Setting up JDBC Driver</a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-HowtosetitupinJRE'>How to set it up in JRE </a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-Method1.CLASSPATHenvironmentvariable'>Method 1. CLASSPATH environment variable</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Method2.JRE(JavaRuntimeEnvironment)directory'>Method 2. JRE(Java Runtime Environment) directory</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Method3.–classpathoptionatruntime'>Method 3. –classpath option at run time</a></li>
+</ul>
+</li>
+<li><a href='#JAVADeveloper&#39;sGuide-HowtosetitupinEclipse'>How to set it up in Eclipse</a></li>
+</ul>
+</li>
+<li><a href='#JAVADeveloper&#39;sGuide-HowtouseDriverloading&amp;ConnectionURL'>How to use Driver loading &amp; Connection URL</a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-Driverloading'>Driver loading</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-GeneralConnection'>General Connection</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-PropertytobesetduringtheConnection'>Property to be set during the Connection</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-ConnectionusingtheAltibase&#39;sConnectionPool'>Connection using the Altibase&#39;s ConnectionPool</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-ConnectionusingtheXA'>Connection using the XA</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-ConnectionusingtheFailover'>Connection using the Failover</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-CallingProcedure/Function'>Calling Procedure/Function </a></li>
+</ul>
+</li>
+<li><a href='#JAVADeveloper&#39;sGuide-ConsiderationsforDevelopment'>Considerations for Development</a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-UseofPreparedStatement'>Use of PreparedStatement</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-UseofexecuteBatch()'>Use of executeBatch()</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-UseofsetFetchSize()'>Use of setFetchSize()</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Returnofresources'>Return of resources</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-HandlingNULLvalues'>Handling NULL values</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-LOBDataProcessing'>LOB Data Processing</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-HowtouseREFCURSOR'>How to use REF CURSOR</a></li>
+</ul>
+</li>
+<li><a href='#JAVADeveloper&#39;sGuide-Errors'>Errors</a>
+<ul class='toc-indentation'>
+<li><a href='#JAVADeveloper&#39;sGuide-Communicationlinkfailure'>Communication link failure </a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Nosuitabledriver'>No suitable driver </a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Clientunabletoestablishconnection'>Client unable to establish connection </a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Timeoutrelatederrors'>Timeout related errors</a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Invaliddescriptorindex'>Invalid descriptor index </a></li>
+<li><a href='#JAVADeveloper&#39;sGuide-Optionalfeaturenotimplemented'>Optional feature not implemented </a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="JAVADeveloper&#39;sGuide-Overview">Overview</h1><hr /><p>This Developer's guide describes how to develop in integration with Altibase in the JAVA environment and matters to consider during the development. Altibase version 6.5.1, JRE or JDK is version 1.5, and development IDE is based on Eclipse.</p><p>In addition to this document, please refer to the following documents during the development.</p><ol><li>Altibase Development Guide</li><li>Altibase SQL Tuning Guide</li></ol>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>For errors and improvements related to this document, please contact the technical support portal or technical support center.</p><ul><li>Technical support portal: <a class="external-link" href="http://support.altibase.com/" rel="nofollow">http://support.altibase.com</a><a class="external-link" href="http://support.altibase.com/en/" rel="nofollow">/en/</a></li><li>Technical support center: 02-2082-1114</li></ul>
+                    </div>
+    </div>
+<h1 id="JAVADeveloper&#39;sGuide-Settingsbeforethedevelopment">Settings before the development</h1><hr /><p>Altibase JDBC Driver is required to integrate with Altibase in the JAVA environment. This section describes the Altibase JDBC driver.</p><h2 id="JAVADeveloper&#39;sGuide-TypesofAltibaseJDBCDrivers"><span style="color: rgb(0,0,0);">Types of Altibase JDBC Drivers</span> </h2><hr /><p><span style="color: rgb(0,0,0);">Altibase provides two types of JDBC drivers, and the location of the file is $ALTIBASE_HOME/lib directory.</span></p><p><span style="color: rgb(0,0,0);"> </span></p><ul><li>Altibase.jar  : A general JDBC Driver file used when integrating Altibase DB or multiple Altibases of the smae version</li><li>Altibase6_5.jar : JDBC Driver file used when integrating Altibase version 5 or earlier version</li></ul><p>How to integrate with Altibase with different versions using Altibase.jar and Altibase6_5.jar is described below.</p><h2 id="JAVADeveloper&#39;sGuide-HowtocheckAltibaseJDBCDriverversion"><span style="color: rgb(0,0,0);">How to check Altibase JDBC Driver version</span></h2><p><span style="color: rgb(0,0,0);"> </span>To verify the compatibility of the Altibase Server and Altibase JDBC Driver, the user must check the Altibase JDBC Driver version.</p><p>It is compatible if the cm protocol versions of Altibase DB Server and CMP of Altibase JDBC Driver are the same.</p><p>The command to check the Altibase JDBC Driver version is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ java –jar Altibase.jar
+JDBC Driver Info : Altibase Ver = 6.5.1.5.10 for JavaVM v1.4, CMP:7.1.3, Sep  6 2018 09:17:52</pre>
+</div></div><p>The command to check the Altibase DB Server version is as follows.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ altibase -v
+version 6.5.1.5.10 X86_64_LINUX_redhat_Enterprise_release6.0-64bit-6.5.1.5.10-release-GCC4.6.3 (x86_64-unknown-linux-gnu) Sep  6 2018 09:26:56, binary db version 6.3.1, meta version 8.1.1, cm protocol version 7.1.3, replication protocol version 7.4.2</pre>
+</div></div><p>Generally, it is recommended to use the latest Altibase JDBC Driver file of the same or later version than the Altibase DB Server version.</p><h1 id="JAVADeveloper&#39;sGuide-SettingupJDBCDriver"><span style="color: rgb(0,0,0);">Setting up JDBC Driver</span></h1><hr /><p>This section describes how to set the Altibase JDBC Driver.</p><h2 id="JAVADeveloper&#39;sGuide-HowtosetitupinJRE"><span style="color: rgb(0,0,0);">How to set it up in JRE</span> </h2><hr /><p><span style="color: rgb(0,0,0);">To use the Altibase JDBC Driver in the Java Application, the Altibase JDBC Driver must be recognized in JRE.</span></p><p><span style="color: rgb(0,0,0);">Use one of the three methods presented below.</span></p><p><span style="color: rgb(0,0,0);"> </span></p><h4 id="JAVADeveloper&#39;sGuide-Method1.CLASSPATHenvironmentvariable">Method 1. CLASSPATH environment variable</h4><p>Add the Altibase JDBC Driver (Altibase.jar) file location to the CLASSPATH environment variable.</p><p>1) Windows</p><ul><li>Create a new CLASSPATH: Register the CLASSPATH variable by click the [New] button in My Computer-Properties-Advanced-Environment variables</li><li>Use existing CLASSPATH: Add Altibase JDBC Driver location to the end of the specified variable</li></ul><p><img class="confluence-embedded-image" src="attachments/16875544/17039361.png" data-image-src="attachments/16875544/17039361.png"></p><p>2) Unix</p><ul><li>Add the CLASSPATH to the environment configuration file (ex.profile).</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">export ALTIBASE_HOME=$HOME/altibase_home
+export CLASSPATH=.:$ALTIBASE_HOME/lib/Altibase.jar</pre>
+</div></div><p>3) Linux</p><ul><li>Add the CLASSPATH to the environment configuration file (ex.bash_profile).</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">export ALTIBASE_HOME=$HOME/altibase_home
+export CLASSPATH=.:$ALTIBASE_HOME/lib/Altibase.jar</pre>
+</div></div><h4 id="JAVADeveloper&#39;sGuide-Method2.JRE(JavaRuntimeEnvironment)directory">Method 2. JRE(Java Runtime Environment) directory</h4><ul><li>Place the Altibase.jar file in the following directory so that the Altibase JDBC Driver (Altibase.jar) can be automatically referenced in the JRE environment.</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$JAVA_HOME/jre/lib/ext directory
+or
+$JRE_HOME/lib/ext directory</pre>
+</div></div><p>$JAVA_HOME is the JDK installation directory and $JRE_HOME is the JRE installation directory.</p><h4 id="JAVADeveloper&#39;sGuide-Method3.–classpathoptionatruntime">Method 3. –classpath option at run time</h4><ul><li>When running the Java application with the java command, specify the Altibase JDBC Driver with the -cp or -classpath option</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ java –classpath [directory path]/Altibase.jar ClassFileName
+Example)
+$ java –classpath $ALTIBASE_HOME/lib/Altibase.jar HelloApp</pre>
+</div></div><h2 id="JAVADeveloper&#39;sGuide-HowtosetitupinEclipse">How to set it up in Eclipse</h2><hr /><p>This section describes how to add Altibase JDBC Drive in Eclipse is as follow.</p><ol><li>Click JRE System Library [J2SE-1.5] in the Project</li><li>Click JRE System Library [J2SE-1.5] in the Properties</li><li>Click the Installed JREs button</li><li>Select jre among Installed JREs and click Edit button</li><li>Click the Add External JARs button</li><li>Select Altibase.jar in the $ALTIBASE_HOME/lib directory</li></ol><p><img class="confluence-embedded-image" src="attachments/16875544/17039362.png" data-image-src="attachments/16875544/17039362.png"></p><h1 id="JAVADeveloper&#39;sGuide-HowtouseDriverloading&amp;ConnectionURL"><span style="color: rgb(0,0,0);">How to use Driver loading &amp; Connection URL</span></h1><hr /><p><span style="color: rgb(0,0,0);">This section describes how to load the Altibase JDBC Driver and connect to Altibase.</span></p><h2 id="JAVADeveloper&#39;sGuide-Driverloading"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Driver loading</span></span></h2><hr /><p><span style="color: rgb(0,0,0);">The class name of Altibase JDBC Driver is Altibase.jdbc.driver.AltibaseDriver.</span></p><p><span style="color: rgb(0,0,0);">The following is an example of the code that loads the Driver by calling the Class.forName method.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;); </pre>
+</div></div><h2 id="JAVADeveloper&#39;sGuide-GeneralConnection"><span style="color: rgb(0,0,0);">General Connection</span></h2><hr /><p><span style="color: rgb(0,0,0);">When receiving a connection object from JDBC, the DriverManager.getConnection method is called.</span></p><p><span style="color: rgb(0,0,0);">At this time, the String type url should be entered as an argument. An example of writing the Altibase connection url is as follows.</span></p><p><span style="color: rgb(0,0,0);"> </span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">jdbc:Altibase://ip_address:port_no/db_name
+  * ip_address : ip of Altibase DB server
+  * port_no : port_no of Altibase(Defined as PORT_NO property in $ALTIBASE_HOME/conf/altibase.properties)
+  * db_name : name of Altibase DB의 (Defined as DB_NAME property in $ALTIBASE_HOME/conf/altibase.properties 파일의 DB_NAME)</pre>
+</div></div><p><span style="color: rgb(0,0,0);">The following is an example of receiving a connection object according to the above format.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnection.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">String db_url1 = &quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;;
+Properties props1 = new Properties();
+props1.put(&quot;user&quot;, &quot;sys&quot;);
+props1.put(&quot;password&quot;, &quot;manager&quot;);
+Connection altibaseConnection1 = DriverManager.getConnection(db_url1, props1);
+* Server ip is 192.168.1.111, port_no is 20300, db_name is mydb</pre>
+</div></div><p><span style="color: rgb(0,0,0);">The following is how to lookup the DB_Name.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL&gt; SELECT DB_NAME FROM V$DATABASE;
+DB_NAME 
+------------------------------------------------------------------------------------------------------------------------------------
+mydb 
+1 row selected. </pre>
+</div></div><h2 id="JAVADeveloper&#39;sGuide-PropertytobesetduringtheConnection"><span style="color: rgb(0,0,0);">Property to be set during the Connection</span></h2><hr /><p><span style="color: rgb(0,0,0);">When connecting, the user can specify various properties including the user name and password of the db. Properties can be specified by using the java.util.Properties class, or by connecting to the String url part in the form of &amp;property_name=value.</span></p><p><span style="color: rgb(0,0,0);">The properties that can be specified are as follows.</span></p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property name</th><th class="confluenceTh">Description</th><th colspan="1" class="confluenceTh">Default value</th></tr><tr><td class="confluenceTd">portNumber</td><td class="confluenceTd">PORT_NO of DB</td><td colspan="1" class="confluenceTd">20300</td></tr><tr><td class="confluenceTd">databaseName</td><td class="confluenceTd">NAME of DB</td><td colspan="1" class="confluenceTd">JDBC</td></tr><tr><td class="confluenceTd">user</td><td class="confluenceTd">User name of DB</td><td colspan="1" class="confluenceTd">SYS</td></tr><tr><td class="confluenceTd">password</td><td class="confluenceTd">password of DB</td><td colspan="1" class="confluenceTd">MANAGER</td></tr><tr><td class="confluenceTd">serverName</td><td class="confluenceTd">IP of DB server</td><td colspan="1" class="confluenceTd">localhost</td></tr><tr><td class="confluenceTd">connType</td><td class="confluenceTd"><p>Connection type</p><p>1: TCP/IP</p><p>3: IPC</p></td><td colspan="1" class="confluenceTd">1</td></tr></tbody></table></div><p>The followings are examples of specifying the property.</p><ol><li><p>Using the Property class</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Properties props1 = new Properties();
+props1.put(&quot;user&quot;, &quot;sys&quot;);
+props1.put(&quot;password&quot;, &quot;manager&quot;);
+Connection altibaseConnection1 = DriverManager.getConnection(db_url1, props1);</pre>
+</div></div></li><li><p>Connecting to URL and specifying</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">String db_url1 = &quot;jdbc:Altibase://192.168.1.111:20300/mydb?
+user=sys&amp;password=manager&quot;;
+Connection altibaseConnection1 = DriverManager.getConnection(db_url1);</pre>
+</div></div></li></ol><h2 id="JAVADeveloper&#39;sGuide-ConnectionusingtheAltibase&#39;sConnectionPool">Connection using the Altibase's ConnectionPool</h2><ol><li><p>Version 6.3.1 or later<br />If the user is using the AltibaseConnectionPoolDateSource class provided by Altibase, the user can manage the connection by using ConnectionPool.<br />After creating the AltibaseConnectionPoolDataSource object, use the setUrl() method to set the connection url information, or the user can implement it by calling the set XXX() method that sets each property.<br />AltibaseConnectionPoolDataSource class is defined in Altibase.jdbc.driver package</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnectionPool.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import Altibase.jdbc.driver.*;
+…
+String db_url1 = &quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;;                    
+AltibaseConnectionPoolDataSource pool = new AltibaseConnectionPoolDataSource();
+                        pool.setUrl(db_url1);
+                        pool.setUser(&quot;sys&quot;);
+                        pool.setPassword(&quot;manager&quot;);
+                        pool.setInitialPoolSize(10);
+                        pool.setMinPoolSize(5);
+                        pool.setMaxPoolSize(15);
+pool.setMaxIdleTime(10);
+..
+Connection altibaseConnection1 = pool.getConnection();
+...</pre>
+</div></div></li><li><p>Version 6.1.1<br />If the user uses the ABPoolDataSource class provided by Altibase, the user can manage the connection by using the ConnectionPool.<br />After creating the ABPoolingDataSource object, use the setUrl() method to set the connection url information, or the user can implement it by calling the set XXX() method, which sets each property.<br />The ABPoolingDataSource class is defined in the Altibase.jdbc.driver package.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseConnectionPool.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import Altibase.jdbc.driver.*;
+…
+String db_url1 = &quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;;                     
+
+ABPoolingDataSource pool = new ABPoolingDataSource(); 
+                        pool.setUrl(db_url1);
+                        pool.setUser(&quot;sys&quot;);
+                        pool.setPassword(&quot;manager&quot;);
+                        pool.setInitialPoolSize(10);
+                        pool.setMinPoolSize(5);
+                        pool.setMaxPoolSize(15);
+pool.setMaxIdleTime(10);
+..
+Connection altibaseConnection1 = pool.getConnection();
+...</pre>
+</div></div></li></ol><p>If necessary, the following properties can be applied to the ConnectionPool.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">url</td><td class="confluenceTd"><p>Connection string information for connecting with Altibase</p><p>jdbc:Altibase://IP:port_no/db_name</p></td></tr><tr><td class="confluenceTd">user</td><td class="confluenceTd">Database account</td></tr><tr><td class="confluenceTd">password</td><td class="confluenceTd">Database password</td></tr><tr><td class="confluenceTd">maxPoolSize</td><td class="confluenceTd">Maximum number of Connections. Default value: 10.</td></tr><tr><td class="confluenceTd">minPoolSize</td><td class="confluenceTd">Minimum number of Connections. Default value: 0.</td></tr><tr><td class="confluenceTd">initialPoolSize</td><td class="confluenceTd">Initial number of Connections. Default value: 1.</td></tr><tr><td class="confluenceTd">maxIdleTime</td><td class="confluenceTd">Waiting time of idle</td></tr><tr><td class="confluenceTd">propertyCycle</td><td class="confluenceTd">Waiting time when the ConnectionPool is full (millisec)</td></tr></tbody></table></div><h2 id="JAVADeveloper&#39;sGuide-ConnectionusingtheXA"><span style="color: rgb(0,0,0);">Connection using the XA</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><ol><li><p><span style="color: rgb(0,0,0);">Version 6.3.1 or later</span><br /><span style="color: rgb(0,0,0);">To manage distributed transactions, the user can use the AltibaseXADataSource class to get a connection. This class is defined in the Altibase.jdbc.driver package.</span><br /><span style="color: rgb(0,0,0);">The following is an example of implementing XA by getting XAConenction object with AltibaseXAResource object, and Connection object with XAconnection object.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseXAConnection.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import Altibase.jdbc.driver.*;
+…
+AltibaseXADataSource axds1 = new AltibaseXADataSource();
+axds1.setUrl(&quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;);
+axds1.setUser(&quot;SYS&quot;);
+axds1.setPassword(&quot;MANAGER&quot;);
+AltibaseXADataSource axds2 = new AltibaseXADataSource();
+axds2.setUrl(&quot;jdbc:Altibase://192.168.1.222:20300/mydb&quot;);
+axds2.setUser(&quot;SYS&quot;);
+axds2.setPassword(&quot;MANAGER&quot;);
+// Get XA connections to the underlying data sources
+XAConnection pc1  = axds1.getXAConnection();
+XAConnection pc2  = axds2.getXAConnection();
+// Get the physical connections
+Connection conn1 = pc1.getConnection();
+Connection conn2 = pc2.getConnection();
+// Get the XA resources
+XAResource axar1 = pc1.getXAResource();
+XAResource axar2 = pc2.getXAResource();</pre>
+</div></div></li><li><p><span style="color: rgb(0,0,0);">Version 6.1.1</span><br /><span style="color: rgb(0,0,0);">To manage distributed transactions, the user can get a connection by using ABXADataSource and class provided by Altibase.</span><br /><span style="color: rgb(0,0,0);">This class is defined in the Altibase.jdbc.driver package. As in the following example below, XA can be implemented by getting XAConnection object with ABXAResource object, and Connection object with XAConnection object.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseXAConnection.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">import Altibase.jdbc.driver.*;
+…
+ABXADataSource axds1 = new ABXADataSource();
+axds1.setUrl(&quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;);
+axds1.setUser(&quot;SYS&quot;);
+axds1.setPassword(&quot;MANAGER&quot;);
+ABXADataSource axds2 = new ABXADataSource();
+axds2.setUrl(&quot;jdbc:Altibase://192.168.1.222:20300/mydb&quot;);
+axds2.setUser(&quot;SYS&quot;);
+axds2.setPassword(&quot;MANAGER&quot;);
+// Get XA connections to the underlying data sources
+XAConnection pc1 = axds1.getXAConnection();
+XAConnection pc2 = axds2.getXAConnection();
+// Get the physical connections
+Connection conn1 = pc1.getConnection();
+Connection conn2 = pc2.getConnection();
+// Get the XA resources
+XAResource axar1 = pc1.getXAResource();
+XAResource axar2 =
+pc2.getXAResource();</pre>
+</div></div></li></ol><h2 id="JAVADeveloper&#39;sGuide-ConnectionusingtheFailover">Connection using the Failover</h2><hr /><p>Starting from Altibase version 5.3.3, the user can define Failover-related properties in the connection url part.</p><p>This is an example of connecting to Altibase by using the Failover</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseFailOverConnection.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">String db_url1 = &quot;jdbc:Altibase://192.168.1.1111:20300/mydb?alternateservers=(192.168.1.1111:20300,192.168.1.222:20300)
+ &amp;connectionretrycount=3&amp;connectionretrydelay=3&amp;sessionfailover=off
+ &amp;loadbalance=off&quot;;
+Properties props1 = new Properties();
+props1.put(&quot;user&quot;, &quot;sys&quot;);
+props1.put(&quot;password&quot;, &quot;manager&quot;);
+Connection altibaseConnection1 = DriverManager.getConnection(db_url1,props1);</pre>
+</div></div><p>Failover-related properties are as follows.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Property</th><th class="confluenceTh">Description</th></tr><tr><td class="confluenceTd">alternateservers</td><td class="confluenceTd">This indicates an available server to be connected in case of a failure (IP Address1:Port1, IP Address2:Port2,...)</td></tr><tr><td class="confluenceTd">connectionretrycount</td><td class="confluenceTd">The number of retries of connection attempts when the connection to an available server fails</td></tr><tr><td class="confluenceTd">connectionretrydelay</td><td class="confluenceTd">The time to wait before retrying to connect when the connection to an available server fails (in seconds)</td></tr><tr><td class="confluenceTd">loadbalance</td><td class="confluenceTd"><p>on setting: Randomly selects the default server and available server when attempting to connect for the first time</p><p>off setting: Connects to the default server when attempting to connect for the first time, and connects to the server described as AlternateServer if the connection fails.</p></td></tr><tr><td class="confluenceTd">sessionfailover</td><td class="confluenceTd"><p>This indicates whether to perform Service Time Fail-Over (STF). Altibase recommends performing CTF(Connection Time Fail-Over.</p><p>on : STF, off : CTF</p><ul><li>CTF (Connection Time Fail-Over0: Recognizes a failure at the time of access to the DBMS, connects to the DBMS of another available node instead of the failed DBMS and proceeds with the service.</li><li>STF (Service Time Fail-Over): A failure occurs during service due to a successful DBMS connection. Reconnects to the DBMS of another available node to restore the session properties, and then execute the business logic of the user application again. That is, it is necessary to set when it is necessary to perform the operation performed on the DBMS in which the failure occurred.</li></ul></td></tr></tbody></table></div><p>Starting from Altibase version 5 or later, an additional Altibase Driver (Altibase5.jar) is provided so that one application can access the later or earlier versions of Altibase at the same time. The name of the driver class is defined as Altibase5.jdbc.driver.AltibaseDriver.</p><p>When loading the Driver Class by using the Class.forName() method in the application, if the class name is specified as Altibase.jdbc.driver.AltibaseDriver and Altibase5.jdbc.driver.AltibaseDriver, the user can connect and use different Altibase version.</p><p><strong>In order to connect between the Altibase version simultaneously, the user must first load Altibase5.jdbc.driver.AltibaseDriver.</strong></p><p>The following is an example of the simultaneous connection between different Altibase versions</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> - AltibaseMultiversionConnection.java file
+// ALTIBASE 6.5 Driver class
+Class.forName(&quot;Altibase5.jdbc.driver.AltibaseDriver”);
+// ALTIBASE 6.3 Driver class
+Class.forName(&quot;Altibase.jdbc.driver.AltibaseDriver&quot;);  
+//ALTIBASE version 6.5 URL
+String db_url1 = &quot;jdbc:Altibase://192.168.1.111:20300/mydb&quot;; 
+//ALTIBASE version 6.3 URL
+String db_url2 = &quot;jdbc:Altibase://192.168.1.222:20300/mydb&quot;;</pre>
+</div></div><p><span style="color: rgb(0,0,0);">Considerations for IBM JAVA 1.6 environment</span></p><p><span style="color: rgb(0,0,0);">Because DriverManager of IBM Java 1.6 version handles exceptions immediately without retrying, the URL including the cm protocol version must be specified in the connection string.</span></p><p><span style="color: rgb(0,0,0);">The following is an example of configuration considering the characteristics of DriverManager of IBM Java 1.6.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibaseMultiversionConnection.java</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// Example of URL with cm version added
+String db_url1 = &quot;jdbc:Altibase_5.6.2://192.168.1.111:20300/mydb&quot;; 
+String db_url2 = &quot;jdbc:Altibase_4.5.1://192.168.1.222:20300/mydb&quot;; </pre>
+</div></div><h2 id="JAVADeveloper&#39;sGuide-CallingProcedure/Function"><span style="color: rgb(0,0,0);">Calling Procedure/Function</span> </h2><hr /><p><span style="color: rgb(0,0,0);">When calling the stored procedure created in the DB, write the call SQL statement as follows.</span></p><ol><li><p><strong><span style="color: rgb(0,0,0);">Stored Procedur</span><span style="color: rgb(0,0,0);">e</span></strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">{ call procedure_name(?,?,....) }
+*? is a parameter corresponding to the parameter of the procedure.</pre>
+</div></div></li><li><p><strong><span style="color: rgb(0,0,0);">Stored Function</span></strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">{ call ? := function_name(?,?,....) }
+* The&#39;?&#39; before the := is a parameter indicating the result value after calling the function.
+ &#39;?&#39; in () is a parameter corresponding to the parameter of a function.</pre>
+</div></div></li></ol><p>The following is an example of calling store procedures and functions.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AltibasPSMCall.java.</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">// Calling Stored Procedure
+String sql1 = &quot;{call sum_proc(?,?,?)}&quot;;
+CallableStatement altibaseStatement1 = altibaseConnection1.prepareCall(sql1);
+altibaseStatement1.setInt(1,10);
+altibaseStatement1.setInt(2,20);
+altibaseStatement1.registerOutParameter(3,java.sql.Types.NUMERIC);
+altibaseStatement1.execute();
+System.out.println(altibaseStatement1.getDouble(3));
+System.out.println();
+// Calling Stored Function
+String sql2 = &quot;{call ? := sum_func(?,?)}&quot;;
+CallableStatement altibaseStatement2 = altibaseConnection1.prepareCall(sql2);
+altibaseStatement2.registerOutParameter(1,java.sql.Types.NUMERIC);
+altibaseStatement2.setInt(2,10);
+altibaseStatement2.setInt(3,20);
+altibaseStatement2.execute();
+System.out.println(altibaseStatement2.getDouble(1));</pre>
+</div></div><h1 id="JAVADeveloper&#39;sGuide-ConsiderationsforDevelopment">Considerations for Development</h1><hr /><p>This section describes the considerations to be referred when developing JAVA.</p><h2 id="JAVADeveloper&#39;sGuide-UseofPreparedStatement">Use of PreparedStatement</h2><hr /><p>PreparedStatement is an object that creates SQL statements in advance and binds and processes values with parameters as needed.</p><p>For SQL statements that can be processed with binging-execute using parameters, using PreparedStatement objects provides better performance than Statement objects that process SQL statements in the prepare-execute method each time. For example, it is recommended to make a PreparedStatement object if it is a statement that inserts n cases or repeatedly selects a specific value as a condition.</p><h2 id="JAVADeveloper&#39;sGuide-UseofexecuteBatch()">Use of executeBatch()</h2><hr /><p>if the bulk DML statement is required, if executeBatch() is used, it is recommended to use array processing to store multiple data in an array and send them to the server at once.</p><p>When using the executeUpdate() method when processing bulk DML statements, communication costs with the DB server are incurred as much as the number of method calls, whereas using executeBatch() can reduce the number of communication with the DB server, thereby improving performance.</p><p>To use it, first, use addBatch() to keep n data in the array and execute executeBatch().</p><h2 id="JAVADeveloper&#39;sGuide-UseofsetFetchSize()"><span style="color: rgb(0,0,0);">Use of setFetchSize()</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">If the user uses the setFetchSize() method, the user can specify the number of records to be fetched from the DB server at one time when searching.</span></p><p><span style="color: rgb(0,0,0);">However, because the memory of the client increases in proportion to the number of records specified in the setFetchsize, it is recommended to specify a large value of setFetchSize.</span></p><p><span style="color: rgb(0,0,0);">For example, in a program that fetches 5000 bytes of records, the memory specified by setFetchedSize(1000) is increased by about 5000*(1000-10)4950K bytes compared to setFetchSize(10).</span></p><h2 id="JAVADeveloper&#39;sGuide-Returnofresources"><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">Return of resources</span></span></h2><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);"> </span></span></p><hr /><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">When finishing using the Connection, Statement, or ResultSet object, the close() method must be explicitly called to return the resource.</span></span></p><p><span style="color: rgb(0,0,0);"><span style="color: rgb(0,0,0);">If close() is not called, unused Connection, Statement, and ResultSet objects may remain in the heap memory. In particular, if the statement object remains in the heap memory, the DB server continues to store the SQL prepared contents. As it should be done, unnecessary memory of the DB server increases. (The same is true for PreparedStatement).</span></span></p><h2 id="JAVADeveloper&#39;sGuide-HandlingNULLvalues"><span style="color: rgb(0,0,0);">Handling NULL values</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">When using a PreparedStatement object, setObject() and setNull() method can be used to set the NULL value.</span></p><ul><li><span style="color: rgb(0,0,0);">Use setObject(parameterIndex, null, SQLType.NULL) method</span></li><li><span style="color: rgb(0,0,0);">Use setNull(parameterIndex, null) method</span></li></ul><p><span style="color: rgb(0,0,0);">Altibase do not support setObject(parameterIndex, null) method.</span></p><h2 id="JAVADeveloper&#39;sGuide-LOBDataProcessing"><span style="color: rgb(0,0,0);">LOB Data Processing</span></h2><hr /><p><span style="color: rgb(0,0,0);">In order to process LOB data, <strong>autocommit</strong> must be set to <strong>off</strong>.</span></p><p><span style="color: rgb(0,0,0);">If LOB data is processed while autocommit is on, “Connection is in autocommit mode. One can not operate on LOB data with autocommit mode on” error or null value may be returned, resulting in unwanted results.</span></p><p><span style="color: rgb(0,0,0);">Since autocommit is on by default in JDBC,  LOB data must be processed after calling setAutoCommit(false); of Connection.</span></p><p><span style="color: rgb(0,0,0);">For an example of integrating LOB data, refer to $ALTIBASE_HOME/sample/JDBC/CLOB and the java source file in the BLOB.</span></p><h2 id="JAVADeveloper&#39;sGuide-HowtouseREFCURSOR"><span style="color: rgb(0,0,0);">How to use REF CURSOR</span></h2><p><span style="color: rgb(0,0,0);"> </span></p><hr /><p><span style="color: rgb(0,0,0);">How to use REF CURSOR in Java Program is as follows.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">-- Define TYPE 
+CREATE OR REPLACE TYPESET my_type
+AS
+TYPE my_cur IS REF CURSOR;
+END;
+/
+
+
+-- Define REF CURSOR
+CREATE OR REPLACE PROCEDURE my_ref_cursor
+( v_result OUT my_type.my_cur, v_sql IN VARCHAR(1000) )
+AS
+BEGIN
+OPEN v_result FOR v_sql;
+END;
+/
+-- AltibaseRefCursor.java file
+…
+String sql = &quot;SELECT to_char(sysdate,&#39;YYYY-MM-DD&#39;) FROM dual&quot;;
+altibaseStatement3= altibaseConnection1.prepareCall(&quot; { call my_ref_cursor(?)}&quot;);
+altibaseStatement3.setString(1,sql);
+altibaseStatement3.execute();
+rs = altibaseStatement3.getResultSet();
+while(rs.next()){
+System.out.println(rs.getString(1));
+}</pre>
+</div></div><h1 id="JAVADeveloper&#39;sGuide-Errors">Errors</h1><hr /><p>This section describes errors frequently encountered during the development.</p><h2 id="JAVADeveloper&#39;sGuide-Communicationlinkfailure"><span style="color: rgb(0,0,0);">Communication link failure </span></h2><hr /><p><strong>Causes</strong></p><ul><li>When the DB is not running</li><li>When connection-related properties are incorrect when connecting</li><li>When the version of Altibase.jar is wrong (eg: If Altibase.jar is used from Altibase version 5.1.5 to access Altibase version 5.3.3)</li><li>In case of disconnection due to TIMEOUT during service</li></ul><p><strong>Solutions</strong></p><ul><li><strong>Error occurred when connection: </strong>Check connection-related properties such as DB server IP, port_no, user, password, etc.</li><li><strong>Error occurred during service:</strong> TIMEOUT occurred and check if the session was terminated</li></ul><h2 id="JAVADeveloper&#39;sGuide-Nosuitabledriver"><span style="color: rgb(0,0,0);">No suitable driver </span></h2><hr /><p><strong>Causes</strong></p><ul><li>When the Altibase JDBC Driver is incorrect (e.g., when connecting to the Altibase version 5 and using the Altibase.jar file for Altibas 4)</li></ul><p><strong>Solutions</strong></p><ul><li>Reset Altibase JDBC Driver</li></ul><h2 id="JAVADeveloper&#39;sGuide-Clientunabletoestablishconnection"><span style="color: rgb(0,0,0);">Client unable to establish connection </span></h2><hr /><p><strong>Causes</strong></p><ul><li> When the Altibase server is not running</li></ul><div><p><strong>Solutions</strong></p><ul><li>Check whether the Altibase server is running</li></ul><h2 id="JAVADeveloper&#39;sGuide-Timeoutrelatederrors">Timeout related errors</h2><hr /><p><strong>Causes</strong></p><ul><li>When the defined Timeout value is exceeded</li></ul><div><p><strong>Solutions</strong></p><ul><li>Adjust the Timeout value</li><li>Refer to the troubleshoot guide</li></ul><p>When a client program requests a task to the DB server, a client error message is returned, and an error log is recorded in the server.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh"> </th><th class="confluenceTh">Client error message</th><th class="confluenceTh">Server error message (altibase_boot.log)</th><th class="confluenceTh">Result</th></tr><tr><td class="confluenceTd">QUERY_TIMEOUT</td><td class="confluenceTd">Client's query exceeded in the execution time limitation</td><td class="confluenceTd">[Notify : Query Timeout] Query Canceled by Server</td><td class="confluenceTd">ROLLBACK the statement and return an error</td></tr><tr><td class="confluenceTd">FETCH_TIMEOUT</td><td class="confluenceTd">Communication link failure</td><td class="confluenceTd">[Notify : Fetch Timeout] Session Closed by Server</td><td class="confluenceTd">ROLLBACK the statement and close the session</td></tr><tr><td class="confluenceTd">IDLE_TIMEOUT</td><td class="confluenceTd">Communication link failure</td><td class="confluenceTd"><span>[Notify : Idle Timeout] Session Closed by Server</span></td><td class="confluenceTd"><span>ROLLBACK the statement and close the session</span></td></tr><tr><td class="confluenceTd"><span>UTRANS_TIMEOUT</span></td><td class="confluenceTd"><span>The session has been closed by server</span></td><td class="confluenceTd"><span>[Notify : UTrans Timeout] Session Closed by Server</span></td><td class="confluenceTd"><span>ROLLBACK the statement and close the session</span></td></tr></tbody></table></div><ul><li>The location of Server error messages: $ALTIBASE_HOME/trc/altibase_boot.log</li></ul><h2 id="JAVADeveloper&#39;sGuide-Invaliddescriptorindex"><span style="color: rgb(0,0,0);">Invalid descriptor index </span></h2><hr /><p><strong>Causes</strong></p><ul><li>When calling setXXX() with more values than the bind variable specified in PreparedStatement</li></ul><p><strong>Solutions</strong></p><ul><li>Adjust the bind variable</li></ul><h2 id="JAVADeveloper&#39;sGuide-Optionalfeaturenotimplemented"><span style="color: rgb(0,0,0);">Optional feature not implemented </span></h2><hr /><p><strong>Causes</strong></p><ul><li>When calling a method not provided by Altibase</li></ul><p><strong>Solutions</strong></p><ul><li>Refer to the JDBC manual for JDBC API support.</li></ul></div></div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16875544/17039361.png">image2019-5-8 13_40_42.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16875544/17039362.png">image2019-10-29 13_51_58.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

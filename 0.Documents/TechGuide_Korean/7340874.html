@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(한국어) : 6. 트랜잭션 관리</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_7340036.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7340818.html">Altibase MyBatis 연동 가이드</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(한국어) : 6. 트랜잭션 관리
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Consulting Division</span>, last modified on Nov 28, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409843766 {padding: 0px;}
+div.rbtoc1624409843766 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409843766 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409843766'>
+<ul class='toc-indentation'>
+<li><a href='#id-6.트랜잭션관리-MyBatis에서트랜잭션관리'>MyBatis 에서 트랜잭션 관리</a></li>
+</ul>
+</div>
+<hr />
+<p>MyBatis에서 DB와 연동할 경우 Configuration 파일의 &lt;environments&gt; 의 DB별 &lt;environment&gt; 태그의 &lt;transactionManager&gt;에 dataSource를 지정하고 &lt;environment&gt;의 id를 가지고 SqlSessionFactory 객체를 통해 DB와 연결하며 이 때 auto-commit mode도 설정이 가능하다. Default는 autocommit 모드이다.<br />
+본 장에서는 이러한 트랜잭션 관리 방법들을 소개한다.</p>
+
+
+<h2 id="id-6.트랜잭션관리-MyBatis에서트랜잭션관리"><strong>MyBatis 에서 트랜잭션 관리</strong></h2>
+
+<p>MyBatis에서 DB와 연동할 경우 iBatis에서 설정 파일 하나에 한 개의 DB를 설정할 수 있었던 것과 다르게 MyBatis는 DB 설정을 &lt;environments&gt; 태그로 여러 개의 DB를 설정할 수 있게 관리 한다.</p>
+
+<p>MyBatis는 &lt;environments&gt; 내의 &lt;environment&gt; 태그 하나당 하나의 DB를 설정할 수 있으며 &lt;environment&gt; 태그의 &lt;transactionManager&gt;에 dataSource를 지정 하게 되며 어플리케이션에서 프로그래머가 직접 트랜잭션을 관리할 수 있다.</p>
+
+<p>MyBatis에서는 트랜잭션 시작과 끝은 따로 존재하지 않으며 Configuration을 통해 SqlSessionFactory를 설정할 때 AutoCommit 모드 설정이 가능하다.</p>
+
+<p>다음의 예제는 다중 DB를 하나의 Configuration 파일로 설정하는 예제이다.<br />
+예) altibase_mybatis_MultiVersionConnection의 mybatis-config.xml 파일</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+…
+&lt;!--  DB 연결 옵션 : UNPOOLED/POOLED/JNDI --&gt;
+&lt;!--  transanctionManager 옵션 : JDBC/MANAGED --&gt;
+&lt;environments default=&quot;development&quot;&gt;
+&lt;!--  development alias의 connection configuration(5 version) --&gt;
+&lt;environment id=&quot;development&quot;&gt;
+  &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+  &lt;dataSource type=&quot;POOLED&quot;&gt;
+    &lt;property name=&quot;driver&quot; value=&quot;${jdbc5.driver}&quot; /&gt;
+    &lt;property name=&quot;url&quot; value=&quot;${jdbc5.url}&quot; /&gt;
+    &lt;property name=&quot;username&quot; value=&quot;${jdbc5.username}&quot; /&gt;
+    &lt;property name=&quot;password&quot; value=&quot;${jdbc5.password}&quot; /&gt;
+    &lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+      &lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+      &lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+      &lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+  &lt;/dataSource&gt;
+&lt;/environment&gt;
+&lt;!--  release alias의 connection configuration(6 or later version) --&gt;
+  &lt;environment id=&quot;release&quot;&gt;
+    &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+    &lt;dataSource type=&quot;POOLED&quot;&gt;
+      &lt;property name=&quot;driver&quot; value=&quot;${jdbc.driver}&quot; /&gt;
+      &lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot; /&gt;
+      &lt;property name=&quot;username&quot; value=&quot;${jdbc.username}&quot; /&gt;
+      &lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot; /&gt;
+      &lt;property name=&quot;poolPingQuery&quot; value=&quot;select 1 from dual&quot;/&gt;
+        &lt;property name=&quot;poolMaximumActiveConnections&quot; value=&quot;100&quot;/&gt;
+        &lt;property name=&quot;poolMaximumIdleConnections&quot; value=&quot;50&quot;/&gt;
+        &lt;property name=&quot;poolMaximumCheckoutTime&quot; value=&quot;20000&quot;/&gt;
+    &lt;/dataSource&gt;
+  &lt;/environment&gt;
+&lt;/environments&gt;
+…
+</pre>
+</div></div>
+
+<p>예) altibase_mybatis_MultiVersionConnection의 MybatisUtil.java 파일</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+…
+// mybatis-config.xml로부터 설정값을 읽어옴
+inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);
+// 읽어온 xml 파일로부터 SqlSessionFactory를 생성함.(이 때 environment id를 nel에 인자값으로 부여하여 연결하려는 DB 설정
+sqlSessionFactory = new SqlSessionFactoryBuilder()build(inputStream, “release”);
+// sqlSession 객체 생성. 이 때 인자값이 autoCommit 여부를 결정함.
+// default는 true이며 false 값을 주게 되면 autocommit=false
+sqlSession = sqlSessionFactory.openSession(false);
+…
+</pre>
+</div></div>
+
+<p>위의 예제 altibase_mybatis_MultiVersionConnection 프로젝트를 실행하기 위해서는 “Configuration 파일에 dataSource를 설정하여 ALTIBASE와 연동”과 마찬가지로 Altibase.jar, mybatis-3.2.8.jar 파일이 필요하다.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:57</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

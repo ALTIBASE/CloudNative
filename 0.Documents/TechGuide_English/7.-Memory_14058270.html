@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 7. Memory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Altibase-Monitoring-Queries-Guide_14058229.html">Altibase Monitoring Queries Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="3.-Monitoring-Elements-and-Corresponding-Monitoring-Queries_14058252.html">3. Monitoring Elements and Corresponding Monitoring Queries</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 7. Memory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified by <span class='editor'> david.cho</span> on Dec 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><span>T</span><span>he query corresponding </span><span>t</span><span>o each moni</span><span>t</span><span>oring elemen</span><span>t</span><span> </span><span>t</span><span>o check informa</span><span>t</span><span>ion rela</span><span>t</span><span>ed </span><span>t</span><span>o utilization</span><span> occupied by Al</span><span>t</span><span>ibase in </span><span>t</span><span>he OS is as follows.</span></p><h3 class="md-end-block md-heading md-focus" id="id-7.Memory-AltibaseMemoryUsage"><span class="md-plain md-expand">Altibase Memory Usage</span></h3><p><span>T</span><span>he user can check </span><span>t</span><span>he memory usage of each module </span><span>t</span><span>ha</span><span>t</span><span> makes up </span><span>t</span><span>he Al</span><span>t</span><span>ibase server.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">SELECT NAME
+     , ROUND(ALLOC_SIZE/1024/1024) &#39;ALLOC(M)&#39;
+     , ROUND(MAX_TOTAL_SIZE/1024/1024) &#39;MAX_TOTAL(M)&#39;
+  FROM V$MEMSTAT
+ ORDER BY 3 DESC ;</pre>
+</div></div><ul><li><h4 class="md-end-block md-heading md-focus" id="id-7.Memory-MainColumnDescription"><span class="md-plain md-expand">Main Column Description</span></h4></li></ul><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><span class="td-span"><span class="md-plain">Column</span></span></th><th class="confluenceTh"><span class="td-span"><span class="md-plain">Description</span></span></th></tr></thead><tbody><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">NAME</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The name of the modules that make up Altibase. The list of modules may differ depending on the version of Altibase. The brief description of the main modules is as follows:</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> </span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /><br /></span><span class="md-plain"><span>• </span>Storage_Disk_Ager: Memory used for Disk Garbage Collection</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Buffer: Memory used for Disk Buffer management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Collection: Memory used for Direct Path Insert and LOB operation</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Datafile: Memory used for Disk File management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Index: Memory used for Disk Index management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Page: Memory used to manage Disk Page</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Disk_Recovery: Memory used for disk recovery</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Ager: Memory used for Memory Garbage Collection</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Collection: Memory used for Memory Record management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Interface: Memory used for interface management such as cursor</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Locking: Memory used for locking management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Manager: Memory used to store Memory Data</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Index: Memory used for index management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Page: Memory used to manage Memory Page</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Recovery: Memory used for memory recovery</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Utility: Memory used for Storage Manager Tool</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Storage_Memory_Transaction: Memory used for transaction management</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Temp_Memory: Memory used to store the Memory Index</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Transaction_Table: Memory used to manage Transaction Table</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Transaction_OID_List: Memory used for storing OID of Garbage Collection</span><span class="md-br md-tag" style="color: rgb(167,167,167);"> <br /></span><span class="md-plain">• Transaction_Table_Info: Memory used to manage Transaction Table information</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">ALLOC(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The amount of memory the module is currently is using</span></span></td></tr><tr><td class="confluenceTd"><span class="td-span"><span class="md-plain">MAX_TOTAL(M)</span></span></td><td class="confluenceTd"><span class="td-span"><span class="md-plain">The maximum amount of memory used by the module</span></span></td></tr></tbody></table></div><h3 class="md-end-block md-heading md-focus" id="id-7.Memory-TotalMemoryUsageofALTIBASE"><span class="md-plain md-expand">Total Memory Usage of ALTIBASE</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> SELECT ROUND(SUM(ALLOC_SIZE)/1024/1024) &#39;ALLOC(M)&#39;
+     , ROUND(SUM(MAX_TOTAL_SIZE)/1024/1024) &#39;MAX_TOTAL(M)&#39;
+  FROM V$MEMSTAT ;</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

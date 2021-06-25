@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : Converting an explicit cursors</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5.-PLSQL-Conversion_2986522.html">5. PLSQL Conversion</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Cursor-Conversion_2988073.html">Cursor Conversion</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : Converting an explicit cursors
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> OO_heerock</span> on Aug 27, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><br class="atl-forced-newline" /></p>
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409347020 {padding: 0px;}
+div.rbtoc1624409347020 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409347020 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409347020'>
+<ul class='toc-indentation'>
+<li><a href='#Convertinganexplicitcursors-Overview'>Overview</a></li>
+<li><a href='#Convertinganexplicitcursors-Example'>Example</a></li>
+</ul>
+</div>
+
+<h2 id="Convertinganexplicitcursors-Overview">Overview</h2>
+
+<p> Unlike Cursor Variables(Ref Cursors), explicit cursor is less flexible in usage than regular cursor due to its binding with a specific statement.</p>
+
+<p>The usage of explicit cursor in Altibase have so much resemblance with that of Oracle.</p>
+
+<p>Examples of converting an explicit cursors from ORACLE to ALTIBASE HDB can be found from the following table.</p>
+
+<h2 id="Convertinganexplicitcursors-Example">Example</h2>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Oracle </p></th>
+<th class="confluenceTh"><p> AlLTIBASE HDB </p></th>
+<th class="confluenceTh"><p> Comments </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+v_jobid employees.eno%TYPE; -- variable for job_id <br class="atl-forced-newline" />
+v_lastname employees.e_lastname%TYPE; -- variable for last_name <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT e_lastname, eno FROM employees <br class="atl-forced-newline" />
+WHERE <span style="color: rgb(255,0,0);"><strong>REGEXP_LIKE (emp_job, 'S[HT]_CLERK');</strong></span><br class="atl-forced-newline" />
+v_employees employees%ROWTYPE; -- record variable for row <br class="atl-forced-newline" />
+CURSOR c2 is SELECT * FROM employees <br class="atl-forced-newline" />
+WHERE <span style="color: rgb(255,0,0);"><strong>REGEXP_LIKE (emp_job, '[ACADFIMKSA]_M[ANGR]')</strong></span>; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- open the cursor before fetching <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO v_lastname, v_jobid; -- fetches 2 columns into variables <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE( RPAD(v_lastname, 25, ' ') || v_jobid ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE( '-------------------------------------' ); <br class="atl-forced-newline" />
+OPEN c2; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c2 INTO v_employees; -- fetches entire row into the v_employees record <br class="atl-forced-newline" />
+EXIT WHEN c2%NOTFOUND; <br class="atl-forced-newline" />
+DBMS_OUTPUT.PUT_LINE( RPAD(v_employees.e_lastname, 25, ' ') || <br class="atl-forced-newline" />
+v_employees.emp_job ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c2; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+v_jobid employees.emp_job%TYPE; -- variable for job_id <br class="atl-forced-newline" />
+v_lastname employees.e_lastname%TYPE; -- variable for last_name <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT e_lastname, emp_job FROM employees <br class="atl-forced-newline" />
+WHERE <br class="atl-forced-newline" />
+(<span style="color: rgb(255,0,0);"><strong>emp_job LIKE 'SH_CLERK%' OR emp_job LIKE 'ST_CLERK% ');</strong></span><br class="atl-forced-newline" />
+v_employees employees%ROWTYPE; -- record variable for row <br class="atl-forced-newline" />
+CURSOR c2 is SELECT * FROM employees <br class="atl-forced-newline" />
+<span style="color: rgb(0,0,0);">WHERE</span> <br class="atl-forced-newline" />
+(<span style="color: rgb(255,0,0);"><strong>emp_job LIKE 'A_MA%' OR emp_job LIKE 'A_MN%' OR emp_job</strong></span><br class="atl-forced-newline" />
+<span style="color: rgb(255,0,0);"><strong> LIKE 'A_MG%',</strong></span> <span style="color: rgb(255,0,0);"><strong>OR emp_job LIKE 'A_MR%',.... );</strong></span><br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- open the cursor before fetching <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO v_lastname, v_jobid; -- fetches 2 columns into variables <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN( RPAD(v_lastname, 25, ' ') || v_jobid ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN( '-------------------------------------' ); <br class="atl-forced-newline" />
+OPEN c2; <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c2 INTO v_employees; -- fetches entire row into the v_employees record <br class="atl-forced-newline" />
+EXIT WHEN c2%NOTFOUND; <br class="atl-forced-newline" />
+SYSTEM_.PRINTLN( RPAD(v_employees.e_lastname, 25, ' ') || v_employees.job_id ); <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c2; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ <br class="atl-forced-newline" /> </p></td>
+<td class="confluenceTd"><p> The usages of explicit function are almost same <br class="atl-forced-newline" />
+between ALTIBASE HDB and Oracle.   <br class="atl-forced-newline" />
+For reference, regular expression functionality displayed on the left <br class="atl-forced-newline" />
+has not been supported in Altibase to ALTIBASE HDB V6. <br class="atl-forced-newline" />
+But it will be applied in Altibase HDB V7. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+my_sal employees.salary%TYPE; <br class="atl-forced-newline" />
+my_job employees.emp_job%TYPE; <br class="atl-forced-newline" />
+factor INTEGER := 2; <br class="atl-forced-newline" />
+CURSOR c1 IS <br class="atl-forced-newline" />
+SELECT factor*salary FROM employees WHERE emp_job = my_job; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- factor initially equals 2 <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO my_sal; <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+factor := factor + 1; -- does not affect FETCH <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END;   <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+my_sal employees.salary%TYPE; <br class="atl-forced-newline" />
+my_job employees.emp_job%TYPE; <br class="atl-forced-newline" />
+factor INTEGER := 2; <br class="atl-forced-newline" />
+CURSOR c1 IS <br class="atl-forced-newline" />
+SELECT factor*salary FROM employees WHERE emp_job = my_job; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; -- factor initially equals 2 <br class="atl-forced-newline" />
+LOOP <br class="atl-forced-newline" />
+FETCH c1 INTO my_sal; <br class="atl-forced-newline" />
+EXIT WHEN c1%NOTFOUND; <br class="atl-forced-newline" />
+factor := factor + 1; -- does not affect FETCH <br class="atl-forced-newline" />
+END LOOP; <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END;   <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DECLARE <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT last_name FROM employees ORDER BY last_name; <br class="atl-forced-newline" />
+name1 employees.last_name%TYPE; <br class="atl-forced-newline" />
+name2 employees.last_name%TYPE; <br class="atl-forced-newline" />
+name3 employees.last_name%TYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; <br class="atl-forced-newline" />
+FETCH c1 INTO name1; -- this fetches first row <br class="atl-forced-newline" />
+FETCH c1 INTO name2; -- this fetches second row <br class="atl-forced-newline" />
+FETCH c1 INTO name3; -- this fetches third row <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> CREATE OR REPLACE PROCEDURE PROC1 <br class="atl-forced-newline" />
+AS <br class="atl-forced-newline" />
+CURSOR c1 IS SELECT e_lastname FROM employees ORDER BY e_lastname; <br class="atl-forced-newline" />
+name1 employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+name2 employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+name3 employees.e_lastname%TYPE; <br class="atl-forced-newline" />
+BEGIN <br class="atl-forced-newline" />
+OPEN c1; <br class="atl-forced-newline" />
+FETCH c1 INTO name1; -- this fetches first row <br class="atl-forced-newline" />
+FETCH c1 INTO name2; -- this fetches second row <br class="atl-forced-newline" />
+FETCH c1 INTO name3; -- this fetches third row <br class="atl-forced-newline" />
+CLOSE c1; <br class="atl-forced-newline" />
+END; <br class="atl-forced-newline" />
+/ </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

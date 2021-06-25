@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(English) : ALTIBASE HDB 5.3.x, 5.5.1, 6.1.1, 6.3.1</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6979649.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="08.-Monitoring_16876197.html">08. Monitoring</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Disk-table-and-index-usage_16876226.html">Disk table and index usage</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(English) : ALTIBASE HDB 5.3.x, 5.5.1, 6.1.1, 6.3.1
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Apr 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409147012 {padding: 0px;}
+div.rbtoc1624409147012 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409147012 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409147012'>
+<ul class='toc-indentation'>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Overview'>Overview</a></li>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Version'>Version</a></li>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Tochecktheusageofdisktablesandindexes'>To check the usage of disk tables and indexes</a></li>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Disktable'>Disk table</a></li>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-DiskIndex'>Disk Index</a></li>
+<li><a href='#ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Reference-Howtocheckthecountofdisktableandindex'>Reference - How to check the count of disk table and index</a></li>
+</ul>
+</div></p><p> </p><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Overview">Overview</h1><hr /><p> </p><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Version">Version</h1><hr /><p>The monitoring query introduced on this page can be used from the version that reflects BUG-31372.</p><ul><li>Altibase HDB version 5.3.3.33</li><li>Altibase HDB version 5.3.5.15</li><li>Altibase HDB version 5.5.1.0.3</li><li>Altibase HDB version 6.1.1</li><li>Altibase HDB version 6.3.1</li></ul><p> </p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p>In <a href="https://altra.altibase.com/altimis-2.0/app_bug_new/bug_view.jsp?pk=31372" class="external-link" rel="nofollow">BUG-31372</a>, the TOTAL_USED_SIZE column of X$SEGMENT has been added so that the actual usage of the disk table can be queried.</p>
+                    </div>
+    </div>
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>In ALTIBASE HDB version 5.3.3, 5.3.5, 5.5.1 without BUG-31372 being modified, an error may occur when using the following query.</p>
+                    </div>
+    </div>
+<p> </p><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Tochecktheusageofdisktablesandindexes">To check the usage of disk tables and indexes</h1><hr /><ul><li>ALTER TABLE table_name AGING and ALTER INDEX index_name AGING commands must be executed to get the correct usage.</li><li>Unaging space is calculated as used, so if there are frequent deletes on a table, it may be calculated larger than the actual usage if aging is not performed.</li><li>During the execution of the ALTER TABLE table_name AGING, ALTER INDEX index_name AGING command, the table is full-scanned while holding X LOCK on the table, so other operations on the table and indexes are waiting.</li><li>TOTAL_USED_SIZE of v$segment is volatile temporary data. When the Altibase server is restarted, it is initialized to the total allocation size of the table and index, not the actual usage amount.</li><li>v$segment query itself does not affect the database.</li></ul><p> </p><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Disktable">Disk table</h1><hr /><ul><li>Even if the table data is deleted with DELETE and USED, it does not decrease.</li><li>To check the actual USED excluding FREE PAGE after DELETE and table_name AGING; must be executed.</li><li><p>While executing ALTER TABLE ~ AGINING;, the table is locked, so other requests for the table are put in waiting for state.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 5.3.x, 5.5.1, 6.1.1, 6.3.1 Disk table usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">SELECT U.USER_NAME USER_NAME                                                                                            -- Database user
+     , TBL.TABLE_NAME TABLE_NAME                                                                                        -- Table name
+     , DECODE(TBL.IS_PARTITIONED, &#39;T&#39;, TBL.PARTITION_NAME, &#39;F&#39;, &#39;-&#39;) PARTITIONED_TABLE                                  -- Partitioned table name
+     , TBS.NAME TABLESPACE_NAME                                                                                         -- Tablespace
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999,999&#39;) &#39;MAX(KB)&#39;                                               -- Maximum size of the tablespace to which the table belongs
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024, &#39;999,999,999,999&#39;) &#39;ALLOC(KB)&#39;    -- Current allocated size
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024, &#39;999,999,999,999&#39;) &#39;USED(KB)&#39;                                                  -- Size of the allocated space that contains data
+  FROM (SELECT TBL.USER_ID
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , TBL.TABLE_NAME
+             , PT.PARTITION_NAME
+             , DECODE(TBL.IS_PARTITIONED, &#39;F&#39;, TBL.TBS_ID, &#39;T&#39;, PT.TBS_ID) TBS_ID
+             , TBL.IS_PARTITIONED
+          FROM SYSTEM_.SYS_TABLES_ TBL LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON TBL.TABLE_ID = PT.TABLE_ID
+         WHERE TBL.TABLE_TYPE = &#39;T&#39;
+       ) TBL
+     , (SELECT S.TABLE_OID, SUM(S.TOTAL_EXTENT_COUNT) TOTAL_EXTENT_COUNT, SUM(S.TOTAL_USED_SIZE) TOTAL_USED_SIZE 
+          FROM X$SEGMENT S 
+         WHERE S.SEGMENT_TYPE IN (6, 7) /* 6 : Table, 7 : LOB data(6.1.1 or earlier), 5 : Index */
+         GROUP BY S.TABLE_OID) SEG
+     , SYSTEM_.SYS_USERS_ U
+     , V$TABLESPACES TBS
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = TBL.TABLE_OID
+   AND U.USER_ID = TBL.USER_ID
+   AND D.SPACEID = TBL.TBS_ID
+   AND TBS.ID = TBL.TBS_ID
+ ORDER BY USER_NAME, TABLE_NAME, PARTITIONED_TABLE
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">USER_NAME             TABLE_NAME            PARTITIONED_TABLE     TABLESPACE_NAME       MAX(KB)          ALLOC(KB)        USED(KB)          
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   DISK_T                -                     USER_DATA                2,097,152          316,160              316,032  
+SYS                   DISK_T2               -                     USER_DATA                2,097,152              256                    8  
+SYS                   EMP                   -                     SYS_TBS_DISK_DATA        2,097,152              256                   16  
+SYS                   PART_T1               P1                    PART_DATA                1,048,576              768                  520  
+SYS                   PART_T1               P2                    PART_DATA                1,048,576              768                  520  
+SYS                   PART_T1               P3                    PART_DATA                1,048,576          126,464              126,384  
+SYS                   PART_T2               P201406               PART_DATA                1,048,576           11,520               11,280  
+SYS                   PART_T2               P201407               PART_DATA                1,048,576           22,784               22,544  
+SYS                   PART_T2               P201408               PART_DATA                1,048,576            5,888                5,648  
+SYS                   PART_T2               P201512               PART_DATA                1,048,576            8,704                8,464  
+SYS                   PART_T2               PMAX                  PART_DATA_DEF            1,048,576            9,728                9,592  
+SYS                   RANGE2                DEF                   SYS_TBS_DISK_DATA        2,097,152              256                    8  
+SYS                   RANGE2                Q1_2014               SYS_TBS_DISK_DATA        2,097,152          112,896              112,688  
+SYS                   RANGE2                Q2_2014               SYS_TBS_DISK_DATA        2,097,152           56,576               56,352  
+SYS                   RANGE2                Q3_2014               SYS_TBS_DISK_DATA        2,097,152            1,792                1,704  
+SYS                   RANGE2                Q4_2014               SYS_TBS_DISK_DATA        2,097,152              768                  576  
+SYS                   RANGE_SALES           DEF                   SYS_TBS_DISK_DATA        2,097,152              256                    8  
+SYS                   RANGE_SALES           Q1_2014               SYS_TBS_DISK_DATA        2,097,152            5,888                5,648  
+SYS                   RANGE_SALES           Q2_2014               SYS_TBS_DISK_DATA        2,097,152           11,520               11,280  
+SYS                   RANGE_SALES           Q3_2014               SYS_TBS_DISK_DATA        2,097,152            8,704                8,464  
+SYS                   RANGE_SALES           Q4_2014               SYS_TBS_DISK_DATA        2,097,152            4,096                3,952  
+21 rows selected.</pre>
+</div></div></li></ul><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-DiskIndex">Disk Index</h1><hr /><ul><li>Even if the table data is deleted with DELETE, the USED of the index does not decrease.</li><li>To check the actual USED except FREE PAGE after DELETE, ALTER INDEX index_name AGING; must be executed.</li><li><p>When executing ALTER INDEX ~ AGINING, the table is locked. Therefore, other requests for the table are put in a waiting state, so be cautious when executing the ALTER INDEX ~ AGAING.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ALTIBASE HDB 5.3.x, 5.5.1, 6.1.1, 6.3.1 Disk index usage query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- Disk index usage column description 
+-- USER_NAME	: Database user 
+-- TABLE_NAME	: Table name
+-- PARTITIONED_NAME	: Partitioned table name. If a non-partitioned, NON-PARTITIONED
+-- INDEX_NAME	: Index name
+-- PARTITIONED_INDEX	: Partitioned index name
+-- TBS_NAME	: Tablespace to which the index belongs 
+-- MAX(KB)	: Max size of tablespace
+-- ALLOC(KB)	: Total size allocated
+-- USED(KB)	: Size of the allocated space that includes data
+-- USAGE(%)	: Percentage of utilization compared to the maximum size of the tablespace
+set linesize 1024
+set colsize 20
+SELECT U.USER_NAME USER_NAME                                                                                         
+     , I_LIST.TABLE_NAME                                                                                             
+     , DECODE(I_LIST.PARTITION_NAME, NULL, &#39;NON-PARTITIONED&#39;, I_LIST.PARTITION_NAME) PARTITIONED_NAME                
+     , I_LIST.INDEX_NAME INDEX_NAME                                                                                  
+     , DECODE(I_LIST.INDEX_PARTITION_NAME, NULL, &#39;NON-PARTITIONED&#39;, I_LIST.INDEX_PARTITION_NAME) PARTITIONED_INDEX   
+     , TBS.NAME TBS_NAME                                                                                             
+     , TO_CHAR((D.MAX * TBS.PAGE_SIZE)/1024, &#39;999,999,999&#39;) &#39;MAX(KB)&#39;                                                
+     , TO_CHAR((TBS.EXTENT_PAGE_COUNT * TBS.PAGE_SIZE * SEG.TOTAL_EXTENT_COUNT)/1024, &#39;999,999,999&#39;) &#39;ALLOC(KB)&#39;     
+     , TO_CHAR(SEG.TOTAL_USED_SIZE/1024, &#39;999,999,999,999&#39;) &#39;USED(KB)&#39;                                               
+     , TO_CHAR(((SEG.TOTAL_USED_SIZE/(D.MAX*TBS.PAGE_SIZE))*100), &#39;99.99&#39;) &#39;USAGE(%)&#39;                                
+  FROM (SELECT T.TABLE_NAME
+             , PT.PARTITION_NAME
+             , I.INDEX_NAME
+             , PI.INDEX_PARTITION_NAME
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, I.TABLE_ID, &#39;T&#39;, PT.TABLE_ID) TABLE_ID
+             , DECODE(T.IS_PARTITIONED, &#39;F&#39;, T.TABLE_OID, &#39;T&#39;, PT.PARTITION_OID) TABLE_OID
+             , DECODE(I.IS_PARTITIONED, &#39;F&#39;, I.TBS_ID, &#39;T&#39;, PI.TBS_ID) TBS_ID
+             , I.INDEX_ID
+             , T.USER_ID
+          FROM SYSTEM_.SYS_INDICES_ I LEFT OUTER JOIN SYSTEM_.SYS_INDEX_PARTITIONS_ PI ON PI.INDEX_ID = I.INDEX_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLE_PARTITIONS_ PT ON PT.PARTITION_ID = PI.TABLE_PARTITION_ID 
+                                      LEFT OUTER JOIN SYSTEM_.SYS_TABLES_ T ON T.TABLE_ID = I.TABLE_ID AND T.TABLE_TYPE = &#39;T&#39;) I_LIST
+     , X$SEGMENT SEG
+     , V$INDEX I
+     , V$TABLESPACES TBS
+     , SYSTEM_.SYS_USERS_ U
+     , (SELECT SPACEID
+             , SUM(DECODE(MAXSIZE, 0, CURRSIZE, MAXSIZE)) AS MAX
+             , DECODE(MAX(AUTOEXTEND),1,&#39;ON&#39;,&#39;OFF&#39;) &#39;AUTOEXTEND&#39;
+          FROM V$DATAFILES
+         GROUP BY SPACEID) D
+ WHERE 1=1
+   AND SEG.TABLE_OID = I.TABLE_OID
+   AND SEG.SEGMENT_PID = I.INDEX_SEG_PID
+   AND SEG.SPACE_ID = I_LIST.TBS_ID
+   AND I_LIST.INDEX_ID = I.INDEX_ID
+   AND I_LIST.TABLE_OID = I.TABLE_OID
+   AND I_LIST.TBS_ID = TBS.ID
+   AND D.SPACEID = I_LIST.TBS_ID
+   AND U.USER_ID = I_LIST.USER_ID
+ ORDER BY I_LIST.TABLE_NAME, I_LIST.INDEX_NAME, I_LIST.PARTITION_NAME, I_LIST.INDEX_PARTITION_NAME
+;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Example of output</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> USER_NAME             TABLE_NAME            PARTITIONED_NAME      INDEX_NAME            PARTITIONED_INDEX     TBS_NAME              MAX(KB)          ALLOC(KB)        USED(KB)            USAGE(%)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SYS                   DISK_T                NON-PARTITIONED       DISK_T_IDX_01         NON-PARTITIONED       USER_IDX                 2,097,152           47,104               46,984      2.24
+SYS                   DISK_T2               NON-PARTITIONED       DISK_T2_IDX_01        NON-PARTITIONED       USER_IDX                 2,097,152              256                   16      0.00
+SYS                   EMP                   NON-PARTITIONED       EMP_IDX_01            NON-PARTITIONED       SYS_TBS_DISK_DATA        2,097,152              256                   32      0.00
+SYS                   PART_T1               P1                    PART_T1_IDX           P_IDX1                PART_IDX                 3,145,728              256                  216       .01
+SYS                   PART_T1               P2                    PART_T1_IDX           P_IDX2                PART_IDX                 3,145,728              256                  216       .01
+SYS                   PART_T1               P3                    PART_T1_IDX           P_IDX3                PART_IDX                 3,145,728           46,848               46,608      1.48
+SYS                   PART_T2               P201406               PART_T2_IDX_01        P201406               PART_IDX                 3,145,728            3,840                3,808       .12
+SYS                   PART_T2               P201407               PART_T2_IDX_01        P201407               PART_IDX                 3,145,728            7,680                7,528       .24
+SYS                   PART_T2               P201408               PART_T2_IDX_01        P201408               PART_IDX                 3,145,728            2,048                1,936       .06
+SYS                   PART_T2               P201512               PART_T2_IDX_01        P201512               PART_IDX                 3,145,728            3,072                2,856       .09
+SYS                   PART_T2               PMAX                  PART_T2_IDX_01        PMAX                  PART_IDX                 3,145,728            3,328                3,232       .10
+SYS                   PART_T2               P201406               PART_T2_IDX_02        P201406               PART_IDX                 3,145,728            3,840                3,808       .12
+SYS                   PART_T2               P201407               PART_T2_IDX_02        P201407               SYS_TBS_DISK_DATA        2,097,152            7,680                7,528       .36
+SYS                   PART_T2               P201408               PART_T2_IDX_02        P201408               SYS_TBS_DISK_DATA        2,097,152            2,304                1,936       .09
+SYS                   PART_T2               P201512               PART_T2_IDX_02        P201512               SYS_TBS_DISK_DATA        2,097,152            3,328                2,856       .14
+SYS                   PART_T2               PMAX                  PART_T2_IDX_02        PMAX                  SYS_TBS_DISK_DATA        2,097,152            3,584                3,232       .15
+16 rows selected.</pre>
+</div></div></li></ul><h1 id="ALTIBASEHDB5.3.x,5.5.1,6.1.1,6.3.1-Reference-Howtocheckthecountofdisktableandindex">Reference - How to check the count of disk table and index</h1><hr />Error rendering macro 'code': Invalid value specified for parameter 'firstline'<pre>set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, &#39;T&#39;, &#39;PARTITIONED     TABLE CNT : &#39;||PART_T.CNT, &#39;F&#39;, &#39;NON-PARTITIONED TABLE CNT : &#39;||T.CNT) TABLE_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM V$DISKTBL_INFO D
+             , SYSTEM_.SYS_TABLES_ T
+         WHERE D.TABLE_OID = T.TABLE_OID
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_TABLE_PARTITIONS_ ) PART_T ;</pre><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Disk index count query</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"> set linesize 1024;
+set colsize 50;
+SELECT DECODE(T.IS_PARTITIONED, &#39;T&#39;, &#39;PARTITIONED     INDEX CNT : &#39;||PART_T.CNT, &#39;F&#39;, &#39;NON-PARTITIONED INDEX CNT : &#39;||T.CNT) INDEX_COUNT
+  FROM (SELECT IS_PARTITIONED
+             , COUNT(*) CNT
+          FROM SYSTEM_.SYS_INDICES_
+         WHERE TABLE_ID IN (SELECT TABLE_ID
+                              FROM SYSTEM_.SYS_TABLES_ T
+                                 , V$DISKTBL_INFO D
+                             WHERE T.TABLE_OID = D.TABLE_OID)
+         GROUP BY IS_PARTITIONED) T
+     , (SELECT COUNT(*) CNT FROM SYSTEM_.SYS_INDEX_PARTITIONS_) PART_T ;</pre>
+</div></div><p><br /><br /></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:45</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

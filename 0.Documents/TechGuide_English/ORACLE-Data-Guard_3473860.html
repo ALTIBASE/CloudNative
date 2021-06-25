@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : ORACLE Data Guard</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="ORACLE-to-ALTIBASE-Conversion-Guide_2986496.html">ORACLE to ALTIBASE Conversion Guide</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="7.-HA-Support_2986528.html">7. HA Support</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : ORACLE Data Guard
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified by <span class='editor'> OO_heerock</span> on Sep 10, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409352934 {padding: 0px;}
+div.rbtoc1624409352934 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409352934 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409352934'>
+<ul class='toc-indentation'>
+<li><a href='#ORACLEDataGuard-Overview'>Overview</a></li>
+<li><a href='#ORACLEDataGuard-ApplyingServices'>Applying Services</a></li>
+<li><a href='#ORACLEDataGuard-DataProtectionmodes'>Data Protection modes</a></li>
+<li><a href='#ORACLEDataGuard-RoleManagementServices'>Role Management Services</a></li>
+</ul>
+</div>
+
+<h2 id="ORACLEDataGuard-Overview">Overview</h2>
+
+<p>Oracle Data Guard consists of the Primary Database and Standby Database. A primary database can accommodate up to 9 Standby Database.</p>
+
+<p>The change from primary database is transferred to redo log file via oracle Net with Oracle Background process(LGWR or ARCn) to Standby Database.</p>
+
+
+<h2 id="ORACLEDataGuard-ApplyingServices">Applying Services</h2>
+
+<p>The standby database is divided into the physical standby database and the logical standby database.</p>
+<ul>
+	<li>The physical standby database is identical to the primary database which has same DB blocks.<br />
+The synchoronization in the side of the standby database can be done using redo logs received from primary database. It is named as Redo Apply.</li>
+</ul>
+
+
+<p>Altibase HDB Replication adopted this method using Altibase SM(Storage Manager) module</p>
+
+<p>This is one of the main components of a DBMS, and is responsible for data storage and management via concurrency control and recovery. It performs actual execution of the query according to the execution plan.<br />
+ </p>
+<ul>
+	<li>The logical standby database is same with the primary database which has same schema.<br />
+The synchronization in the side of the standby database can be performed by processing redo logs received from the primary database and extracting SQL statements from it and executing them.
+<br class="atl-forced-newline" />
+This process is called as SQL Apply.  </li>
+</ul>
+
+
+<h2 id="ORACLEDataGuard-DataProtectionmodes">Data Protection modes</h2>
+
+<p>Data Guard comprises three modes as follows.</p>
+<ul>
+	<li>Maximum protection: It guarantees no data loss at the time of primary database failure. To achieve that, recoverable redo data(changed data) for each transactions should be written locally stored online redo log file and one or more standby redo log files before committing. When data inconsistency occurs, primary database will shut down.</li>
+</ul>
+
+
+<p>This has the similarity with the Eager Mode in Altibase HDB replication except for being shut down in the case data inconsistency. It is a synchronous replication method, and thus the master transaction and the replication transaction are executed together as a single transaction.</p>
+<ul>
+	<li>Maximum Availability: It is not until recoverable data is written to the one or more remote standby redo log file and local online redo log file that does commit a transaction.</li>
+</ul>
+
+
+<p>As well as Maximum protection mode, redo data(changed data) should be written to the remote standby redo logfile and local online redo logfile before committing a transaction.</p>
+
+<p>But, in case of the failure of writing to the remote standby redo logfile, Primary Database will not shut down.</p>
+<ul>
+	<li>Maximum performance: It minimizes influence over performance of Primary Database. Committing  a transaction and the writing of redo data stream to the standby database are independent.</li>
+</ul>
+
+
+<p>This is in line with the lazy replication mode in Altibase HDB.
+<br class="atl-forced-newline" /></p>
+
+<h2 id="ORACLEDataGuard-RoleManagementServices">Role Management Services</h2>
+
+<ul>
+	<li>Switchover</li>
+	<li>Failover</li>
+	<li>Fast-Start Failover</li>
+</ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/3473860/4194336.png">ORACLE DATA GUARD_FRAMEWORK.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/3473860/4194341.png">Oracle Data Guard.PNG</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/3473860/4194342.png">altibase_replication_method.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

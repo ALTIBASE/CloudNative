@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : 테이블스페이스 데이터 파일 경로 변경 방법</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520882.html">02. 운영 및 관리</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : 테이블스페이스 데이터 파일 경로 변경 방법
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Shin beum-su</span>, last modified by <span class='editor'> heejung lee</span> on Nov 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p> </p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409051809 {padding: 0px;}
+div.rbtoc1624409051809 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409051809 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409051809'>
+<ul class='toc-indentation'>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-개요'>개요</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-변경절차요약'>변경 절차 요약</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-상세절차'>상세 절차</a>
+<ul class='toc-indentation'>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-1.데이터파일현재경로확인1.PathCheck'>1. 데이터 파일 현재 경로 확인</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-2.Altibase서버중지'>2. Altibase 서버 중지</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-3.데이터파일기본경로변경'>3. 데이터 파일 기본 경로 변경</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-4.물리적인데이터파일경로복사'>4. 물리적인 데이터 파일 경로 복사</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-5.컨트롤단계로Altibase서버구동'>5. 컨트롤 단계로 Altibase 서버 구동</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-6.데이터파일경로변경DDL수행'>6. 데이터 파일 경로 변경 DDL 수행</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-7.서비스단계로Altibase서버구동'>7. 서비스 단계로 Altibase 서버 구동</a></li>
+</ul>
+</li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-작업중발생할수있는에러메세지'>작업 중 발생할 수 있는 에러 메세지</a>
+<ul class='toc-indentation'>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-Thedatafiledoesnotexist'>The data file does not exist</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-Thedatafile&#39;XXXXXX&#39;hasaninvalidheader'>The data file &#39;XXXXXX&#39; has an invalid header</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-Unabletoinvokethecreate()functionon[XXXXXX/dwfile0.dwf]'>Unable to invoke the create() function on [XXXXXX/dwfile0.dwf]</a></li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-CANNOTIDENTIFYDATAFILE'>CANNOT IDENTIFY DATAFILE</a></li>
+</ul>
+</li>
+<li><a href='#id-테이블스페이스데이터파일경로변경방법-참고'>참고</a></li>
+</ul>
+</div> </p><p> </p><h1 id="id-테이블스페이스데이터파일경로변경방법-개요">개요</h1><hr /><p>디스크 테이블스페이스의 데이터 파일 및 메모리 테이블스페이스의 메모리 체크포인트 이미지 파일의 경로 변경 절차를 관해 설명합니다.</p><p>데이터 파일 경로 변경 작업은 서비스 다운 타임 확보 후</p><p> </p><p> </p><h1 id="id-테이블스페이스데이터파일경로변경방법-변경절차요약">변경 절차 요약</h1><hr /><ol><li>데이터 파일 현재 경로 확인</li><li>Altibase 서버 중지</li><li>데이터 파일 기본 경로 변경</li><li>데이터 파일을 새로운 경로로 복사</li><li>컨트롤 단계로 Altibase 서버 구동</li><li>데이터 파일 경로 변경 DDL 수행</li><li>서비스 단계로 Altibase 서버 구동<br /><br /></li></ol><p> </p><h1 id="id-테이블스페이스데이터파일경로변경방법-상세절차">상세 절차</h1><hr /><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="id-테이블스페이스데이터파일경로변경방법-1.데이터파일현재경로확인1.PathCheck">1. 데이터 파일 현재 경로 확인<span class="confluence-anchor-link" id="id-테이블스페이스데이터파일경로변경방법-1.PathCheck"></span></h2><hr /><p>디스크 테이블스페이스와 메모리 테이블스페이스에 따라 확인 방법이 다르므로 각각 확인해야 합니다.</p><p>아래 쿼리를 이용하여 확인 후 출력 결과를 메모해둡니다</p><ul><li><p><strong>디스크 테이블스페이스의 데이터 파일 경로</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 서버 모든 버전</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 디스크 테이블스페이스 이름과 데이터 파일 경로와 이름을 출력합니다.
+set linesize 1024
+set colsize 100
+SELECT T.NAME TBS_NAME, D.NAME DATAFILE
+  FROM V$DATAFILES D, V$TABLESPACES T
+ WHERE D.SPACEID = T.ID
+ ORDER BY D.SPACEID, D.ID ;</pre>
+</div></div></li><li><p><strong>메모리 테이블스페이스의 체크포인트 이미지 파일 경로</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 5 이상 버전에서 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 메모리 테이블스페이스의 경우 테이블스페이스 이름과 경로만 확인할 수 있습니다. 
+set linesize 1024
+set colsize 100
+SELECT TBS.NAME TBS_NAME,
+       MEM_PATH.CHECKPOINT_PATH DATAFILE
+  FROM V$TABLESPACES TBS,
+       V$MEM_TABLESPACE_CHECKPOINT_PATHS MEM_PATH
+ WHERE MEM_PATH.SPACE_ID = TBS.ID
+ ORDER BY TBS_NAME, DATAFILE;</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 4 버전에서 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$ grep MEM_DB_DIR $ALTIBASE_HOME/conf/altibase.properties | sort -u</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-2.Altibase서버중지">2. Altibase 서버 중지</h2><hr /><ul><li><p>데이터 파일들을 물리적으로 이동해야 하므로 Altibase 서버를 중지해야합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">  # Altibase 서버 중지 명령어
+$ server stop 
+
+  # Altibase 서버 프로세스 확인 방법
+$ ps -ef | grep &#39;altibase -p&#39; | grep -v grep</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-3.데이터파일기본경로변경">3. 데이터 파일 기본 경로 변경</h2><hr /><ul style="list-style-type: square;"><li>데이터 파일 기본 경로는 테이블스페이스를 생성하거나 데이터 파일 추가할 때 경로를 지정하지 않고 데이터 파일 이름만 지정한 경우 데이터 파일이 위치할 경로를 의미합니다.</li><li>데이터 파일 경로 변경 작업 시 기본 경로도 변경해야 할 경우 수행합니다.</li><li><p>altibase.properties 파일에서 설정하며 MEM_DB_DIR, DEFAULT_DISK_DB_DIR 프로퍼티를 찾아 기본 경로를 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">  # 디스크, 메모리 테이블스페이스에 따라 프로퍼티 이름이 다릅니다.
+  # altibase.properties 파일에서 MEM_DB_DIR, DEFAULT_DISK_DB_DIR 프로퍼티를 찾아 기본 경로를 변경합니다. 
+$ egrep &#39;MEM_DB_DIR|DEFAULT_DISK_DB_DIR&#39; $ALTIBASE_HOME/conf/altibase.properties
+MEM_DB_DIR          = ?/dbs # Memory DB Directory
+DEFAULT_DISK_DB_DIR = ?/dbs # Disk   DB Directory</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-4.물리적인데이터파일경로복사">4. 물리적인 데이터 파일 경로 복사</h2><hr /><ul><li><p>&quot;<a href="#id-테이블스페이스데이터파일경로변경방법-1.PathCheck">1. &#45936;&#51060;&#53552; &#54028;&#51068; &#54788;&#51116; &#44221;&#47196; &#54869;&#51064;</a>&quot; 에서 확인한 경로에 위치한 모든 데이터 파일과 메모리 체크포인트 이미지 파일들을 변경하려는 경로로 복사합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>cp 수행 예</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # 시스템 디스크 테이블스페이스의 데이터 파일은 *.dbf 형식으로 생성되고 
+   # 사용자 디스크 테이블스페이스의 데이터 파일은 테이블스페이스 생성 시 사용자 지정대로 생성됩니다. 
+$ cp -p /home/altibase_home/dbs_old_path/*.dbf /home/altibase_home/dbs_new_path/*.dbf
+
+   # 메모리 체크포인트 이미지 파일 이름 형식은 메모리테이블스페이스이름_#_# 입니다. 
+$ cp -p /home/altibase_home/dbs_old_path/SYS_MEM* /home/altibase_home/dbs_new_path/SYS_MEM*</pre>
+</div></div></li><li><p>파일 수 및 파일 크기를 비교하여 정상적으로 복사되었는지 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # 파일 수 비교
+$ ls -l /old_path/* | wc -l
+$ ls -l /new_path/* | wc -l 
+
+   # 파일 크기 비교
+$ du -sk /old_path/*
+$ du -sk /new_path/*</pre>
+</div></div></li><li><p>원본 경로를 다른 이름으로 변경합니다.</p><p>Altibase 서버 구동 시 원본 파일을 읽을 가능성을 피하고 원본 파일 백업을 위해 원본 경로를 다른 이름으로 변경합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ mv /old_path /old_path_backup</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-5.컨트롤단계로Altibase서버구동">5. 컨트롤 단계로 Altibase 서버 구동</h2><hr /><ul><li><p>sysdba 권한으로 iSQL 접속 후</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">$is -silent -sysdba
+[ERR-910FB : Connected to idle instance]
+iSQL(sysdba)&gt; STARTUP CONTROL</pre>
+</div></div></li><li><p>컨트롤 단계로 구동합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; STARTUP CONTROL
+Connecting to the DB server.... Connected.
+TRANSITION TO PHASE : PROCESS
+TRANSITION TO PHASE : CONTROL
+Command executed successfully.
+iSQL(sysdba)&gt; </pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-6.데이터파일경로변경DDL수행">6. 데이터 파일 경로 변경 DDL 수행</h2><hr /><p>디스크 데이터 파일 및 메모리 체크포인트 이미지 파일 경로 정보는 로그앵커 파일에 저장됩니다. 로그앵커가 알고 있는 정보를 변경하기 위해 DDL 문을 수행합니다.</p><ul><li><p><strong>디스크 데이터 파일 경로 변경 방법</strong></p><p><span style="color: rgb(255,0,0);">&quot;<a href="#id-테이블스페이스데이터파일경로변경방법-1.PathCheck">1. &#45936;&#51060;&#53552; &#54028;&#51068; &#54788;&#51116; &#44221;&#47196; &#54869;&#51064;</a>&quot; 에서 확인한 모든 데이터 파일 수만큼 ALTER DATABASE 문을 반복 수행합니다. <span style="color: rgb(0,0,0);">파일 이름은 동일하게 경로만 변경하여 입력해야 합니다. </span></span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER DATABASE RENAME DATAFILE
+&#39;/old_path/system001.dbf&#39;  TO &#39;/new_path/system001.dbf&#39;;
+Alter success.</pre>
+</div></div></li><li><p><strong>디스크 데이터 파일 변경 경로 확인</strong></p><p>경로가 올바르게 변경되었는지 확인합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;"># 디스크 테이블스페이스 이름과 데이터 파일 경로와 이름을 출력합니다.
+set linesize 1024
+set colsize 100
+SELECT T.NAME TBS_NAME, D.NAME DATAFILE
+  FROM V$DATAFILES D, V$TABLESPACES T
+ WHERE D.SPACEID = T.ID
+ ORDER BY D.SPACEID, D.ID ;</pre>
+</div></div></li><li><pre><strong>메모리 체크포인트 이미지 파일 경로 변경 </strong></pre><p><span style="color: rgb(255,0,0);"><span style="color: rgb(255,0,0);">&quot;<a href="#id-테이블스페이스데이터파일경로변경방법-1.PathCheck">1. &#45936;&#51060;&#53552; &#54028;&#51068; &#54788;&#51116; &#44221;&#47196; &#54869;&#51064;</a>&quot; 에서</span> 확인한 메모리 테이블스페이스 수 만큼 ALTER TABLESPACE 문을 반복 수행합니다.</span> 이 때 파일명을 지정하지 않고 이전 경로와 새로운 경로만 사용합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 5 버전 이상</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; ALTER TABLESPACE memory_tablespace_name RENAME CHECKPOINT PATH 
+&#39;/old_path&#39; TO &#39;/new_path&#39;;
+
+
+수행 예)
+iSQL(sysdba)&gt; ALTER TABLESPACE SYS_TBS_MEM_DIC RENAME CHECKPOINT PATH 
+&#39;/home/altibase_home/dbs_old_path&#39; TO &#39;/home1/altibase_home/dbs_new_path&#39;;
+Alter success.
+iSQL(sysdba)&gt; ALTER TABLESPACE USER_MEM_TBS RENAME CHECKPOINT PATH 
+&#39;/home/altibase_home/dbs_old_path&#39; TO &#39;/home1/altibase_home/dbs_new_path&#39;;
+Alter success.</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 4 버전</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"># Altibase 4 버전의 경우 DDL 작업이 필요하지 않습니다. 
+# altibase.properties 파일에서 MEM_DB_DIR 프로퍼티 값을 변경 후 저장합니다. 
+
+$ cd $ALTIBASE_HOME/conf/
+$ vi altibase.properties </pre>
+</div></div></li><li><p><strong>메모리 체크포인트 이미지 파일 변경 경로 확인 방법</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Altibase 5 이상 버전에서 확인 방법</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">-- 메모리 테이블스페이스의 경우 테이블스페이스 이름과 경로만 확인할 수 있습니다. 
+set linesize 1024
+set colsize 100
+SELECT TBS.NAME TBS_NAME,
+       MEM_PATH.CHECKPOINT_PATH DATAFILE
+  FROM V$TABLESPACES TBS,
+       V$MEM_TABLESPACE_CHECKPOINT_PATHS MEM_PATH
+ WHERE MEM_PATH.SPACE_ID = TBS.ID
+ ORDER BY TBS_NAME, DATAFILE;</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-7.서비스단계로Altibase서버구동">7. 서비스 단계로 Altibase 서버 구동</h2><hr /><p>sysdba 권한으로 iSQL에 접속한 상태에서 수행합니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup
+The database server is already up and running.
+TRANSITION TO PHASE : META
+...중략...
+--- STARTUP Process SUCCESS ---
+Command executed successfully.
+iSQL(sysdba)&gt; </pre>
+</div></div></div></div></div></div><p> </p><p> </p><h1 id="id-테이블스페이스데이터파일경로변경방법-작업중발생할수있는에러메세지">작업 중 발생할 수 있는 에러 메세지</h1><hr /><p>데이터 파일 경로 변경 작업 중 발생할 수 있는 에러 메세지와 조지 방법입니다.</p><p> </p><div class="sectionColumnWrapper"><div class="sectionMacro"><div class="sectionMacroRow"><div class="columnMacro"><p> </p></div><div class="columnMacro"><h2 id="id-테이블스페이스데이터파일경로변경방법-Thedatafiledoesnotexist">The data file does not exist</h2><hr /><ul><li><strong>원인</strong><br />물리적인 데이터 파일 이동 없이 변경 구문을 수행한 경우 발생할 수 있습니다.</li></ul><ul><li><strong>조치</strong><br />데이터파일을 변경하려는 위치에 데이타 파일을 먼저  이동시킨 후  DB에서의  데이터파일 위치를 변경하는 rename 구문을  실행합니다.</li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-Thedatafile&#39;XXXXXX&#39;hasaninvalidheader">The data file 'XXXXXX' has an invalid header</h2><hr /><ul><li><strong>원인</strong><br />물리적으로 데이터 파일 복사 단계에서 정상 수행되지 않은 경우 발생할 수 있습니다. 서비스 단계로 데이터베이스 구동 시 구동이 실패합니다. <br /><br /></li><li><strong>조치</strong><br />물리적인 데이터 파일의 작업을 다시 수행합니다.</li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-Unabletoinvokethecreate()functionon[XXXXXX/dwfile0.dwf]">Unable to invoke the create() function on [XXXXXX/dwfile0.dwf]</h2><hr /><ul><li><strong>원인</strong><br />double write 파일이 존재하지 않은 경우 발생할 수 있습니다. double write 파일은 데이터베이스 비정상 종료 시 Restart Recovery할 때에 필요한 파일로 기본 경로는 $ALTIBASE_HOME/dbs 입니다. $ALTIBASE_HOME/dbs 경로의 모든 파일을 이동했을 경우 에러가 발생할 수 있습니다.<br />Altibase 서버 버전에 따라 에러 메시지에 차이가 있을 수 있습니다.</li></ul><ul><li><p><strong>조치</strong><br />dwfile0.dwf, dwfile1.dwf 파일을 touch 명령어로 임의 생성 후 구동이 가능합니다.  <br />또는  $ALTIBASE_HOME/conf/altibase.properties 에 USE_DW_BUFFER = 0 으로 변경하고 (없으면 추가합니다.) Altibase 서버를 구동합니다. Altibase 서버가 구동되면 USE_DW_BUFFER = 1 로 변경하거나 USE_DW_BUFFER 설정을 altibase.properties 에서 삭제합니다.<br />double write 파일의 기본 경로를 변경 후 Altibase 서버를 구동해도 됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">   # DOUBLE_WRITE_DIRECTORY 프로퍼티 값을 변경. 
+$ vi $ALTIBASE_HOME/conf/altibase.properties
+DOUBLE_WRITE_DIRECTORY       = ?/dbs
+DOUBLE_WRITE_DIRECTORY       = ?/dbs</pre>
+</div></div></li></ul><h2 id="id-테이블스페이스데이터파일경로변경방법-CANNOTIDENTIFYDATAFILE">CANNOT IDENTIFY DATAFILE</h2><hr /><ul><li><p><strong>원인</strong></p><p>서비스 단계로 Altibase 서버를 구동할 때 메타 테이블에서 저장된 데이타 파일 경로에서 물리적인 데이터 파일을 찾을 수 발생합니다. 컨트롤 단계에서 올바르지 않은 데이터 파일 경로를 입력한 경우 발생할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">iSQL(sysdba)&gt; startup
+The database server is already up and running.
+TRANSITION TO PHASE : META
+  [SM-WARNING] CANNOT IDENTIFY DATAFILE
+                                [TBS:USER_DATA, PPID-0-FID-0] Datafile Not Found
+  [SM-WARNING] CANNOT IDENTIFY DATAFILE
+                                [TBS:USER_DATA, PPID-1-FID-0] Datafile Not Found
+[FAILURE] The data file does not exist.
+Startup Failed....
+[ERR-91015 : Communication failure.]
+$</pre>
+</div></div></li><li><p><strong>조치</strong></p><p>컨트롤 단계에서 올바른 경로를 지정하여 DDL 문을 수행합니다.</p></li></ul></div></div></div></div><p> </p><p> </p><h1 id="id-테이블스페이스데이터파일경로변경방법-참고">참고</h1><hr /><ul style="list-style-type: square;"><li><a href="http://aid.altibase.com/pages/viewpage.action?pageId=14057689" class="external-link" rel="nofollow">로그앵커, 온라인 로그파일, 아카이브 로그파일, 더블 라이트(Double Write)파일 경로 변경 방법</a></li></ul><p> </p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

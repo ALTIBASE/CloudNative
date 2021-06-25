@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FAQ(한국어) : ERR-11030 (  69680) The data file cannot be extended because the requested size is bigger than the maximum size (FID:&lt;0%d&gt;).</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">FAQ(한국어)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_6062093.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="6520894.html">09. 에러메시지</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            FAQ(한국어) : ERR-11030 (  69680) The data file cannot be extended because the requested size is bigger than the maximum size (FID:&lt;0%d&gt;).
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> Soultion Center Team</span>, last modified on Dec 24, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1624409055310 {padding: 0px;}
+div.rbtoc1624409055310 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1624409055310 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1624409055310'>
+<ul class='toc-indentation'>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-개요'>개요 </a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-버전'>버전 </a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-원인'>원인</a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-조치'>조치</a></li>
+<li><a href='#ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-참고'>참고</a></li>
+</ul>
+</div><br /></strong></p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-개요"><strong>개요 </strong></h1><hr /><p>디스크 테이블스페이스 데이터 파일 크기 변경 작업 시 아래와 같은 에러 메시지를 만날 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 200M; 
+[ERR-11030 : The data file cannot be extended because the requested size is bigger than the maximum size (FID:0).]</pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-버전"><strong>버전 </strong></h1><hr /><p>ALTIBASE HDB 4<br /><br /></p><p> </p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-원인"><strong>원인</strong></h1><hr /><p>위 에러 메시지는 AUTOEXTEND OFF 속성을 가진 데이터 파일의 크기를 maxsize 보다 크게 변경할 때 발생합니다.</p><p>데이터 파일의 autoextend 속성 및 설정된 크기는 다음 구문으로 확인할 수 있습니다.(autoextend 가 1 이면 on, 0 이면 off)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select name, AUTOEXTEND , INITSIZE, MAXSIZE from v$datafiles;  
+NAME                                     AUTOEXTEND  INITSIZE             MAXSIZE
+ ---------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/temp001.dbf      1           12800                262144 /home/altibase_home/dbs/user.dbf         </pre>
+</div></div><p>autoextend on 인 데이터 파일은 maxsize 까지 크기가 자동 증가하기 때문에 초기 설정 크기(INITSIZE) 와 최대 크기(MAXSIZE)에 차이를 보입니다.<br />하지만, autoextend off 인 데이터 파일의 최대 크기(MAXSIZE) 은 초기 설정 크기(INITSIZE)와 동일하게 설정됩니다.<strong><br /></strong>이 때문에 최대 크기(MAXSIZE) 보다 크게 변경하려는 경우에 위와 같은 에러가 발생할 수 있습니다.</p><p> </p><p> </p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-조치"><strong><strong>조치</strong></strong></h1><hr /><p>해당 데이터 파일의 AUTOEXTEND 속성을 ON 으로 변경 후 데이터 파일 크기 변경 작업을 진행해야 합니다.<br />아래 순서대로 진행하면 됩니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">1) AUTOEXTEND 속성 변경
+iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; autoextend on; Alter success.
+2) 데이터 파일 크기 변경
+iSQL&gt; alter tablespace DISK_USER_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 100M; Alter success. </pre>
+</div></div><p> </p><p> </p><p> </p><h1 id="ERR-11030(69680)Thedatafilecannotbeextendedbecausetherequestedsizeisbiggerthanthemaximumsize(FID:&lt;0%d&gt;).-참고"><strong><strong>참고</strong></strong></h1><hr /><p>사실상 autoextend off 속성을 가진 데이터 파일은 초기 설정 크기(initsize) 만 의미가 있습니다. <br />CREATE TABLESPACE 구문 또는 ALTER TABLESPACE 구문에서 autoextend off 절을 포함할 경우, size 절 외에 nextsize 및 maxsize 절은 같이 사용하지 못합니다.<br /><br />같이 사용하면 아래와 같이 SQL 구문 오류가 납니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; create tablespace user_disk_tbs2 datafile &#39;user2.dbf&#39; size 1M autoextend off next 1M; 
+[ERR-31001 : SQL syntax error 
+line 1: parse error create tablespace USER_DISK_TBS2 DATAFILE &#39;user2.dbf&#39; SIZE 1M autoextend off NEXT 1M                                                                          </pre>
+</div></div><p><br />ALTIBASE HDB 4.3.9 에서는 이에 대한 처리가 부족했습니다.<br />ALTIBASE HDB 5 부터는 이러한 제약이 반영되어 autoextend off 속성을 가진 데이터 파일의 maxsize 를 OS file limit 값으로 설정하게 됩니다.<br /><br />이 변경으로 4.3.9 와는 다르게 v$datafile 을 조회했을 때 maxsize 를 0 으로 출력하며,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">iSQL&gt; select name, AUTOEXTEND , INITSIZE, currsize, MAXSIZE from v$datafiles; 
+NAME                                AUTOEXTEND  INITSIZE             CURRSIZE            MAXSIZE 
+------------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/user.dbf    0           128                  128                 0
+
+ size 변경도 가능하게 되었습니다.
+
+iSQL&gt; alter tablespace USER_DISK_TBS alter datafile &#39;/home/altibase_home/dbs/user.dbf&#39; size 8M; Alter success.
+iSQL&gt; select name, AUTOEXTEND , INITSIZE, currsize, MAXSIZE from v$datafiles; 
+NAME                                AUTOEXTEND  INITSIZE             CURRSIZE             MAXSIZE
+ -------------------------------------------------------------------------------------------------------- 
+/home/altibase_home/dbs/user.dbf    0           128                  2048                 0</pre>
+</div></div><p>OS file limit 은 ulimit –a 으로 확인할 수 있습니다.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ ulimit -a 
+core file size  (blocks, -c) 2097151
+data seg size           (kbytes, -d) 2097152
+file size               (blocks, -f) unlimited
+max memory size         (kbytes, -m) unlimited 
+open files                      (-n) 5030 
+pipe size            (512 bytes, -p) 16 
+stack size              (kbytes, -s) 131072 
+cpu time               (seconds, -t) unlimited 
+max user processes              (-u) 3278 
+virtual memory          (kbytes, -v) unlimited</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:44</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

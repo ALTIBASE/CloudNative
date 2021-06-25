@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Technical Documents(English) : 5. Considerations when integrating TOMCAT</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Technical Documents(English)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_557064.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TOMCAT-Integration-Guide-for-Altibase_14058489.html">TOMCAT Integration Guide for Altibase</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Technical Documents(English) : 5. Considerations when integrating TOMCAT
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created by <span class='author'> richard.nahm	</span>, last modified on Feb 18, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <hr /><p>This chapter describes considerations when integrating TOMCAT.</p><h2 id="id-5.ConsiderationswhenintegratingTOMCAT-JDKenvironmentwhenusingTOMCAT"><strong>JDK environment when using TOMCAT</strong></h2><p>When processing the preparestatement using DBCP, it is recommended to use in JDK(JRE) 1.6 or higher environment to change testOnBorrow (default: true) poolPrepareStatements (default: false) setting to improve performance.</p><div><strong><br /></strong></div><div>Symptoms of the problem</div><div><p>Tomcat log (version 6)</p><div><div class="syntaxhighlighter nogutter  text"><p> </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">--- Check the statement (query failed).
+ 
+--- Cause: java.sql.SQLException: [0]:Failure to find statement; nested exception is com.ibatis.common.jdbc.exception.NestedSQLException:
+ 
+--- The error occurred in maps/CommonSqlMap.xml.
+ 
+--- The error occurred while applying a parameter map.
+ 
+--- Check the Common.getIservSp-InlineParameterMap.
+ 
+--- Check the statement (query failed).
+ 
+--- Cause: java.sql.SQLException: [0]:Failure to find statement</pre>
+</div></div><p>If it is normal,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">Tomcat log (version 6)
+ 
+[0001][14:14:31 386][    2][    0] GET-CONNECTION[org.apache.tomcat.dbcp.dbcp.BasicDataSource.getConnection] [1 ms]</pre>
+</div></div><p>How to check</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">After removing the comment at the bottom of the contents of the $CATALINA_HOME/conf/server.xml file, restart Tomcat and check $CATALINA_HOME/logs/tomcat.log.
+ Before the change&gt;
+        &lt;!--
+        &lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot;
+                 directory=&quot;logs&quot;  prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+                 pattern=&quot;common&quot; resolveHosts=&quot;false&quot;/&gt;
+        --&gt;
+ 
+After the change&gt;
+        &lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot;
+                 directory=&quot;logs&quot;  prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+                 pattern=&quot;%a %b %t %s %D %r &quot; resolveHosts=&quot;false&quot;/&gt;</pre>
+</div></div><p>Reference: <a class="external-link" href="http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html" rel="nofollow">http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html</a></p><p>Recommended Tomcat settings</p><div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh"><div class="tablesorter-header-inner"><p> </p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Environment 1</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Environment 2</p></div></th><th class="confluenceTh"><div class="tablesorter-header-inner"><p>Environment 3</p></div></th></tr></thead><tbody><tr><td class="confluenceTd"><p>JDK Ver</p></td><td class="confluenceTd"><p>1.5</p></td><td class="confluenceTd"><p>1.6</p></td><td class="confluenceTd"><p>1.6</p></td></tr><tr><td class="confluenceTd"><p>poolPrepareStatements</p></td><td class="confluenceTd"><p>Only FALSE recommended (Default)</p></td><td class="confluenceTd"><p>True/False</p></td><td class="confluenceTd"><p>True/False</p></td></tr><tr><td class="confluenceTd"><p>Result</p></td><td class="confluenceTd"><p>testOnBorrow=False,<br class="atl-forced-newline" />poolpreparestatement=true<br class="atl-forced-newline" />Not recommended for use,</p><p>Upgrade to JRE or JDK1.6 recommended</p></td><td class="confluenceTd"><p>Recommended</p></td><td class="confluenceTd"><p>Recommended</p></td></tr><tr><td class="confluenceTd"><p>testOnBorrow</p></td><td class="confluenceTd"><p>Only TRUE recommend (Default)</p></td><td class="confluenceTd"><p>True/False</p></td><td class="confluenceTd"><p>True/False</p></td></tr><tr><td class="confluenceTd"><p>Tomcat Ver</p></td><td class="confluenceTd"><p>6 (dbcp ver 1.3)</p></td><td class="confluenceTd"><p>6 (dbcp ver 1.3)</p></td><td class="confluenceTd"><p>7 (dbcp ver 1.4)</p></td></tr></tbody></table></div><ul><li>testOnBorrow<br />+ When getting a connection from the connection pool, the connection is validated<br />+ The default value is false, and the default value is generally used. If set to true, validationQuery is executed every time, so a slight performance decrease is expected.</li><li>poolpreparestatement<br />+ Statement pooling is maintained for each connection in DBCP, so the application server (App) keeps the information compiled for the query. After that, it is possible to improve performance by repeating only the execute step without preparing the same query.</li></ul><h2 id="id-5.ConsiderationswhenintegratingTOMCAT-Returnofusedresource"><strong>Return of used resource</strong></h2><p>Connection, Statement, and ResultSet allocated by the program must be explicitly closed after use. If it is not closed, resources are continuously allocated during the life cycle of the variable that declared the above resource, which results in unnecessary resource consumption.</p><p>If the connection is not closed, the connection will not be returned to the pool, so it will be unable to use it elsewhere.</p><p>Statement information is allocated and remained in memory not only on the application but also on the DB server while the session is maintained. Therefore, if the statement and the connection are not closed, this could be a problem for unnecessary resources are continuously allocated in the application, but the Query_Prepare memory area of the DB server also increases.</p><p>If the above resources are not explicitly closed, they are allocated in memory during the life cycle of the variable that declares the resource. If the life cycle ends, the resource is no longer referenced, so the JVM (Java Virtual Machine) and GC (Garbage Collector) will later release the resource. However, GC is generally the lowest priority thread. Therefore, it is difficult to predict when the GC releases the resource. In other words, it can not be released immediately because the life cycle of the variable is no longer referenced in the application, and the DB server keeps the information about the resource unless the GC releases it.</p><p>Therefore, it is recommended to close the used resource explicitly.</p><p> </p><div><h2 id="id-5.ConsiderationswhenintegratingTOMCAT-Removeabandonedconnection"><strong>Remove abandoned connection</strong></h2><p>There is one problem when processing a connection using DBCP, which means close ResultSet, Statement, and Connection must be explicitly closed in the web application. If the web application fails to close these resources, the resources cannot be reused later. This sita is called a connection pool leak, and if the connection pool leak persists, all available connections will eventually disappear. To prevent this problem, DBCP provides a method for recovering and logging a connection that has been abandoned due to a problem. The following property can be set.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">removeAbandoned=&quot;true&quot;</pre>
+</div></div><p> </p></div><p> </p></div></div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Jun 23, 2021 09:49</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>
